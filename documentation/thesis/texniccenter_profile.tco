@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <txcop:outputProfiles version="2" xmlns:txcop="http://schemas.ToolsCenter.org/TeXnicCenter/OutputProfiles.xsd">
 	<outputProfileList>
+		<outputProfile name="LaTeX =&gt; PDF" stopOnLatexError="false">
+			<texCommand execute="true" path="pdflatex.exe" arguments="-output-directory=%dm\target -aux-directory=%dm\target -max-print-line=120 -interaction=nonstopmode &quot;%wm&quot; -synctex=-1"/>
+			<bibTexCommand execute="true" path="bibtex.exe" arguments="&quot;%dm\target\%tm&quot; -include-directory=&quot;%dm\target&quot;"/>
+			<makeIndexCommand execute="true" path="makeindex.exe" arguments="&quot;%tm.idx&quot; -t &quot;%tm.ilg&quot; -o &quot;%tm.ind&quot;"/>
+			<preProcessors/>
+			<postProcessors/>
+			<viewer path="AcroRd32.exe" closeBeforeCompilation="true">
+				<viewProjectCommand type="dde">
+					<commandLineCommand path="" arguments=""/>
+					<ddeCommand path="AcroRd32.exe" server="acroviewR10" topic="control" command="[DocOpen(&quot;%bm.pdf&quot;)][FileOpen(&quot;%bm.pdf&quot;)]"/>
+				</viewProjectCommand>
+				<viewCurrentFileCommand type="dde">
+					<commandLineCommand path="" arguments=""/>
+					<ddeCommand path="AcroRd32.exe" server="acroviewR10" topic="control" command="[DocOpen(&quot;%bm.pdf&quot;)][FileOpen(&quot;%bm.pdf&quot;)]"/>
+				</viewCurrentFileCommand>
+				<viewCloseCommand type="dde">
+					<commandLineCommand path="" arguments=""/>
+					<ddeCommand path="" server="acroviewR10" topic="control" command="[DocClose(&quot;%bm.pdf&quot;)]"/>
+				</viewCloseCommand>
+			</viewer>
+		</outputProfile>
 		<outputProfile name="LaTeX =&gt; PDF (Sumatra)" stopOnLatexError="false">
 			<texCommand execute="true" path="pdflatex.exe" arguments="-output-directory=%dm\target -aux-directory=%dm\target -max-print-line=120 -interaction=nonstopmode &quot;%wm&quot; -synctex=-1"/>
 			<bibTexCommand execute="true" path="bibtex.exe" arguments="&quot;%dm\target\%tm&quot; -include-directory=&quot;%dm\target&quot;"/>
@@ -10,11 +31,11 @@
 			<viewer path="&quot;&quot;" closeBeforeCompilation="false">
 				<viewProjectCommand type="dde">
 					<commandLineCommand path="" arguments=""/>
-					<ddeCommand path="&quot;&quot;" server="SUMATRA" topic="Control" command="[Open(&quot;%bm.pdf&quot;,0,1,1)]"/>
+					<ddeCommand path="&quot;&quot;" server="SUMATRA" topic="Control" command="[Open(&quot;%dm\target\%tm.pdf&quot;,0,1,1)]"/>
 				</viewProjectCommand>
 				<viewCurrentFileCommand type="dde">
 					<commandLineCommand path="" arguments=""/>
-					<ddeCommand path="&quot;&quot;" server="SUMATRA" topic="Control" command="[Open(&quot;%bm.pdf&quot;,0,1,1)]"/>
+					<ddeCommand path="&quot;&quot;" server="SUMATRA" topic="Control" command="[Open(&quot;%dm\target\%tm.pdf&quot;,0,1,1)]"/>
 				</viewCurrentFileCommand>
 				<viewCloseCommand type="dde">
 					<commandLineCommand path="" arguments=""/>
