@@ -1,0 +1,84 @@
+\chapter{Titel}
+\label{chap:titel}
+
+\section{Untertitel}
+\label{Titel:Übtertitel}
+
+
+\subsection{Stichpunkte}
+\begin{itemize}
+	\item
+		\textbf{Item 1}: 
+		Text
+
+	\item
+		\textbf{Item 2}: 
+		Text
+	
+\end{itemize}
+
+
+\subsection{Aufzählung}
+\begin{enumerate}
+	\item
+		\textbf{Item 1}: 
+		Text
+
+	\item
+		\textbf{Item 2}: 
+		Text
+	
+\end{enumerate}
+
+\subsection{Abkürzung}
+\nomenclature{GUI}{Graphical User Interface (Grafische Benutzeroberfläche)}
+
+
+\subsection{Quellcode}
+\begin{lstlisting}[caption=Der Titel, label=listing:label]
+Code
+\end{lstlisting}
+
+\subsection{Verweise}
+\begin{enumerate}
+	\item siehe \ref{listing:label}
+	\item \reflst{listing:label}
+	\item \refabb{img:imagelabel}
+	\item \refsec{Titel:Übtertitel}
+	\item \refchap{chap:titel}
+\end{enumerate}
+
+\subsection{Zitate}
+\begin{enumerate}
+	\item \cite{MANUAL_ID}
+	\item \cite{DSLS_IN_ACTION}
+	\item \cite{REFACTORING_DATABASES}
+	\item \cite{BASISWISSEN_SOFTWAETEST}
+	\item \cite[20ff]{DER_INTEGRATIONSTEST}
+\end{enumerate}
+
+\subsection{Bild}
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=0.8\textwidth]{images/cover/htwg_logo.png}
+	\caption{Der Titel}\label{img:imagelabel}
+\end{figure}
+
+
+\subsection{Bildgruppe}
+\begin{figure}[htbp]
+	\centering
+	\subcaptionbox{Text 1\label{img:imagelabelX:image1}}[0.32\textwidth]{
+		 \includegraphics[width=0.32\textwidth]{images/cover/htwg_logo.png}
+	}
+	\subcaptionbox{Text 2\label{img:imagelabelX:image2}}[0.32\textwidth]{
+		 \includegraphics[width=0.25\textwidth]{images/cover/htwg_logo.png}
+	}
+	\subcaptionbox{Text 3\label{img:imagelabelX:image3}}[0.32\textwidth]{
+		 \includegraphics[width=0.16\textwidth]{images/cover/htwg_logo.png}
+	}
+	\caption{Gemeinsamer Titel}\label{img:imagelabelX}
+\end{figure}
+
+
+

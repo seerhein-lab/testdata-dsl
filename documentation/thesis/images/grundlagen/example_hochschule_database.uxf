@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>11</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>11</x>
+      <y>132</y>
+      <w>198</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*PROFESSOR*
+--
+id &lt;&lt;PK&gt;&gt;
+name : varchar</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>11</x>
+      <y>506</y>
+      <w>198</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*LEHRVERANSTALTUNG*
+--
+id &lt;&lt;PK&gt;&gt;
+professor_id &lt;&lt;FK&gt;&gt;
+name : varchar
+sws : int
+ects : int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>77</x>
+      <y>187</y>
+      <w>54</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=    0..*
+m2=    1
+</panel_attributes>
+    <additional_attributes>33;319;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>627</x>
+      <y>132</y>
+      <w>198</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*PRUEFUNG*
+--
+id &lt;&lt;PK&gt;&gt;
+lehrveranstalung_id &lt;&lt;FK&gt;&gt;
+typ : varchar
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>308</x>
+      <y>605</y>
+      <w>220</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*IST_TUTOR*
+--
+student_id &lt;&lt;FK&gt;&gt;
+lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>319</x>
+      <y>132</y>
+      <w>198</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*BEAUFSICHTIGT*
+--
+professor_id &lt;&lt;FK&gt;&gt;
+pruefung_id &lt;&lt;FK&gt;&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>627</x>
+      <y>506</y>
+      <w>198</w>
+      <h>121</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*STUDENT*
+--
+matrikelnummer &lt;&lt;PK&gt;&gt;
+name : varchar</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>627</x>
+      <y>330</y>
+      <w>198</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*SCHREIBT*
+--
+student_id &lt;&lt;FK&gt;&gt;
+pruefung_id &lt;&lt;FK&gt;&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>308</x>
+      <y>506</y>
+      <w>220</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;table&gt;&gt;
+*BESUCHT*
+--
+student_id &lt;&lt;FK&gt;&gt;
+lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>176</x>
+      <y>209</y>
+      <w>472</w>
+      <h>318</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=    0..1
+m2=  1</panel_attributes>
+    <additional_attributes>451;33;33;297</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>176</x>
+      <y>110</y>
+      <w>164</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes>
+    <additional_attributes>143;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>484</x>
+      <y>110</y>
+      <w>164</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1..*</panel_attributes>
+    <additional_attributes>143;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>693</x>
+      <y>209</y>
+      <w>54</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=   1
+m2=    0..*
+</panel_attributes>
+    <additional_attributes>33;33;33;121</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>693</x>
+      <y>385</y>
+      <w>54</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=    0..*
+m2=   1
+</panel_attributes>
+    <additional_attributes>33;33;33;121</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>176</x>
+      <y>484</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes>
+    <additional_attributes>132;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>176</x>
+      <y>583</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes>
+    <additional_attributes>132;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>495</x>
+      <y>583</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>132;33;33;33</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>495</x>
+      <y>484</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>132;33;33;33</additional_attributes>
+  </element>
+</diagram>

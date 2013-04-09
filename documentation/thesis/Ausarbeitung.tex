@@ -1,0 +1,262 @@
+\documentclass[
+  a4paper,
+  twoside,
+% oneside,
+% openany,
+  notitlepage,      %% Separate Titelseite (alternativ: titlepage)
+  ngerman,          %% Das Dokument ist in neuen deutschen Rechtschreibung gehalten
+  11pt,
+% draft,            %% Finden von überlangen Zeilen (dargestellt durch schwarze Blöcke)
+]{book}             %% Dokumentklasse (alternativ: article, report, etc.)
+       
+%% \linebreak für Zeilenumbruch
+\usepackage[latin9]{inputenc}               %% Eingabezeichensatz zur Darstellung von Umlauten (latin1) erweitert um Sonderzeichen wie EURO (latin9)
+\usepackage{csquotes}                       %%
+\usepackage{times}                          %% Schrift Times
+%\usepackage{mathpazo}                      %% Schrift Palatino
+%\usepackage{luximono}                      %% Fette Schreibmaschinenschrift
+\usepackage[a4paper]{geometry}              %%
+\usepackage[hyphens]{url}                   %%
+\usepackage{caption}
+\usepackage{subcaption}                     %% Besser als subfigure und subfig
+\usepackage{picins}                         %%
+\usepackage{longtable}                      %%
+\usepackage{shadethm}                       %%
+\usepackage{amsmath}                        %%
+\usepackage{framed, color}                  %%
+\usepackage{fancyhdr}                       %%
+\usepackage{lscape}                         %% stellenweises Querformat
+\usepackage[T1]{fontenc}                    %% Europaeische Schriftcodierung (T1) und 
+\usepackage{here}                           %% Grafik dort positionieren wo man es will ([H])Kopfzeile und Seitenzahlen
+\usepackage[ngerman]{babel}                 %% => ngerman = neue deutsche Rechtschreibung
+\usepackage{graphicx}                       %% Zur Einbindung von Grafiken. Z.B. ueber \includegraphics
+\usepackage{listings}                       %% Codelistungs formatieren
+\usepackage{chngpage}                       %% Seiteneinstellungen anpassen (adjustwidth)
+\usepackage{paralist}                       %% flexible Listen
+\usepackage{url}                            %% Darstellung von Internetadressen und Pfaden
+\usepackage{setspace}                       %% zum Erzeugen von groesseren Zeilenabstaenden
+\usepackage{nomencl}                        %% Abkuerzungsverzeichnis erstellen
+\usepackage{tabularx}                       %% Tabellen mit fester breite nutzen
+\usepackage{multirow}                       %% Zellen in Tabellen zusammenfassen
+\usepackage[clearempty]{titlesec}           %% Keine Seitenzahlen, Kopf- und Fusszeilen auf leeren Seiten
+\usepackage{savefnmark}                     %% Fussnoten mehrfach verwenden
+\usepackage{colortbl}                       %% Farben in Tabellen
+\usepackage{booktabs}                       %%
+%\usepackage{hyperref}                       %% Phantomsection
+\usepackage[backend=bibtex8]{biblatex}      %% "`Abgerufen am"' bei online quellen
+\usepackage{eurosym}
+\usepackage{placeins}                       %% floatbarrier
+\usepackage{blindtext}                      %% lorem ipsumtext
+\usepackage{nomencl}                        %% Abkürzungsverzeichnis
+%\usepackage[intoc]{nomencl}                 %% Abkürzungsverzeichnis
+\usepackage{xspace}                         %% nicht erzwungene Leerzeichen (für \newcommand nützlich}
+
+%\onehalfspacing                             %% 1.5 Zeilenabstand
+%\doublespacing                              %% Doppelter Zeilenabstand
+%%%%%%%%%%%%%%%%% links %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[pdftex, pdfborder={0 0 0},colorlinks, linkcolor=black, citecolor=black, filecolor=black, urlcolor=blue, bookmarks=true, bookmarksnumbered=true]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-------------------------------------------------------------------------
+%   Listings
+%-------------------------------------------------------------------------
+
+% Einstellungen für Listings mit Eclipse Code Style.
+\usepackage{color}
+\usepackage{courier}
+\lstset{language=java}
+\definecolor{sh_comment}{rgb}{0.12, 0.38, 0.18 }     % adjusted, in Eclipse: {0.25, 0.42, 0.30 } = #3F6A4D
+\definecolor{sh_keyword}{rgb}{0.37, 0.08, 0.25}      % #5F1441
+\definecolor{sh_string}{rgb}{0.06, 0.10, 0.98}       % #101AF9% Farbe für Kommentare
+\def\lstsmallmath{\leavevmode\ifmmode \scriptstyle \else  \fi}
+\def\lstsmallmathend{\leavevmode\ifmmode  \else  \fi}
+\lstset {
+  frame=shadowbox,
+  rulesepcolor=\color{black},
+  showspaces=false,showtabs=false,tabsize=2,
+  numberstyle=\tiny,numbers=left,
+  basicstyle= \ttfamily\mdseries,
+  stringstyle=\color{sh_string},
+  keywordstyle = \color{sh_keyword}\bfseries,
+  commentstyle=\color{sh_comment}\itshape,
+  captionpos=b,
+  xleftmargin=0.7cm, xrightmargin=0.5cm,
+  lineskip=-0.3em, breaklines=true,
+  escapebegin={\lstsmallmath}, escapeend={\lstsmallmathend}
+}
+\newcommand{\lstJava}[1]{\lstinline[language=Java,breaklines=true,basicstyle= \listingsfontinline]$#1$}
+
+%\usepackage{fontspec}                        %% Codelistungs formatieren
+%\newfontfamily\listingsfontinline[Scale=0.8]{Courier New} 
+%\newfontfamily\listingsfont[Scale=0.7]{Courier}
+
+
+\bibliography{bibliography/bibliography}
+\definecolor{shadecolor}{gray}{.65}
+\definecolor{lightgrey}{gray}{.90}
+\geometry{top=3cm, bottom=3cm, inner=4cm, outer=3cm}  %% Seitengroesse festlegen 
+
+%%Einrückung bei neuem Absatz entfernen
+\setlength{\parindent}{0pt}
+\setlength{\parskip}\medskipamount % besser als explizite Angabe in pt
+
+%%%%%%%%%%%%%%%%  Kopfzeile und Seitenzahlen %%%%%%%%%%%%%%%%%%%%%
+\setlength{\headheight}{27pt}    %\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancypagestyle{plain}{}
+\lhead{} 
+\fancyfoot{}                      % Fußzeile löschen?
+\fancyfoot[EL]{\thepage}          % Seitenzahlen rechts anzeigen auf geraden seiten
+\fancyfoot[OR]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%% Abkürzungsverzeichnis %%%%%%%%%%%%%%%%%%%%%%%%
+\let\abbrev\nomenclature
+\renewcommand{\nomname}{Abkürzungsverzeichnis}
+\setlength{\nomlabelwidth}{.25\hsize}
+\renewcommand{\nomlabel}[1]{#1 \dotfill}
+\setlength{\nomitemsep}{-\parsep}
+\makeindex
+\makenomenclature
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Anzahl der Nummerierungsebenen festlegen
+%% In der book-Klasse wird nur bis zur 3 Ueberschirftenebene
+%% durchnummeriert. Möchte man weitere Ebenen hinzufuegen, so
+%% muss dies hier angegeben werden. Zählung beginnt bei 0.
+\setcounter{tocdepth}{2} % im Inhaltsverzeichnis anzeigen
+\setcounter{secnumdepth}{2}
+
+%% Hurenkinder und Schusterjungen vermeiden
+\widowpenalty=10000
+\clubpenalty=10000
+
+% automatischen Zeilenumbruch verbessern
+\setlength{\emergencystretch}{10em}
+
+%farben interessant \lstset{language=Java,captionpos=b,tabsize=3,frame=lines,keywordstyle=\color{blue},commentstyle=\color{darkgreen},stringstyle=\color{red},numbers=left,numberstyle=\tiny,numbersep=5pt,breaklines=true,showstringspaces=false,basicstyle=\footnotesize,emph={label}}
+
+%% 
+%% Sollte es vorkommen das Woerter nicht korrekt getrennt werden, bzw. nur an bestimmten Stellen oder nie getrennt werden sollen,
+%% so koennen diese, durch Leerzeichen getrennt, mit der richtigen Trennung (durch ein Minus dargestellt) hier angegeben werden.
+\include{praeambel/hyphenation}
+
+\newcommand{\akademGradKurz}{Master}
+\newcommand{\akademGrad}{\akademGradKurz~of Science}
+\newcommand{\ausarbeitung}{\akademGradKurz-Arbeit}
+\newcommand{\thema}{Modellierung von Testdaten}
+\newcommand{\abgabedatum}{11. Oktober 2013}
+\newcommand{\ort}{Konstanz}
+\newcommand{\studGang}{Informatik}
+
+\newcommand{\geboren}{22.12.1981}
+\newcommand{\geborenIn}{Bad Saulgau}
+\newcommand{\autor}{Nikolaus Moll}
+\newcommand{\autorMatNr}{287336}
+\newcommand{\autorStrasse}{Lorenz-Vogel-Weg 18}
+\newcommand{\autorPLZ}{72505}
+\newcommand{\autorOrt}{Krauchenwies}
+
+\newcommand{\prueferA}{Jürgen Wäsch}
+\newcommand{\prueferATitle}{Prof. Dr.-Ing.}
+\newcommand{\prueferAInstanz}{Hochschule für Technik, Wirtschaft und Gestaltung}
+\newcommand{\prueferAAdresse}{Brauneggerstraße 55}
+\newcommand{\prueferAPLZ}{78462}
+\newcommand{\prueferAOrt}{Konstanz}
+
+\newcommand{\prueferB}{PRUEFERB}
+\newcommand{\prueferBTitle}{PRUEFERBTITLE}
+\newcommand{\prueferBInstanz}{Seitenbau GmbH}
+\newcommand{\prueferBAdresse}{Seilerstr. 7}
+\newcommand{\prueferBPLZ}{78467}
+\newcommand{\prueferBOrt}{Konstanz}
+
+\newcommand{\footnoteremember}[2]{
+  \footnote{#2}
+  \newcounter{#1}
+  \setcounter{#1}{\value{footnote}}
+
+} \newcommand{\footnoterecall}[1]{
+
+  \footnotemark[\value{#1}]
+} 
+
+\newcommand{\refabb}[1]{siehe Abb.~\ref{#1}}
+\newcommand{\refsec}[1]{siehe Abschnitt~\ref{#1}}
+\newcommand{\refchap}[1]{siehe Kapitel~\ref{#1}}
+\newcommand{\reflst}[1]{siehe Listing~\ref{#1}}
+
+\begin{document}
+
+  %% erzeugt zunaechst roemische Seitezahlen
+  %\pagenumbering{roman}
+  %% bei book-Klassen steht dafuer der Befehl \frontmatter zur Verfuegung
+  \frontmatter
+  \include{formal/cover}
+  \newpage
+  \thispagestyle{empty}~  
+
+  \include{formal/title}
+  \newpage
+  \thispagestyle{empty}~
+  
+  \include{formal/abstract}
+  \newpage
+  \thispagestyle{empty}~
+  
+  \include{formal/authorship}
+  \newpage
+  \thispagestyle{empty}~  
+  
+  %% Inhaltsverzeichnis erstellen
+  \cleardoublepage
+  \phantomsection % nötig damit das Inhaltsverzeichnis in selbigem korrekt verlinkt wird und keine Warnung geworfen wird
+  %\addcontentsline{toc}{chapter}{Inhaltsverzeichnis}
+  \tableofcontents
+
+  %% Setzt den Seitezaehler zurueck und erzeugt ab hier arabische Seitenzahlen
+  %\pagenumbering{arabic}
+  %% bei book-Klassen steht dafuer der Befehl \mainmatter zur Verfuegung
+  \mainmatter
+  
+  \include{content/Einleitung}
+  \include{content/Grundlagen}
+  \include{content/Fazit}
+  \include{content/Vorlage}
+  
+  \phantomsection % nötig damit das Tabellenverzeichnis korrekt verlinkt wird
+  \cleardoublepage
+  \printnomenclature
+  %\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
+  
+
+  %% Abbildungsverzeichnis generieren
+  \phantomsection  % nötig damit das Abbildungsverzeichnis korrekt verlinkt wird
+  \cleardoublepage
+  \listoffigures
+  %\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+  
+  %% Listingverzeichnis generieren
+  \phantomsection  % nötig damit das Listingverzeichnis korrekt verlinkt wird
+  \cleardoublepage
+  \lstlistoflistings
+  %\addcontentsline{toc}{chapter}{Listings}
+  
+  %% Tabellenverzeichnis generieren
+  %\phantomsection % nötig damit das Tabellenverzeichnis korrekt verlinkt wird
+  %\cleardoublepage
+  %\listoftables
+  %\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+
+  %% Literaturverzeichnis generieren
+  \phantomsection  % nötig damit das Literaturverzeichnis korrekt verlinkt wird
+  \cleardoublepage
+  \printbibliography  
+  %m\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+
+  %% Abschnitt fuer den Anhang
+  \begin{appendix}
+  \end{appendix}
+\end{document}
