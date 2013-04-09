@@ -15,3 +15,6 @@ out/
 
 # Mac
 .DS_Store
+
+# Latex and Maven
+target/
