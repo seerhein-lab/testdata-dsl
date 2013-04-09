@@ -1,0 +1,97 @@
+<!DOCTYPE dataset SYSTEM "dataset.dtd">
+<dataset>
+    <table name="professor">
+        <column>ID</column>
+        <column>name</column>
+        <row>
+            <value>1</value>
+            <value>Jürgen Wäsch</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>Oliver Haase</value>
+        </row>
+    </table>
+    <table name="lehrveranstaltung">
+        <column>ID</column>
+        <column>professorID</column>
+        <column>name</column>
+        <row>
+            <value>1</value>
+            <value>2</value>
+            <value>Verteilte Systeme</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+            <value>Concurrency and Design Patterns</value>
+        </row>
+    </table>
+    <table name="pruefung">
+        <column>ID</column>
+        <column>lehrveranstaltungID</column>
+        <column>typ</column>
+        <row>
+            <value>1</value>
+            <value>1</value>
+            <value>K90</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+            <value>M30</value>
+        </row>
+    </table>
+    <table name="student">
+        <column>matrikelnummer</column>
+        <column>name</column>
+        <row>
+            <value>287336</value>
+            <value>Nikolaus Moll</value>
+        </row>
+        <row>
+            <value>123456</value>
+            <value>Max Mustermann</value>
+        </row>
+    </table>
+    <table name="beaufsichtigt">
+        <column>professorID</column>
+        <column>pruefungID</column>
+        <row>
+            <value>1</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+        </row>
+    </table>
+    <table name="schreibt">
+        <column>studentID</column>
+        <column>pruefungID</column>
+        <row>
+            <value>287336</value>
+            <value>1</value>
+        </row>
+    </table>
+    <table name="besucht">
+        <column>studentID</column>
+        <column>lehrveranstaltungID</column>
+        <row>
+            <value>287336</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>123456</value>
+            <value>2</value>
+        </row>
+    </table>
+    <table name="isttutor">
+        <column>studentID</column>
+        <column>lehrveranstaltungID</column>
+        <row>
+            <value>287336</value>
+            <value>1</value>
+        </row>
+    </table>
+</dataset>
