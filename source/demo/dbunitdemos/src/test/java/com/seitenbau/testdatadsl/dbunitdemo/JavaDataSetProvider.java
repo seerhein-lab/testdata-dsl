@@ -9,7 +9,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 public class JavaDataSetProvider implements IDataSetProvider {
 
-	interface TestData {
+	public interface Parameters {
 
 		interface Professor {
 			int WAESCH_ID = 1;
@@ -50,11 +50,11 @@ public class JavaDataSetProvider implements IDataSetProvider {
 						}
 					);
 			professor.addRow(new Object[] { 
-						TestData.Professor.WAESCH_ID,
+						Parameters.Professor.WAESCH_ID,
 						"Jürgen Wäsch" 
 					});
 			professor.addRow(new Object[] { 
-						TestData.Professor.HAASE_ID,
+						Parameters.Professor.HAASE_ID,
 						"Oliver Haase"
 					});
 			dataSet.addTable(professor);
@@ -68,12 +68,12 @@ public class JavaDataSetProvider implements IDataSetProvider {
 						}
 					);
 			lehrveranstaltung.addRow(new Object[] {
-						TestData.Lehrveranstaltung.VERTEILTE_SYSTEME_ID,
-						TestData.Professor.HAASE_ID, "Verteilte Systeme" 
+						Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID,
+						Parameters.Professor.HAASE_ID, "Verteilte Systeme" 
 					});
 			lehrveranstaltung.addRow(new Object[] {
-						TestData.Lehrveranstaltung.DESIGN_PATTERNS_ID,
-						TestData.Professor.HAASE_ID,
+						Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID,
+						Parameters.Professor.HAASE_ID,
 						"Concurrency and Design Patterns" 
 					});
 			dataSet.addTable(lehrveranstaltung);
@@ -83,52 +83,52 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					new Column("lehrveranstaltungid", DataType.INTEGER),
 					new Column("typ", DataType.VARCHAR), });
 			pruefung.addRow(new Object[] {
-					TestData.Pruefung.VERTEILTE_SYSTEME_ID,
-					TestData.Lehrveranstaltung.VERTEILTE_SYSTEME_ID, "K90" });
+					Parameters.Pruefung.VERTEILTE_SYSTEME_ID,
+					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID, "K90" });
 			pruefung.addRow(new Object[] {
-					TestData.Pruefung.DESIGN_PATTERNS_ID,
-					TestData.Lehrveranstaltung.DESIGN_PATTERNS_ID, "M30" });
+					Parameters.Pruefung.DESIGN_PATTERNS_ID,
+					Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID, "M30" });
 			dataSet.addTable(pruefung);
 
 			DefaultTable student = new DefaultTable("student", new Column[] {
 					new Column("matrikelnummer", DataType.INTEGER),
 					new Column("name", DataType.VARCHAR), });
-			student.addRow(new Object[] { TestData.Student.NIKOLAUS_MOLL_ID,
+			student.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
 					"Nikolaus Moll" });
-			student.addRow(new Object[] { TestData.Student.MAX_MUSTERMANN_ID,
+			student.addRow(new Object[] { Parameters.Student.MAX_MUSTERMANN_ID,
 					"Max Mustermann" });
 			dataSet.addTable(student);
 
 			DefaultTable beaufsichtigt = new DefaultTable("beaufsichtigt",
 					new Column[] { new Column("professorid", DataType.INTEGER),
 							new Column("pruefungid", DataType.INTEGER), });
-			beaufsichtigt.addRow(new Object[] { TestData.Professor.HAASE_ID,
-					TestData.Pruefung.VERTEILTE_SYSTEME_ID });
-			beaufsichtigt.addRow(new Object[] { TestData.Professor.HAASE_ID,
-					TestData.Pruefung.DESIGN_PATTERNS_ID });
+			beaufsichtigt.addRow(new Object[] { Parameters.Professor.HAASE_ID,
+					Parameters.Pruefung.VERTEILTE_SYSTEME_ID });
+			beaufsichtigt.addRow(new Object[] { Parameters.Professor.HAASE_ID,
+					Parameters.Pruefung.DESIGN_PATTERNS_ID });
 			dataSet.addTable(beaufsichtigt);
 
 			DefaultTable schreibt = new DefaultTable("schreibt", new Column[] {
 					new Column("studentid", DataType.INTEGER),
 					new Column("pruefungid", DataType.INTEGER), });
-			schreibt.addRow(new Object[] { TestData.Student.NIKOLAUS_MOLL_ID,
-					TestData.Pruefung.VERTEILTE_SYSTEME_ID });
+			schreibt.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
+					Parameters.Pruefung.VERTEILTE_SYSTEME_ID });
 			dataSet.addTable(schreibt);
 
 			DefaultTable besucht = new DefaultTable("besucht", new Column[] {
 					new Column("studentid", DataType.INTEGER),
 					new Column("lehrveranstaltungid", DataType.INTEGER), });
-			besucht.addRow(new Object[] { TestData.Student.NIKOLAUS_MOLL_ID,
-					TestData.Lehrveranstaltung.VERTEILTE_SYSTEME_ID });
-			besucht.addRow(new Object[] { TestData.Student.MAX_MUSTERMANN_ID,
-					TestData.Lehrveranstaltung.DESIGN_PATTERNS_ID });
+			besucht.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
+					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID });
+			besucht.addRow(new Object[] { Parameters.Student.MAX_MUSTERMANN_ID,
+					Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID });
 			dataSet.addTable(besucht);
 
 			DefaultTable isttutor = new DefaultTable("isttutor", new Column[] {
 					new Column("studentid", DataType.INTEGER),
 					new Column("lehrveranstaltungid", DataType.INTEGER), });
-			isttutor.addRow(new Object[] { TestData.Student.NIKOLAUS_MOLL_ID,
-					TestData.Lehrveranstaltung.VERTEILTE_SYSTEME_ID });
+			isttutor.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
+					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID });
 			dataSet.addTable(isttutor);
 
 			return dataSet;

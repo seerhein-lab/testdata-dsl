@@ -12,18 +12,16 @@ public class DefaultDataSet extends DBUnitDemoDataSet {
 				table_Professor
 					.insertRow()
 						.setName("Oliver Haase");
-
 		RowBuilder_Professor waesch = 
 				table_Professor
 					.insertRow()
 						.setName("Jürgen Wäsch");
-		
+
 		RowBuilder_Lehrveranstaltung vsys = 
 				table_Lehrveranstaltung
 					.insertRow()
 						.setName("Verteilte Systeme")
 						.refProfessorId(haase);
-		
 		RowBuilder_Lehrveranstaltung design_patterns = 
 				table_Lehrveranstaltung
 					.insertRow()
@@ -35,7 +33,6 @@ public class DefaultDataSet extends DBUnitDemoDataSet {
 					.insertRow()
 						.setTyp("K90")
 						.refLehrveranstaltungId(vsys);
-		
 		RowBuilder_Pruefung p_design_patterns = 
 				table_Pruefung
 					.insertRow()
@@ -56,8 +53,7 @@ public class DefaultDataSet extends DBUnitDemoDataSet {
 		table_Beaufsichtigt
 			.insertRow()
 				.refProfessorId(haase)
-				.refPruefungId(p_vsys);
-		table_Beaufsichtigt
+				.refPruefungId(p_vsys)
 			.insertRow()
 				.refPruefungId(p_design_patterns)
 				.refProfessorId(waesch);
@@ -65,9 +61,7 @@ public class DefaultDataSet extends DBUnitDemoDataSet {
 		table_Besucht
 			.insertRow()
 				.refStudentId(moll)
-				.refLehrveranstaltungId(vsys);
-		
-		table_Besucht
+				.refLehrveranstaltungId(vsys)
 			.insertRow()
 				.refStudentId(mustermann)
 				.refLehrveranstaltungId(design_patterns);
@@ -81,6 +75,5 @@ public class DefaultDataSet extends DBUnitDemoDataSet {
 			.insertRow()
 				.refStudentId(moll)
 				.refPruefungId(p_vsys);
-		
 	}
 }

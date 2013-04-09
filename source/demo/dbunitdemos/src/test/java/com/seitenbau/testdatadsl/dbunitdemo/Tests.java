@@ -13,14 +13,14 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovyDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
 
 public class Tests {
 	
 	//private static final IDataSetProvider PROVIDER = new XmlDataSetProvider(); 
 	//private static final IDataSetProvider PROVIDER = new JavaDataSetProvider(); 
-	private static final IDataSetProvider PROVIDER = new SBTestingDataSetProvider(); 
+	private static final IDataSetProvider PROVIDER = new OldSBTestingDataSetProvider(); 
+	//private static final IDataSetProvider PROVIDER = new SBTestingDataSetProvider(); 
 	//private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider();
 
 	protected IDatabaseConnection getConnection() throws Exception {
