@@ -5,54 +5,185 @@
 \label{sec:grundlagen:beispiel}
 
 % Beispiel einleiten
-Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden  die Problemstellung umsetzen und die Testdaten modellieren.  
+Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden  diese Problemstellung umsetzen und die Testdaten modellieren.  
 
-\subsection{Voraussetzungen}
-\label{sec:grundlagen:beispiel:voaussetzungen}
+	\subsection{Voraussetzungen}
+	\label{sec:grundlagen:beispiel:voaussetzungen}
 
-Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungen zwischen Entitäten. Dabei soll die Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug sein, um möglichst alle möglichen Bezeihungen zwischen Entitäten abzudecken. 
+	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungen zwischen Entitäten. Dabei soll die
+	Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug
+	sein, um möglichst alle Bezeihungensarten zwischen Entitäten abzudecken.
 
-Die Testdaten sollten so gewählt werden, dass idealerweise für alle Tests die selben Daten verwendet werden können. Einheitiche Daten sorgen dafür, dass sich der Entwickler (verbessern) nicht bei unterschiedlichen Tests in verschiedene Testdaten hineinversetzten muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
-Um dem Entwickler entgegen zu kommen, sollte der Umfang der Testdaten nicht größer sein als erforderlich.
+	Die Testdaten sollten so gewählt werden, dass idealerweise für alle Tests die selben Daten verwendet werden können.
+	Einheitiche Daten sorgen dafür, dass sich der Entwickler (verbessern) nicht bei verschiedenen Tests in unterschiedliche
+	Testdaten hineinversetzten muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
+	Um dem Entwickler entgegen zu kommen, sollte der Umfang der Testdaten nicht größer sein als erforderlich.
 
-\subsection{Gewählte Problemstellung}
-\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
-Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitäten:
+	\subsection{Gewählte Problemstellung}
+	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
+	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
+	Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitäten:
 
-\begin{itemize}
-	\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltugnen.
-	\item \textbf{Lehrveranstaltung}: Eine Lehrveranstaltng wird von einem Professor geleitet. Es kann zu jeder Lehrveranstaltung eine Prüfung geben.
-	\item \textbf{Prüfung}: Eine Prüfung ist einer Lehrveranstaltung zugeordnet. Außerdem hat mindestens ein Pofessor Aufsicht.
-	\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
-		die Möglichkeit, Tutoren von Lehrveranstaltugen zu sein.
-\end{itemize}
+	\begin{itemize}
+		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltugnen.
+		\item \textbf{Lehrveranstaltung}: Eine Lehrveranstaltng wird von einem Professor geleitet. Es kann zu jeder
+			Lehrveranstaltung eine Prüfung geben.
+		\item \textbf{Prüfung}: Eine Prüfung ist einer Lehrveranstaltung zugeordnet. Außerdem hat mindestens ein Pofessor
+			Aufsicht.
+		\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
+			die Möglichkeit, Tutoren von Lehrveranstaltugen zu sein.
+	\end{itemize}
 
-Abbildung \ref{img:uml_beispiel} stellt die Problemstellung grafisch dar. Die Abbildung zeigt, dass es keine 1:1-Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
+	Die Beziehungen der Entitäten stellen sich wie folgt dar: Eine Lehrveranstaltung muss von genau einem Professor
+	geleitet werden, ein Professor kann beliebig viele (also auch keine) Lehrveranstaltungen leiten. Eine Prüfung ist genau
+	einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben (z.B. Nachschreibeprüfung).
+	Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen Prüfungen
+	Aufsicht haben. Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstalungen von beliebig
+	vielen Studenten besucht werden. Die gleiche Bezeihung gilt für Tutoren: Jeder Student kann bei beliebig vielen
+	Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung kann beliebig viele Tutoren haben. Schließlich kann jeder
+	Student auch an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen Anzahl von
+	Studenten geschrieben werden.
 
-\begin{figure}[H]
-	\centering
-	 \includegraphics[width=0.8\textwidth]{images/grundlagen/example_hochschule.pdf}
-	\caption{UML-Diagramm des fortlaufenden Beispiels}\label{img:uml_beispiel}
-\end{figure}
+	Abbildung \ref{img:example_er} stellt die Problemstellung grafisch dar. Die Abbildung zeigt, dass es keine 1:1
+	Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
 
-Das entsprechende Datenbankschema sieht folgendermaßen aus:
-\begin{figure}[H]
-	\centering
-	 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_database.pdf}
-	\caption{Datenbank-Diagramm des fortlaufenden Beispiels}\label{img:database_beispiel}
-\end{figure}
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.8\textwidth]{images/grundlagen/example_hochschule_er.pdf}
+		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
+	\end{figure}
 
-\subsection{Wahl der Testdaten}
-\label{sec:grundlagen:beispiel:testdaten}
+	Das entsprechende relationale Modell sieht folgendermaßen aus:
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_relational.pdf}
+		\caption{Relationales Modell des fortlaufenden Beispiels}\label{img:example_relational}
+	\end{figure}
 
-Um den einen Kompromiss für die Komplexität der Testdaten zu finden, werden vier Fragestellungen definiert. Diese Fragen sollen dabei helfen, den Umfang der Testdaten bestimmen zu können. Die Fragen stellen sich wie folgt dar:
+	\subsection{Wahl der Testdaten}
+	\label{sec:grundlagen:beispiel:testdaten}
 
-\begin{enumerate}
-	\item Welcher Professor unterrichtet die meisten Studenten?
-	\item Welcher Student nimmt an den meisten Prüfungen teil?
-	\item Welcher Student ist Tutor und nimmt gleichzeitig an der Prüfung teil?
-	\item Welcher Professor macht die wenigste Aufsicht in Fremdveranstaltungen (Lehrveranstaltungen eines anderen Professors)?
-\end{enumerate}
+	Um den einen Kompromiss für die Komplexität der Testdaten zu finden, werden vier Fragestellungen definiert. Diese
+	Fragen sollen dabei helfen, den Umfang der Testdaten bestimmen zu können. Die Fragen stellen sich wie folgt dar:
+
+	\begin{enumerate}
+		\item Welcher Professor unterrichtet die meisten Studenten?
+		\item Welcher Student nimmt an den meisten Prüfungen teil?
+		\item Welcher Student ist Tutor und nimmt gleichzeitig an der Prüfung teil?
+		\item Welcher Professor macht die wenigste Aufsicht in Fremdveranstaltungen (Lehrveranstaltungen eines anderen
+			Professors)?
+	\end{enumerate}
+
+
+\section{Modellierung der Testdaten in DBUnit}
+
+	\subsection{XML Dataset}
+
+	\lstSetXML
+	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
+<!DOCTYPE dataset SYSTEM "dataset.dtd">
+<dataset>
+  <table name="professor">
+	  <column>ID</column>
+    <column>name</column>
+    <row>
+      <value>1</value>
+      <value>Jürgen Wäsch</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Oliver Haase</value>
+    </row>
+    </table>
+    <table name="lehrveranstaltung">
+    <column>ID</column>
+    <column>professorID</column>
+    <column>name</column>
+    <row>
+      <value>1</value>
+      <value>2</value>
+      <value>Verteilte Systeme</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>2</value>
+      <value>Concurrency and Design Patterns</value>
+    </row>
+  </table>
+	\end{lstlisting}
+
+	\subsection{Java Dataset}
+
+	\lstSetJava
+	\begin{lstlisting}[caption=Java Dataset, label=listing:javadataset]
+DefaultTable professor = new DefaultTable(
+    "professor",
+    new Column[] { 
+      new Column("id", DataType.INTEGER),
+      new Column("name", DataType.VARCHAR),
+		}
+  );
+professor.addRow(new Object[] { 
+    Parameters.Professor.WAESCH_ID,
+    "Jürgen Wäsch" 
+  });
+professor.addRow(new Object[] { 
+    Parameters.Professor.HAASE_ID,
+    "Oliver Haase"
+  });
+dataSet.addTable(professor);
+
+DefaultTable lehrveranstaltung = new DefaultTable(
+    "lehrveranstaltung", 
+    new Column[] {
+      new Column("id", DataType.INTEGER),
+      new Column("professorid", DataType.INTEGER),
+      new Column("name", DataType.VARCHAR), 
+    }
+  );
+lehrveranstaltung.addRow(new Object[] {
+    Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID,
+    Parameters.Professor.HAASE_ID, 
+		"Verteilte Systeme" 
+  });
+lehrveranstaltung.addRow(new Object[] {
+    Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID,
+    Parameters.Professor.HAASE_ID,
+    "Concurrency and Design Patterns" 
+  });
+dataSet.addTable(lehrveranstaltung);
+	\end{lstlisting}
+
+
+	\subsection{SB Testing DSL}
+
+	\begin{lstlisting}[caption=SB Testing Dataset (1), label=listing:sbtestingdataset_old]
+table_Professor
+  .insertRow()
+	   .setId(Parameters.Professor.HAASE_ID)
+     .setName("Oliver Haase")
+	.insertRow()
+    .setId(Parameters.Professor.WAESCH_ID)
+    .setName("Jürgen Wäsch");
+	
+table_Lehrveranstaltung
+  .insertRow()
+    .setId(Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID)
+    .setProfessorId(Parameters.Professor.HAASE_ID)
+    .setName("Verteilte Systeme")
+  .insertRow()
+    .setId(Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID)
+    .setProfessorId(Parameters.Professor.HAASE_ID)
+    .setName("Design Patterns");	
+	\end{lstlisting}
+
+
+\section{Anforderungen an die DSL}
+
+Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschrieben werden. 
+
+
+\subsection{Zielgruppe}
 
 
 
