@@ -74,17 +74,34 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 			Professors)?
 	\end{enumerate}
 
+	\todo{Daten beschreiben}
 
 \section{Modellierung der Testdaten in DBUnit}
 
-	\subsection{XML Dataset}
+	\todo{DBUnit kurz beschreiben (Erweiterung von JUnit)}
 
+	
+
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_model.png}
+		\caption{Modell-Beschreibung}\label{img:example_hochschule_model}
+	\end{figure}
+
+	
+
+
+	\subsection{XML Dataset}
+	
+	Eine Variante, ein Dataset für \textit{DBUnit} zu modellieren stellt XML dar. \textit{DBUnit} biete dazu die Klasse
+	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung} definiert weden.
+	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
 <!DOCTYPE dataset SYSTEM "dataset.dtd">
 <dataset>
-  <table name="professor">
-	  <column>ID</column>
+  <table name="PROFESSOR">
+	  <column>id</column>
     <column>name</column>
     <row>
       <value>1</value>
@@ -94,8 +111,8 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
       <value>2</value>
       <value>Oliver Haase</value>
     </row>
-    </table>
-    <table name="lehrveranstaltung">
+  </table>
+  <table name="LEHRVERANSTALTUNG">
     <column>ID</column>
     <column>professorID</column>
     <column>name</column>
@@ -110,9 +127,38 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
       <value>Concurrency and Design Patterns</value>
     </row>
   </table>
+	...
+</dataset>
 	\end{lstlisting}
+	
+	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass es für XML breites Angebot an Werkzeugen
+	zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
+	
+	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in der 
+	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen \todo{zeilennnummern}) reichen dafür nicht
+	aus. 
+	
+	Das Modellieren von Referenzen ist unübersichtlich und damit fehleranfällig. Primär- und Fremschlüssel müssen von Hand
+	angegeben werden, die Werte tauchen redundant auf und sind ohne Kommentare in umfangreicheren Datasets für Betrachter 
+	nur schwer nachzuvollziehen.
+	
+	
+		
+	Vorteile: XML "`bekannt"' und verbreitet
+	
+	Nachteile: XML Dataset nicht nachträglich änderbar, keine Möglichkeit XML "`inline"' zu definieren,
+	  kaum Werkzeugunterstützung für Referenzen etc, unübersichtlich, teilweise Redunanzen aus M2 (Spalten-Definitinonen)
+		kaum Typsicherheit
+		keine Abstraktion von Referenzen
+
 
 	\subsection{Java Dataset}
+	
+	\todo{Java Dataset}
+	
+	Vorteile ggü XML: dynamisch erstellbar (wenn auch Dataset an sich nicht veränderbar), mehr Typsicherheit, Nutzung von Konstanten möglich
+	
+	Nachteile: Immer noch M2-Anteile, Fehlende Typsicherheit v.a. bei Referenzen (falsche Konstanten möglich, doppelt belegte Konstanten), Modellierung (v.a. bei assoziativen Tabellen) umständlich, Konstanten führen zu gewisser Redundanz, insgesamt unübersichtlicher als XML-Datei 
 
 	\lstSetJava
 	\begin{lstlisting}[caption=Java Dataset, label=listing:javadataset]
@@ -156,7 +202,16 @@ dataSet.addTable(lehrveranstaltung);
 
 
 	\subsection{SB Testing DSL}
+	
+	\todo{SB Testing DSL}
 
+	Generator erzeugt DSL auf Basis von Meta-Daten (M2). 
+	
+	Vorteile: kompaktere Schreibweise, mehr Typsicherheit
+	
+	Nachteile: Referenzen immer noch umständlich, Testdaten wachsen immer noch "`vertikal"'
+
+	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (1), label=listing:sbtestingdataset_old]
 table_Professor
   .insertRow()
@@ -177,6 +232,28 @@ table_Lehrveranstaltung
     .setName("Design Patterns");	
 	\end{lstlisting}
 
+	\lstSetJava
+	\begin{lstlisting}[caption=SB Testing Dataset (2), label=listing:sbtestingdataset]
+RowBuilder_Professor haase = 
+  table_Professor
+    .insertRow()
+      .setName("Oliver Haase");
+RowBuilder_Professor waesch = 
+  table_Professor
+    .insertRow()
+      .setName("Jürgen Wäsch");
+
+RowBuilder_Lehrveranstaltung vsys = 
+  table_Lehrveranstaltung
+    .insertRow()
+      .setName("Verteilte Systeme")
+      .refProfessorId(haase);
+RowBuilder_Lehrveranstaltung design_patterns = 
+  table_Lehrveranstaltung
+    .insertRow()
+      .setName("Design Patterns")
+      .refProfessorId(haase);
+	\end{lstlisting}
 
 \section{Anforderungen an die DSL}
 
