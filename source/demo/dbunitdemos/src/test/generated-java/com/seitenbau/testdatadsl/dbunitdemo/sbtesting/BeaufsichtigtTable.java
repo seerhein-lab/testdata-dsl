@@ -44,8 +44,8 @@ public class BeaufsichtigtTable implements ITable
 
   public static class Columns
   {
-    public static final String ProfessorId = "professorID";
-    public static final String PruefungId = "pruefungID";
+    public static final String ProfessorId = "professor_id";
+    public static final String PruefungId = "pruefung_id";
   }
 
   // @formatter:off
@@ -66,7 +66,7 @@ public class BeaufsichtigtTable implements ITable
 
   ITableMetaData _metaData;
   
-  DBUnitDemoDataSet _dataSet;
+  DBUnitExamplesDataSet _dataSet;
   
   Iterator<RowBuilder_Beaufsichtigt> _iterator;
   
@@ -75,12 +75,12 @@ public class BeaufsichtigtTable implements ITable
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(DBUnitDemoDataSet dataSet)
+  public void setDataset(DBUnitExamplesDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public DBUnitDemoDataSet getDataset()
+  public DBUnitExamplesDataSet getDataset()
   {
     return _dataSet;
   }
@@ -213,10 +213,10 @@ public class BeaufsichtigtTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("professorID") ) {
+      if(column.equals("professor_id") ) {
         return data[0];
       }
-      if(column.equals("pruefungID") ) {
+      if(column.equals("pruefung_id") ) {
         return data[1];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -280,7 +280,7 @@ public class BeaufsichtigtTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with professorID = " + toSearch );
+        throw new RuntimeException("No Row with professor_id = " + toSearch );
       }
       return modifiers;
     }
@@ -298,7 +298,7 @@ public class BeaufsichtigtTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with pruefungID = " + toSearch );
+        throw new RuntimeException("No Row with pruefung_id = " + toSearch );
       }
       return modifiers;
     }

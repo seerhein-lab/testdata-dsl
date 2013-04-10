@@ -44,7 +44,7 @@ public class ProfessorTable implements ITable
 
   public static class Columns
   {
-    public static final String Id = "ID";
+    public static final String Id = "id";
     public static final String Name = "name";
   }
 
@@ -66,7 +66,7 @@ public class ProfessorTable implements ITable
 
   ITableMetaData _metaData;
   
-  DBUnitDemoDataSet _dataSet;
+  DBUnitExamplesDataSet _dataSet;
   
   Iterator<RowBuilder_Professor> _iterator;
   
@@ -75,12 +75,12 @@ public class ProfessorTable implements ITable
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(DBUnitDemoDataSet dataSet)
+  public void setDataset(DBUnitExamplesDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public DBUnitDemoDataSet getDataset()
+  public DBUnitExamplesDataSet getDataset()
   {
     return _dataSet;
   }
@@ -136,7 +136,7 @@ public class ProfessorTable implements ITable
     public RowBuilder_Professor nextId()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
-      Long nextId = generator.nextId(ProfessorTable.NAME,"ID");
+      Long nextId = generator.nextId(ProfessorTable.NAME,"id");
       setId(nextId);
       return this;
     }
@@ -215,7 +215,7 @@ public class ProfessorTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("ID") ) {
+      if(column.equals("id") ) {
         return data[0];
       }
       if(column.equals("name") ) {
@@ -270,7 +270,7 @@ public class ProfessorTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ID = " + toSearch );
+        throw new RuntimeException("No Row with id = " + toSearch );
       }
       return modifiers;
     }

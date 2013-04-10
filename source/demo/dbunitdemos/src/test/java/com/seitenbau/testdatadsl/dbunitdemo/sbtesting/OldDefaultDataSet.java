@@ -2,7 +2,7 @@ package com.seitenbau.testdatadsl.dbunitdemo.sbtesting;
 
 import com.seitenbau.testdatadsl.dbunitdemo.JavaDataSetProvider.Parameters;
 
-public class OldDefaultDataSet extends DBUnitDemoDataSet {
+public class OldDefaultDataSet extends DBUnitExamplesDataSet {
 	@Override
 	protected void initDataSet() {
 		table_Professor

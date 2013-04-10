@@ -44,8 +44,8 @@ public class LehrveranstaltungTable implements ITable
 
   public static class Columns
   {
-    public static final String Id = "ID";
-    public static final String ProfessorId = "professorID";
+    public static final String Id = "id";
+    public static final String ProfessorId = "professor_id";
     public static final String Name = "name";
   }
 
@@ -70,7 +70,7 @@ public class LehrveranstaltungTable implements ITable
 
   ITableMetaData _metaData;
   
-  DBUnitDemoDataSet _dataSet;
+  DBUnitExamplesDataSet _dataSet;
   
   Iterator<RowBuilder_Lehrveranstaltung> _iterator;
   
@@ -79,12 +79,12 @@ public class LehrveranstaltungTable implements ITable
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(DBUnitDemoDataSet dataSet)
+  public void setDataset(DBUnitExamplesDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public DBUnitDemoDataSet getDataset()
+  public DBUnitExamplesDataSet getDataset()
   {
     return _dataSet;
   }
@@ -144,7 +144,7 @@ public class LehrveranstaltungTable implements ITable
     public RowBuilder_Lehrveranstaltung nextId()
     {
       DatasetIdGenerator generator = table.getDataset().getIdGenerator();
-      Long nextId = generator.nextId(LehrveranstaltungTable.NAME,"ID");
+      Long nextId = generator.nextId(LehrveranstaltungTable.NAME,"id");
       setId(nextId);
       return this;
     }
@@ -247,10 +247,10 @@ public class LehrveranstaltungTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("ID") ) {
+      if(column.equals("id") ) {
         return data[0];
       }
-      if(column.equals("professorID") ) {
+      if(column.equals("professor_id") ) {
         return data[1];
       }
       if(column.equals("name") ) {
@@ -312,7 +312,7 @@ public class LehrveranstaltungTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with ID = " + toSearch );
+        throw new RuntimeException("No Row with id = " + toSearch );
       }
       return modifiers;
     }
@@ -330,7 +330,7 @@ public class LehrveranstaltungTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with professorID = " + toSearch );
+        throw new RuntimeException("No Row with professor_id = " + toSearch );
       }
       return modifiers;
     }

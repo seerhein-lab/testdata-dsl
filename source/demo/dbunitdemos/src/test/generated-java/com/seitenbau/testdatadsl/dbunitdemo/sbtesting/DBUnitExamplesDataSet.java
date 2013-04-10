@@ -29,7 +29,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtModel;
 /*********************************************************
   Generated via {@link com.seitenbau.testing.dbunit.generator.DatabaseModel#generate }
 **********************************************************/
-public class DBUnitDemoDataSet
+public class DBUnitExamplesDataSet
              implements com.seitenbau.testing.dbunit.extend.DbUnitDatasetFactory
 {
   Datum _jetzt = DateUtil.datum();
@@ -45,7 +45,7 @@ public class DBUnitDemoDataSet
   public IsttutorTable table_Isttutor = new IsttutorTable();
   public SchreibtTable table_Schreibt = new SchreibtTable();
 
-  public DBUnitDemoDataSet() 
+  public DBUnitExamplesDataSet() 
   {
     table_Professor.setDataset(this);
     table_Lehrveranstaltung.setDataset(this);
@@ -173,18 +173,18 @@ public class DBUnitDemoDataSet
   
   
   /** run the given modifiers on this dataset */
-  public DBUnitDemoDataSet modify(DBUnitDemoDataSetModifier...modifiers) 
+  public DBUnitExamplesDataSet modify(DBUnitExamplesDataSetModifier...modifiers) 
   {
     if(modifiers==null) { return this; }
-    for(DBUnitDemoDataSetModifier modifier : modifiers) 
+    for(DBUnitExamplesDataSetModifier modifier : modifiers) 
     {
       modifier.modify(this);
     }
     return this;
   }
   
-  public static interface DBUnitDemoDataSetModifier {
-    void modify(DBUnitDemoDataSet dataset);
+  public static interface DBUnitExamplesDataSetModifier {
+    void modify(DBUnitExamplesDataSet dataset);
   }
   
   /* ************************************************************ */

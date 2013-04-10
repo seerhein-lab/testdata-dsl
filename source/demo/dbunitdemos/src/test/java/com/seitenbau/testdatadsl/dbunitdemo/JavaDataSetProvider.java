@@ -63,7 +63,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					"lehrveranstaltung", 
 					new Column[] {
 						new Column("id", DataType.INTEGER),
-						new Column("professorid", DataType.INTEGER),
+						new Column("professor_id", DataType.INTEGER),
 						new Column("name", DataType.VARCHAR), 
 					}
 				);
@@ -82,7 +82,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					"pruefung", 
 					new Column[] {
 						new Column("id", DataType.INTEGER),
-						new Column("lehrveranstaltungid", DataType.INTEGER),
+						new Column("lehrveranstaltung_id", DataType.INTEGER),
 						new Column("typ", DataType.VARCHAR), 
 					}
 				);
@@ -110,8 +110,8 @@ public class JavaDataSetProvider implements IDataSetProvider {
 			DefaultTable beaufsichtigt = new DefaultTable(
 					"beaufsichtigt",
 					new Column[] { 
-						new Column("professorid", DataType.INTEGER),
-						new Column("pruefungid", DataType.INTEGER), 
+						new Column("professor_id", DataType.INTEGER),
+						new Column("pruefung_id", DataType.INTEGER), 
 					}	
 				);
 			beaufsichtigt.addRow(new Object[] { Parameters.Professor.HAASE_ID,
@@ -123,8 +123,8 @@ public class JavaDataSetProvider implements IDataSetProvider {
 			DefaultTable schreibt = new DefaultTable(
 					"schreibt", 
 					new Column[] {
-						new Column("studentid", DataType.INTEGER),
-						new Column("pruefungid", DataType.INTEGER),
+						new Column("student_id", DataType.INTEGER),
+						new Column("pruefung_id", DataType.INTEGER),
 					}
 				);
 			schreibt.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
@@ -134,8 +134,8 @@ public class JavaDataSetProvider implements IDataSetProvider {
 			DefaultTable besucht = new DefaultTable(
 					"besucht",
 					new Column[] {
-						new Column("studentid", DataType.INTEGER),
-						new Column("lehrveranstaltungid", DataType.INTEGER), 
+						new Column("student_id", DataType.INTEGER),
+						new Column("lehrveranstaltung_id", DataType.INTEGER), 
 					}
 				);
 			besucht.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
@@ -147,8 +147,8 @@ public class JavaDataSetProvider implements IDataSetProvider {
 			DefaultTable isttutor = new DefaultTable(
 					"isttutor", 
 					new Column[] {
-						new Column("studentid", DataType.INTEGER),
-						new Column("lehrveranstaltungid", DataType.INTEGER), 
+						new Column("student_id", DataType.INTEGER),
+						new Column("lehrveranstaltung_id", DataType.INTEGER), 
 					}
 				);
 			isttutor.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,

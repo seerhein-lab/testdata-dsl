@@ -44,8 +44,8 @@ public class IsttutorTable implements ITable
 
   public static class Columns
   {
-    public static final String StudentId = "studentID";
-    public static final String LehrveranstaltungId = "lehrveranstaltungID";
+    public static final String StudentId = "student_id";
+    public static final String LehrveranstaltungId = "lehrveranstaltung_id";
   }
 
   // @formatter:off
@@ -66,7 +66,7 @@ public class IsttutorTable implements ITable
 
   ITableMetaData _metaData;
   
-  DBUnitDemoDataSet _dataSet;
+  DBUnitExamplesDataSet _dataSet;
   
   Iterator<RowBuilder_Isttutor> _iterator;
   
@@ -75,12 +75,12 @@ public class IsttutorTable implements ITable
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(DBUnitDemoDataSet dataSet)
+  public void setDataset(DBUnitExamplesDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public DBUnitDemoDataSet getDataset()
+  public DBUnitExamplesDataSet getDataset()
   {
     return _dataSet;
   }
@@ -213,10 +213,10 @@ public class IsttutorTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("studentID") ) {
+      if(column.equals("student_id") ) {
         return data[0];
       }
-      if(column.equals("lehrveranstaltungID") ) {
+      if(column.equals("lehrveranstaltung_id") ) {
         return data[1];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -280,7 +280,7 @@ public class IsttutorTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with studentID = " + toSearch );
+        throw new RuntimeException("No Row with student_id = " + toSearch );
       }
       return modifiers;
     }
@@ -298,7 +298,7 @@ public class IsttutorTable implements ITable
         }
       }
       if(modifiers.isEmpty()) {
-        throw new RuntimeException("No Row with lehrveranstaltungID = " + toSearch );
+        throw new RuntimeException("No Row with lehrveranstaltung_id = " + toSearch );
       }
       return modifiers;
     }

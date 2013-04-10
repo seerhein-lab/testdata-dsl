@@ -66,7 +66,7 @@ public class StudentTable implements ITable
 
   ITableMetaData _metaData;
   
-  DBUnitDemoDataSet _dataSet;
+  DBUnitExamplesDataSet _dataSet;
   
   Iterator<RowBuilder_Student> _iterator;
   
@@ -75,12 +75,12 @@ public class StudentTable implements ITable
     _metaData=new DefaultTableMetaData(NAME, COLUMNS);
   }
 
-  public void setDataset(DBUnitDemoDataSet dataSet)
+  public void setDataset(DBUnitExamplesDataSet dataSet)
   {
     _dataSet=dataSet;
   }
   
-  public DBUnitDemoDataSet getDataset()
+  public DBUnitExamplesDataSet getDataset()
   {
     return _dataSet;
   }

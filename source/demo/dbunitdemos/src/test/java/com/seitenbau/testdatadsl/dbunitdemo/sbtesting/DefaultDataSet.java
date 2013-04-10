@@ -5,7 +5,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowBuilder_
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_Pruefung;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student;
 
-public class DefaultDataSet extends DBUnitDemoDataSet {
+public class DefaultDataSet extends DBUnitExamplesDataSet {
 	@Override
 	protected void initDataSet() {
 		RowBuilder_Professor haase = 

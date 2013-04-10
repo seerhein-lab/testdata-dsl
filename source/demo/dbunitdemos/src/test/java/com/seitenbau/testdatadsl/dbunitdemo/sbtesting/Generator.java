@@ -9,38 +9,38 @@ public class Generator {
 	public static void main(String[] args) throws Exception {
 		DatabaseModel db = new DatabaseModel() {
 			{
-				database("DBUnitDemo");
+				database("DBUnitExamples");
 				packageName("com.seitenbau.testdatadsl.dbunitdemo.sbtesting");
 			}
 		};
 
 		Table professoren = db.addTable("professor")
-				.addColumn("ID", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
+				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
 				.addColumn("name", DataType.VARCHAR);
 		Table lehrveranstaltungen = db.addTable("lehrveranstaltung")
-				.addColumn("ID", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
-				.addColumn("professorID", DataType.BIGINT, professoren.ref("ID"))
+				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
+				.addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))
 				.addColumn("name", DataType.VARCHAR);
 		Table pruefungen = db.addTable("pruefung")
-				.addColumn("ID", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
-				.addColumn("lehrveranstaltungID", DataType.BIGINT, lehrveranstaltungen.ref("ID"))
+				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
+				.addColumn("lehrveranstaltung_id", DataType.BIGINT, lehrveranstaltungen.ref("id"))
 				.addColumn("typ", DataType.VARCHAR);
 		Table studenten = db.addTable("student")
 				.addColumn("matrikelnummer", DataType.BIGINT, Flags.AddNextIdMethod)
 				.addColumn("name", DataType.VARCHAR);
 
 		db.addTable("beaufsichtigt")
-				.addColumn("professorID", DataType.BIGINT, professoren.ref("ID"))
-				.addColumn("pruefungID", DataType.BIGINT, pruefungen.ref("ID"));
+				.addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))
+				.addColumn("pruefung_id", DataType.BIGINT, pruefungen.ref("id"));
 		db.addTable("besucht")
-				.addColumn("studentID", DataType.BIGINT, studenten.ref("matrikelnummer"))
-				.addColumn("lehrveranstaltungID", DataType.BIGINT, lehrveranstaltungen.ref("ID"));
+				.addColumn("student_id", DataType.BIGINT, studenten.ref("matrikelnummer"))
+				.addColumn("lehrveranstaltung_id", DataType.BIGINT, lehrveranstaltungen.ref("id"));
 		db.addTable("isttutor")
-				.addColumn("studentID", DataType.BIGINT, studenten.ref("matrikelnummer"))
-				.addColumn("lehrveranstaltungID", DataType.BIGINT, lehrveranstaltungen.ref("ID"));
+				.addColumn("student_id", DataType.BIGINT, studenten.ref("matrikelnummer"))
+				.addColumn("lehrveranstaltung_id", DataType.BIGINT, lehrveranstaltungen.ref("id"));
 		db.addTable("schreibt")
-				.addColumn("studentID", DataType.BIGINT, studenten.ref("matrikelnummer"))
-				.addColumn("pruefungID", DataType.BIGINT, pruefungen.ref("ID"));
+				.addColumn("student_id", DataType.BIGINT, studenten.ref("matrikelnummer"))
+				.addColumn("pruefung_id", DataType.BIGINT, pruefungen.ref("id"));
 
 		db.generate();
 	}

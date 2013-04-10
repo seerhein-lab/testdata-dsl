@@ -15,7 +15,7 @@ import org.dbunit.dataset.IDataSet;
 import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable.RowBuilder_Beaufsichtigt;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowBuilder_Besucht;
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitDemoDataSet;
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitExamplesDataSet;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowBuilder_Isttutor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowBuilder_Lehrveranstaltung;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowBuilder_Professor;
@@ -43,7 +43,7 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 	}
 
 	private IDataSet createDataSet() {
-		final DBUnitDemoDataSet result = new DBUnitDemoDataSet();
+		final DBUnitExamplesDataSet result = new DBUnitExamplesDataSet();
 
 		final DslBinding binding = new DslBinding();
 		try {

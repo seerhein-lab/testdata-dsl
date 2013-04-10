@@ -46,7 +46,7 @@ public class ProfessorModel
   }
   public ProfessorModel nextId()
   {
-    Long nextId = _generator.nextId("professor","ID");
+    Long nextId = _generator.nextId("professor","id");
     setId(nextId);
     return this;
   }

@@ -1,7 +1,7 @@
 <!DOCTYPE dataset SYSTEM "dataset.dtd">
 <dataset>
-    <table name="professor">
-        <column>ID</column>
+    <table name="PROFESSOR">
+        <column>id</column>
         <column>name</column>
         <row>
             <value>1</value>
@@ -12,9 +12,9 @@
             <value>Oliver Haase</value>
         </row>
     </table>
-    <table name="lehrveranstaltung">
-        <column>ID</column>
-        <column>professorID</column>
+    <table name="LEHRVERANSTALTUNG">
+        <column>id</column>
+        <column>professor_id</column>
         <column>name</column>
         <row>
             <value>1</value>
@@ -27,9 +27,9 @@
             <value>Concurrency and Design Patterns</value>
         </row>
     </table>
-    <table name="pruefung">
-        <column>ID</column>
-        <column>lehrveranstaltungID</column>
+    <table name="PRUEFUNG">
+        <column>id</column>
+        <column>lehrveranstaltung_id</column>
         <column>typ</column>
         <row>
             <value>1</value>
@@ -42,7 +42,7 @@
             <value>M30</value>
         </row>
     </table>
-    <table name="student">
+    <table name="STUDENT">
         <column>matrikelnummer</column>
         <column>name</column>
         <row>
@@ -54,9 +54,9 @@
             <value>Max Mustermann</value>
         </row>
     </table>
-    <table name="beaufsichtigt">
-        <column>professorID</column>
-        <column>pruefungID</column>
+    <table name="BEAUFSICHTIGT">
+        <column>professor_id</column>
+        <column>pruefung_id</column>
         <row>
             <value>1</value>
             <value>1</value>
@@ -66,17 +66,17 @@
             <value>2</value>
         </row>
     </table>
-    <table name="schreibt">
-        <column>studentID</column>
-        <column>pruefungID</column>
+    <table name="SCHREIBT">
+        <column>student_id</column>
+        <column>pruefung_id</column>
         <row>
             <value>287336</value>
             <value>1</value>
         </row>
     </table>
-    <table name="besucht">
-        <column>studentID</column>
-        <column>lehrveranstaltungID</column>
+    <table name="BESUCHT">
+        <column>student_id</column>
+        <column>lehrveranstaltung_id</column>
         <row>
             <value>287336</value>
             <value>1</value>
@@ -86,9 +86,9 @@
             <value>2</value>
         </row>
     </table>
-    <table name="isttutor">
-        <column>studentID</column>
-        <column>lehrveranstaltungID</column>
+    <table name="ISTTUTOR">
+        <column>student_id</column>
+        <column>lehrveranstaltung_id</column>
         <row>
             <value>287336</value>
             <value>1</value>

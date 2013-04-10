@@ -48,7 +48,7 @@ public class PruefungModel
   }
   public PruefungModel nextId()
   {
-    Long nextId = _generator.nextId("pruefung","ID");
+    Long nextId = _generator.nextId("pruefung","id");
     setId(nextId);
     return this;
   }

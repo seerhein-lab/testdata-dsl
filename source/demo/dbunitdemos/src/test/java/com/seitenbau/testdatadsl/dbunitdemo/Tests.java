@@ -13,20 +13,22 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovyDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 
 public class Tests {
 	
 	//private static final IDataSetProvider PROVIDER = new XmlDataSetProvider(); 
 	//private static final IDataSetProvider PROVIDER = new JavaDataSetProvider(); 
-	private static final IDataSetProvider PROVIDER = new OldSBTestingDataSetProvider(); 
+	//private static final IDataSetProvider PROVIDER = new OldSBTestingDataSetProvider(); 
 	//private static final IDataSetProvider PROVIDER = new SBTestingDataSetProvider(); 
-	//private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider();
+	private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider();
 
 	protected IDatabaseConnection getConnection() throws Exception {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection jdbcConnection = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/tests", "root", "");
+				"jdbc:mysql://localhost:3306/dbunit_examples", "root", "");
 		return new DatabaseConnection(jdbcConnection);
 	}
 
@@ -46,7 +48,7 @@ public class Tests {
 	public void testVerteilteSysteme() throws Exception {
 		final String query = "SELECT professor.name "
 				+ "FROM professor, lehrveranstaltung "
-				+ "WHERE professor.id = lehrveranstaltung.professorID "
+				+ "WHERE professor.id = lehrveranstaltung.professor_id "
 				+ "  AND lehrveranstaltung.name = 'Verteilte Systeme'";
 
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
@@ -62,7 +64,7 @@ public class Tests {
 				+ "LEFT JOIN "
 				+ "(SELECT professor.id, COUNT(lehrveranstaltung.id) AS Count "
 				+ "FROM professor "
-				+ "LEFT JOIN lehrveranstaltung ON lehrveranstaltung.professorID = professor.id "
+				+ "LEFT JOIN lehrveranstaltung ON lehrveranstaltung.professor_id = professor.id "
 				+ "GROUP BY professor.id) temp ON temp.id = professor.id "
 				+ "ORDER BY lvCnt DESC LIMIT 1; ";
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
@@ -78,7 +80,7 @@ public class Tests {
 				+ "LEFT JOIN "
 				+ "(SELECT professor.id, COUNT(lehrveranstaltung.id) AS Count "
 				+ "FROM professor "
-				+ "LEFT JOIN lehrveranstaltung ON lehrveranstaltung.professorID = professor.id "
+				+ "LEFT JOIN lehrveranstaltung ON lehrveranstaltung.professor_id = professor.id "
 				+ "GROUP BY professor.id) temp ON temp.id = professor.id "
 				+ "ORDER BY lvCnt ASC LIMIT 1; ";
 
@@ -91,13 +93,13 @@ public class Tests {
 	@Test
 	public void testWelcherProfHatDieMeistenStudenten() throws Exception {
 		final String query = "select professor.name from professor, ("
-				+ "select s.professorid, SUM(s.studCount) as studenten "
-				+ "from (select lehrveranstaltung.professorid, ("
+				+ "select s.professor_id, SUM(s.studCount) as studenten "
+				+ "from (select lehrveranstaltung.professor_id, ("
 				+ "select count(*) from besucht "
-				+ "where besucht.lehrveranstaltungid = lehrveranstaltung.id) as studCount "
-				+ "from lehrveranstaltung) s group by s.professorid "
+				+ "where besucht.lehrveranstaltung_id = lehrveranstaltung.id) as studCount "
+				+ "from lehrveranstaltung) s group by s.professor_id "
 				+ "order by studenten desc limit 1) t "
-				+ "where t.professorid = professor.id";
+				+ "where t.professor_id = professor.id";
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
@@ -108,7 +110,7 @@ public class Tests {
 	public void testWelcherStudentHatDieMeistenPruefungen() throws Exception {
 		final String query = "select *, ("
 				+ "select count(*) from schreibt "
-				+ "where schreibt.studentid = student.matrikelnummer) as total "
+				+ "where schreibt.student_id = student.matrikelnummer) as total "
 				+ "from student order by total desc limit 1";
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
@@ -120,13 +122,13 @@ public class Tests {
 	public void testWelcherStudentIstTutorUndSchreibtPruefung()
 			throws Exception {
 		final String query = "select student.name from student, besucht, schreibt, ("
-				+ "select pruefung.id as pruefungid, lehrveranstaltungid "
+				+ "select pruefung.id as pruefung_id, lehrveranstaltung_id "
 				+ "from lehrveranstaltung, pruefung "
-				+ "where pruefung.lehrveranstaltungid = lehrveranstaltung.id) t "
-				+ "where besucht.studentid = schreibt.studentid "
-				+ "and besucht.lehrveranstaltungid = t.lehrveranstaltungid "
-				+ "and schreibt.pruefungid = t.pruefungid "
-				+ "and student.matrikelnummer = schreibt.studentid";
+				+ "where pruefung.lehrveranstaltung_id = lehrveranstaltung.id) t "
+				+ "where besucht.student_id = schreibt.student_id "
+				+ "and besucht.lehrveranstaltung_id = t.lehrveranstaltung_id "
+				+ "and schreibt.pruefung_id = t.pruefung_id "
+				+ "and student.matrikelnummer = schreibt.student_id";
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());

@@ -48,7 +48,7 @@ public class LehrveranstaltungModel
   }
   public LehrveranstaltungModel nextId()
   {
-    Long nextId = _generator.nextId("lehrveranstaltung","ID");
+    Long nextId = _generator.nextId("lehrveranstaltung","id");
     setId(nextId);
     return this;
   }
