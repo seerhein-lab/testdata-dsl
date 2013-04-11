@@ -80,6 +80,18 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 \label{sec:grundlagen:modellierung}
 
 	\todo{Back Door Manipulation}
+	Vorteile Bac Door Manioulation vs Layer Test
+	\begin{itemize}
+		\item schneller, v.a. wenn SUT "`langsam"' ist
+		\item SUT kann Fehler "`verberegen"' (schreibt und liest in falscher Spalte)
+		\item Flexibler, beliebige Zustände implementierbar (auch fehlerhafte)
+		
+	\end{itemize}
+	Nachteile
+	\begin{itemize}
+		\item Plattform-spezifisch
+	\end{itemize}
+	
 
 	DbUnit-Tests basieren durchlaufen im Allgemeinen folgenden Schritte:
 	\begin{itemize}
@@ -290,7 +302,9 @@ RowBuilder_Lehrveranstaltung design_patterns =
       .refProfessorId(haase);
 	\end{lstlisting}
 
-\section{Anforderungen an die DSL}
+\section{Die DSL}
+
+\subsection{Anforderungen an die DSL}
 
 Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschrieben werden. 
 
@@ -298,6 +312,7 @@ Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschriebe
 \begin{itemize}
 	\item Integration in bestehende Tool-Kette
 	\item In Java nutzbar (interne DSL), Dataset soll zur Laufzeit erweiterbar bleiben in selber Syntax
+	\item Zugriff auf Daten aus Java heraus
 	\item "`Meta-Informtionen als Sprachelement"'
 	\item Symbolische Konstanten überflüssig machen
 	\item "`Dekorieren"' von Werten (before(date))
@@ -308,8 +323,9 @@ Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschriebe
 	\item Beziehungen sollen sich einfach und typsicher modellieren lassen
 \end{itemize}
 
-
 \subsection{Zielgruppe}
+
+\subsection{DSL-Entwürfe}
 
 
 
