@@ -77,6 +77,9 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	\todo{Daten beschreiben}
 
 \section{Modellierung der Testdaten in DbUnit}
+\label{sec:grundlagen:modellierung}
+
+	\todo{Back Door Manipulation}
 
 	DbUnit-Tests basieren durchlaufen im Allgemeinen folgenden Schritte:
 	\begin{itemize}
@@ -94,17 +97,12 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 
 	\todo{DbUnit kurz beschreiben (Erweiterung von JUnit)}
 
-	
-
-	\begin{figure}[H]
-		\centering
-		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_model.png}
-		\caption{Modell-Beschreibung}\label{img:example_hochschule_model}
-	\end{figure}
 
 	
 
 	\subsection{XML-Dataset}
+	\label{sec:grundlagen:modellierung:xml}
+
 	
 	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} biete dazu die Klasse
 	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung} definiert weden.
@@ -137,7 +135,7 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
     <row>
       <value>2</value>
       <value>2</value>
-      <value>Concurrency and Design Patterns</value>
+      <value>Design Patterns</value>
     </row>
   </table>
 	...
@@ -161,7 +159,7 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	XML-Datasets nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten, sorgen für ein
 	hohes Maß an Redundanz.
 	
-	Datasets in XML wachsen relativ in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
+	Datasets in XML wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
 	Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 
 	und 26).
 	
@@ -169,6 +167,8 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 
 
 	\subsection{Java-Dataset}
+	\label{sec:grundlagen:modellierung:java}
+
 	
 	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, können Java-Datasets verwendet
 	werden. Diese lassen sich dynamisch erstellen. Java-Datasets lösen einen Teil der Redundanz-Probleme, da symbolische
@@ -222,17 +222,21 @@ dataSet.addTable(lehrveranstaltung);
 	Fremdschlüssel angegeben werden.
 	
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
-	und umfangreiche Datensets werden schnell unübersichtlch. 
+	und umfangreiche Datensets werden schnell unübersichtlch. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
+	nur wenig Vorteile gegenüber den XML-Datasets.
 
 	\subsection{SB Testing DSL}
+	\label{sec:grundlagen:modellierung:sbtesting}
+
 	
 	\todo{SB Testing DSL}
-
 	Generator erzeugt DSL auf Basis von Meta-Daten (M2). 
-	
-	Vorteile: kompaktere Schreibweise, mehr Typsicherheit
-	
-	Nachteile: Referenzen immer noch umständlich, Testdaten wachsen immer noch "`vertikal"'
+
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_model.png}
+		\caption{Modell-Beschreibung}\label{img:example_hochschule_model}
+	\end{figure}
 
 	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (1), label=listing:sbtestingdataset_old]
@@ -255,6 +259,14 @@ table_Lehrveranstaltung
     .setName("Design Patterns");	
 	\end{lstlisting}
 
+	Die SB Testing DSL versucht die Nachteile der Java-Datasets zu umgehen. Die Syntax ist kompakter und dennoch
+	ausdrucksstärker als die beiden vorherigen Varianten. Außerdem können falsche Typen bereits zur Compilierzeit
+	erkannt werden.
+	
+	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar (\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
+	
+	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden (\reflst{listing:sbtestingdataset}).
+	
 	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (2), label=listing:sbtestingdataset]
 RowBuilder_Professor haase = 
@@ -281,6 +293,20 @@ RowBuilder_Lehrveranstaltung design_patterns =
 \section{Anforderungen an die DSL}
 
 Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschrieben werden. 
+
+\todo{Anforderungen}
+\begin{itemize}
+	\item Integration in bestehende Tool-Kette
+	\item In Java nutzbar (interne DSL), Dataset soll zur Laufzeit erweiterbar bleiben in selber Syntax
+	\item "`Meta-Informtionen als Sprachelement"'
+	\item Symbolische Konstanten überflüssig machen
+	\item "`Dekorieren"' von Werten (before(date))
+	\item wenig syntaktischer Ballast
+	\item Typ-Prüfungen zu Compilierzeit
+	\item übersichtliche Darstellung ermöglichen (v.a. vertikal)
+	\item Namensräume/Scopes
+	\item Beziehungen sollen sich einfach und typsicher modellieren lassen
+\end{itemize}
 
 
 \subsection{Zielgruppe}
