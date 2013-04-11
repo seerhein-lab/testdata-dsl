@@ -76,9 +76,23 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 
 	\todo{Daten beschreiben}
 
-\section{Modellierung der Testdaten in DBUnit}
+\section{Modellierung der Testdaten in DbUnit}
 
-	\todo{DBUnit kurz beschreiben (Erweiterung von JUnit)}
+	DbUnit-Tests basieren durchlaufen im Allgemeinen folgenden Schritte:
+	\begin{itemize}
+		\item Dataset aufbauen und in Datenbank einspielen
+		\item Änderung an Datenbank durchführen (zu testende Operation durchführen)
+		\item Zweites Dataset aufbauen, das den neuen Zustand der Datenbank widerspiegelt
+		\item Aktuelle Datenbank mit weitem Dataset vergleichen
+	\end{itemize}
+	
+	Dabei stellt es mitunter ein Problem dar, aus einem bestehenden DbUnit-Dataset ein zweites Dataset zu erzeugen, das
+	die Änderungen an der Datenbank beinhaltet. So gibt es keine Möglichkeit in einem solchen Dataset, eine Zeile zu
+	löschen.
+	
+	
+
+	\todo{DbUnit kurz beschreiben (Erweiterung von JUnit)}
 
 	
 
@@ -90,10 +104,9 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 
 	
 
-
-	\subsection{XML Dataset}
+	\subsection{XML-Dataset}
 	
-	Eine Variante, ein Dataset für \textit{DBUnit} zu modellieren stellt XML dar. \textit{DBUnit} biete dazu die Klasse
+	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} biete dazu die Klasse
 	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung} definiert weden.
 	
 	\lstSetXML
@@ -113,8 +126,8 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
     </row>
   </table>
   <table name="LEHRVERANSTALTUNG">
-    <column>ID</column>
-    <column>professorID</column>
+    <column>id</column>
+    <column>professor_id</column>
     <column>name</column>
     <row>
       <value>1</value>
@@ -135,30 +148,32 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
 	
 	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in der 
-	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen \todo{zeilennnummern}) reichen dafür nicht
-	aus. 
+	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-5 und 16-18) reichen dafür nicht
+	aus. Die Meta-Informationen sind redundnat und erschweren die Pflege.
 	
-	Das Modellieren von Referenzen ist unübersichtlich und damit fehleranfällig. Primär- und Fremschlüssel müssen von Hand
-	angegeben werden, die Werte tauchen redundant auf und sind ohne Kommentare in umfangreicheren Datasets für Betrachter 
-	nur schwer nachzuvollziehen.
+	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
+	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand angegeben werden, die Werte tauchen redundant auf und sind 
+	ohne Kommentare in umfangreicheren Datasets für Betrachter nur schwer nachzuvollziehen. Die Beziehungen werden auf 
+	einer sehr niedrigen Abstraktionsebene ausgedrückt und 
 	
+	Ein großer Nachteil von XML-Datasets ist, dass der erwartete Datenbankzustand selbst wieder den kompletten
+	Datenbankbestand umfassen muss. Eine inkrementelle bzw. differnetielle Definition der erwarteten Änderungen ist über
+	XML-Datasets nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten, sorgen für ein
+	hohes Maß an Redundanz.
 	
-		
-	Vorteile: XML "`bekannt"' und verbreitet
+	Datasets in XML wachsen relativ in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
+	Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 
+	und 26).
 	
-	Nachteile: XML Dataset nicht nachträglich änderbar, keine Möglichkeit XML "`inline"' zu definieren,
-	  kaum Werkzeugunterstützung für Referenzen etc, unübersichtlich, teilweise Redunanzen aus M2 (Spalten-Definitinonen)
-		kaum Typsicherheit
-		keine Abstraktion von Referenzen
+	% Modellieren Assoziativer Tabellen ansprechen?
 
 
-	\subsection{Java Dataset}
+	\subsection{Java-Dataset}
 	
-	\todo{Java Dataset}
-	
-	Vorteile ggü XML: dynamisch erstellbar (wenn auch Dataset an sich nicht veränderbar), mehr Typsicherheit, Nutzung von Konstanten möglich
-	
-	Nachteile: Immer noch M2-Anteile, Fehlende Typsicherheit v.a. bei Referenzen (falsche Konstanten möglich, doppelt belegte Konstanten), Modellierung (v.a. bei assoziativen Tabellen) umständlich, Konstanten führen zu gewisser Redundanz, insgesamt unübersichtlicher als XML-Datei 
+	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, können Java-Datasets verwendet
+	werden. Diese lassen sich dynamisch erstellen. Java-Datasets lösen einen Teil der Redundanz-Probleme, da symbolische
+	Konstanzen anstelle von numerischen verwendet werden können. Das Erzeugen des Datasets, das den erwarteten 
+	Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit weniger Redundanz lösbar.
 
 	\lstSetJava
 	\begin{lstlisting}[caption=Java Dataset, label=listing:javadataset]
@@ -199,7 +214,15 @@ lehrveranstaltung.addRow(new Object[] {
   });
 dataSet.addTable(lehrveranstaltung);
 	\end{lstlisting}
-
+	
+	Diese Umsetzung löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen über die Tabellen
+	odelliert werden. Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst zur Laufzeit erkannt.
+	Der Einsatz von symbolischen Konstanten verringert die Redundanz zwar und erleichtert damit die Pflege des Datasets,
+	dennoch lassen sich Konstanten doppelt belegen und es können auch Primärschlüssel einer falschen Datenbank als
+	Fremdschlüssel angegeben werden.
+	
+	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
+	und umfangreiche Datensets werden schnell unübersichtlch. 
 
 	\subsection{SB Testing DSL}
 	
