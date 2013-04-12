@@ -315,7 +315,8 @@ table_Lehrveranstaltung
 	ausdrucksstärker als die beiden vorherigen Varianten. Außerdem können falsche Typen bereits zur Compilierzeit
 	erkannt werden.
 	
-	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar (\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
+	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar
+	(\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
 	
 	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden 
 	(\reflst{listing:sbtestingdataset}).
@@ -379,15 +380,8 @@ Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschriebe
 \subsection{DSL-Entwürfe}
 
 	\subsubsection{Entwurf 1}
-
-	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
-WAESCH = professor {
-	name			"Wäsch"
-	vorname   "Jürgen"
-	titel     "Prof. Dr.-Ing."
-  fakultaet "Informatik"
-}
 	
+	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
 	name			"Haase"
 	vorname   "Oliver"
@@ -395,6 +389,13 @@ HAASE = professor {
   fakultaet "Informatik"
 }
 
+WAESCH = professor {
+	name			"Wäsch"
+	vorname   "Jürgen"
+	titel     "Prof. Dr.-Ing."
+  fakultaet "Informatik"
+}
+	
 VSYS = lehrveranstaltung {
 	name			"Verteilte Systeme"
 }
@@ -405,36 +406,43 @@ DESIGN_PATTERNS = lehrveranstaltung {
 
 ...
 
-WAESCH beaufsichtigt P_VSYS
 HAASE beaufsichtigt	P_DESIGN_PATTERNS
 HAASE leitet VSYS
 HAASE leitet DESIGN_PATTERNS
+WAESCH beaufsichtigt P_VSYS
 ...
 
 	\end{lstlisting}
+	
+	Gut:
+	- Statt Schlüsseln IDs
+	
+	Schlecht:
+	- viele Zeilen
+	- Beziehungen nicht bei den Daten
 
 
 
 	\subsubsection{Entwurf 2}
 
 	\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
+HAASE = professor {
+	name      "Haase"
+	vorname   "Oliver"
+	titel     "Prof. Dr."
+  fakultaet "Informatik"
+	leitet    VSYS, DESIGN_PATTERNS
+	beaufsichtigt	P_DESIGN_PATTERNS
+}
+
 WAESCH = professor {
-	name			"Wäsch"
+	name      "Wäsch"
 	vorname   "Jürgen"
 	titel     "Prof. Dr.-Ing."
   fakultaet "Informatik"
 	beaufsichtigt	P_VSYS
 }
 	
-HAASE = professor {
-	name			"Haase"
-	vorname   "Oliver"
-	titel     "Prof. Dr."
-  fakultaet "Informatik"
-	beaufsichtigt	P_DESIGN_PATTERNS
-	leitet			VSYS, DESIGN_PATTERNS
-}
-
 VSYS = lehrveranstaltung {
 	name			"Verteilte Systeme"
 }
@@ -445,23 +453,43 @@ DESIGN_PATTERNS = lehrveranstaltung {
 
 ...
 	\end{lstlisting}
+	
+	Besser:
+	- Beziehungen bei den Daten
+	
+	Schlecht:
+	- wächst immer noch sehr schnell vertikal
 
 	\subsubsection{Entwurf 3}
 
 	\lstSetTiny
 	\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
 professor:
-	REF    | name    | vorname  | titel            | fakultaet    | beaufsichtigt     | leitet
-	WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" | P_VSYS            |
-	HAASE  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | P_DESIGN_PATTERNS | VSYS, DESIGN_PATTERNS
+	REF    || name    | vorname  | titel            | fakultaet    | beaufsichtigt     | leitet
+	HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | P_DESIGN_PATTERNS | VSYS, DESIGN_PATTERNS
+	WAESCH || "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" | P_VSYS            |
 	
 lehrveranstaltung:
-	REF             | name
-	VSYS            | "Verteilte Systeme"
-	DESIGN_PATTERNS | "Design Patterns"
+	REF             || name
+	VSYS            || "Verteilte Systeme"
+	DESIGN_PATTERNS || "Design Patterns"
 
 ...
 	\end{lstlisting}
 	\lstSetNotmal
+	
+	Besser:
+	- tabellarsiche Struktur
+	- wächst kaum vertikal
+	- wenig syntaktischer Overhead
+	- Spalten-Editierung mit Block-Bearbeitungsmodus möglich
+	
+	Schlecht:
+	- Tabellenkopf muss u.U. wiederholt werden, um Übersicht zu erhalten
+	- wächst horizontal
+	- optionale Spalten
+	- Entwickler selbst für Übersicht verantwortlich
+	- Eventuell Darstellungsprobleme bei Nutzung von Tabulatoren/Systemen mit unterschiedlichen Tabstopps
+	- Spaltenbreite nur von längstem Wert abhängig (-> Konstanten?)
 
 
