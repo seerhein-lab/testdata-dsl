@@ -5,19 +5,25 @@
 \label{sec:grundlagen:beispiel}
 
 % Beispiel einleiten
-Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden  diese Problemstellung umsetzen und die Testdaten modellieren.  
+Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
+einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden diese
+Problemstellung umsetzen und die Testdaten modellieren.  
 
 	\subsection{Voraussetzungen}
-	\label{sec:grundlagen:beispiel:voaussetzungen}
+	\label{sec:grundlagen:beispiel:voraussetzungen}
 
 	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungen zwischen Entitäten. Dabei soll die
 	Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug
-	sein, um möglichst alle Bezeihungensarten zwischen Entitäten abzudecken.
+	sein, um möglichst alle Beziehungsarten zwischen Entitäten abzudecken.
 
-	Die Testdaten sollten so gewählt werden, dass idealerweise für alle Tests die selben Daten verwendet werden können.
-	Einheitiche Daten sorgen dafür, dass sich der Entwickler (verbessern) nicht bei verschiedenen Tests in unterschiedliche
-	Testdaten hineinversetzten muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
-	Um dem Entwickler entgegen zu kommen, sollte der Umfang der Testdaten nicht größer sein als erforderlich.
+	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen.
+	\textit{Standard Fixture} bedeutet, dass die selben Testdaten für alle Tests verwendet werden 
+	(\cite[317]{XUNIT_TEST_PATTERNS}). Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
+	Dadurch muss sich der Tester für verschiedene Tests nicht in unterschiedliche Daten hineinversetzen.
+	Ein \textit{Minimal Fixture} kann die Laufzeit der Tests verbessern, in dem das Fixture nur Daten enthält, die für den
+	Test notwendig sind (\cite[302]{XUNIT_TEST_PATTERNS}). Da auf unnötige Testdaten verzichtet wird, kann der Tester die 
+	Daten leichter überblicken.
+	
 
 	\subsection{Gewählte Problemstellung}
 	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
@@ -25,27 +31,27 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitäten:
 
 	\begin{itemize}
-		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltugnen.
-		\item \textbf{Lehrveranstaltung}: Eine Lehrveranstaltng wird von einem Professor geleitet. Es kann zu jeder
+		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltungen.
+		\item \textbf{Lehrveranstaltung}: Eine Lehrveranstaltung wird von einem Professor geleitet. Es kann zu jeder
 			Lehrveranstaltung eine Prüfung geben.
-		\item \textbf{Prüfung}: Eine Prüfung ist einer Lehrveranstaltung zugeordnet. Außerdem hat mindestens ein Pofessor
+		\item \textbf{Prüfung}: Eine Prüfung ist einer Lehrveranstaltung zugeordnet. Außerdem hat mindestens ein Professor
 			Aufsicht.
 		\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
-			die Möglichkeit, Tutoren von Lehrveranstaltugen zu sein.
+			die Möglichkeit, Tutoren von Lehrveranstaltungen zu sein.
 	\end{itemize}
 
 	Die Beziehungen der Entitäten stellen sich wie folgt dar: Eine Lehrveranstaltung muss von genau einem Professor
 	geleitet werden, ein Professor kann beliebig viele (also auch keine) Lehrveranstaltungen leiten. Eine Prüfung ist genau
-	einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben (z.B. Nachschreibeprüfung).
+	einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben (z.B. Nachschreibprüfung).
 	Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen Prüfungen
-	Aufsicht haben. Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstalungen von beliebig
-	vielen Studenten besucht werden. Die gleiche Bezeihung gilt für Tutoren: Jeder Student kann bei beliebig vielen
+	Aufsicht haben. Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
+	vielen Studenten besucht werden. Die gleiche Beziehung gilt für Tutoren: Jeder Student kann bei beliebig vielen
 	Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung kann beliebig viele Tutoren haben. Schließlich kann jeder
 	Student auch an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen Anzahl von
 	Studenten geschrieben werden.
 
-	Abbildung \ref{img:example_er} stellt die Problemstellung grafisch dar. Die Abbildung zeigt, dass es keine 1:1
-	Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
+	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms. Sie veranschaulicht,
+	dass es keine 1:1 Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
 
 	\begin{figure}[H]
 		\centering
@@ -79,37 +85,26 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 \section{Modellierung der Testdaten in DbUnit}
 \label{sec:grundlagen:modellierung}
 
-	\todo{Back Door Manipulation}
-	Vorteile Bac Door Manioulation vs Layer Test
-	\begin{itemize}
-		\item schneller, v.a. wenn SUT "`langsam"' ist
-		\item SUT kann Fehler "`verberegen"' (schreibt und liest in falscher Spalte)
-		\item Flexibler, beliebige Zustände implementierbar (auch fehlerhafte)
-		
-	\end{itemize}
-	Nachteile
-	\begin{itemize}
-		\item Plattform-spezifisch
-	\end{itemize}
+	Eine übliche Vorgehensweise, Systeme in Verbindung mit Datenbanken zu testen, stellt \textit{Back Door Manipulation} dar.
+	Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
+	Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
+	verhalten hat, wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen - ebenfalls am zu testenden System vorbei.
+	\cite[327ff]{XUNIT_TEST_PATTERNS}
 	
-
-	DbUnit-Tests basieren durchlaufen im Allgemeinen folgenden Schritte:
-	\begin{itemize}
-		\item Dataset aufbauen und in Datenbank einspielen
-		\item Änderung an Datenbank durchführen (zu testende Operation durchführen)
-		\item Zweites Dataset aufbauen, das den neuen Zustand der Datenbank widerspiegelt
-		\item Aktuelle Datenbank mit weitem Dataset vergleichen
-	\end{itemize}
+	\todo{Grafik Back Door Manipulation}
 	
-	Dabei stellt es mitunter ein Problem dar, aus einem bestehenden DbUnit-Dataset ein zweites Dataset zu erzeugen, das
-	die Änderungen an der Datenbank beinhaltet. So gibt es keine Möglichkeit in einem solchen Dataset, eine Zeile zu
-	löschen.
+	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
+	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
+	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
+	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
+	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig von der Plattform.
 	
+	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei Datasets
+	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus \textit{DbUnit} bieten allerdings
+	nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der Datenbank beinhaltet. 
 	
-
-	\todo{DbUnit kurz beschreiben (Erweiterung von JUnit)}
-
-
+	Im Folgenden werden verschiedene Modellierungsarten für \textit{DbUnit}-Datasets diskutiert. Die Erkenntnisse sollen in die 
+	Anforderungen an die DSL einfließen.
 	
 
 	\subsection{XML-Dataset}
@@ -117,7 +112,9 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 
 	
 	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} biete dazu die Klasse
-	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung} definiert weden.
+	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
+	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung}
+	definiert wedren.
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
@@ -154,12 +151,12 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 </dataset>
 	\end{lstlisting}
 	
-	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass es für XML breites Angebot an Werkzeugen
+	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass für XML ein breites Angebot an Werkzeugen
 	zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
 	
 	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in der 
 	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-5 und 16-18) reichen dafür nicht
-	aus. Die Meta-Informationen sind redundnat und erschweren die Pflege.
+	aus. Die Meta-Informationen sind redundant und erschweren die Pflege.
 	
 	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
 	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand angegeben werden, die Werte tauchen redundant auf und sind 
@@ -167,7 +164,7 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	einer sehr niedrigen Abstraktionsebene ausgedrückt und 
 	
 	Ein großer Nachteil von XML-Datasets ist, dass der erwartete Datenbankzustand selbst wieder den kompletten
-	Datenbankbestand umfassen muss. Eine inkrementelle bzw. differnetielle Definition der erwarteten Änderungen ist über
+	Datenbankbestand umfassen muss. Eine inkrementelle bzw. differentielle Definition der erwarteten Änderungen ist über
 	XML-Datasets nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten, sorgen für ein
 	hohes Maß an Redundanz.
 	
@@ -184,7 +181,7 @@ Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage
 	
 	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, können Java-Datasets verwendet
 	werden. Diese lassen sich dynamisch erstellen. Java-Datasets lösen einen Teil der Redundanz-Probleme, da symbolische
-	Konstanzen anstelle von numerischen verwendet werden können. Das Erzeugen des Datasets, das den erwarteten 
+	Konstanten anstelle von numerischen verwendet werden können. Das Erzeugen des Datasets, das den erwarteten 
 	Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit weniger Redundanz lösbar.
 
 	\lstSetJava
@@ -228,13 +225,13 @@ dataSet.addTable(lehrveranstaltung);
 	\end{lstlisting}
 	
 	Diese Umsetzung löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen über die Tabellen
-	odelliert werden. Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst zur Laufzeit erkannt.
+	modelliert werden. Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst zur Laufzeit erkannt.
 	Der Einsatz von symbolischen Konstanten verringert die Redundanz zwar und erleichtert damit die Pflege des Datasets,
 	dennoch lassen sich Konstanten doppelt belegen und es können auch Primärschlüssel einer falschen Datenbank als
 	Fremdschlüssel angegeben werden.
 	
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
-	und umfangreiche Datensets werden schnell unübersichtlch. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
+	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
 	nur wenig Vorteile gegenüber den XML-Datasets.
 
 	\subsection{SB Testing DSL}
@@ -277,7 +274,8 @@ table_Lehrveranstaltung
 	
 	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar (\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
 	
-	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden (\reflst{listing:sbtestingdataset}).
+	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden 
+	(\reflst{listing:sbtestingdataset}).
 	
 	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (2), label=listing:sbtestingdataset]
