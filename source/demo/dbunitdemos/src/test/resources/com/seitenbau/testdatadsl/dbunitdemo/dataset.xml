@@ -3,55 +3,85 @@
     <table name="PROFESSOR">
         <column>id</column>
         <column>name</column>
+        <column>vorname</column>
+        <column>titel</column>
+        <column>fakultaet</column>
         <row>
             <value>1</value>
-            <value>Jürgen Wäsch</value>
+            <value>Wäsch</value>
+            <value>Jürgen</value>
+            <value>Prof. Dr.-Ing.</value>
+            <value>Informatik</value>
         </row>
         <row>
             <value>2</value>
-            <value>Oliver Haase</value>
+            <value>Haase</value>
+            <value>Oliver</value>
+            <value>Prof. Dr.</value>
+            <value>Informatik</value>
         </row>
     </table>
     <table name="LEHRVERANSTALTUNG">
         <column>id</column>
         <column>professor_id</column>
         <column>name</column>
+        <column>sws</column>
+        <column>ects</column>
         <row>
             <value>1</value>
             <value>2</value>
             <value>Verteilte Systeme</value>
+            <value>4</value>
+            <value>5</value>
         </row>
         <row>
             <value>2</value>
             <value>2</value>
-            <value>Concurrency and Design Patterns</value>
+            <value>Design Patterns</value>
+            <value>4</value>
+            <value>3</value>
         </row>
     </table>
     <table name="PRUEFUNG">
         <column>id</column>
         <column>lehrveranstaltung_id</column>
         <column>typ</column>
+        <column>zeitpunkt</column>
         <row>
             <value>1</value>
             <value>1</value>
             <value>K90</value>
+            <value>2013-04-01 14:00:00</value>
         </row>
         <row>
             <value>2</value>
             <value>2</value>
             <value>M30</value>
+            <value>2013-01-06 12:00:00</value>
         </row>
     </table>
     <table name="STUDENT">
         <column>matrikelnummer</column>
         <column>name</column>
+        <column>vorname</column>
+        <column>studiengang</column>
+        <column>semester</column>
+        <column>immatrikuliert_seit</column>
         <row>
             <value>287336</value>
-            <value>Nikolaus Moll</value>
+            <value>Moll</value>
+            <value>Nikolaus</value>
+            <value>MSI</value>
+            <value>4</value>
+            <value>2011-09-01</value>
         </row>
         <row>
             <value>123456</value>
-            <value>Max Mustermann</value>
+            <value>Mustermann</value>
+            <value>Max</value>
+            <value>BIT</value>
+            <value>3</value>
+            <value>2012-03-01</value>
         </row>
     </table>
     <table name="BEAUFSICHTIGT">

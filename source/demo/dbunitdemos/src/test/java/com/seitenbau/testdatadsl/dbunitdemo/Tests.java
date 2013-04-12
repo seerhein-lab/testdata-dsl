@@ -54,7 +54,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Oliver Haase", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Haase", actualJoinData.getValue(0, "name").toString());
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Oliver Haase", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Haase", actualJoinData.getValue(0, "name").toString());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Jürgen Wäsch", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Wäsch", actualJoinData.getValue(0, "name").toString());
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Oliver Haase", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Haase", actualJoinData.getValue(0, "name").toString());
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Nikolaus Moll", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Moll", actualJoinData.getValue(0, "name").toString());
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class Tests {
 		ITable actualJoinData = getConnection().createQueryTable("RESULT",
 				query);
 		Assert.assertEquals(1, actualJoinData.getRowCount());
-		Assert.assertEquals("Nikolaus Moll", actualJoinData.getValue(0, "name").toString());
+		Assert.assertEquals("Moll", actualJoinData.getValue(0, "name").toString());
 	}
 
 }

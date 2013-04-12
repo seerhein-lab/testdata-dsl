@@ -16,18 +16,28 @@ public class Generator {
 
 		Table professoren = db.addTable("professor")
 				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
-				.addColumn("name", DataType.VARCHAR);
+				.addColumn("name", DataType.VARCHAR)
+				.addColumn("vorname", DataType.VARCHAR)
+				.addColumn("titel", DataType.VARCHAR)
+				.addColumn("fakultaet", DataType.VARCHAR);
 		Table lehrveranstaltungen = db.addTable("lehrveranstaltung")
 				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
 				.addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))
-				.addColumn("name", DataType.VARCHAR);
+				.addColumn("name", DataType.VARCHAR)
+				.addColumn("sws", DataType.INTEGER)
+				.addColumn("ects", DataType.INTEGER);
 		Table pruefungen = db.addTable("pruefung")
 				.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
 				.addColumn("lehrveranstaltung_id", DataType.BIGINT, lehrveranstaltungen.ref("id"))
-				.addColumn("typ", DataType.VARCHAR);
+				.addColumn("typ", DataType.VARCHAR)
+				.addColumn("zeitpunkt", DataType.DATE);
 		Table studenten = db.addTable("student")
 				.addColumn("matrikelnummer", DataType.BIGINT, Flags.AddNextIdMethod)
-				.addColumn("name", DataType.VARCHAR);
+				.addColumn("name", DataType.VARCHAR)
+				.addColumn("vorname", DataType.VARCHAR)
+				.addColumn("studiengang", DataType.VARCHAR)
+				.addColumn("semester", DataType.INTEGER)
+				.addColumn("immatrikuliert_seit", DataType.DATE);
 
 		db.addTable("beaufsichtigt")
 				.addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))

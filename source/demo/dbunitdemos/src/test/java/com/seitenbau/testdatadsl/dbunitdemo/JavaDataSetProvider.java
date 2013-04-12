@@ -1,5 +1,7 @@
 package com.seitenbau.testdatadsl.dbunitdemo;
 
+import java.text.SimpleDateFormat;
+
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultDataSet;
@@ -40,6 +42,8 @@ public class JavaDataSetProvider implements IDataSetProvider {
 
 	public IDataSet createDataSet() {
 		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
+			
 			DefaultDataSet dataSet = new DefaultDataSet();
 
 			DefaultTable professor = new DefaultTable(
@@ -47,15 +51,24 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					new Column[] { 
 						new Column("id", DataType.INTEGER),
 						new Column("name", DataType.VARCHAR), 
+						new Column("vorname", DataType.VARCHAR), 
+						new Column("titel", DataType.VARCHAR), 
+						new Column("fakultaet", DataType.VARCHAR), 
 					}
 				);
 			professor.addRow(new Object[] { 
 						Parameters.Professor.WAESCH_ID,
-						"Jürgen Wäsch" 
+						"Wäsch",
+						"Jürgen",
+						"Prof. Dr.-Ing.",
+						"Informatik",
 					});
 			professor.addRow(new Object[] { 
 						Parameters.Professor.HAASE_ID,
-						"Oliver Haase"
+						"Haase",
+						"Oliver",
+						"Prof. Dr.",
+						"Informatik",
 					});
 			dataSet.addTable(professor);
 
@@ -65,16 +78,23 @@ public class JavaDataSetProvider implements IDataSetProvider {
 						new Column("id", DataType.INTEGER),
 						new Column("professor_id", DataType.INTEGER),
 						new Column("name", DataType.VARCHAR), 
+						new Column("sws", DataType.INTEGER),
+						new Column("ects", DataType.INTEGER),
 					}
 				);
 			lehrveranstaltung.addRow(new Object[] {
 						Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID,
-						Parameters.Professor.HAASE_ID, "Verteilte Systeme" 
+						Parameters.Professor.HAASE_ID, 
+						"Verteilte Systeme",
+						4,
+						5,
 					});
 			lehrveranstaltung.addRow(new Object[] {
 						Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID,
 						Parameters.Professor.HAASE_ID,
-						"Concurrency and Design Patterns" 
+						"Concurrency and Design Patterns",
+						4,
+						3,
 					});
 			dataSet.addTable(lehrveranstaltung);
 
@@ -84,14 +104,21 @@ public class JavaDataSetProvider implements IDataSetProvider {
 						new Column("id", DataType.INTEGER),
 						new Column("lehrveranstaltung_id", DataType.INTEGER),
 						new Column("typ", DataType.VARCHAR), 
+						new Column("zeitpunkt", DataType.DATE), 
 					}
 				);
 			pruefung.addRow(new Object[] {
 					Parameters.Pruefung.VERTEILTE_SYSTEME_ID,
-					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID, "K90" });
+					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID, 
+					"K90",
+					dateFormat.parse("01.04.2013 14:00:00"),
+				});
 			pruefung.addRow(new Object[] {
 					Parameters.Pruefung.DESIGN_PATTERNS_ID,
-					Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID, "M30" });
+					Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID, 
+					"M30",
+					dateFormat.parse("06.01.2013 12:00:00"),
+				});
 			dataSet.addTable(pruefung);
 
 			DefaultTable student = new DefaultTable(
@@ -99,12 +126,31 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					new Column[] {
 						new Column("matrikelnummer", DataType.INTEGER),
 						new Column("name", DataType.VARCHAR), 
+						new Column("vorname", DataType.VARCHAR), 
+						new Column("studiengang", DataType.VARCHAR), 
+						new Column("semester", DataType.INTEGER), 
+						new Column("immatrikuliert_seit", DataType.DATE), 
 					}
 				);
-			student.addRow(new Object[] { Parameters.Student.NIKOLAUS_MOLL_ID,
-					"Nikolaus Moll" });
-			student.addRow(new Object[] { Parameters.Student.MAX_MUSTERMANN_ID,
-					"Max Mustermann" });
+			
+			//dateFormat.parse("01.04.2013 14:00:00"),
+			
+			student.addRow(new Object[] { 
+					Parameters.Student.NIKOLAUS_MOLL_ID,
+					"Moll",
+					"Nikolaus",
+					"MSI",
+					4,
+					dateFormat.parse("01.09.2011 00:00:00"),
+				});
+			student.addRow(new Object[] {
+					Parameters.Student.MAX_MUSTERMANN_ID,
+					"Mustermann",
+					"Max",
+					"BIT",
+					"3",
+					dateFormat.parse("01.03.2012 00:00:00"),
+				});
 			dataSet.addTable(student);
 
 			DefaultTable beaufsichtigt = new DefaultTable(
@@ -175,7 +221,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 		// sut.deleteProfByName("Haase");
 		//
 		// dataSetBuilder.professor.findWhere.name("Haase").delete();
-		//
+		//	
 		// assertDatabase(dataSetBuilder.build());
 	}
 

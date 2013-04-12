@@ -16,6 +16,8 @@ public class PruefungModel
   protected java.lang.Object lehrveranstaltungId;
   /** actual type : java.lang.String */
   protected java.lang.Object typ;
+  /** actual type : java.util.Date */
+  protected java.lang.Object zeitpunkt;
 
   DatasetIdGenerator _generator;
   public void setIdGenerator(DatasetIdGenerator generator) 
@@ -92,6 +94,34 @@ public class PruefungModel
   public java.lang.Object getTypRaw()
   {
     return typ;
+  }
+  public PruefungModel setZeitpunkt(String dateString)
+  {
+    zeitpunkt = DateUtil.asDate(dateString);
+    return this;
+  }
+  public PruefungModel setZeitpunkt(Datum datum)
+  {
+    zeitpunkt = datum.asDate();
+    return this;
+  }
+  public PruefungModel setZeitpunkt(java.util.Date value)
+  {
+    zeitpunkt = value;
+    return this;
+  }
+  public PruefungModel setZeitpunktRaw(Object value)
+  {
+    zeitpunkt =  value;
+    return this;
+  }
+  public java.util.Date getZeitpunkt()
+  {
+    return (java.util.Date)  zeitpunkt;
+  }
+  public java.lang.Object getZeitpunktRaw()
+  {
+    return zeitpunkt;
   }
  
 }

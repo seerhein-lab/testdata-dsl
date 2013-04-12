@@ -47,6 +47,7 @@ public class PruefungTable implements ITable
     public static final String Id = "id";
     public static final String LehrveranstaltungId = "lehrveranstaltung_id";
     public static final String Typ = "typ";
+    public static final String Zeitpunkt = "zeitpunkt";
   }
 
   // @formatter:off
@@ -56,7 +57,9 @@ public class PruefungTable implements ITable
     // idx = 1
     new Column(Columns.LehrveranstaltungId, DataType.BIGINT),
     // idx = 2
-    new Column(Columns.Typ, DataType.VARCHAR)
+    new Column(Columns.Typ, DataType.VARCHAR),
+    // idx = 3
+    new Column(Columns.Zeitpunkt, DataType.DATE)
   };
 
   static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
@@ -65,6 +68,7 @@ public class PruefungTable implements ITable
     GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
     GENERATOR_METADATA.put(Columns.LehrveranstaltungId,EnumSet.noneOf( Flags.class ));
     GENERATOR_METADATA.put(Columns.Typ,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Zeitpunkt,EnumSet.noneOf( Flags.class ));
   }
   // @formatter:on
 
@@ -102,6 +106,10 @@ public class PruefungTable implements ITable
     T setLehrveranstaltungIdRaw(Object value);
     T setTyp(java.lang.String value);
     T setTypRaw(Object value);
+    T setZeitpunkt(String dateString);
+    T setZeitpunkt(Datum datum);
+    T setZeitpunkt(java.util.Date value);
+    T setZeitpunktRaw(Object value);
      
   }
   
@@ -110,6 +118,7 @@ public class PruefungTable implements ITable
     java.lang.Long getId();
     java.lang.Long getLehrveranstaltungId();
     java.lang.String getTyp();
+    java.util.Date getZeitpunkt();
      
   }
 
@@ -190,6 +199,32 @@ public class PruefungTable implements ITable
     {
       return (java.lang.String) data[2];
     }
+
+    public RowBuilder_Pruefung setZeitpunkt(String dateString)
+    {
+      data[ 3 ] = toDate(dateString);
+      return this;
+    }
+    public RowBuilder_Pruefung setZeitpunkt(Datum datum)
+    {
+      data[ 3 ] = toDate(datum);
+      return this;
+    }
+    public RowBuilder_Pruefung setZeitpunkt(java.util.Date value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+    public RowBuilder_Pruefung setZeitpunktRaw(Object value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+
+    public java.util.Date getZeitpunkt()
+    {
+      return (java.util.Date) data[3];
+    }
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
@@ -197,6 +232,7 @@ public class PruefungTable implements ITable
     *   .setId( null )
     *   .setLehrveranstaltungId( null )
     *   .setTyp( null )
+    *   .setZeitpunkt( null )
     *   ;
     * </pre></code>
     */
@@ -212,6 +248,7 @@ public class PruefungTable implements ITable
     *   .setId( null )
     *   .setLehrveranstaltungId( null )
     *   .setTyp( null )
+    *   .setZeitpunkt( null )
     *   ;
     * </pre></code>
     */
@@ -227,6 +264,7 @@ public class PruefungTable implements ITable
     *   .setId( null )
     *   .setLehrveranstaltungId( null )
     *   .setTyp( null )
+    *   .setZeitpunkt( null )
     *   ;
     * </pre></code>
     */
@@ -256,6 +294,9 @@ public class PruefungTable implements ITable
       if(column.equals("typ") ) {
         return data[2];
       }
+      if(column.equals("zeitpunkt") ) {
+        return data[3];
+      }
       throw new RuntimeException(NAME + " col = " + column);
     }
     
@@ -272,6 +313,7 @@ public class PruefungTable implements ITable
       clone.setId(getId());
       clone.setLehrveranstaltungId(getLehrveranstaltungId());
       clone.setTyp(getTyp());
+      clone.setZeitpunkt(getZeitpunkt());
       return clone;
     }
   }
@@ -349,6 +391,20 @@ public class PruefungTable implements ITable
       }
       if(modifiers.isEmpty()) {
         throw new RuntimeException("No Row with typ = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Pruefung zeitpunkt(java.util.Date toSearch) {
+      RowCollection_Pruefung modifiers = new RowCollection_Pruefung(table);
+      for (RowBuilder_Pruefung row : rows) 
+      {
+        if (row.getZeitpunkt().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with zeitpunkt = " + toSearch );
       }
       return modifiers;
     }
@@ -461,6 +517,42 @@ public class PruefungTable implements ITable
         }
         return _rows.get(0).getTyp();
       }
+
+      public RowModify_Pruefung setZeitpunkt(String dateString)
+      {
+        for(RowBuilder_Pruefung row : _rows) {
+          row.setZeitpunkt(dateString);
+        }
+        return this;
+      }
+      public RowModify_Pruefung setZeitpunkt(Datum datum)
+      {
+        for(RowBuilder_Pruefung row : _rows) {
+          row.setZeitpunkt(datum);
+        }
+        return this;
+      }
+      public RowModify_Pruefung setZeitpunkt(java.util.Date value)
+      {
+        for(RowBuilder_Pruefung row : _rows) {
+          row.setZeitpunkt(value);
+        }
+        return this;
+      }
+      public RowModify_Pruefung setZeitpunktRaw(Object value)
+      {
+        for(RowBuilder_Pruefung row : _rows) {
+          row.setZeitpunktRaw(value);
+        }
+        return this;
+      }
+      public java.util.Date getZeitpunkt()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getZeitpunkt();
+      }
       public Object getValue(String column)
       {
         if(_rows.size()!=1) {
@@ -505,6 +597,7 @@ public class PruefungTable implements ITable
   *   .setId( null )
   *   .setLehrveranstaltungId( null )
   *   .setTyp( null )
+  *   .setZeitpunkt( null )
   *   ;
   * </pre></code>
   */
@@ -527,6 +620,7 @@ public class PruefungTable implements ITable
     row.setIdRaw( rowToAdd.getIdRaw() );
     row.setLehrveranstaltungIdRaw( rowToAdd.getLehrveranstaltungIdRaw() );
     row.setTypRaw( rowToAdd.getTypRaw() );
+    row.setZeitpunktRaw( rowToAdd.getZeitpunktRaw() );
     rows.add(row);
     return row;
   }

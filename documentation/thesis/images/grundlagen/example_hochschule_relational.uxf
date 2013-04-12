@@ -7,13 +7,16 @@
       <x>11</x>
       <y>121</y>
       <w>198</w>
-      <h>88</h>
+      <h>143</h>
     </coordinates>
     <panel_attributes>&lt;&lt;table&gt;&gt;
 *PROFESSOR*
 --
 id &lt;&lt;PK&gt;&gt;
-name : varchar</panel_attributes>
+name : varchar
+vorname : varchar
+titel : varchar
+fakultaet : varchar</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -38,15 +41,15 @@ ects : int</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>77</x>
-      <y>176</y>
+      <y>231</y>
       <w>54</w>
-      <h>340</h>
+      <h>285</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=    1
 </panel_attributes>
-    <additional_attributes>33;319;33;33</additional_attributes>
+    <additional_attributes>33;264;33;33</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
@@ -54,7 +57,7 @@ m2=    1
       <x>627</x>
       <y>121</y>
       <w>198</w>
-      <h>110</h>
+      <h>121</h>
     </coordinates>
     <panel_attributes>&lt;&lt;table&gt;&gt;
 *PRUEFUNG*
@@ -62,6 +65,7 @@ m2=    1
 id &lt;&lt;PK&gt;&gt;
 lehrveranstalung_id &lt;&lt;FK&gt;&gt;
 typ : varchar
+zeitpunkt: date
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -103,13 +107,17 @@ pruefung_id &lt;&lt;FK&gt;&gt;
       <x>627</x>
       <y>495</y>
       <w>198</w>
-      <h>121</h>
+      <h>165</h>
     </coordinates>
     <panel_attributes>&lt;&lt;table&gt;&gt;
 *STUDENT*
 --
 matrikelnummer &lt;&lt;PK&gt;&gt;
-name : varchar</panel_attributes>
+name : varchar
+vorname : varchar
+studiengang: varchar
+semester : int
+immatrukuliert_seit: date</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -148,14 +156,14 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>176</x>
-      <y>198</y>
+      <y>209</y>
       <w>472</w>
-      <h>318</h>
+      <h>307</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=  1</panel_attributes>
-    <additional_attributes>451;33;33;297</additional_attributes>
+    <additional_attributes>451;33;33;286</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
@@ -187,15 +195,15 @@ m2=1..*</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>693</x>
-      <y>198</y>
+      <y>209</y>
       <w>54</w>
-      <h>142</h>
+      <h>131</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=   1
 m2=    0..*
 </panel_attributes>
-    <additional_attributes>33;33;33;121</additional_attributes>
+    <additional_attributes>33;33;33;110</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>

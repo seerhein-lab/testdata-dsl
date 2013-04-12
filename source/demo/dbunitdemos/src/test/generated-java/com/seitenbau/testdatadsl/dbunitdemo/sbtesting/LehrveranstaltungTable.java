@@ -47,6 +47,8 @@ public class LehrveranstaltungTable implements ITable
     public static final String Id = "id";
     public static final String ProfessorId = "professor_id";
     public static final String Name = "name";
+    public static final String Sws = "sws";
+    public static final String Ects = "ects";
   }
 
   // @formatter:off
@@ -56,7 +58,11 @@ public class LehrveranstaltungTable implements ITable
     // idx = 1
     new Column(Columns.ProfessorId, DataType.BIGINT),
     // idx = 2
-    new Column(Columns.Name, DataType.VARCHAR)
+    new Column(Columns.Name, DataType.VARCHAR),
+    // idx = 3
+    new Column(Columns.Sws, DataType.INTEGER),
+    // idx = 4
+    new Column(Columns.Ects, DataType.INTEGER)
   };
 
   static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
@@ -65,6 +71,8 @@ public class LehrveranstaltungTable implements ITable
     GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
     GENERATOR_METADATA.put(Columns.ProfessorId,EnumSet.noneOf( Flags.class ));
     GENERATOR_METADATA.put(Columns.Name,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Sws,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Ects,EnumSet.noneOf( Flags.class ));
   }
   // @formatter:on
 
@@ -102,6 +110,10 @@ public class LehrveranstaltungTable implements ITable
     T setProfessorIdRaw(Object value);
     T setName(java.lang.String value);
     T setNameRaw(Object value);
+    T setSws(java.lang.Integer value);
+    T setSwsRaw(Object value);
+    T setEcts(java.lang.Integer value);
+    T setEctsRaw(Object value);
      
   }
   
@@ -110,6 +122,8 @@ public class LehrveranstaltungTable implements ITable
     java.lang.Long getId();
     java.lang.Long getProfessorId();
     java.lang.String getName();
+    java.lang.Integer getSws();
+    java.lang.Integer getEcts();
      
   }
 
@@ -190,6 +204,38 @@ public class LehrveranstaltungTable implements ITable
     {
       return (java.lang.String) data[2];
     }
+
+    public RowBuilder_Lehrveranstaltung setSws(java.lang.Integer value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+    public RowBuilder_Lehrveranstaltung setSwsRaw(Object value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+
+    public java.lang.Integer getSws()
+    {
+      return (java.lang.Integer) data[3];
+    }
+
+    public RowBuilder_Lehrveranstaltung setEcts(java.lang.Integer value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+    public RowBuilder_Lehrveranstaltung setEctsRaw(Object value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+
+    public java.lang.Integer getEcts()
+    {
+      return (java.lang.Integer) data[4];
+    }
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
@@ -197,6 +243,8 @@ public class LehrveranstaltungTable implements ITable
     *   .setId( null )
     *   .setProfessorId( null )
     *   .setName( null )
+    *   .setSws( null )
+    *   .setEcts( null )
     *   ;
     * </pre></code>
     */
@@ -212,6 +260,8 @@ public class LehrveranstaltungTable implements ITable
     *   .setId( null )
     *   .setProfessorId( null )
     *   .setName( null )
+    *   .setSws( null )
+    *   .setEcts( null )
     *   ;
     * </pre></code>
     */
@@ -227,6 +277,8 @@ public class LehrveranstaltungTable implements ITable
     *   .setId( null )
     *   .setProfessorId( null )
     *   .setName( null )
+    *   .setSws( null )
+    *   .setEcts( null )
     *   ;
     * </pre></code>
     */
@@ -256,6 +308,12 @@ public class LehrveranstaltungTable implements ITable
       if(column.equals("name") ) {
         return data[2];
       }
+      if(column.equals("sws") ) {
+        return data[3];
+      }
+      if(column.equals("ects") ) {
+        return data[4];
+      }
       throw new RuntimeException(NAME + " col = " + column);
     }
     
@@ -272,6 +330,8 @@ public class LehrveranstaltungTable implements ITable
       clone.setId(getId());
       clone.setProfessorId(getProfessorId());
       clone.setName(getName());
+      clone.setSws(getSws());
+      clone.setEcts(getEcts());
       return clone;
     }
   }
@@ -349,6 +409,34 @@ public class LehrveranstaltungTable implements ITable
       }
       if(modifiers.isEmpty()) {
         throw new RuntimeException("No Row with name = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Lehrveranstaltung sws(java.lang.Integer toSearch) {
+      RowCollection_Lehrveranstaltung modifiers = new RowCollection_Lehrveranstaltung(table);
+      for (RowBuilder_Lehrveranstaltung row : rows) 
+      {
+        if (row.getSws().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with sws = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Lehrveranstaltung ects(java.lang.Integer toSearch) {
+      RowCollection_Lehrveranstaltung modifiers = new RowCollection_Lehrveranstaltung(table);
+      for (RowBuilder_Lehrveranstaltung row : rows) 
+      {
+        if (row.getEcts().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with ects = " + toSearch );
       }
       return modifiers;
     }
@@ -461,6 +549,50 @@ public class LehrveranstaltungTable implements ITable
         }
         return _rows.get(0).getName();
       }
+
+      public RowModify_Lehrveranstaltung setSws(java.lang.Integer value)
+      {
+        for(RowBuilder_Lehrveranstaltung row : _rows) {
+          row.setSws(value);
+        }
+        return this;
+      }
+      public RowModify_Lehrveranstaltung setSwsRaw(Object value)
+      {
+        for(RowBuilder_Lehrveranstaltung row : _rows) {
+          row.setSwsRaw(value);
+        }
+        return this;
+      }
+      public java.lang.Integer getSws()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getSws();
+      }
+
+      public RowModify_Lehrveranstaltung setEcts(java.lang.Integer value)
+      {
+        for(RowBuilder_Lehrveranstaltung row : _rows) {
+          row.setEcts(value);
+        }
+        return this;
+      }
+      public RowModify_Lehrveranstaltung setEctsRaw(Object value)
+      {
+        for(RowBuilder_Lehrveranstaltung row : _rows) {
+          row.setEctsRaw(value);
+        }
+        return this;
+      }
+      public java.lang.Integer getEcts()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getEcts();
+      }
       public Object getValue(String column)
       {
         if(_rows.size()!=1) {
@@ -505,6 +637,8 @@ public class LehrveranstaltungTable implements ITable
   *   .setId( null )
   *   .setProfessorId( null )
   *   .setName( null )
+  *   .setSws( null )
+  *   .setEcts( null )
   *   ;
   * </pre></code>
   */
@@ -527,6 +661,8 @@ public class LehrveranstaltungTable implements ITable
     row.setIdRaw( rowToAdd.getIdRaw() );
     row.setProfessorIdRaw( rowToAdd.getProfessorIdRaw() );
     row.setNameRaw( rowToAdd.getNameRaw() );
+    row.setSwsRaw( rowToAdd.getSwsRaw() );
+    row.setEctsRaw( rowToAdd.getEctsRaw() );
     rows.add(row);
     return row;
   }

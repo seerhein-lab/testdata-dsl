@@ -1,35 +1,51 @@
 WAESCH = professor {
-	name			"Jürgen Wäsch"
+	name            "Wäsch"
+	vorname			"Jürgen"
+	titel           "Prof. Dr.-Ing."
+	fakultaet       "Informatik"	
 	beaufsichtigt	P_VSYS
 }
 	
 HAASE = professor {
-	name			"Oliver Haase"
+	name			"Haase"
+	vorname         "Oliver"
+	titel           "Prof. Dr."
+	fakultaet       "Informatik"	
 	beaufsichtigt	P_DESIGN_PATTERNS
 	leitet			VSYS, DESIGN_PATTERNS
 }
 
 VSYS = lehrveranstaltung {
 	name			"Verteilte Systeme"
+	sws             4
+	ects            5
 }
 	
 DESIGN_PATTERNS = lehrveranstaltung {
 	name 			"Concurrency and Design Patterns"
+	sws             4
+	ects            3
 }
 
 P_VSYS = pruefung {
 	typ 			"K90"
+	zeitpunkt       "01.04.2013 14:00:00"
 	prueftStoffVon	VSYS
 }
 
 P_DESIGN_PATTERNS = pruefung {
 	typ 			"M30"
+	zeitpunkt       "06.01.2013 12:00:00"
 	prueftStoffVon	DESIGN_PATTERNS
 }	
 
 MOLL = student {
 	matrikelnummer	287336
-	name			"Nikolaus Moll"
+	name			"Moll"
+	vorname         "Nikolaus"
+	studiengang     "MSI"
+	semester        4
+	immatrikuliert_seit "01.09.2011 00:00:00"
 	schreibt		P_VSYS
 	besucht			VSYS
 	isttutor		VSYS
@@ -37,6 +53,10 @@ MOLL = student {
 
 MUSTERMANN = student {
 	matrikelnummer	123456
-	name			"Max Mustermann"
+	name			"Mustermann"
+	vorname         "Max"
+	studiengang     "BIT"
+	semester        3
+	immatrikuliert_seit "01.03.2012 00:00:00"
 	besucht			DESIGN_PATTERNS
 }

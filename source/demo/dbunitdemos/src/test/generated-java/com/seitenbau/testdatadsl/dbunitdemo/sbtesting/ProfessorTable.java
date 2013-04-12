@@ -46,6 +46,9 @@ public class ProfessorTable implements ITable
   {
     public static final String Id = "id";
     public static final String Name = "name";
+    public static final String Vorname = "vorname";
+    public static final String Titel = "titel";
+    public static final String Fakultaet = "fakultaet";
   }
 
   // @formatter:off
@@ -53,7 +56,13 @@ public class ProfessorTable implements ITable
     // idx = 0
     new Column(Columns.Id, DataType.BIGINT),
     // idx = 1
-    new Column(Columns.Name, DataType.VARCHAR)
+    new Column(Columns.Name, DataType.VARCHAR),
+    // idx = 2
+    new Column(Columns.Vorname, DataType.VARCHAR),
+    // idx = 3
+    new Column(Columns.Titel, DataType.VARCHAR),
+    // idx = 4
+    new Column(Columns.Fakultaet, DataType.VARCHAR)
   };
 
   static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
@@ -61,6 +70,9 @@ public class ProfessorTable implements ITable
     GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
     GENERATOR_METADATA.put(Columns.Id,EnumSet.of( Flags.AutoInvokeNextIdMethod));
     GENERATOR_METADATA.put(Columns.Name,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Vorname,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Titel,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Fakultaet,EnumSet.noneOf( Flags.class ));
   }
   // @formatter:on
 
@@ -95,6 +107,12 @@ public class ProfessorTable implements ITable
     T nextId();
     T setName(java.lang.String value);
     T setNameRaw(Object value);
+    T setVorname(java.lang.String value);
+    T setVornameRaw(Object value);
+    T setTitel(java.lang.String value);
+    T setTitelRaw(Object value);
+    T setFakultaet(java.lang.String value);
+    T setFakultaetRaw(Object value);
      
   }
   
@@ -102,6 +120,9 @@ public class ProfessorTable implements ITable
   {
     java.lang.Long getId();
     java.lang.String getName();
+    java.lang.String getVorname();
+    java.lang.String getTitel();
+    java.lang.String getFakultaet();
      
   }
 
@@ -161,12 +182,63 @@ public class ProfessorTable implements ITable
     {
       return (java.lang.String) data[1];
     }
+
+    public RowBuilder_Professor setVorname(java.lang.String value)
+    {
+      data[ 2 ] = value;
+      return this;
+    }
+    public RowBuilder_Professor setVornameRaw(Object value)
+    {
+      data[ 2 ] = value;
+      return this;
+    }
+
+    public java.lang.String getVorname()
+    {
+      return (java.lang.String) data[2];
+    }
+
+    public RowBuilder_Professor setTitel(java.lang.String value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+    public RowBuilder_Professor setTitelRaw(Object value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+
+    public java.lang.String getTitel()
+    {
+      return (java.lang.String) data[3];
+    }
+
+    public RowBuilder_Professor setFakultaet(java.lang.String value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+    public RowBuilder_Professor setFakultaetRaw(Object value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+
+    public java.lang.String getFakultaet()
+    {
+      return (java.lang.String) data[4];
+    }
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
     * ds.table_Professor.insertRow()
     *   .setId( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setTitel( null )
+    *   .setFakultaet( null )
     *   ;
     * </pre></code>
     */
@@ -181,6 +253,9 @@ public class ProfessorTable implements ITable
     * ds.table_Professor.insertRow()
     *   .setId( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setTitel( null )
+    *   .setFakultaet( null )
     *   ;
     * </pre></code>
     */
@@ -195,6 +270,9 @@ public class ProfessorTable implements ITable
     * ds.table_Professor.this.insertRowAt(2)
     *   .setId( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setTitel( null )
+    *   .setFakultaet( null )
     *   ;
     * </pre></code>
     */
@@ -221,6 +299,15 @@ public class ProfessorTable implements ITable
       if(column.equals("name") ) {
         return data[1];
       }
+      if(column.equals("vorname") ) {
+        return data[2];
+      }
+      if(column.equals("titel") ) {
+        return data[3];
+      }
+      if(column.equals("fakultaet") ) {
+        return data[4];
+      }
       throw new RuntimeException(NAME + " col = " + column);
     }
     
@@ -230,6 +317,9 @@ public class ProfessorTable implements ITable
       RowBuilder_Professor clone = new RowBuilder_Professor(table);
       clone.setId(getId());
       clone.setName(getName());
+      clone.setVorname(getVorname());
+      clone.setTitel(getTitel());
+      clone.setFakultaet(getFakultaet());
       return clone;
     }
   }
@@ -289,6 +379,48 @@ public class ProfessorTable implements ITable
       }
       if(modifiers.isEmpty()) {
         throw new RuntimeException("No Row with name = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Professor vorname(java.lang.String toSearch) {
+      RowCollection_Professor modifiers = new RowCollection_Professor(table);
+      for (RowBuilder_Professor row : rows) 
+      {
+        if (row.getVorname().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with vorname = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Professor titel(java.lang.String toSearch) {
+      RowCollection_Professor modifiers = new RowCollection_Professor(table);
+      for (RowBuilder_Professor row : rows) 
+      {
+        if (row.getTitel().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with titel = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Professor fakultaet(java.lang.String toSearch) {
+      RowCollection_Professor modifiers = new RowCollection_Professor(table);
+      for (RowBuilder_Professor row : rows) 
+      {
+        if (row.getFakultaet().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with fakultaet = " + toSearch );
       }
       return modifiers;
     }
@@ -371,6 +503,72 @@ public class ProfessorTable implements ITable
         }
         return _rows.get(0).getName();
       }
+
+      public RowModify_Professor setVorname(java.lang.String value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setVorname(value);
+        }
+        return this;
+      }
+      public RowModify_Professor setVornameRaw(Object value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setVornameRaw(value);
+        }
+        return this;
+      }
+      public java.lang.String getVorname()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getVorname();
+      }
+
+      public RowModify_Professor setTitel(java.lang.String value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setTitel(value);
+        }
+        return this;
+      }
+      public RowModify_Professor setTitelRaw(Object value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setTitelRaw(value);
+        }
+        return this;
+      }
+      public java.lang.String getTitel()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getTitel();
+      }
+
+      public RowModify_Professor setFakultaet(java.lang.String value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setFakultaet(value);
+        }
+        return this;
+      }
+      public RowModify_Professor setFakultaetRaw(Object value)
+      {
+        for(RowBuilder_Professor row : _rows) {
+          row.setFakultaetRaw(value);
+        }
+        return this;
+      }
+      public java.lang.String getFakultaet()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getFakultaet();
+      }
       public Object getValue(String column)
       {
         if(_rows.size()!=1) {
@@ -414,6 +612,9 @@ public class ProfessorTable implements ITable
   * ds.table_Professor.insertRow()
   *   .setId( null )
   *   .setName( null )
+  *   .setVorname( null )
+  *   .setTitel( null )
+  *   .setFakultaet( null )
   *   ;
   * </pre></code>
   */
@@ -435,6 +636,9 @@ public class ProfessorTable implements ITable
     RowBuilder_Professor row = new RowBuilder_Professor(this);
     row.setIdRaw( rowToAdd.getIdRaw() );
     row.setNameRaw( rowToAdd.getNameRaw() );
+    row.setVornameRaw( rowToAdd.getVornameRaw() );
+    row.setTitelRaw( rowToAdd.getTitelRaw() );
+    row.setFakultaetRaw( rowToAdd.getFakultaetRaw() );
     rows.add(row);
     return row;
   }

@@ -49,6 +49,7 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 		try {
 			runDsl("dsl.txt", binding);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 
@@ -56,6 +57,9 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 			RowBuilder_Professor row = result.table_Professor.insertRow();
 			row.nextId();
 			row.setName(professor.getName());
+			row.setVorname(professor.getVorname());
+			row.setTitel(professor.getTitel());
+			row.setFakultaet(professor.getFakultaet());
 			professor.setId(row.getId());
 
 			if (professor.getLeitet() != null) {
@@ -68,6 +72,8 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 					lrow.nextId();
 					lrow.setProfessorId(row.getId());
 					lrow.setName(lv.getName());
+					lrow.setEcts(lv.getEcts());
+					lrow.setSws(lv.getSws());
 
 					lv.setId(lrow.getId());
 				}
@@ -78,12 +84,18 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 			RowBuilder_Student row = result.table_Student.insertRow();
 			row.setMatrikelnummer(student.getMatrikelnummer());
 			row.setName(student.getName());
+			row.setVorname(student.getVorname());
+			row.setStudiengang(student.getStudiengang());
+			row.setSemester(student.getSemester());
+			row.setImmatrikuliertSeit(student.getImmatrikuliert_seit());
 		}
 
 		for (Pruefung pruefung : binding.getPruefungen()) {
 			RowBuilder_Pruefung row = result.table_Pruefung.insertRow();
 			row.nextId();
 			row.setTyp(pruefung.getTyp());
+			row.setZeitpunkt(pruefung.getZeitpunkt());
+			
 			Lehrveranstaltung lv = getValue(binding,
 					pruefung.getPrueftStoffVon(), Lehrveranstaltung.class);
 			row.setLehrveranstaltungId(lv.getId());

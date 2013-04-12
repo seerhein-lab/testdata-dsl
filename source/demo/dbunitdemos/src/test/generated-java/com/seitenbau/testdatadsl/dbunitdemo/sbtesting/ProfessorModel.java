@@ -14,6 +14,12 @@ public class ProfessorModel
   protected java.lang.Object id;
   /** actual type : java.lang.String */
   protected java.lang.Object name;
+  /** actual type : java.lang.String */
+  protected java.lang.Object vorname;
+  /** actual type : java.lang.String */
+  protected java.lang.Object titel;
+  /** actual type : java.lang.String */
+  protected java.lang.Object fakultaet;
 
   DatasetIdGenerator _generator;
   public void setIdGenerator(DatasetIdGenerator generator) 
@@ -67,6 +73,60 @@ public class ProfessorModel
   public java.lang.Object getNameRaw()
   {
     return name;
+  }
+  public ProfessorModel setVorname(java.lang.String value)
+  {
+    vorname = value;
+    return this;
+  }
+  public ProfessorModel setVornameRaw(Object value)
+  {
+    vorname =  value;
+    return this;
+  }
+  public java.lang.String getVorname()
+  {
+    return (java.lang.String)  vorname;
+  }
+  public java.lang.Object getVornameRaw()
+  {
+    return vorname;
+  }
+  public ProfessorModel setTitel(java.lang.String value)
+  {
+    titel = value;
+    return this;
+  }
+  public ProfessorModel setTitelRaw(Object value)
+  {
+    titel =  value;
+    return this;
+  }
+  public java.lang.String getTitel()
+  {
+    return (java.lang.String)  titel;
+  }
+  public java.lang.Object getTitelRaw()
+  {
+    return titel;
+  }
+  public ProfessorModel setFakultaet(java.lang.String value)
+  {
+    fakultaet = value;
+    return this;
+  }
+  public ProfessorModel setFakultaetRaw(Object value)
+  {
+    fakultaet =  value;
+    return this;
+  }
+  public java.lang.String getFakultaet()
+  {
+    return (java.lang.String)  fakultaet;
+  }
+  public java.lang.Object getFakultaetRaw()
+  {
+    return fakultaet;
   }
  
 }

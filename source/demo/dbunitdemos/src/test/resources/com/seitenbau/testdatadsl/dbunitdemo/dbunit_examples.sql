@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2013 at 04:06 PM
+-- Generation Time: Apr 12, 2013 at 02:38 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -23,207 +23,162 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `BEAUFSICHTIGT`
+-- Table structure for table `beaufsichtigt`
 --
 
-CREATE TABLE IF NOT EXISTS `BEAUFSICHTIGT` (
+CREATE TABLE IF NOT EXISTS `beaufsichtigt` (
   `professor_id` int(11) NOT NULL,
   `pruefung_id` int(11) NOT NULL,
   PRIMARY KEY (`professor_id`,`pruefung_id`),
   KEY `pruefung_id` (`pruefung_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `BEAUFSICHTIGT`
---
-
-INSERT INTO `BEAUFSICHTIGT` (`professor_id`, `pruefung_id`) VALUES
-(1, 1),
-(2, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `BESUCHT`
+-- Table structure for table `besucht`
 --
 
-CREATE TABLE IF NOT EXISTS `BESUCHT` (
+CREATE TABLE IF NOT EXISTS `besucht` (
   `student_id` int(11) NOT NULL,
   `lehrveranstaltung_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`lehrveranstaltung_id`),
   KEY `lehrveranstaltung_id` (`lehrveranstaltung_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `BESUCHT`
---
-
-INSERT INTO `BESUCHT` (`student_id`, `lehrveranstaltung_id`) VALUES
-(287336, 1),
-(123456, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ISTTUTOR`
+-- Table structure for table `isttutor`
 --
 
-CREATE TABLE IF NOT EXISTS `ISTTUTOR` (
+CREATE TABLE IF NOT EXISTS `isttutor` (
   `student_id` int(11) NOT NULL,
   `lehrveranstaltung_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`lehrveranstaltung_id`),
   KEY `lehrveranstaltung_id` (`lehrveranstaltung_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `ISTTUTOR`
---
-
-INSERT INTO `ISTTUTOR` (`student_id`, `lehrveranstaltung_id`) VALUES
-(287336, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `LEHRVERANSTALTUNG`
+-- Table structure for table `lehrveranstaltung`
 --
 
-CREATE TABLE IF NOT EXISTS `LEHRVERANSTALTUNG` (
+CREATE TABLE IF NOT EXISTS `lehrveranstaltung` (
   `id` int(11) NOT NULL,
   `professor_id` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
+  `sws` int(11) NOT NULL,
+  `ects` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `professor_id` (`professor_id`),
   KEY `professor_id_2` (`professor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `LEHRVERANSTALTUNG`
---
-
-INSERT INTO `LEHRVERANSTALTUNG` (`id`, `professor_id`, `name`) VALUES
-(1, 2, 'Verteilte Systeme'),
-(2, 2, 'Design Patterns');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PROFESSOR`
+-- Table structure for table `professor`
 --
 
-CREATE TABLE IF NOT EXISTS `PROFESSOR` (
+CREATE TABLE IF NOT EXISTS `professor` (
   `id` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
+  `vorname` varchar(80) NOT NULL,
+  `titel` varchar(80) NOT NULL,
+  `fakultaet` varchar(80) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `PROFESSOR`
---
-
-INSERT INTO `PROFESSOR` (`id`, `name`) VALUES
-(1, 'Jürgen Wäsch'),
-(2, 'Oliver Haase');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PRUEFUNG`
+-- Table structure for table `pruefung`
 --
 
-CREATE TABLE IF NOT EXISTS `PRUEFUNG` (
+CREATE TABLE IF NOT EXISTS `pruefung` (
   `id` int(11) NOT NULL,
   `lehrveranstaltung_id` int(11) NOT NULL,
   `typ` varchar(20) NOT NULL,
+  `zeitpunkt` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `lehrveranstaltung_id` (`lehrveranstaltung_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `PRUEFUNG`
---
-
-INSERT INTO `PRUEFUNG` (`id`, `lehrveranstaltung_id`, `typ`) VALUES
-(1, 1, 'K90'),
-(2, 2, 'M30');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `SCHREIBT`
+-- Table structure for table `schreibt`
 --
 
-CREATE TABLE IF NOT EXISTS `SCHREIBT` (
+CREATE TABLE IF NOT EXISTS `schreibt` (
   `student_id` int(11) NOT NULL,
   `pruefung_id` int(11) NOT NULL,
   PRIMARY KEY (`student_id`,`pruefung_id`),
   KEY `pruefung_id` (`pruefung_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `SCHREIBT`
---
-
-INSERT INTO `SCHREIBT` (`student_id`, `pruefung_id`) VALUES
-(287336, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `STUDENT`
+-- Table structure for table `student`
 --
 
-CREATE TABLE IF NOT EXISTS `STUDENT` (
+CREATE TABLE IF NOT EXISTS `student` (
   `matrikelnummer` int(11) NOT NULL,
   `name` varchar(80) NOT NULL,
+  `vorname` varchar(80) NOT NULL,
+  `studiengang` varchar(80) NOT NULL,
+  `semester` int(80) NOT NULL,
+  `immatrikuliert_seit` date NOT NULL,
   PRIMARY KEY (`matrikelnummer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `STUDENT`
---
-
-INSERT INTO `STUDENT` (`matrikelnummer`, `name`) VALUES
-(123456, 'Max Mustermann'),
-(287336, 'Nikolaus Moll');
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `BEAUFSICHTIGT`
+-- Constraints for table `beaufsichtigt`
 --
-ALTER TABLE `BEAUFSICHTIGT`
-  ADD CONSTRAINT `beaufsichtigt_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `PROFESSOR` (`id`),
-  ADD CONSTRAINT `beaufsichtigt_ibfk_2` FOREIGN KEY (`pruefung_id`) REFERENCES `PRUEFUNG` (`id`);
+ALTER TABLE `beaufsichtigt`
+  ADD CONSTRAINT `beaufsichtigt_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`),
+  ADD CONSTRAINT `beaufsichtigt_ibfk_2` FOREIGN KEY (`pruefung_id`) REFERENCES `pruefung` (`id`);
 
 --
--- Constraints for table `BESUCHT`
+-- Constraints for table `besucht`
 --
-ALTER TABLE `BESUCHT`
-  ADD CONSTRAINT `besucht_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`matrikelnummer`),
+ALTER TABLE `besucht`
+  ADD CONSTRAINT `besucht_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`matrikelnummer`),
   ADD CONSTRAINT `besucht_ibfk_2` FOREIGN KEY (`lehrveranstaltung_id`) REFERENCES `lehrveranstaltung` (`id`);
 
 --
--- Constraints for table `ISTTUTOR`
+-- Constraints for table `isttutor`
 --
-ALTER TABLE `ISTTUTOR`
-  ADD CONSTRAINT `isttutor_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`matrikelnummer`),
+ALTER TABLE `isttutor`
+  ADD CONSTRAINT `isttutor_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`matrikelnummer`),
   ADD CONSTRAINT `isttutor_ibfk_2` FOREIGN KEY (`lehrveranstaltung_id`) REFERENCES `lehrveranstaltung` (`id`);
 
 --
--- Constraints for table `LEHRVERANSTALTUNG`
+-- Constraints for table `lehrveranstaltung`
 --
-ALTER TABLE `LEHRVERANSTALTUNG`
-  ADD CONSTRAINT `lehrveranstaltung_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `PROFESSOR` (`id`);
+ALTER TABLE `lehrveranstaltung`
+  ADD CONSTRAINT `lehrveranstaltung_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`);
 
 --
--- Constraints for table `SCHREIBT`
+-- Constraints for table `schreibt`
 --
-ALTER TABLE `SCHREIBT`
-  ADD CONSTRAINT `SCHREIBT_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `STUDENT` (`matrikelnummer`),
-  ADD CONSTRAINT `SCHREIBT_ibfk_2` FOREIGN KEY (`pruefung_id`) REFERENCES `PRUEFUNG` (`id`);
+ALTER TABLE `schreibt`
+  ADD CONSTRAINT `SCHREIBT_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`matrikelnummer`),
+  ADD CONSTRAINT `SCHREIBT_ibfk_2` FOREIGN KEY (`pruefung_id`) REFERENCES `pruefung` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

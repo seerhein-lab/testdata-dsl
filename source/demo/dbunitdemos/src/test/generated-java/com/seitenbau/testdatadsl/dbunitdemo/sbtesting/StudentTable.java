@@ -46,6 +46,10 @@ public class StudentTable implements ITable
   {
     public static final String Matrikelnummer = "matrikelnummer";
     public static final String Name = "name";
+    public static final String Vorname = "vorname";
+    public static final String Studiengang = "studiengang";
+    public static final String Semester = "semester";
+    public static final String ImmatrikuliertSeit = "immatrikuliert_seit";
   }
 
   // @formatter:off
@@ -53,7 +57,15 @@ public class StudentTable implements ITable
     // idx = 0
     new Column(Columns.Matrikelnummer, DataType.BIGINT),
     // idx = 1
-    new Column(Columns.Name, DataType.VARCHAR)
+    new Column(Columns.Name, DataType.VARCHAR),
+    // idx = 2
+    new Column(Columns.Vorname, DataType.VARCHAR),
+    // idx = 3
+    new Column(Columns.Studiengang, DataType.VARCHAR),
+    // idx = 4
+    new Column(Columns.Semester, DataType.INTEGER),
+    // idx = 5
+    new Column(Columns.ImmatrikuliertSeit, DataType.DATE)
   };
 
   static Map<String, EnumSet<Flags>> GENERATOR_METADATA;
@@ -61,6 +73,10 @@ public class StudentTable implements ITable
     GENERATOR_METADATA = new HashMap<String, EnumSet<Flags>>();
     GENERATOR_METADATA.put(Columns.Matrikelnummer,EnumSet.of( Flags.AddNextIdMethod));
     GENERATOR_METADATA.put(Columns.Name,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Vorname,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Studiengang,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.Semester,EnumSet.noneOf( Flags.class ));
+    GENERATOR_METADATA.put(Columns.ImmatrikuliertSeit,EnumSet.noneOf( Flags.class ));
   }
   // @formatter:on
 
@@ -95,6 +111,16 @@ public class StudentTable implements ITable
     T nextMatrikelnummer();
     T setName(java.lang.String value);
     T setNameRaw(Object value);
+    T setVorname(java.lang.String value);
+    T setVornameRaw(Object value);
+    T setStudiengang(java.lang.String value);
+    T setStudiengangRaw(Object value);
+    T setSemester(java.lang.Integer value);
+    T setSemesterRaw(Object value);
+    T setImmatrikuliertSeit(String dateString);
+    T setImmatrikuliertSeit(Datum datum);
+    T setImmatrikuliertSeit(java.util.Date value);
+    T setImmatrikuliertSeitRaw(Object value);
      
   }
   
@@ -102,6 +128,10 @@ public class StudentTable implements ITable
   {
     java.lang.Long getMatrikelnummer();
     java.lang.String getName();
+    java.lang.String getVorname();
+    java.lang.String getStudiengang();
+    java.lang.Integer getSemester();
+    java.util.Date getImmatrikuliertSeit();
      
   }
 
@@ -161,12 +191,90 @@ public class StudentTable implements ITable
     {
       return (java.lang.String) data[1];
     }
+
+    public RowBuilder_Student setVorname(java.lang.String value)
+    {
+      data[ 2 ] = value;
+      return this;
+    }
+    public RowBuilder_Student setVornameRaw(Object value)
+    {
+      data[ 2 ] = value;
+      return this;
+    }
+
+    public java.lang.String getVorname()
+    {
+      return (java.lang.String) data[2];
+    }
+
+    public RowBuilder_Student setStudiengang(java.lang.String value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+    public RowBuilder_Student setStudiengangRaw(Object value)
+    {
+      data[ 3 ] = value;
+      return this;
+    }
+
+    public java.lang.String getStudiengang()
+    {
+      return (java.lang.String) data[3];
+    }
+
+    public RowBuilder_Student setSemester(java.lang.Integer value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+    public RowBuilder_Student setSemesterRaw(Object value)
+    {
+      data[ 4 ] = value;
+      return this;
+    }
+
+    public java.lang.Integer getSemester()
+    {
+      return (java.lang.Integer) data[4];
+    }
+
+    public RowBuilder_Student setImmatrikuliertSeit(String dateString)
+    {
+      data[ 5 ] = toDate(dateString);
+      return this;
+    }
+    public RowBuilder_Student setImmatrikuliertSeit(Datum datum)
+    {
+      data[ 5 ] = toDate(datum);
+      return this;
+    }
+    public RowBuilder_Student setImmatrikuliertSeit(java.util.Date value)
+    {
+      data[ 5 ] = value;
+      return this;
+    }
+    public RowBuilder_Student setImmatrikuliertSeitRaw(Object value)
+    {
+      data[ 5 ] = value;
+      return this;
+    }
+
+    public java.util.Date getImmatrikuliertSeit()
+    {
+      return (java.util.Date) data[5];
+    }
     /**
     * Insert a new Row at the end of the Table
     * <code><pre>
     * ds.table_Student.insertRow()
     *   .setMatrikelnummer( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setStudiengang( null )
+    *   .setSemester( null )
+    *   .setImmatrikuliertSeit( null )
     *   ;
     * </pre></code>
     */
@@ -181,6 +289,10 @@ public class StudentTable implements ITable
     * ds.table_Student.insertRow()
     *   .setMatrikelnummer( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setStudiengang( null )
+    *   .setSemester( null )
+    *   .setImmatrikuliertSeit( null )
     *   ;
     * </pre></code>
     */
@@ -195,6 +307,10 @@ public class StudentTable implements ITable
     * ds.table_Student.this.insertRowAt(2)
     *   .setMatrikelnummer( null )
     *   .setName( null )
+    *   .setVorname( null )
+    *   .setStudiengang( null )
+    *   .setSemester( null )
+    *   .setImmatrikuliertSeit( null )
     *   ;
     * </pre></code>
     */
@@ -221,6 +337,18 @@ public class StudentTable implements ITable
       if(column.equals("name") ) {
         return data[1];
       }
+      if(column.equals("vorname") ) {
+        return data[2];
+      }
+      if(column.equals("studiengang") ) {
+        return data[3];
+      }
+      if(column.equals("semester") ) {
+        return data[4];
+      }
+      if(column.equals("immatrikuliert_seit") ) {
+        return data[5];
+      }
       throw new RuntimeException(NAME + " col = " + column);
     }
     
@@ -230,6 +358,10 @@ public class StudentTable implements ITable
       RowBuilder_Student clone = new RowBuilder_Student(table);
       clone.setMatrikelnummer(getMatrikelnummer());
       clone.setName(getName());
+      clone.setVorname(getVorname());
+      clone.setStudiengang(getStudiengang());
+      clone.setSemester(getSemester());
+      clone.setImmatrikuliertSeit(getImmatrikuliertSeit());
       return clone;
     }
   }
@@ -289,6 +421,62 @@ public class StudentTable implements ITable
       }
       if(modifiers.isEmpty()) {
         throw new RuntimeException("No Row with name = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Student vorname(java.lang.String toSearch) {
+      RowCollection_Student modifiers = new RowCollection_Student(table);
+      for (RowBuilder_Student row : rows) 
+      {
+        if (row.getVorname().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with vorname = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Student studiengang(java.lang.String toSearch) {
+      RowCollection_Student modifiers = new RowCollection_Student(table);
+      for (RowBuilder_Student row : rows) 
+      {
+        if (row.getStudiengang().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with studiengang = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Student semester(java.lang.Integer toSearch) {
+      RowCollection_Student modifiers = new RowCollection_Student(table);
+      for (RowBuilder_Student row : rows) 
+      {
+        if (row.getSemester().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with semester = " + toSearch );
+      }
+      return modifiers;
+    }
+    public RowCollection_Student immatrikuliertSeit(java.util.Date toSearch) {
+      RowCollection_Student modifiers = new RowCollection_Student(table);
+      for (RowBuilder_Student row : rows) 
+      {
+        if (row.getImmatrikuliertSeit().equals(toSearch)) 
+        {
+          modifiers.add(row);
+        }
+      }
+      if(modifiers.isEmpty()) {
+        throw new RuntimeException("No Row with immatrikuliert_seit = " + toSearch );
       }
       return modifiers;
     }
@@ -371,6 +559,108 @@ public class StudentTable implements ITable
         }
         return _rows.get(0).getName();
       }
+
+      public RowModify_Student setVorname(java.lang.String value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setVorname(value);
+        }
+        return this;
+      }
+      public RowModify_Student setVornameRaw(Object value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setVornameRaw(value);
+        }
+        return this;
+      }
+      public java.lang.String getVorname()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getVorname();
+      }
+
+      public RowModify_Student setStudiengang(java.lang.String value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setStudiengang(value);
+        }
+        return this;
+      }
+      public RowModify_Student setStudiengangRaw(Object value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setStudiengangRaw(value);
+        }
+        return this;
+      }
+      public java.lang.String getStudiengang()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getStudiengang();
+      }
+
+      public RowModify_Student setSemester(java.lang.Integer value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setSemester(value);
+        }
+        return this;
+      }
+      public RowModify_Student setSemesterRaw(Object value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setSemesterRaw(value);
+        }
+        return this;
+      }
+      public java.lang.Integer getSemester()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getSemester();
+      }
+
+      public RowModify_Student setImmatrikuliertSeit(String dateString)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setImmatrikuliertSeit(dateString);
+        }
+        return this;
+      }
+      public RowModify_Student setImmatrikuliertSeit(Datum datum)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setImmatrikuliertSeit(datum);
+        }
+        return this;
+      }
+      public RowModify_Student setImmatrikuliertSeit(java.util.Date value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setImmatrikuliertSeit(value);
+        }
+        return this;
+      }
+      public RowModify_Student setImmatrikuliertSeitRaw(Object value)
+      {
+        for(RowBuilder_Student row : _rows) {
+          row.setImmatrikuliertSeitRaw(value);
+        }
+        return this;
+      }
+      public java.util.Date getImmatrikuliertSeit()
+      {
+        if(_rows.size()!=1) {
+          throw new RuntimeException("There where multiple Row in the result! " + _rows.size() );
+        }
+        return _rows.get(0).getImmatrikuliertSeit();
+      }
       public Object getValue(String column)
       {
         if(_rows.size()!=1) {
@@ -414,6 +704,10 @@ public class StudentTable implements ITable
   * ds.table_Student.insertRow()
   *   .setMatrikelnummer( null )
   *   .setName( null )
+  *   .setVorname( null )
+  *   .setStudiengang( null )
+  *   .setSemester( null )
+  *   .setImmatrikuliertSeit( null )
   *   ;
   * </pre></code>
   */
@@ -434,6 +728,10 @@ public class StudentTable implements ITable
     RowBuilder_Student row = new RowBuilder_Student(this);
     row.setMatrikelnummerRaw( rowToAdd.getMatrikelnummerRaw() );
     row.setNameRaw( rowToAdd.getNameRaw() );
+    row.setVornameRaw( rowToAdd.getVornameRaw() );
+    row.setStudiengangRaw( rowToAdd.getStudiengangRaw() );
+    row.setSemesterRaw( rowToAdd.getSemesterRaw() );
+    row.setImmatrikuliertSeitRaw( rowToAdd.getImmatrikuliertSeitRaw() );
     rows.add(row);
     return row;
   }

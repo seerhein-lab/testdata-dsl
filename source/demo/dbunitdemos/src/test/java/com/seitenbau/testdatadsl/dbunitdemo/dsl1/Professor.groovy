@@ -6,6 +6,10 @@ class Professor {
 	
 	long id;
 	String name;
+	String vorname;
+	String titel;
+	String fakultaet;
+	
 	Object[] beaufsichtigt;
 	Object[] leitet;
 	
@@ -18,7 +22,19 @@ class Professor {
 	def name(String name) {
 		this.name = name
 	}
-	
+
+	def vorname(String vorname) {
+		this.vorname = vorname
+	}
+
+	def titel(String titel) {
+		this.titel = titel
+	}
+
+	def fakultaet(String fakultaet) {
+		this.fakultaet = fakultaet
+	}
+
 	def beaufsichtigt(Object[] pruefungen) {
 		this.beaufsichtigt = pruefungen
 	} 

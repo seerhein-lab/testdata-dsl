@@ -16,6 +16,10 @@ public class LehrveranstaltungModel
   protected java.lang.Object professorId;
   /** actual type : java.lang.String */
   protected java.lang.Object name;
+  /** actual type : java.lang.Integer */
+  protected java.lang.Object sws;
+  /** actual type : java.lang.Integer */
+  protected java.lang.Object ects;
 
   DatasetIdGenerator _generator;
   public void setIdGenerator(DatasetIdGenerator generator) 
@@ -92,6 +96,42 @@ public class LehrveranstaltungModel
   public java.lang.Object getNameRaw()
   {
     return name;
+  }
+  public LehrveranstaltungModel setSws(java.lang.Integer value)
+  {
+    sws = value;
+    return this;
+  }
+  public LehrveranstaltungModel setSwsRaw(Object value)
+  {
+    sws =  value;
+    return this;
+  }
+  public java.lang.Integer getSws()
+  {
+    return (java.lang.Integer)  sws;
+  }
+  public java.lang.Object getSwsRaw()
+  {
+    return sws;
+  }
+  public LehrveranstaltungModel setEcts(java.lang.Integer value)
+  {
+    ects = value;
+    return this;
+  }
+  public LehrveranstaltungModel setEctsRaw(Object value)
+  {
+    ects =  value;
+    return this;
+  }
+  public java.lang.Integer getEcts()
+  {
+    return (java.lang.Integer)  ects;
+  }
+  public java.lang.Object getEctsRaw()
+  {
+    return ects;
   }
  
 }
