@@ -114,7 +114,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\label{sec:grundlagen:modellierung:xml}
 
 	
-	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} biete dazu die Klasse
+	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} bietet dazu die Klasse
 	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
 	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung}
 	definiert wedren.
@@ -269,11 +269,14 @@ dataSet.addTable(lehrveranstaltung);
 
 	\subsection{SB Testing DSL}
 	\label{sec:grundlagen:modellierung:sbtesting}
-
 	
-	\todo{SB Testing DSL}
-	Generator erzeugt DSL auf Basis von Meta-Daten (M2). 
-
+	Das \textit{SB Testing} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Java-Datasets aufzufangen.
+	Ein Generator erzeugt es aus den Meta-Informationen zu den Entitäten eine einfache Java-DSL. Über diese DSL können
+	die Testdaten modelliert werden. Die \textit{SB Testing DSL} erzeugt bei Bedarf ein \textit{DbUnit}-Dataset. 
+	Entgegen der \textit{DbUnit}-Datasets können die Daten innerhalb der \textit{SB Testing DSL} beliebig verändert werden - und
+	aus den veränderten Daten ein neues Dataset erstellt, z.B. nach dem Löschen einer Zeile. Außerdem bietet die DSL
+	Typsicherheit zur Compilierzeit. Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen Varianten.
+	
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_model.png}
@@ -311,10 +314,6 @@ table_Lehrveranstaltung
 		.setEcts(3);
 	\end{lstlisting}
 
-	Die SB Testing DSL versucht die Nachteile der Java-Datasets zu umgehen. Die Syntax ist kompakter und dennoch
-	ausdrucksstärker als die beiden vorherigen Varianten. Außerdem können falsche Typen bereits zur Compilierzeit
-	erkannt werden.
-	
 	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar
 	(\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
 	
@@ -358,21 +357,22 @@ RowBuilder_Lehrveranstaltung design_patterns =
 
 \subsection{Anforderungen an die DSL}
 
-Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschrieben werden. 
+Eine der wichtigsten Anforderungen an die DSL ist, dass sie sich in die bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss.
+Daraus folgt die Anforderung, dass sie sich in Java nutzen lassen soll. Ähnlich wie bei der \textit{SB Testing DSL} sollen Datasets auch 
+nachträglich veränderbar sein. 
+
+Die Sprache soll auf syntaktischen Ballast verzichten und einen übersichtlichen Code zur Modellierung der Daten ermöglichen. Meta-Informationen sollten ausschließlich in Form von Sprachelementen auftauchen.
+
+Beziehungen sollen sich einfach und typsicher modellieren lassen. Es soll nicht mehr notwendig sein, symbolische Java-Konstanten z.B. für die Definition von ID-Nummern zu verwenden. 
+
+
 
 \todo{Anforderungen}
 \begin{itemize}
-	\item Integration in bestehende Tool-Kette
-	\item In Java nutzbar (interne DSL), Dataset soll zur Laufzeit erweiterbar bleiben in selber Syntax
 	\item Zugriff auf Daten aus Java heraus
-	\item "`Meta-Informtionen als Sprachelement"'
-	\item Symbolische Konstanten überflüssig machen
 	\item "`Dekorieren"' von Werten (before(date))
-	\item wenig syntaktischer Ballast
 	\item Typ-Prüfungen zu Compilierzeit
-	\item übersichtliche Darstellung ermöglichen (v.a. vertikal)
 	\item Namensräume/Scopes
-	\item Beziehungen sollen sich einfach und typsicher modellieren lassen
 \end{itemize}
 
 \subsection{Zielgruppe}
@@ -380,6 +380,8 @@ Die Testdaten sollen in einer \textit{Domain Specific Language} (DSL) beschriebe
 \subsection{DSL-Entwürfe}
 
 	\subsubsection{Entwurf 1}
+	
+	Eine DSL, die sich stark an der \textit{SB Testing DSL} orientiert, könnte wie folgt aussehen:
 	
 	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
@@ -398,32 +400,36 @@ WAESCH = professor {
 	
 VSYS = lehrveranstaltung {
 	name			"Verteilte Systeme"
+  sws       4
+	ects      5
 }
 	
-DESIGN_PATTERNS = lehrveranstaltung {
+DPATTERNS = lehrveranstaltung {
 	name 			"Design Patterns"
+	sws       4
+	ects      3
 }
 
 ...
 
-HAASE beaufsichtigt	P_DESIGN_PATTERNS
 HAASE leitet VSYS
-HAASE leitet DESIGN_PATTERNS
+HAASE leitet DPATTERNS
+HAASE beaufsichtigt	P_DPATTERNS
 WAESCH beaufsichtigt P_VSYS
 ...
 
 	\end{lstlisting}
 	
-	Gut:
-	- Statt Schlüsseln IDs
-	
-	Schlecht:
-	- viele Zeilen
-	- Beziehungen nicht bei den Daten
-
+	Diese DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet Variablennamen für die Modellierung von Beziehungen. Da für jeden
+	Wert eine eigene Zeile verwendet wird, werden umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der
+	Definition der Daten erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 
 
 	\subsubsection{Entwurf 2}
+	
+	Ein leicht abgewandelter Entwurf zeigt, wie sich die Beziehungen näher an den eigentlichen Daten beschreiben lassen könnten.
+	An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
+	
 
 	\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
 HAASE = professor {
@@ -431,8 +437,8 @@ HAASE = professor {
 	vorname   "Oliver"
 	titel     "Prof. Dr."
   fakultaet "Informatik"
-	leitet    VSYS, DESIGN_PATTERNS
-	beaufsichtigt	P_DESIGN_PATTERNS
+	leitet    VSYS, DPATTERNS
+	beaufsichtigt	P_DPATTERNS
 }
 
 WAESCH = professor {
@@ -445,51 +451,54 @@ WAESCH = professor {
 	
 VSYS = lehrveranstaltung {
 	name			"Verteilte Systeme"
+  sws       4
+	ects      5
 }
 	
-DESIGN_PATTERNS = lehrveranstaltung {
+DPATTERNS = lehrveranstaltung {
 	name 			"Design Patterns"
+  sws       4
+	ects      3
 }
 
 ...
 	\end{lstlisting}
 	
-	Besser:
-	- Beziehungen bei den Daten
-	
-	Schlecht:
-	- wächst immer noch sehr schnell vertikal
 
 	\subsubsection{Entwurf 3}
+	
+	Der dritte Entwurf versucht die Daten durch eine tabellarische Struktur übersichtlich zu gestalten. Sie kommt mit
+	wenig syntaktischem Ballast aus. 
+	
+	
 
 	\lstSetTiny
 	\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
 professor:
-	REF    || name    | vorname  | titel            | fakultaet    | beaufsichtigt     | leitet
-	HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | P_DESIGN_PATTERNS | VSYS, DESIGN_PATTERNS
-	WAESCH || "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" | P_VSYS            |
+REF    || name    | vorname  | titel            | fakultaet    | leitet          | beaufsichtigt
+HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | VSYS, DPATTERNS | P_DPATTERNS   
+WAESCH || "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" |                 | P_VSYS
 	
 lehrveranstaltung:
-	REF             || name
-	VSYS            || "Verteilte Systeme"
-	DESIGN_PATTERNS || "Design Patterns"
+REF       || name                | sws | ects
+VSYS      || "Verteilte Systeme" | 4   | 5
+DPATTERNS || "Design Patterns"   | 4   | 3
 
 ...
 	\end{lstlisting}
 	\lstSetNotmal
 	
+	Probleme bzw. Nachteile in der Darstellung können auftreten, wenn sich die Länge der Wert in einer Spalte stark unterscheidet.
+	Der Entwickler ist selbst dafür verantwortlich, die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter 
+	Umständen verzichtet werden, da sie von verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten
+	wächst diese Darstellung horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung
+	unübersichtlich werden.
+	
 	Besser:
-	- tabellarsiche Struktur
-	- wächst kaum vertikal
-	- wenig syntaktischer Overhead
 	- Spalten-Editierung mit Block-Bearbeitungsmodus möglich
 	
 	Schlecht:
 	- Tabellenkopf muss u.U. wiederholt werden, um Übersicht zu erhalten
-	- wächst horizontal
-	- optionale Spalten
-	- Entwickler selbst für Übersicht verantwortlich
-	- Eventuell Darstellungsprobleme bei Nutzung von Tabulatoren/Systemen mit unterschiedlichen Tabstopps
 	- Spaltenbreite nur von längstem Wert abhängig (-> Konstanten?)
 
 
