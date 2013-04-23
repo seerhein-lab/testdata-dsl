@@ -1,5 +1,12 @@
-\chapter{Grundlagen}
+\chapter{Grundlegende Konzepte / State of the Art / Anforderungsanalyse / Fragestellung}
 \label{chap:grundlagen}
+
+\section{Grundlegende Konzepte}
+noch zu erklären:
+- Modellgetriebene Software-Entwicklung
+- benutzte Terminologie
+
+
 
 \section{Fortlaufendes Beispiel}
 \label{sec:grundlagen:beispiel}
@@ -12,10 +19,11 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\subsection{Voraussetzungen}
 	\label{sec:grundlagen:beispiel:voraussetzungen}
 
-	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungen zwischen Entitäten. Dabei soll die
+	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungstypen zwischen Entitätstypen. Dabei soll die
 	Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug
 	sein, um möglichst alle Beziehungsarten zwischen Entitäten abzudecken.
 
+	\todo{ausführlicher erklären:}
 	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen.
 	\textit{Standard Fixture} bedeutet, dass die selben Testdaten für alle Tests verwendet werden 
 	(\cite[317]{XUNIT_TEST_PATTERNS}). Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
@@ -28,7 +36,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\subsection{Gewählte Problemstellung}
 	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
 	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
-	Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitäten:
+	Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitätstypen:
 
 	\begin{itemize}
 		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltungen.
@@ -39,16 +47,24 @@ Problemstellung umsetzen und die Testdaten modellieren.
 		\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
 			die Möglichkeit, Tutoren von Lehrveranstaltungen zu sein.
 	\end{itemize}
-
-	Die Beziehungen der Entitäten stellen sich wie folgt dar: Eine Lehrveranstaltung muss von genau einem Professor
-	geleitet werden, ein Professor kann beliebig viele (also auch keine) Lehrveranstaltungen leiten. Eine Prüfung ist genau
-	einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben (z.B. Nachschreibprüfung).
-	Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen Prüfungen
-	Aufsicht haben. Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
-	vielen Studenten besucht werden. Die gleiche Beziehung gilt für Tutoren: Jeder Student kann bei beliebig vielen
-	Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung kann beliebig viele Tutoren haben. Schließlich kann jeder
-	Student auch an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen Anzahl von
-	Studenten geschrieben werden.
+	
+	Die Beziehungen der Entitätstypen stellen sich wie folgt dar: 
+	\begin{itemize}
+		\item Eine Lehrveranstaltung muss von genau einem Professor geleitet werden, ein Professor kann beliebig viele
+		  (also auch keine) Lehrveranstaltungen leiten.
+		\item Eine Prüfung ist genau einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben
+			(z.B. Nachschreibprüfung).
+		\item Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen
+			Prüfungen Aufsicht haben. 
+		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
+			vielen Studenten besucht werden.
+		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
+			vielen Studenten besucht werden.
+		\item Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
+			kann beliebig viele Tutoren haben. 
+		\item Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen
+			Anzahl von Studenten geschrieben werden.
+	\end{itemize}
 
 	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms. Sie veranschaulicht,
 	dass es keine 1:1 Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
