@@ -32,6 +32,7 @@ public class TestingASTTransformation implements ASTTransformation {
 	
 	private final Map<String, List<List<ColumnElement>>> expressions;
 	private List<List<ColumnElement>> activeTable;
+	private int tableColumnCount;
 	
 	public TestingASTTransformation() {
 		expressions = new HashMap<String, List<List<ColumnElement>>>();
@@ -41,7 +42,7 @@ public class TestingASTTransformation implements ASTTransformation {
 		if (nodes != null) {
 			for (ASTNode node : nodes) {
 				if (node instanceof ModuleNode) {
-					handleModuleNode((ModuleNode) node);
+					//handleModuleNode((ModuleNode) node);
 				}
 			}
 			
@@ -66,22 +67,22 @@ public class TestingASTTransformation implements ASTTransformation {
 	private void handleClassNode(ClassNode node) {
 		node.visitContents(new GroovyClassVisitor() {
 
-			public void visitClass(ClassNode arg0) {
+			public void visitClass(ClassNode node) {
 			}
 
-			public void visitConstructor(ConstructorNode arg0) {
+			public void visitConstructor(ConstructorNode node) {
 			}
 
-			public void visitField(FieldNode arg0) {
+			public void visitField(FieldNode node) {
 			}
 
-			public void visitMethod(MethodNode arg0) {
-				if ("run".equals(arg0.getName())) {
-					handleStatement(arg0.getCode());
+			public void visitMethod(MethodNode node) {
+				if ("run".equals(node.getName())) {
+					handleStatement(node.getCode());
 				}
 			}
 
-			public void visitProperty(PropertyNode arg0) {
+			public void visitProperty(PropertyNode node) {
 			}
 			
 		});
@@ -111,6 +112,13 @@ public class TestingASTTransformation implements ASTTransformation {
 
 		List<ColumnElement> list = new LinkedList<ColumnElement>();
 		getColumns(expression, list);
+		if (activeTable.size() > 0) {
+			if (tableColumnCount != list.size()) {
+				throw new IllegalStateException("Columns do not match");
+			}
+		} else {
+			tableColumnCount = list.size();
+		}
 		activeTable.add(list);
 	}
 	

@@ -3,7 +3,6 @@ package com.seitenbau.testdatadsl.dbunitdemo.groovy;
 import groovy.lang.GroovyShell;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
 
 public class Groovy {
 

@@ -3,9 +3,46 @@
 
 \section{Grundlegende Konzepte}
 noch zu erklären:
+- benutzte Terminologie (SUT, Fixture)
 - Modellgetriebene Software-Entwicklung
-- benutzte Terminologie
+- Tests, Testdatengenerierung
+- Literatur nutzen
 
+\subsection{Modellgetriebene Software-Entwicklung}
+
+- Modell, Meta-Modell, Modell-Ebenen
+
+\subsection{Software-Tests}
+
+- Test Fixture \cite[814]{XUNIT_TEST_PATTERNS}
+- System under test \cite[810f]{XUNIT_TEST_PATTERNS}
+
+
+
+\section{Allgemeine Anforderungen}
+- Beschreibung der Ausgangssituation
+- Datenbank-Anwendungen mit Java-Basis
+- Tests mit JUnit und DbUnit
+- Zirkuläre Abhängigkeiten?
+
+
+\subsection{Datenbanktests}
+	Eine übliche Vorgehensweise, Systeme in Verbindung mit Datenbanken zu testen, stellt \textit{Back Door Manipulation} dar.
+	Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
+	Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
+	verhalten hat, wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen - ebenfalls am zu testenden System vorbei.
+	\cite[327ff]{XUNIT_TEST_PATTERNS}
+	
+	\todo{Grafik Back Door Manipulation}
+	
+	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
+	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
+	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
+	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
+	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
+	verwendeten Datenbank-System. Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
+	zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
+	Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
 
 \section{Fortlaufendes Beispiel}
@@ -36,7 +73,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\subsection{Gewählte Problemstellung}
 	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
 	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
-	Umsetzung wird zugunsten der Komplexität verzichtet. Es beinhaltet die folgenden vier Entitätstypen:
+	Umsetzung wird zugunsten der Komplexität verzichtet. Personenbezogene Begriffe werden in der maskulinen Form verwendet,
+	ohne dabei Aussagen über das Geschlecht repräsentierter Personen zu machen. Es beinhaltet die folgenden vier Entitätstypen:
 
 	\begin{itemize}
 		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltungen.
@@ -56,18 +94,16 @@ Problemstellung umsetzen und die Testdaten modellieren.
 			(z.B. Nachschreibprüfung).
 		\item Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen
 			Prüfungen Aufsicht haben. 
-		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
-			vielen Studenten besucht werden.
-		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen und Lehrveranstaltungen von beliebig
-			vielen Studenten besucht werden.
+		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch mindestens
+		  drei Besucher um stattzufinden und sind aus Kapazitätsgründen auf 100 Teilnehmer begrenzt.
 		\item Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
 			kann beliebig viele Tutoren haben. 
 		\item Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen
 			Anzahl von Studenten geschrieben werden.
 	\end{itemize}
 
-	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms. Sie veranschaulicht,
-	dass es keine 1:1 Beziehung gibt. Eine 1:1-Beziehung kann jedoch als Spezialfall einer 1:n-Beziehung angesehen werden.
+	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms.
+	\todo{Beispiel erweitern für 1:1-Beziehungen} \todo{Attribute einführen} \todo{Diagramm evtl in Chen-Notation}
 
 	\begin{figure}[H]
 		\centering
@@ -75,15 +111,15 @@ Problemstellung umsetzen und die Testdaten modellieren.
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
-	Das entsprechende relationale Modell sieht folgendermaßen aus:
+	Das entsprechende relationale Modell wird in Abbildung \ref{img:example_relational} dargestellt.
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_relational.pdf}
 		\caption{Relationales Modell des fortlaufenden Beispiels}\label{img:example_relational}
 	\end{figure}
 
-	\subsection{Wahl der Testdaten}
-	\label{sec:grundlagen:beispiel:testdaten}
+	\subsection{Beispiel-Use-Cases}
+	\label{sec:grundlagen:beispiel:usecases}
 
 	Um den einen Kompromiss für die Komplexität der Testdaten zu finden, werden vier Fragestellungen definiert. Diese
 	Fragen sollen dabei helfen, den Umfang der Testdaten bestimmen zu können. Die Fragen stellen sich wie folgt dar:
@@ -101,22 +137,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	
 	
 
-\section{Modellierung der Testdaten in DbUnit}
+\section{Modellierungsvarianten der Testdaten für DbUnit}
 \label{sec:grundlagen:modellierung}
-
-	Eine übliche Vorgehensweise, Systeme in Verbindung mit Datenbanken zu testen, stellt \textit{Back Door Manipulation} dar.
-	Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
-	Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
-	verhalten hat, wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen - ebenfalls am zu testenden System vorbei.
-	\cite[327ff]{XUNIT_TEST_PATTERNS}
-	
-	\todo{Grafik Back Door Manipulation}
-	
-	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
-	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
-	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
-	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
-	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig von der Plattform.
 	
 	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei Datasets
 	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus \textit{DbUnit} bieten allerdings
@@ -132,8 +154,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	
 	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} bietet dazu die Klasse
 	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
-	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{professor} und \textit{lehrveranstaltung}
-	definiert wedren.
+	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung}
+	definiert werden.
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]

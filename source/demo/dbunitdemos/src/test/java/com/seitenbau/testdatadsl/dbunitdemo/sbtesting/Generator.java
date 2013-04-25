@@ -51,7 +51,7 @@ public class Generator {
 		db.addTable("schreibt")
 				.addColumn("student_id", DataType.BIGINT, studenten.ref("matrikelnummer"))
 				.addColumn("pruefung_id", DataType.BIGINT, pruefungen.ref("id"));
-
+	
 		db.generate();
 	}
 }
