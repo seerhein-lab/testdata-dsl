@@ -30,11 +30,6 @@ def fixture = [
     P_DPATTERNS | DPATTERNS         | "M30" | "2013-01-06 12:00:00"
   },
 
-//	"student": {
-//    REF        | matrikelnummer | name         | vorname    | studiengang | semester | immatrikuliert_seit | besucht   | istTutor | schreibt
-//    MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"       | 4        | "2011-09-01"        | VSYS      | VSYS     | P_VSYS
-//    MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"       | 3        | "2012-03-01"        | DPATTERNS | _        | _
-//	}
   "student": {
     matrikelnummer | name         | vorname    | studiengang | semester | immatrikuliert_seit | besucht   | istTutor | schreibt
     287336         | "Moll"       | "Nikolaus" | "MSI"       | 4        | "2011-09-01"        | VSYS      | VSYS     | P_VSYS
