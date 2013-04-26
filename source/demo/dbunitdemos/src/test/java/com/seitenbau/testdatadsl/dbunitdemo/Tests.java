@@ -14,13 +14,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovyDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyDataSetProvider2;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 
 public class Tests
 {
 
-  private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider();
+  private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider2();
 
   // XmlDataSetProvider();
   // JavaDataSetProvider();
