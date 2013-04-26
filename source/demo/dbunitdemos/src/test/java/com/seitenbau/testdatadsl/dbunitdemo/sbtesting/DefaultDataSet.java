@@ -13,19 +13,19 @@ public class DefaultDataSet extends DBUnitExamplesDataSet {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
 	
+      RowBuilder_Professor waesch = 
+          table_Professor
+            .insertRow()
+              .setName("Wäsch")
+              .setVorname("Jürgen")
+              .setTitel("Prof. Dr.-Ing.")
+              .setFakultaet("Informatik");
 			RowBuilder_Professor haase = 
 					table_Professor
 						.insertRow()
 							.setName("Haase")
 							.setVorname("Oliver")
 							.setTitel("Prof. Dr.")
-							.setFakultaet("Informatik");
-			RowBuilder_Professor waesch = 
-					table_Professor
-						.insertRow()
-							.setName("Wäsch")
-							.setVorname("Jürgen")
-							.setTitel("Prof. Dr.-Ing.")
 							.setFakultaet("Informatik");
 	
 			RowBuilder_Lehrveranstaltung vsys = 
@@ -80,11 +80,11 @@ public class DefaultDataSet extends DBUnitExamplesDataSet {
 			
 			table_Beaufsichtigt
 				.insertRow()
-					.refProfessorId(haase)
+				  .refProfessorId(waesch)
 					.refPruefungId(p_vsys)
 				.insertRow()
-					.refPruefungId(p_design_patterns)
-					.refProfessorId(waesch);
+				  .refProfessorId(haase)
+				  .refPruefungId(p_design_patterns);
 			
 			table_Besucht
 				.insertRow()

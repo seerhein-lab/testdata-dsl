@@ -12,17 +12,17 @@ public class OldDefaultDataSet extends DBUnitExamplesDataSet {
 			SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
 	
 			table_Professor
+        .insertRow()
+          .setId(Parameters.Professor.WAESCH_ID)
+          .setName("Wäsch")
+          .setVorname("Jürgen")
+          .setTitel("Prof. Dr.-Ing.")
+          .setFakultaet("Informatik")
 				.insertRow()
 					.setId(Parameters.Professor.HAASE_ID)
 					.setName("Haase")
 					.setVorname("Oliver")
 					.setTitel("Prof. Dr.")
-					.setFakultaet("Informatik")
-				.insertRow()
-					.setId(Parameters.Professor.WAESCH_ID)
-					.setName("Wäsch")
-					.setVorname("Jürgen")
-					.setTitel("Prof. Dr.-Ing.")
 					.setFakultaet("Informatik");
 		
 			table_Lehrveranstaltung
@@ -68,13 +68,12 @@ public class OldDefaultDataSet extends DBUnitExamplesDataSet {
 					.setImmatrikuliertSeit(dateFormat.parse("01.03.2012 00:00:00"));
 			
 			table_Beaufsichtigt
+        .insertRow()
+          .setProfessorId(Parameters.Professor.WAESCH_ID)
+          .setPruefungId(Parameters.Pruefung.VERTEILTE_SYSTEME_ID)
 				.insertRow()
 					.setProfessorId(Parameters.Professor.HAASE_ID)
-					.setPruefungId(Parameters.Pruefung.VERTEILTE_SYSTEME_ID);
-			table_Beaufsichtigt
-				.insertRow()
-					.setPruefungId(Parameters.Pruefung.VERTEILTE_SYSTEME_ID)
-					.setProfessorId(Parameters.Professor.WAESCH_ID);
+					.setPruefungId(Parameters.Pruefung.DESIGN_PATTERNS_ID);
 			
 			table_Besucht
 				.insertRow()

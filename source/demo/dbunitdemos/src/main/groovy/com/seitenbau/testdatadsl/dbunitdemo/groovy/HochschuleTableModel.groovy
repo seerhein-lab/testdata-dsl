@@ -175,7 +175,7 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["lehrveranstaltung"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " hat Prüfung "  + variables[value.name].rowBuilder
+        println row.values["typ"] + " ist Prüfung von "  + variables[value.name].rowBuilder
         row.rowBuilder.refLehrveranstaltungId(variables[value.name].rowBuilder)
       }
     }
