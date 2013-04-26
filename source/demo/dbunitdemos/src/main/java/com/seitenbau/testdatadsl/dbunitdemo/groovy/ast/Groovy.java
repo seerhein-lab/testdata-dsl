@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.groovy;
+package com.seitenbau.testdatadsl.dbunitdemo.groovy.ast;
 
 import groovy.lang.GroovyShell;
 

@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.groovy;
+package com.seitenbau.testdatadsl.dbunitdemo.groovy.ast;
 
 import java.util.HashMap;
 import java.util.LinkedList;
