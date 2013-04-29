@@ -53,11 +53,14 @@ noch zu erklären:
 
 
 \section{Allgemeine Anforderungen}
-- Beschreibung der Ausgangssituation
-- Datenbank-Anwendungen mit Java-Basis
-- Tests mit JUnit und DbUnit
-- Zirkuläre Abhängigkeiten?
 
+Die Firma \textit{Seitenbau GmbH} verwendet für die Java-basierten Datenbankanwendungen das Framework \textit{JUnit} und
+die Erweiterung \textit{DbUnit}. Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
+Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen,
+so bleibt die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile verschiedener
+Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:grundlagen:modellierung} beschrieben.
+
+- Zirkuläre Abhängigkeiten?
 
 \section{Fortlaufendes Beispiel}
 \label{sec:grundlagen:beispiel}
@@ -577,7 +580,7 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	\end{lstlisting}
 	\lstSetNotmal
 	
-	Probleme bzw. Nachteile in der Darstellung können auftreten, wenn sich die Länge der Wert in einer Spalte stark unterscheidet.
+	Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark variiert.
 	Der Entwickler ist selbst dafür verantwortlich, die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter 
 	Umständen verzichtet werden, da sie von verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten
 	wächst diese Darstellung horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung
