@@ -16,7 +16,7 @@ id &lt;&lt;PK&gt;&gt;
 name : varchar
 vorname : varchar
 titel : varchar
-fakultaet : varchar</panel_attributes>
+fakultaet : ENUM</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
