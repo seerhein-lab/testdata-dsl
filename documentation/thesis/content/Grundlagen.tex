@@ -20,19 +20,20 @@ noch zu erklären:
 	es sich je nach Test und Kontext auf Klassen, Objekte, Methoden, vollständige Anwendungen oder Teile davon beziehen. 
 	\cite[810f]{XUNIT_TEST_PATTERNS}
 
-	Alle Voraussetzungen für einen Testlauf werden unter der Bezeichnung \textit{Test Fixture} zusammengefasst.  \todo{weiter ausformulieren}
-	\cite[814]{XUNIT_TEST_PATTERNS}
+	Alle Voraussetzungen und Vorbedingungen für einen Testlauf werden unter der Bezeichnung \textit{Test Fixture} zusammengefasst.
+	Es repräsentiert den Zustand des SUT vor den Tests. \cite[814]{XUNIT_TEST_PATTERNS} Es gibt verschiedene Arten von Test Fixtures.
+	Die im Rahmen dieser Arbeit relevanten sind \textit{Standard Fixture} und \textit{Minimal Fixture}.
+	
+	Ein Test Fixture wird als Standard Fixture bezeichnet, wenn es für alle bzw. fast alle Tests verwendet werden kann. Ein Standard
+	Feature reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die einzelnen Tests, sondern verhindert darüber hinaus,
+	dass der Test-Ingenieur  sich bei verschiedenen Tests immer wieder in unterschiedliche Test-Daten hineinversetzen muss. Nur in
+	Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden. (\cite[305]{XUNIT_TEST_PATTERNS})
+	
+	Minimal Fixtures stellen Test Fixtures dar, deren Umfang auf ein Minimum reduziert wurde. Dadurch lassen sich Minimal Fixtures
+	im Allgemeinen leichter verstehen. Das Reduzieren der Daten kann auch zu Leistungsvorteilen bei der Ausführung der Tests führen.
+	(\cite[302]{XUNIT_TEST_PATTERNS})
 
-
-
-\section{Allgemeine Anforderungen}
-- Beschreibung der Ausgangssituation
-- Datenbank-Anwendungen mit Java-Basis
-- Tests mit JUnit und DbUnit
-- Zirkuläre Abhängigkeiten?
-
-
-\subsection{Datenbanktests}
+  %\subsection{Datenbanktests}
 	Eine übliche Vorgehensweise, Systeme in Verbindung mit Datenbanken zu testen, stellt \textit{Back Door Manipulation} dar.
 	Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
 	Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
@@ -49,6 +50,13 @@ noch zu erklären:
 	verwendeten Datenbank-System. Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
 	zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
 	Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
+
+
+\section{Allgemeine Anforderungen}
+- Beschreibung der Ausgangssituation
+- Datenbank-Anwendungen mit Java-Basis
+- Tests mit JUnit und DbUnit
+- Zirkuläre Abhängigkeiten?
 
 
 \section{Fortlaufendes Beispiel}
@@ -68,9 +76,6 @@ Problemstellung umsetzen und die Testdaten modellieren.
 
 	\todo{ausführlicher erklären:}
 	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen.
-	\textit{Standard Fixture} bedeutet, dass die selben Testdaten für alle Tests verwendet werden 
-	(\cite[317]{XUNIT_TEST_PATTERNS}). Nur in Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden.
-	Dadurch muss sich der Tester für verschiedene Tests nicht in unterschiedliche Daten hineinversetzen.
 	Ein \textit{Minimal Fixture} kann die Laufzeit der Tests verbessern, in dem das Fixture nur Daten enthält, die für den
 	Test notwendig sind (\cite[302]{XUNIT_TEST_PATTERNS}). Da auf unnötige Testdaten verzichtet wird, kann der Tester die 
 	Daten leichter überblicken.
@@ -147,18 +152,17 @@ Problemstellung umsetzen und die Testdaten modellieren.
 \label{sec:grundlagen:modellierung}
 	
 	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei Datasets
-	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus \textit{DbUnit} bieten allerdings
+	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus DbUnit bieten allerdings
 	nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der Datenbank beinhaltet. 
 	
-	Im Folgenden werden verschiedene Modellierungsarten für \textit{DbUnit}-Datasets diskutiert. Die Erkenntnisse sollen in die 
+	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-Datasets diskutiert. Die Erkenntnisse sollen in die 
 	Anforderungen an die DSL einfließen.
 	
 
 	\subsection{XML-Dataset}
 	\label{sec:grundlagen:modellierung:xml}
-
 	
-	Eine Variante, ein Dataset für \textit{DbUnit} zu modellieren, stellt XML dar. \textit{DbUnit} bietet dazu die Klasse
+	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu die Klasse
 	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
 	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung}
 	definiert werden.
@@ -221,14 +225,14 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	aus. Die Meta-Informationen sind redundant und erschweren die Pflege.
 	
 	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
-	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand angegeben werden, die Werte tauchen redundant auf und sind 
-	ohne Kommentare in umfangreicheren Datasets für Betrachter nur schwer nachzuvollziehen. Die Beziehungen werden auf 
-	einer sehr niedrigen Abstraktionsebene ausgedrückt und 
+	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand gepflegt werden. In umfangreicheren Datasets sind 
+	unkommentierte Beziehungen für Betrachter nur schwer nach zu vollziehen, da ein Schlüsselwert üblicherweise keinen
+	unmittelbaren Rückschluss auf den referenzierten Datensatz erlaubt.
 	
 	Ein großer Nachteil von XML-Datasets ist, dass der erwartete Datenbankzustand selbst wieder den kompletten
-	Datenbankbestand umfassen muss. Eine inkrementelle bzw. differentielle Definition der erwarteten Änderungen ist über
-	XML-Datasets nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten, sorgen für ein
-	hohes Maß an Redundanz.
+	Datenbankbestand umfassen muss. DbUnit erlaubt zwar mehrere Datasets zu einem zusammenzufassen, das Entfernen 
+	von Datensätzen ist darüber aber nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten,
+	sorgen für ein hohes Maß an Redundanz.
 	
 	Datasets in XML wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
 	Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 
@@ -237,17 +241,54 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	% Modellieren Assoziativer Tabellen ansprechen?
 
 
-	\subsection{Java-Dataset}
+  FlatXmlDataSet
+
+	\lstSetXML
+	\begin{lstlisting}[caption=Flat XML Dataset, label=listing:flatxmldataset]
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <PROFESSOR id="1" 
+        name="Wäsch"
+        vorname="Jürgen"
+        titel="Prof. Dr.-Ing."
+        fakultaet="Informatik" />
+    <PROFESSOR id="2" 
+        name="Haase"
+        vorname="Oliver"
+        titel="Prof. Dr."
+        fakultaet="Informatik" />
+    <LEHRVERANSTALTUNG id="1"
+        professor_id="2"
+        name="Verteilte Systeme"
+        sws="4"
+        ects="5" />
+    <LEHRVERANSTALTUNG id="2"
+        professor_id="2"
+        name="Design Patterns"
+        sws="4"
+        ects="3" />
+...
+</dataset>
+\end{lstlisting}
+
+	- Meta-Informationen als Sprachelement
+	- Immer noch eine Zeile pro Wert (starkes vertikales Wachsen)
+	- Deutlich kompakter, dafür ggf. eigene DTD notwendig
+
+
+
+	\subsection{Default-Dataset}
 	\label{sec:grundlagen:modellierung:java}
 
 	
-	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, können Java-Datasets verwendet
-	werden. Diese lassen sich dynamisch erstellen. Java-Datasets lösen einen Teil der Redundanz-Probleme, da symbolische
-	Konstanten anstelle von numerischen verwendet werden können. Das Erzeugen des Datasets, das den erwarteten 
-	Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit weniger Redundanz lösbar.
+	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, kann das Default-Dataset verwendet
+	werden. Dieses lässt sich programmatisch, also dynamisch zur Laufzeit, erstellen. Durch die Nutzung von symbolischen
+	Konstanten als Schlüsselwerte können Beziehungen ausdrucksstärker modelliert werden. Das Erzeugen des Datasets, das
+	den nach einem Test erwarteten Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit
+	weniger Redundanz lösbar.
 
 	\lstSetJava
-	\begin{lstlisting}[caption=Java Dataset, label=listing:javadataset]
+	\begin{lstlisting}[caption=Default Dataset, label=listing:javadataset]
 DefaultTable professor = new DefaultTable(
 		"professor",
 		new Column[] { 
@@ -294,7 +335,7 @@ lehrveranstaltung.addRow(new Object[] {
 lehrveranstaltung.addRow(new Object[] {
 			Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID,
 			Parameters.Professor.HAASE_ID,
-			"Concurrency and Design Patterns",
+			"Design Patterns",
 			4,
 			3,
 		});
@@ -302,24 +343,28 @@ dataSet.addTable(lehrveranstaltung);
   \end{lstlisting}
 	
 	Diese Umsetzung löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen über die Tabellen
-	modelliert werden. Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst zur Laufzeit erkannt.
-	Der Einsatz von symbolischen Konstanten verringert die Redundanz zwar und erleichtert damit die Pflege des Datasets,
-	dennoch lassen sich Konstanten doppelt belegen und es können auch Primärschlüssel einer falschen Datenbank als
+	modelliert werden (Zeilen 3-9 und 29-36). Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst
+	zur Laufzeit erkannt. Der Einsatz von symbolischen Konstanten erleichtert zwar die Pflege des Datasets,
+	dennoch lassen sich Konstanten doppelt belegen oder auch Primärschlüssel einer falschen Datenbank als
 	Fremdschlüssel angegeben werden.
 	
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
 	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
 	nur wenig Vorteile gegenüber den XML-Datasets.
 
-	\subsection{SB Testing DSL}
+	\subsection{SB Testing DB}
 	\label{sec:grundlagen:modellierung:sbtesting}
 	
-	Das \textit{SB Testing} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Java-Datasets aufzufangen.
-	Ein Generator erzeugt es aus den Meta-Informationen zu den Entitäten eine einfache Java-DSL. Über diese DSL können
-	die Testdaten modelliert werden. Die \textit{SB Testing DSL} erzeugt bei Bedarf ein \textit{DbUnit}-Dataset. 
-	Entgegen der \textit{DbUnit}-Datasets können die Daten innerhalb der \textit{SB Testing DSL} beliebig verändert werden - und
-	aus den veränderten Daten ein neues Dataset erstellt, z.B. nach dem Löschen einer Zeile. Außerdem bietet die DSL
-	Typsicherheit zur Compilierzeit. Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen Varianten.
+	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Default-Datasets
+	aufzufangen.
+	Ein Generator erzeugt es aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL können
+	die Testdaten modelliert werden. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
+  in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung mit
+	DbUnit zu verwenden, kann aus dem Modell ein DbUnit-Dataset erzeugt werden. Der Vorteil dieses zusätzlichen Modells ist,
+	dass sich daraus verhältnismäßig einfach Varianten von DbUnit-Datasets erzeugen lassen, z.B. ein Dataset mit dem Ausgangszustand,
+	und ein Dataset mit dem erwarteten Zustand am Ende des Tests. Die Java-DSL sorgt für Typsicherheit zur Compilierzeit\footnote{Gängige
+	Entwicklungsumgebungen wie Eclipse zeigen falsche Typen bereits während der Entwicklung an.}. 
+	Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen Varianten.
 	
 	\begin{figure}[H]
 		\centering

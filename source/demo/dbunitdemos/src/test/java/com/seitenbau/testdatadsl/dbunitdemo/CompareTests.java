@@ -15,6 +15,7 @@ public class CompareTests
   private static final IDataSetProvider GROOVY = new GroovyDataSetProvider();
   private static final IDataSetProvider GROOVY2 = new GroovyDataSetProvider2();
   private static final IDataSetProvider XML = new XmlDataSetProvider();
+  private static final IDataSetProvider FLATXML = new FlatXmlDataSetProvider();
   private static final IDataSetProvider JAVA = new JavaDataSetProvider();
   private static final IDataSetProvider SBTESTOLD = new OldSBTestingDataSetProvider();
   private static final IDataSetProvider SBTEST = new SBTestingDataSetProvider();
@@ -23,6 +24,12 @@ public class CompareTests
   public void testCompareXMLandJava() throws Exception
   {
     Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
+  }
+
+  @Test
+  public void testCompareXMLandFlatXML() throws Exception
+  {
+    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
   }
 
   @Test

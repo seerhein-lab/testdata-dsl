@@ -21,9 +21,12 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 public class Tests
 {
 
-  private static final IDataSetProvider PROVIDER = new GroovyDataSetProvider2();
+  private static final IDataSetProvider PROVIDER = new JavaDataSetProvider();
+      
+  // GroovyDataSetProvider2();
 
   // XmlDataSetProvider();
+  // FlatXmlDataSetProvider();
   // JavaDataSetProvider();
   // OldSBTestingDataSetProvider();
   // SBTestingDataSetProvider();
