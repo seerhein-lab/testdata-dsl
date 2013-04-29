@@ -15,6 +15,7 @@ noch zu erklären:
 	- Modell, Meta-Modell, Modell-Ebenen
 
 	\subsection{Software-Tests}
+	\label{sec:grundlagen:konzepte:tests}
 
 	Das zu testende System wird im Rahmen von Software-Tests als \textit{System Under Test} (abgekürzt SUT) bezeichnet. Dabei kann
 	es sich je nach Test und Kontext auf Klassen, Objekte, Methoden, vollständige Anwendungen oder Teile davon beziehen. 
@@ -60,6 +61,15 @@ Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB T
 so bleibt die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile verschiedener
 Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:grundlagen:modellierung} beschrieben.
 
+Die allgemeinen Anforderungen an die zu entwickelnde Sprache sind wie folgt:
+\begin{itemize}
+	\item \textbf{Plattform}: Die DSL soll sich in der bisherigen Werkzeug-Kette von Seitenbau nutzen lassen. Das heißt,
+		die DSL muss sich in Java integrieren lassen.
+	\item \textbf{Beziehungen}: Die Modellierung von Beziehungen soll vereinfacht werden.
+	\item \textbf{Typ-Sicherheit}: Beziehungen und Daten sollen Typ-sicher modelliert werden können. Spätestens bei der
+		Ausführung der Tests müssen ungültige Beziehungen und falsche Typen erkannt werden.
+\end{itemize}
+
 - Zirkuläre Abhängigkeiten?
 
 \section{Fortlaufendes Beispiel}
@@ -76,12 +86,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungstypen zwischen Entitätstypen. Dabei soll die
 	Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug
 	sein, um möglichst alle Beziehungsarten zwischen Entitäten abzudecken.
-
-	\todo{ausführlicher erklären:}
-	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen.
-	Ein \textit{Minimal Fixture} kann die Laufzeit der Tests verbessern, in dem das Fixture nur Daten enthält, die für den
-	Test notwendig sind (\cite[302]{XUNIT_TEST_PATTERNS}). Da auf unnötige Testdaten verzichtet wird, kann der Tester die 
-	Daten leichter überblicken.
+	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen
+	(\refsec{sec:grundlagen:konzepte:tests}).
 	
 
 	\subsection{Gewählte Problemstellung}
@@ -360,7 +366,7 @@ dataSet.addTable(lehrveranstaltung);
 	
 	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Default-Datasets
 	aufzufangen.
-	Ein Generator erzeugt es aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL können
+	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL können
 	die Testdaten modelliert werden. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
   in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung mit
 	DbUnit zu verwenden, kann aus dem Modell ein DbUnit-Dataset erzeugt werden. Der Vorteil dieses zusätzlichen Modells ist,
@@ -450,7 +456,7 @@ RowBuilder_Lehrveranstaltung design_patterns =
 \subsection{Anforderungen an die DSL}
 
 Eine der wichtigsten Anforderungen an die DSL ist, dass sie sich in die bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss.
-Daraus folgt die Anforderung, dass sie sich in Java nutzen lassen soll. Ähnlich wie bei der \textit{SB Testing DSL} sollen Datasets auch 
+Daraus folgt die Anforderung, dass sie sich in Java nutzen lassen soll. Ähnlich wie bei \textit{SB Testing DB} sollen Datasets auch 
 nachträglich veränderbar sein. 
 
 Die Sprache soll auf syntaktischen Ballast verzichten und einen übersichtlichen Code zur Modellierung der Daten ermöglichen. Meta-Informationen sollten ausschließlich in Form von Sprachelementen auftauchen.
@@ -473,7 +479,7 @@ Beziehungen sollen sich einfach und typsicher modellieren lassen. Es soll nicht 
 
 	\subsubsection{Entwurf 1}
 	
-	Eine DSL, die sich stark an der \textit{SB Testing DSL} orientiert, könnte wie folgt aussehen:
+	Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
 	
 	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
