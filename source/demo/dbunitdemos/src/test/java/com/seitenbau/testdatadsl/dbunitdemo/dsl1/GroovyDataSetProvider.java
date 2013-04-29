@@ -43,114 +43,116 @@ public class GroovyDataSetProvider implements IDataSetProvider {
 	}
 
 	private IDataSet createDataSet() {
-		final DBUnitExamplesDataSet result = new DBUnitExamplesDataSet();
+		final DBUnitExamplesDataSet result = new DBUnitExamplesDataSet() {
+		  protected void initDataSet() {
+		    final DslBinding binding = new DslBinding();
+		    try {
+		      runDsl("dsl.txt", binding);
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		      return;
+		    }
 
-		final DslBinding binding = new DslBinding();
-		try {
-			runDsl("dsl.txt", binding);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		    for (Professor professor : binding.getProfessoren()) {
+		      RowBuilder_Professor row = table_Professor.insertRow();
+		      row.nextId();
+		      row.setName(professor.getName());
+		      row.setVorname(professor.getVorname());
+		      row.setTitel(professor.getTitel());
+		      row.setFakultaet(professor.getFakultaet());
+		      professor.setId(row.getId());
 
-		for (Professor professor : binding.getProfessoren()) {
-			RowBuilder_Professor row = result.table_Professor.insertRow();
-			row.nextId();
-			row.setName(professor.getName());
-			row.setVorname(professor.getVorname());
-			row.setTitel(professor.getTitel());
-			row.setFakultaet(professor.getFakultaet());
-			professor.setId(row.getId());
+		      if (professor.getLeitet() != null) {
+		        for (Object o : professor.getLeitet()) {
+		          Lehrveranstaltung lv = getValue(binding, o,
+		              Lehrveranstaltung.class);
 
-			if (professor.getLeitet() != null) {
-				for (Object o : professor.getLeitet()) {
-					Lehrveranstaltung lv = getValue(binding, o,
-							Lehrveranstaltung.class);
+		          RowBuilder_Lehrveranstaltung lrow = table_Lehrveranstaltung
+		              .insertRow();
+		          lrow.nextId();
+		          lrow.setProfessorId(row.getId());
+		          lrow.setName(lv.getName());
+		          lrow.setEcts(lv.getEcts());
+		          lrow.setSws(lv.getSws());
 
-					RowBuilder_Lehrveranstaltung lrow = result.table_Lehrveranstaltung
-							.insertRow();
-					lrow.nextId();
-					lrow.setProfessorId(row.getId());
-					lrow.setName(lv.getName());
-					lrow.setEcts(lv.getEcts());
-					lrow.setSws(lv.getSws());
+		          lv.setId(lrow.getId());
+		        }
+		      }
+		    }
 
-					lv.setId(lrow.getId());
-				}
-			}
-		}
+		    for (Student student : binding.getStudenten()) {
+		      RowBuilder_Student row = table_Student.insertRow();
+		      row.setMatrikelnummer(student.getMatrikelnummer());
+		      row.setName(student.getName());
+		      row.setVorname(student.getVorname());
+		      row.setStudiengang(student.getStudiengang());
+		      row.setSemester(student.getSemester());
+		      row.setImmatrikuliertSeit(student.getImmatrikuliert_seit());
+		    }
 
-		for (Student student : binding.getStudenten()) {
-			RowBuilder_Student row = result.table_Student.insertRow();
-			row.setMatrikelnummer(student.getMatrikelnummer());
-			row.setName(student.getName());
-			row.setVorname(student.getVorname());
-			row.setStudiengang(student.getStudiengang());
-			row.setSemester(student.getSemester());
-			row.setImmatrikuliertSeit(student.getImmatrikuliert_seit());
-		}
+		    for (Pruefung pruefung : binding.getPruefungen()) {
+		      RowBuilder_Pruefung row = table_Pruefung.insertRow();
+		      row.nextId();
+		      row.setTyp(pruefung.getTyp());
+		      row.setZeitpunkt(pruefung.getZeitpunkt());
+		      
+		      Lehrveranstaltung lv = getValue(binding,
+		          pruefung.getPrueftStoffVon(), Lehrveranstaltung.class);
+		      row.setLehrveranstaltungId(lv.getId());
 
-		for (Pruefung pruefung : binding.getPruefungen()) {
-			RowBuilder_Pruefung row = result.table_Pruefung.insertRow();
-			row.nextId();
-			row.setTyp(pruefung.getTyp());
-			row.setZeitpunkt(pruefung.getZeitpunkt());
-			
-			Lehrveranstaltung lv = getValue(binding,
-					pruefung.getPrueftStoffVon(), Lehrveranstaltung.class);
-			row.setLehrveranstaltungId(lv.getId());
+		      pruefung.setId(row.getId());
+		    }
 
-			pruefung.setId(row.getId());
-		}
+		    // Relations
+		    for (Professor professor : binding.getProfessoren()) {
+		      if (professor.getBeaufsichtigt() != null) {
+		        for (Object o : professor.getBeaufsichtigt()) {
+		          Pruefung pruefung = getValue(binding, o, Pruefung.class);
 
-		// Relations
-		for (Professor professor : binding.getProfessoren()) {
-			if (professor.getBeaufsichtigt() != null) {
-				for (Object o : professor.getBeaufsichtigt()) {
-					Pruefung pruefung = getValue(binding, o, Pruefung.class);
+		          RowBuilder_Beaufsichtigt row = table_Beaufsichtigt
+		              .insertRow();
+		          row.setPruefungId(pruefung.getId());
+		          row.setProfessorId(professor.getId());
+		        }
+		      }
+		    }
 
-					RowBuilder_Beaufsichtigt row = result.table_Beaufsichtigt
-							.insertRow();
-					row.setPruefungId(pruefung.getId());
-					row.setProfessorId(professor.getId());
-				}
-			}
-		}
+		    for (Student student : binding.getStudenten()) {
+		      if (student.getBesucht() != null) {
+		        for (Object o : student.getBesucht()) {
+		          Lehrveranstaltung lv = getValue(binding, o,
+		              Lehrveranstaltung.class);
+		          RowBuilder_Besucht row = table_Besucht.insertRow();
+		          row.setStudentId(student.getMatrikelnummer());
+		          row.setLehrveranstaltungId(lv.getId());
+		        }
+		      }
 
-		for (Student student : binding.getStudenten()) {
-			if (student.getBesucht() != null) {
-				for (Object o : student.getBesucht()) {
-					Lehrveranstaltung lv = getValue(binding, o,
-							Lehrveranstaltung.class);
-					RowBuilder_Besucht row = result.table_Besucht.insertRow();
-					row.setStudentId(student.getMatrikelnummer());
-					row.setLehrveranstaltungId(lv.getId());
-				}
-			}
+		      if (student.getIsttutor() != null) {
+		        for (Object o : student.getIsttutor()) {
+		          Lehrveranstaltung lv = getValue(binding, o,
+		              Lehrveranstaltung.class);
 
-			if (student.getIsttutor() != null) {
-				for (Object o : student.getIsttutor()) {
-					Lehrveranstaltung lv = getValue(binding, o,
-							Lehrveranstaltung.class);
+		          RowBuilder_Isttutor row = table_Isttutor
+		              .insertRow();
+		          row.setStudentId(student.getMatrikelnummer());
+		          row.setLehrveranstaltungId(lv.getId());
+		        }
+		      }
 
-					RowBuilder_Isttutor row = result.table_Isttutor
-							.insertRow();
-					row.setStudentId(student.getMatrikelnummer());
-					row.setLehrveranstaltungId(lv.getId());
-				}
-			}
+		      if (student.getSchreibt() != null) {
+		        for (Object o : student.getSchreibt()) {
+		          Pruefung p = getValue(binding, o, Pruefung.class);
 
-			if (student.getSchreibt() != null) {
-				for (Object o : student.getSchreibt()) {
-					Pruefung p = getValue(binding, o, Pruefung.class);
-
-					RowBuilder_Schreibt row = result.table_Schreibt
-							.insertRow();
-					row.setStudentId(student.getMatrikelnummer());
-					row.setPruefungId(p.getId());
-				}
-			}
-		}
+		          RowBuilder_Schreibt row = table_Schreibt
+		              .insertRow();
+		          row.setStudentId(student.getMatrikelnummer());
+		          row.setPruefungId(p.getId());
+		        }
+		      }
+		    }
+		  }
+		};
 
 		return result.createDBUnitDataSet();
 	}

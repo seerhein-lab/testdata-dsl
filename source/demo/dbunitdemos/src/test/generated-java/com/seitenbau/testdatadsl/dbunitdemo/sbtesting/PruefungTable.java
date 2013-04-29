@@ -22,7 +22,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowGetters_Professor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowGetters_Lehrveranstaltung;
@@ -33,7 +33,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowGetters_Be
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowGetters_Isttutor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowGetters_Schreibt;
 
-import static com.seitenbau.testing.util.DateString.*;
+import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -107,7 +107,7 @@ public class PruefungTable implements ITable
     T setTyp(java.lang.String value);
     T setTypRaw(Object value);
     T setZeitpunkt(String dateString);
-    T setZeitpunkt(Datum datum);
+    T setZeitpunkt(DateBuilder datum);
     T setZeitpunkt(java.util.Date value);
     T setZeitpunktRaw(Object value);
      
@@ -205,7 +205,7 @@ public class PruefungTable implements ITable
       data[ 3 ] = toDate(dateString);
       return this;
     }
-    public RowBuilder_Pruefung setZeitpunkt(Datum datum)
+    public RowBuilder_Pruefung setZeitpunkt(DateBuilder datum)
     {
       data[ 3 ] = toDate(datum);
       return this;
@@ -285,16 +285,16 @@ public class PruefungTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("id") ) {
+      if(column.equalsIgnoreCase(Columns.Id) ) {
         return data[0];
       }
-      if(column.equals("lehrveranstaltung_id") ) {
+      if(column.equalsIgnoreCase(Columns.LehrveranstaltungId) ) {
         return data[1];
       }
-      if(column.equals("typ") ) {
+      if(column.equalsIgnoreCase(Columns.Typ) ) {
         return data[2];
       }
-      if(column.equals("zeitpunkt") ) {
+      if(column.equalsIgnoreCase(Columns.Zeitpunkt) ) {
         return data[3];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -525,7 +525,7 @@ public class PruefungTable implements ITable
         }
         return this;
       }
-      public RowModify_Pruefung setZeitpunkt(Datum datum)
+      public RowModify_Pruefung setZeitpunkt(DateBuilder datum)
       {
         for(RowBuilder_Pruefung row : _rows) {
           row.setZeitpunkt(datum);
@@ -738,7 +738,7 @@ public class PruefungTable implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(Datum datum)
+  static Date toDate(DateBuilder datum)
   {
     return datum.asDate();
   }

@@ -2,7 +2,7 @@ package com.seitenbau.testdatadsl.dbunitdemo.sbtesting;
 
 import java.util.Date;
 import com.seitenbau.testing.util.DateUtil;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 
 /* *******************************************************

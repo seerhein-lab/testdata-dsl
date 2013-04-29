@@ -22,7 +22,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowGetters_Professor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowGetters_Lehrveranstaltung;
@@ -33,7 +33,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowGetters_Be
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowGetters_Isttutor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowGetters_Schreibt;
 
-import static com.seitenbau.testing.util.DateString.*;
+import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -213,10 +213,10 @@ public class SchreibtTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("student_id") ) {
+      if(column.equalsIgnoreCase(Columns.StudentId) ) {
         return data[0];
       }
-      if(column.equals("pruefung_id") ) {
+      if(column.equalsIgnoreCase(Columns.PruefungId) ) {
         return data[1];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -573,7 +573,7 @@ public class SchreibtTable implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(Datum datum)
+  static Date toDate(DateBuilder datum)
   {
     return datum.asDate();
   }

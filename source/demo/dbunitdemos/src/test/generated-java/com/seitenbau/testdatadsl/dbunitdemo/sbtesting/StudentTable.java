@@ -22,7 +22,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowGetters_Professor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowGetters_Lehrveranstaltung;
@@ -33,7 +33,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowGetters_Be
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowGetters_Isttutor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowGetters_Schreibt;
 
-import static com.seitenbau.testing.util.DateString.*;
+import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -118,7 +118,7 @@ public class StudentTable implements ITable
     T setSemester(java.lang.Integer value);
     T setSemesterRaw(Object value);
     T setImmatrikuliertSeit(String dateString);
-    T setImmatrikuliertSeit(Datum datum);
+    T setImmatrikuliertSeit(DateBuilder datum);
     T setImmatrikuliertSeit(java.util.Date value);
     T setImmatrikuliertSeitRaw(Object value);
      
@@ -245,7 +245,7 @@ public class StudentTable implements ITable
       data[ 5 ] = toDate(dateString);
       return this;
     }
-    public RowBuilder_Student setImmatrikuliertSeit(Datum datum)
+    public RowBuilder_Student setImmatrikuliertSeit(DateBuilder datum)
     {
       data[ 5 ] = toDate(datum);
       return this;
@@ -331,22 +331,22 @@ public class StudentTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("matrikelnummer") ) {
+      if(column.equalsIgnoreCase(Columns.Matrikelnummer) ) {
         return data[0];
       }
-      if(column.equals("name") ) {
+      if(column.equalsIgnoreCase(Columns.Name) ) {
         return data[1];
       }
-      if(column.equals("vorname") ) {
+      if(column.equalsIgnoreCase(Columns.Vorname) ) {
         return data[2];
       }
-      if(column.equals("studiengang") ) {
+      if(column.equalsIgnoreCase(Columns.Studiengang) ) {
         return data[3];
       }
-      if(column.equals("semester") ) {
+      if(column.equalsIgnoreCase(Columns.Semester) ) {
         return data[4];
       }
-      if(column.equals("immatrikuliert_seit") ) {
+      if(column.equalsIgnoreCase(Columns.ImmatrikuliertSeit) ) {
         return data[5];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -633,7 +633,7 @@ public class StudentTable implements ITable
         }
         return this;
       }
-      public RowModify_Student setImmatrikuliertSeit(Datum datum)
+      public RowModify_Student setImmatrikuliertSeit(DateBuilder datum)
       {
         for(RowBuilder_Student row : _rows) {
           row.setImmatrikuliertSeit(datum);
@@ -849,7 +849,7 @@ public class StudentTable implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(Datum datum)
+  static Date toDate(DateBuilder datum)
   {
     return datum.asDate();
   }

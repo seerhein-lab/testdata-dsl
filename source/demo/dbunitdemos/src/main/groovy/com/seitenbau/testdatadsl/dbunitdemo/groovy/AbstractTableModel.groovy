@@ -2,6 +2,8 @@ package com.seitenbau.testdatadsl.dbunitdemo.groovy
 
 import groovy.transform.ToString
 
+import org.dbunit.dataset.IDataSet
+
 class TableModel {
   String name
   
@@ -84,7 +86,7 @@ abstract class AbstractTableModel
   static def placeHolder = new Var();
 
   def tables = [:]
-
+  
   def apply(Map fixtureData) {
     TableParser parser = new TableParser()
 
@@ -176,6 +178,10 @@ abstract class AbstractTableModel
         invokeSetter(rowBuilder, e.key, e.value)
       }
     }
+  }
+  
+  IDataSet createDBUnitDataSet() {
+    return dataset.createDBUnitDataSet();
   }
 
 }

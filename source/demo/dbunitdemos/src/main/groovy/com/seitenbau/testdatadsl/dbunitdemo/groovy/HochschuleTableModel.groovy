@@ -7,9 +7,12 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_P
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student
 
 // pseudo-generated
-@Mixin(DBUnitExamplesDataSet)
 class HochschuleTableModel extends AbstractTableModel {
-
+  
+  def dataset = new DBUnitExamplesDataSet() {
+    void initDataSet() { }
+  }
+  
   def HochschuleTableModel() {
     TableModel professor = new TableModel(name: "professor")
     professor.addColumn(new TableColumn(name: "id"))
@@ -50,7 +53,7 @@ class HochschuleTableModel extends AbstractTableModel {
     student.addColumn(new TableColumn(name: "istTutor", ref: lehrveranstaltung.ref("id")))
     student.addColumn(new TableColumn(name: "schreibt", ref: pruefung.ref("id")))
   }
-
+  
   def applyReferences(tabledata, variables) {
     def professor = tabledata["professor"]
     for (TableDataRow row in professor) {
@@ -79,13 +82,13 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["leitet"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " leitet "  + variables[value.name].rowBuilder
+        println row.values["name"] + " leitet " + value.name + " "+ variables[value.name].rowBuilder
         variables[value.name].rowBuilder.refProfessorId(row.rowBuilder)
       }
     }
     if (value instanceof Values) {
       for (Var actualValue : value.values) {
-        println row.values["name"] + " leitet "  + variables[actualValue.name].rowBuilder
+        println row.values["name"] + " leitet " + actualValue.name + " " + variables[actualValue.name].rowBuilder
         variables[actualValue.name].rowBuilder.refProfessorId(row.rowBuilder)
       }
     }
@@ -95,16 +98,16 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["beaufsichtigt"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " beaufsichtigt "  + variables[value.name].rowBuilder
-        table_Beaufsichtigt.insertRow()
+        println row.values["name"] + " beaufsichtigt " + value.name + " " + variables[value.name].rowBuilder
+        dataset.table_Beaufsichtigt.insertRow()
             .refProfessorId(row.rowBuilder)
             .refPruefungId(variables[value.name].rowBuilder)
       }
     }
     if (value instanceof Values) {
       for (Var actualValue : value.values) {
-        println row.values["name"] + " beaufsichtigt "  + variables[actualValue.name].rowBuilder
-        table_Beaufsichtigt.insertRow()
+        println row.values["name"] + " beaufsichtigt " + actualValue.name + " " + variables[actualValue.name].rowBuilder
+        dataset.table_Beaufsichtigt.insertRow()
             .refProfessorId(row.rowBuilder)
             .refPruefungId(variables[actualValue.name].rowBuilder)
       }
@@ -115,16 +118,16 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["besucht"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " besucht "  + variables[value.name].rowBuilder
-        table_Besucht.insertRow()
+        println row.values["name"] + " besucht " + value.name + " " + variables[value.name].rowBuilder
+        dataset.table_Besucht.insertRow()
             .refStudentId(row.rowBuilder)
             .refLehrveranstaltungId(variables[value.name].rowBuilder)
       }
     }
     if (value instanceof Values) {
       for (Var actualValue : value.values) {
-        println row.values["name"] + " besucht "  + variables[actualValue.name].rowBuilder
-        table_Besucht.insertRow()
+        println row.values["name"] + " besucht " + actualValue.name + " " + variables[actualValue.name].rowBuilder
+        dataset.table_Besucht.insertRow()
             .refStudentId(row.rowBuilder)
             .refLehrveranstaltungId(variables[actualValue.name].rowBuilder)
       }
@@ -135,16 +138,16 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["istTutor"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " istTutor "  + variables[value.name].rowBuilder
-        table_Isttutor.insertRow()
+        println row.values["name"] + " istTutor " + value.name + " " + variables[value.name].rowBuilder
+        dataset.table_Isttutor.insertRow()
             .refStudentId(row.rowBuilder)
             .refLehrveranstaltungId(variables[value.name].rowBuilder)
       }
     }
     if (value instanceof Values) {
       for (Var actualValue : value.values) {
-        println row.values["name"] + " istTutor "  + variables[actualValue.name].rowBuilder
-        table_Isttutor.insertRow()
+        println row.values["name"] + " istTutor " + actualValue.name + " " + variables[actualValue.name].rowBuilder
+        dataset.table_Isttutor.insertRow()
             .refStudentId(row.rowBuilder)
             .refLehrveranstaltungId(variables[actualValue.name].rowBuilder)
       }
@@ -155,16 +158,16 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["schreibt"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["name"] + " schreibt "  + variables[value.name].rowBuilder
-        table_Schreibt.insertRow()
+        println row.values["name"] + " schreibt " + value.name + " " + variables[value.name].rowBuilder
+        dataset.table_Schreibt.insertRow()
             .refStudentId(row.rowBuilder)
             .refPruefungId(variables[value.name].rowBuilder)
       }
     }
     if (value instanceof Values) {
       for (Var actualValue : value.values) {
-        println row.values["name"] + " schreibt "  + variables[actualValue.name].rowBuilder
-        table_Schreibt.insertRow()
+        println row.values["name"] + " schreibt " + actualValue.name + " " + variables[actualValue.name].rowBuilder
+        dataset.table_Schreibt.insertRow()
             .refStudentId(row.rowBuilder)
             .refPruefungId(variables[actualValue.name].rowBuilder)
       }
@@ -175,26 +178,26 @@ class HochschuleTableModel extends AbstractTableModel {
     def value = row.values["lehrveranstaltung"]
     if (value instanceof Var) {
       if (!value.isPlaceholder()) {
-        println row.values["typ"] + " ist Prüfung von "  + variables[value.name].rowBuilder
+        println row.values["typ"] + " ist Prüfung von " + value.name + " " + variables[value.name].rowBuilder
         row.rowBuilder.refLehrveranstaltungId(variables[value.name].rowBuilder)
       }
     }
   }
 
   def apply_professor(tablerows, variables) {
-    apply_table(table_Professor, tablerows, variables)
+    apply_table(dataset.table_Professor, tablerows, variables)
   }
 
   def apply_lehrveranstaltung(tablerows, variables) {
-    apply_table(table_Lehrveranstaltung, tablerows, variables)
+    apply_table(dataset.table_Lehrveranstaltung, tablerows, variables)
   }
 
   def apply_pruefung(tablerows, variables) {
-    apply_table(table_Pruefung, tablerows, variables)
+    apply_table(dataset.table_Pruefung, tablerows, variables)
   }
 
   def apply_student(tablerows, variables) {
-    apply_table(table_Student, tablerows, variables)
+    apply_table(dataset.table_Student, tablerows, variables)
   }
 
 }

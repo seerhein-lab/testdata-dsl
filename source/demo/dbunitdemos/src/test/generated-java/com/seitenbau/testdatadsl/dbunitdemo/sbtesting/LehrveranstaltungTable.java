@@ -22,7 +22,7 @@ import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testing.dbunit.extend.DatasetIdGenerator;
 import com.seitenbau.testing.dbunit.generator.Flags;
-import com.seitenbau.testing.util.date.Datum;
+import com.seitenbau.testing.util.date.DateBuilder;
 
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowGetters_Professor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowGetters_Lehrveranstaltung;
@@ -33,7 +33,7 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowGetters_Be
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowGetters_Isttutor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowGetters_Schreibt;
 
-import static com.seitenbau.testing.util.DateString.*;
+import static com.seitenbau.testing.util.DateUtil.*;
 
 /* *******************************************************
   Generated via : codegeneration.GenerateDatabaseClasses
@@ -299,19 +299,19 @@ public class LehrveranstaltungTable implements ITable
     }
     
     public Object getValue(String column) throws RuntimeException {
-      if(column.equals("id") ) {
+      if(column.equalsIgnoreCase(Columns.Id) ) {
         return data[0];
       }
-      if(column.equals("professor_id") ) {
+      if(column.equalsIgnoreCase(Columns.ProfessorId) ) {
         return data[1];
       }
-      if(column.equals("name") ) {
+      if(column.equalsIgnoreCase(Columns.Name) ) {
         return data[2];
       }
-      if(column.equals("sws") ) {
+      if(column.equalsIgnoreCase(Columns.Sws) ) {
         return data[3];
       }
-      if(column.equals("ects") ) {
+      if(column.equalsIgnoreCase(Columns.Ects) ) {
         return data[4];
       }
       throw new RuntimeException(NAME + " col = " + column);
@@ -780,7 +780,7 @@ public class LehrveranstaltungTable implements ITable
     return asDate(dateString);
   }
   
-  static Date toDate(Datum datum)
+  static Date toDate(DateBuilder datum)
   {
     return datum.asDate();
   }
