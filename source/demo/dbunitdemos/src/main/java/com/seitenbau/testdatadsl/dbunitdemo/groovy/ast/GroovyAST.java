@@ -4,7 +4,7 @@ import groovy.lang.GroovyShell;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
 
-public class Groovy {
+public class GroovyAST {
 
 	private static final String CODE = 
 			  "professor:\n"
@@ -20,21 +20,12 @@ public class Groovy {
 
 	public static void main(String[] args) {
 		CompilerConfiguration config = new CompilerConfiguration();
-//		config.addCompilationCustomizers(new ASTTransformationCustomizer(
-//				new TestingASTTransformation()));
-
-		// List<ASTNode> nodes = new AstBuilder().buildFromString(CODE);
-		// for (ASTNode node : nodes) {
-		// System.out.println(node.getText());
-		// }
 		
 		System.out.println("=========== CODE ========================");
 		System.out.println(CODE);
 		System.out.println("=========================================");
 
 		GroovyShell shell = new GroovyShell(config);
-		// shell.evaluate(CODE);
-		//shell.parse("class DemoClass { def a = 1; }");
 		shell.parse(CODE);
 	}
 
