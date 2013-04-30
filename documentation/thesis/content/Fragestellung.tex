@@ -1,0 +1,398 @@
+\chapter{Anforderungsanalyse / Fragestellung}
+\label{chap:anforderungen}
+
+\section{Allgemeine Anforderungen}
+\label{sec:anforderungen:allgemeineanforderungen}
+
+Die Firma \textit{Seitenbau GmbH} verwendet für die Java-basierten Datenbankanwendungen das Framework \textit{JUnit} und
+die Erweiterung \textit{DbUnit}. Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
+Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen,
+so bleibt die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile verschiedener
+Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:grundlagen:modellierung} beschrieben.
+
+Die allgemeinen Anforderungen an die zu entwickelnde Sprache sind wie folgt:
+\begin{itemize}
+	\item \textbf{Plattform}: Die DSL soll sich in der bisherigen Werkzeug-Kette von Seitenbau nutzen lassen. Das heißt,
+		die DSL muss sich in Java integrieren lassen.
+	\item \textbf{Beziehungen}: Die Modellierung von Beziehungen soll vereinfacht werden.
+	\item \textbf{Typ-Sicherheit}: Beziehungen und Daten sollen Typ-sicher modelliert werden können. Spätestens bei der
+		Ausführung der Tests müssen ungültige Beziehungen und falsche Typen erkannt werden.
+\end{itemize}
+
+- Zirkuläre Abhängigkeiten?
+
+\section{Fortlaufendes Beispiel}
+\label{sec:grundlagen:beispiel}
+
+% Beispiel einleiten
+Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
+einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden diese
+Problemstellung umsetzen und die Testdaten modellieren.  
+
+	\subsection{Voraussetzungen}
+	\label{sec:grundlagen:beispiel:voraussetzungen}
+
+	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungstypen zwischen Entitätstypen. Dabei soll die
+	Problemstellung einerseits nicht zu komplex sein, damit sie überschaubar bleibt. Andererseits soll sie komplex genug
+	sein, um möglichst alle Beziehungsarten zwischen Entitäten abzudecken.
+	Die Testdaten sollten gleichzeitig ein \textit{Standard Fixture} und ein \textit{Minimal Fixture} darstellen
+	(\refsec{sec:grundlagen:konzepte:tests}).
+	
+
+	\subsection{Gewählte Problemstellung}
+	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
+	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
+	Umsetzung wird zugunsten der Komplexität verzichtet. Personenbezogene Begriffe werden in der maskulinen Form verwendet,
+	ohne dabei Aussagen über das Geschlecht repräsentierter Personen zu machen. Es beinhaltet die folgenden vier Entitätstypen:
+
+	\begin{itemize}
+		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltungen.
+		\item \textbf{Lehrveranstaltung}: Eine Lehrveranstaltung wird von einem Professor geleitet. Es kann zu jeder
+			Lehrveranstaltung eine Prüfung geben.
+		\item \textbf{Prüfung}: Eine Prüfung ist einer Lehrveranstaltung zugeordnet. Außerdem hat mindestens ein Professor
+			Aufsicht.
+		\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
+			die Möglichkeit, Tutoren von Lehrveranstaltungen zu sein.
+	\end{itemize}
+	
+	Die Beziehungen der Entitätstypen stellen sich wie folgt dar: 
+	\begin{itemize}
+		\item Eine Lehrveranstaltung muss von genau einem Professor geleitet werden, ein Professor kann beliebig viele
+		  (also auch keine) Lehrveranstaltungen leiten.
+		\item Eine Prüfung ist genau einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben
+			(z.B. Nachschreibprüfung).
+		\item Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen
+			Prüfungen Aufsicht haben. 
+		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch mindestens
+		  drei Besucher um stattzufinden und sind aus Kapazitätsgründen auf 100 Teilnehmer begrenzt.
+		\item Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
+			kann beliebig viele Tutoren haben. 
+		\item Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen
+			Anzahl von Studenten geschrieben werden.
+	\end{itemize}
+
+	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms.
+	\todo{Beispiel erweitern für 1:1-Beziehungen} \todo{Attribute einführen} \todo{Diagramm evtl in Chen-Notation}
+
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.8\textwidth]{images/grundlagen/example_hochschule_er.pdf}
+		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
+	\end{figure}
+
+	Das entsprechende relationale Modell wird in Abbildung \ref{img:example_relational} dargestellt. 
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_relational.pdf}
+		\caption{Relationales Modell des fortlaufenden Beispiels}\label{img:example_relational}
+	\end{figure}
+
+	\subsection{Beispiel-Use-Cases}
+	\label{sec:grundlagen:beispiel:usecases}
+
+	Um den einen Kompromiss für die Komplexität der Testdaten zu finden, werden vier Fragestellungen definiert. Diese
+	Fragen sollen dabei helfen, den Umfang der Testdaten bestimmen zu können. Die Fragen stellen sich wie folgt dar:
+
+	\begin{enumerate}
+		\item Welcher Professor unterrichtet die meisten Studenten?
+		\item Welcher Student nimmt an den meisten Prüfungen teil?
+		\item Welcher Student ist Tutor und nimmt gleichzeitig an der Prüfung teil?
+		\item Welcher Professor macht die wenigste Aufsicht in Fremdveranstaltungen (Lehrveranstaltungen eines anderen
+			Professors)?
+	\end{enumerate}
+
+
+
+\section{Modellierungsvarianten der Testdaten für DbUnit}
+\label{sec:grundlagen:modellierung}
+	
+	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei Datasets
+	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus DbUnit bieten allerdings
+	nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der Datenbank beinhaltet. 
+	
+	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-Datasets diskutiert. Die Erkenntnisse sollen in die 
+	Anforderungen an die DSL einfließen.
+	
+
+	\subsection{XML-Dataset}
+	\label{sec:grundlagen:modellierung:xml}
+	
+	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu die Klasse
+	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
+	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung}
+	definiert werden.
+	
+	\lstSetXML
+	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
+<!DOCTYPE dataset SYSTEM "dataset.dtd">
+<dataset>
+    <table name="PROFESSOR">
+        <column>id</column>
+        <column>name</column>
+        <column>vorname</column>
+        <column>titel</column>
+        <column>fakultaet</column>
+        <row>
+            <value>1</value>
+            <value>Wäsch</value>
+            <value>Jürgen</value>
+            <value>Prof. Dr.-Ing.</value>
+            <value>Informatik</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>Haase</value>
+            <value>Oliver</value>
+            <value>Prof. Dr.</value>
+            <value>Informatik</value>
+        </row>
+    </table>
+    <table name="LEHRVERANSTALTUNG">
+        <column>id</column>
+        <column>professor_id</column>
+        <column>name</column>
+        <column>sws</column>
+        <column>ects</column>
+        <row>
+            <value>1</value>
+            <value>2</value>
+            <value>Verteilte Systeme</value>
+            <value>4</value>
+            <value>5</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+            <value>Design Patterns</value>
+            <value>4</value>
+            <value>3</value>
+        </row>
+    </table>
+	...
+</dataset>
+	\end{lstlisting}
+	
+	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass für XML ein breites Angebot an Werkzeugen
+	zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
+	
+	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in der 
+	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-8 und 25-29) reichen dafür nicht
+	aus. Die Meta-Informationen sind redundant und erschweren die Pflege.
+	
+	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
+	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand gepflegt werden. In umfangreicheren Datasets sind 
+	unkommentierte Beziehungen für Betrachter nur schwer nach zu vollziehen, da ein Schlüsselwert üblicherweise keinen
+	unmittelbaren Rückschluss auf den referenzierten Datensatz erlaubt.
+	
+	Ein großer Nachteil von XML-Datasets ist, dass der erwartete Datenbankzustand selbst wieder den kompletten
+	Datenbankbestand umfassen muss. DbUnit erlaubt zwar mehrere Datasets zu einem zusammenzufassen, das Entfernen 
+	von Datensätzen ist darüber aber nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten,
+	sorgen für ein hohes Maß an Redundanz.
+	
+	Datasets in XML wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
+	Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 
+	und 26).
+	
+	% Modellieren Assoziativer Tabellen ansprechen?
+
+
+  FlatXmlDataSet
+
+	\lstSetXML
+	\begin{lstlisting}[caption=Flat XML Dataset, label=listing:flatxmldataset]
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <PROFESSOR id="1" 
+        name="Wäsch"
+        vorname="Jürgen"
+        titel="Prof. Dr.-Ing."
+        fakultaet="Informatik" />
+    <PROFESSOR id="2" 
+        name="Haase"
+        vorname="Oliver"
+        titel="Prof. Dr."
+        fakultaet="Informatik" />
+    <LEHRVERANSTALTUNG id="1"
+        professor_id="2"
+        name="Verteilte Systeme"
+        sws="4"
+        ects="5" />
+    <LEHRVERANSTALTUNG id="2"
+        professor_id="2"
+        name="Design Patterns"
+        sws="4"
+        ects="3" />
+...
+</dataset>
+\end{lstlisting}
+
+	- Meta-Informationen als Sprachelement
+	- Immer noch eine Zeile pro Wert (starkes vertikales Wachsen)
+	- Deutlich kompakter, dafür ggf. eigene DTD notwendig
+
+
+
+	\subsection{Default-Dataset}
+	\label{sec:grundlagen:modellierung:java}
+
+	
+	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-Datasets auftreten, kann das Default-Dataset verwendet
+	werden. Dieses lässt sich programmatisch, also dynamisch zur Laufzeit, erstellen. Durch die Nutzung von symbolischen
+	Konstanten als Schlüsselwerte können Beziehungen ausdrucksstärker modelliert werden. Das Erzeugen des Datasets, das
+	den nach einem Test erwarteten Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit
+	weniger Redundanz lösbar.
+
+	\lstSetJava
+	\begin{lstlisting}[caption=Default Dataset, label=listing:javadataset]
+DefaultTable professor = new DefaultTable(
+		"professor",
+		new Column[] { 
+			new Column("id", DataType.INTEGER),
+			new Column("name", DataType.VARCHAR), 
+			new Column("vorname", DataType.VARCHAR), 
+			new Column("titel", DataType.VARCHAR), 
+			new Column("fakultaet", DataType.VARCHAR), 
+		}
+	);
+professor.addRow(new Object[] { 
+			Parameters.Professor.WAESCH_ID,
+			"Wäsch",
+			"Jürgen",
+			"Prof. Dr.-Ing.",
+			"Informatik",
+		});
+professor.addRow(new Object[] { 
+			Parameters.Professor.HAASE_ID,
+			"Haase",
+			"Oliver",
+			"Prof. Dr.",
+			"Informatik",
+		});
+dataSet.addTable(professor);
+
+DefaultTable lehrveranstaltung = new DefaultTable(
+		"lehrveranstaltung", 
+		new Column[] {
+			new Column("id", DataType.INTEGER),
+			new Column("professor_id", DataType.INTEGER),
+			new Column("name", DataType.VARCHAR), 
+			new Column("sws", DataType.INTEGER),
+			new Column("ects", DataType.INTEGER),
+		}
+	);
+lehrveranstaltung.addRow(new Object[] {
+			Parameters.Lehrveranstaltung.VSYSTEME_ID,
+			Parameters.Professor.HAASE_ID, 
+			"Verteilte Systeme",
+			4,
+			5,
+		});
+lehrveranstaltung.addRow(new Object[] {
+			Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID,
+			Parameters.Professor.HAASE_ID,
+			"Design Patterns",
+			4,
+			3,
+		});
+dataSet.addTable(lehrveranstaltung);
+  \end{lstlisting}
+	
+	Diese Umsetzung löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen über die Tabellen
+	modelliert werden (Zeilen 3-9 und 29-36). Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst
+	zur Laufzeit erkannt. Der Einsatz von symbolischen Konstanten erleichtert zwar die Pflege des Datasets,
+	dennoch lassen sich Konstanten doppelt belegen oder auch Primärschlüssel einer falschen Datenbank als
+	Fremdschlüssel angegeben werden.
+	
+	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
+	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
+	nur wenig Vorteile gegenüber den XML-Datasets.
+
+	\subsection{SB Testing DB}
+	\label{sec:grundlagen:modellierung:sbtesting}
+	
+	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Default-Datasets
+	aufzufangen.
+	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL können
+	die Testdaten modelliert werden. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
+  in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung mit
+	DbUnit zu verwenden, kann aus dem Modell ein DbUnit-Dataset erzeugt werden. Der Vorteil dieses zusätzlichen Modells ist,
+	dass sich daraus verhältnismäßig einfach Varianten von DbUnit-Datasets erzeugen lassen, z.B. ein Dataset mit dem Ausgangszustand,
+	und ein Dataset mit dem erwarteten Zustand am Ende des Tests. Die Java-DSL sorgt für Typsicherheit zur Compilierzeit\footnote{Gängige
+	Entwicklungsumgebungen wie Eclipse zeigen falsche Typen bereits während der Entwicklung an.}. 
+	Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen Varianten.
+	
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_model.png}
+		\caption{Modell-Beschreibung}\label{img:example_hochschule_model}
+	\end{figure}
+
+	\lstSetJava
+	\begin{lstlisting}[caption=SB Testing Dataset (1), label=listing:sbtestingdataset_old]
+table_Professor
+	.insertRow()
+		.setId(Parameters.Professor.HAASE_ID)
+		.setName("Haase")
+		.setVorname("Oliver")
+		.setTitel("Prof. Dr.")
+		.setFakultaet("Informatik")
+	.insertRow()
+		.setId(Parameters.Professor.WAESCH_ID)
+		.setName("Wäsch")
+		.setVorname("Jürgen")
+		.setTitel("Prof. Dr.-Ing.")
+		.setFakultaet("Informatik");
+
+table_Lehrveranstaltung
+	.insertRow()
+		.setId(Parameters.Lehrveranstaltung.VSYSTEME_ID)
+		.setProfessorId(Parameters.Professor.HAASE_ID)
+		.setName("Verteilte Systeme")
+		.setSws(4)
+		.setEcts(5)
+	.insertRow()
+		.setId(Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID)
+		.setProfessorId(Parameters.Professor.HAASE_ID)
+		.setName("Design Patterns")
+		.setSws(4)
+		.setEcts(3);
+	\end{lstlisting}
+
+	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar
+	(\refsec{sec:grundlagen:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
+	
+	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden 
+	(\reflst{listing:sbtestingdataset}).
+	
+	\lstSetJava
+	\begin{lstlisting}[caption=SB Testing Dataset (2), label=listing:sbtestingdataset]
+RowBuilder_Professor haase = 
+	table_Professor
+		.insertRow()
+			.setName("Haase")
+			.setVorname("Oliver")
+			.setTitel("Prof. Dr.")
+			.setFakultaet("Informatik");
+RowBuilder_Professor waesch = 
+	table_Professor
+		.insertRow()
+			.setName("Wäsch")
+			.setVorname("Jürgen")
+			.setTitel("Prof. Dr.-Ing.")
+			.setFakultaet("Informatik");
+
+RowBuilder_Lehrveranstaltung vsys = 
+	table_Lehrveranstaltung
+		.insertRow()
+			.setName("Verteilte Systeme")
+			.refProfessorId(haase)
+			.setSws(4)
+			.setEcts(5);
+RowBuilder_Lehrveranstaltung design_patterns = 
+	table_Lehrveranstaltung
+		.insertRow()
+			.setName("Design Patterns")
+			.refProfessorId(haase)
+			.setSws(4)
+			.setEcts(3);
+	\end{lstlisting}

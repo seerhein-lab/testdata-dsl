@@ -1,0 +1,180 @@
+\chapter{Modellierung der Test-Daten}
+\label{chap:modellierung}
+
+
+
+\section{Anforderungen an die DSL}
+
+Eine der wichtigsten Anforderungen an die DSL ist, dass sie sich in die bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss.
+Daraus folgt die Anforderung, dass sie sich in Java nutzen lassen soll. Ähnlich wie bei \textit{SB Testing DB} sollen Datasets auch 
+nachträglich veränderbar sein. 
+
+Die Sprache soll auf syntaktischen Ballast verzichten und einen übersichtlichen Code zur Modellierung der Daten ermöglichen. Meta-Informationen sollten ausschließlich in Form von Sprachelementen auftauchen.
+
+Beziehungen sollen sich einfach und typsicher modellieren lassen. Es soll nicht mehr notwendig sein, symbolische Java-Konstanten z.B. für die Definition von ID-Nummern zu verwenden. 
+
+
+
+\todo{Anforderungen}
+\begin{itemize}
+	\item Zugriff auf Daten aus Java heraus
+	\item "`Dekorieren"' von Werten (before(date))
+	\item Typ-Prüfungen zu Compilierzeit
+	\item Namensräume/Scopes
+\end{itemize}
+
+\section{Zielgruppe}
+
+- Techniker 
+- Im Umgang mit Datenbank versierte Anwender
+
+\section{DSL-Entwürfe}
+
+	\subsection{Entwurf 1}
+	
+	Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
+	
+	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
+HAASE = professor {
+	name			"Haase"
+	vorname   "Oliver"
+	titel     "Prof. Dr."
+  fakultaet "Informatik"
+}
+
+WAESCH = professor {
+	name			"Wäsch"
+	vorname   "Jürgen"
+	titel     "Prof. Dr.-Ing."
+  fakultaet "Informatik"
+}
+	
+VSYS = lehrveranstaltung {
+	name			"Verteilte Systeme"
+  sws       4
+	ects      5
+}
+	
+DPATTERNS = lehrveranstaltung {
+	name 			"Design Patterns"
+	sws       4
+	ects      3
+}
+
+...
+
+HAASE leitet VSYS
+HAASE leitet DPATTERNS
+HAASE beaufsichtigt	P_DPATTERNS
+WAESCH beaufsichtigt P_VSYS
+...
+
+	\end{lstlisting}
+	
+	Diese DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet Variablennamen für die Modellierung von Beziehungen. Da für jeden
+	Wert eine eigene Zeile verwendet wird, werden umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der
+	Definition der Daten erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+
+
+	\subsection{Entwurf 2}
+	
+	Ein leicht abgewandelter Entwurf zeigt, wie sich die Beziehungen näher an den eigentlichen Daten beschreiben lassen könnten.
+	An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
+	
+
+	\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
+HAASE = professor {
+	name      "Haase"
+	vorname   "Oliver"
+	titel     "Prof. Dr."
+  fakultaet "Informatik"
+	leitet    VSYS, DPATTERNS
+	beaufsichtigt	P_DPATTERNS
+}
+
+WAESCH = professor {
+	name      "Wäsch"
+	vorname   "Jürgen"
+	titel     "Prof. Dr.-Ing."
+  fakultaet "Informatik"
+	beaufsichtigt	P_VSYS
+}
+	
+VSYS = lehrveranstaltung {
+	name			"Verteilte Systeme"
+  sws       4
+	ects      5
+}
+	
+DPATTERNS = lehrveranstaltung {
+	name 			"Design Patterns"
+  sws       4
+	ects      3
+}
+
+...
+	\end{lstlisting}
+	
+
+	\subsection{Entwurf 3}
+	
+	Der dritte Entwurf versucht die Daten durch eine tabellarische Struktur übersichtlich zu gestalten. Sie kommt mit
+	wenig syntaktischem Ballast aus. 
+	
+	
+
+	\lstSetTiny
+	\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
+professor:
+REF    || name    | vorname  | titel            | fakultaet    | leitet          | beaufsichtigt
+HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | VSYS, DPATTERNS | P_DPATTERNS   
+WAESCH || "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" |                 | P_VSYS
+	
+lehrveranstaltung:
+REF       || name                | sws | ects
+VSYS      || "Verteilte Systeme" | 4   | 5
+DPATTERNS || "Design Patterns"   | 4   | 3
+
+...
+	\end{lstlisting}
+	\lstSetNotmal
+	
+	Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark variiert.
+	Der Entwickler ist selbst dafür verantwortlich, die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter 
+	Umständen verzichtet werden, da sie von verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten
+	wächst diese Darstellung horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung
+	unübersichtlich werden.
+	
+	
+	Besser:
+	- Spalten-Editierung mit Block-Bearbeitungsmodus möglich
+	
+	Schlecht:
+	- Tabellenkopf muss u.U. wiederholt werden, um Übersicht zu erhalten
+	- Spaltenbreite nur von längstem Wert abhängig (-> Konstanten?)
+
+
+
+\section{Implementierung}
+\label{sec:modellierung:implementierung}
+
+Da sich die DSL in die bisherige Werkzeug-Kette von Seitenbau integrieren lassen soll
+(\refsec{sec:anforderungen:allgemeineanforderungen}), sollte die DSL in Java nutzbar sein.
+Grundsätzlich kann eine DSL auch in Java direkt realisiert werden. Allerdings bietet sich vor allem im
+Java-Umfeld die Sprache Groovy an. 
+
+- Groovy verwendet Java-Objekt-Modell
+- Meta-Programmiernug
+- Closures
+- Operator überladen
+
+Deshalb empfiehlt Ghosh in \cite[148]{DSLS_IN_ACTION} Groovy als Host für DSLs in Verbindung
+mit Java-Anwendungen.
+
+
+	\subsection{Implementierungsvarianten}
+
+		\subsubsection{AST-Transformation}
+
+		\subsubsection{Operator-Überladen}
+		
