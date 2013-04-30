@@ -23,11 +23,11 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_P
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowBuilder_Schreibt;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student;
 
-public class GroovyDataSetProvider implements IDataSetProvider {
+public class GroovySimpleDSLDataSetProvider implements IDataSetProvider {
 
 	private final IDataSet dataset;
 
-	public GroovyDataSetProvider() {
+	public GroovySimpleDSLDataSetProvider() {
 		ExpandoMetaClass.enableGlobally();
 		dataset = createDataSet();
 	}
