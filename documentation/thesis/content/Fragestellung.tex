@@ -58,7 +58,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\label{sec:grundlagen:beispiel:gewaehlte_problemstellung}
 	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
 	Umsetzung wird zugunsten der Komplexität verzichtet. Personenbezogene Begriffe werden in der maskulinen Form verwendet,
-	ohne dabei Aussagen über das Geschlecht repräsentierter Personen zu machen. Es beinhaltet die folgenden vier Entitätstypen:
+	ohne dabei Aussagen über das Geschlecht der repräsentierter Personen zu machen. Es beinhaltet die folgenden vier 
+	Entitätstypen:
 
 	\begin{itemize}
 		\item \textbf{Professor}: Ein Professor leitet Lehrveranstaltungen.
@@ -68,6 +69,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 			Aufsicht.
 		\item \textbf{Student}: Studenten können an Lehrveranstaltungen und an Prüfungen teilnehmen. Studenten haben außerdem 
 			die Möglichkeit, Tutoren von Lehrveranstaltungen zu sein.
+		\item \textbf{Raum}: Ein Professor kann einen Raum als Büro zugewiesen bekommen.
 	\end{itemize}
 	
 	Die Beziehungen der Entitätstypen stellen sich wie folgt dar: 
@@ -84,6 +86,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 			kann beliebig viele Tutoren haben. 
 		\item Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen
 			Anzahl von Studenten geschrieben werden.
+		\item Ein Raum ist genau einem Professor zugewiesen. Ein Professor kann genau einen oder keinen Raum haben.
 	\end{itemize}
 
 	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms.
@@ -95,7 +98,9 @@ Problemstellung umsetzen und die Testdaten modellieren.
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
-	Das entsprechende relationale Modell wird in Abbildung \ref{img:example_relational} dargestellt. 
+	Das entsprechende relationale Modell wird in Abbildung \ref{img:example_relational} dargestellt. Die Notationen
+	orientieren sich an den Stil von Ambler in \cite{REFACTORING_DATABASES}. 
+	
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[width=0.95\textwidth]{images/grundlagen/example_hochschule_relational.pdf}
