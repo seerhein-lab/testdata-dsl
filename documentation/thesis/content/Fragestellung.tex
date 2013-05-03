@@ -115,6 +115,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	Das Attribut "`fakultaet"' in der Tabelle Professor soll als Aufzählungstyp (enumeration) realisiert werden.
 	Mögliche Werte sind: Architektur, Bauingenieurwesen, Elektrotechnik, Informatik, Maschinenbau und Wirtschaftswesen.
 	Das Foto des Professors wird als \textit{Binary Large Object} (BLOB) dargestellt.
+	\nomenclature{BLOB}{Binary Large Object)}
 	
 
 	\subsection{Beispiel-Use-Cases}
@@ -153,7 +154,9 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor}
 	und \textit{Lehrveranstaltung} definiert werden.
 	
-	BLOBs lassen sich in XML nur mit entsprechender Codierung unterbringen
+	BLOBs können in XML problematisch werden. Werden sie direkt in die XML-Datei eingebettet, müssen sie in ein
+	XML-kompatibles Format codiert werden. Die DbUnit-Datasets sehen keinen Mechanismus vor, BLOBs aus anderen Dateien
+	einzulesen - eine solche Funktion müsste manuell implementiert werden.
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]

@@ -4,7 +4,7 @@
 		<outputProfile name="LaTeX =&gt; PDF" stopOnLatexError="false">
 			<texCommand execute="true" path="pdflatex.exe" arguments="-output-directory=%dm\target -aux-directory=%dm\target -max-print-line=120 -interaction=nonstopmode &quot;%wm&quot; -synctex=-1"/>
 			<bibTexCommand execute="true" path="bibtex.exe" arguments="&quot;%dm\target\%tm&quot; -include-directory=&quot;%dm\target&quot;"/>
-			<makeIndexCommand execute="true" path="makeindex.exe" arguments="&quot;%tm.idx&quot; -t &quot;%tm.ilg&quot; -o &quot;%tm.ind&quot;"/>
+			<makeIndexCommand execute="true" path="makeindex.exe" arguments="target\%tm.nlo -s nomencl.ist -o target\%tm.nls"/>
 			<preProcessors/>
 			<postProcessors/>
 			<viewer path="AcroRd32.exe" closeBeforeCompilation="true">
@@ -25,9 +25,11 @@
 		<outputProfile name="LaTeX =&gt; PDF (Sumatra)" stopOnLatexError="false">
 			<texCommand execute="true" path="pdflatex.exe" arguments="-output-directory=%dm\target -aux-directory=%dm\target -max-print-line=120 -interaction=nonstopmode &quot;%wm&quot; -synctex=-1"/>
 			<bibTexCommand execute="true" path="bibtex.exe" arguments="&quot;%dm\target\%tm&quot; -include-directory=&quot;%dm\target&quot;"/>
-			<makeIndexCommand execute="true" path="makeindex.exe" arguments="&quot;%dm\target\%tm.idx&quot; -t &quot;%dm\target\%tm.ilg&quot; -o &quot;%dm\target\%tm.ind&quot;"/>
+			<makeIndexCommand execute="true" path="makeindex.exe" arguments="target\%tm.nlo -s nomencl.ist -o target\%tm.nls"/>
 			<preProcessors/>
-			<postProcessors/>
+			<postProcessors>
+				<processor name="copy pdf" path="cmd.exe" arguments="/C copy &quot;%dm\target\%tm.pdf&quot; &quot;%dm\%tm.pdf&quot; /y" inputFile="" outputFile=""/>
+			</postProcessors>
 			<viewer path="&quot;&quot;" closeBeforeCompilation="false">
 				<viewProjectCommand type="dde">
 					<commandLineCommand path="" arguments=""/>
