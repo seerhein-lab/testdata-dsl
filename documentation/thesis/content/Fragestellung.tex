@@ -26,6 +26,9 @@ Die allgemeinen Anforderungen an die zu entwickelnde Sprache sind wie folgt:
 		scheitern lassen. Idealerweise sollten die Typen allerdings schon zur Compilier-Zeit überprüft werden können.
 		
 	\item \textbf{Funktionen als Werte}: 
+	- Datumswerte
+	- Berechnungen
+	- Einlesen von BLOBs
 		
 	\item \textbf{Gültigkeitsbereiche}: 
 	
@@ -107,6 +110,13 @@ Problemstellung umsetzen und die Testdaten modellieren.
 		\caption{Relationales Modell des fortlaufenden Beispiels}\label{img:example_relational}
 	\end{figure}
 
+	\todo{Legende}
+	
+	Das Attribut "`fakultaet"' in der Tabelle Professor soll als Aufzählungstyp (enumeration) realisiert werden.
+	Mögliche Werte sind: Architektur, Bauingenieurwesen, Elektrotechnik, Informatik, Maschinenbau und Wirtschaftswesen.
+	Das Foto des Professors wird als \textit{Binary Large Object} (BLOB) dargestellt.
+	
+
 	\subsection{Beispiel-Use-Cases}
 	\label{sec:fragestellung:beispiel:usecases}
 
@@ -126,9 +136,10 @@ Problemstellung umsetzen und die Testdaten modellieren.
 \section{Modellierungsvarianten der Testdaten für DbUnit}
 \label{sec:fragestellung:modellierung}
 	
-	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei Datasets
-	benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus DbUnit bieten allerdings
-	nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der Datenbank beinhaltet. 
+	In \textit{DbUnit} werden die Datenbankzustände durch Datasets repräsentiert. Für einen Test werden gewöhnlich zwei
+	Datasets benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Datasets aus DbUnit bieten
+	allerdings nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der
+	Datenbank beinhaltet. 
 	
 	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-Datasets diskutiert. Die Erkenntnisse sollen in die 
 	Anforderungen an die DSL einfließen.
@@ -138,9 +149,11 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\label{sec:fragestellung:modellierung:xml}
 	
 	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu die Klasse
-	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing \ref{listing:xmldataset}
-	zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung}
-	definiert werden.
+	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing
+	\ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor}
+	und \textit{Lehrveranstaltung} definiert werden.
+	
+	BLOBs lassen sich in XML nur mit entsprechender Codierung unterbringen
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
@@ -192,11 +205,11 @@ Problemstellung umsetzen und die Testdaten modellieren.
 </dataset>
 	\end{lstlisting}
 	
-	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass für XML ein breites Angebot an Werkzeugen
-	zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
+	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass für XML ein breites Angebot an
+	Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
 	
-	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in der 
-	XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-8 und 25-29) reichen dafür nicht
+	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in
+	der  XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-8 und 25-29) reichen dafür nicht
 	aus. Die Meta-Informationen sind redundant und erschweren die Pflege.
 	
 	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
@@ -216,8 +229,12 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	% Modellieren Assoziativer Tabellen ansprechen?
 
 
-  FlatXmlDataSet
-
+	Es gibt noch eine zweite Möglichkeit, Datasets via XML zu erzeugen: Das \textit{FlatXmlDataSet}. Hierbei gibt es keine
+	vordefinierte DTD, da die Tags den Tabellen-Namen entsprechen\footnote{Es ist möglich, eine eigene DTD zu definieren.}.
+	Eine solche XML-Datei kommt ohne explizite Meta-Informationen zu den Tabellen aus. Stattdessen stellen sie eine Art
+	Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das FlatXmlDataSet
+	übersichtlicher als das XmlDataSet (\reflst{listing:flatxmldataset}).
+  
 	\lstSetXML
 	\begin{lstlisting}[caption=Flat XML Dataset, label=listing:flatxmldataset]
 <?xml version='1.0' encoding='UTF-8'?>
@@ -244,12 +261,10 @@ Problemstellung umsetzen und die Testdaten modellieren.
         ects="3" />
 ...
 </dataset>
-\end{lstlisting}
-
-	- Meta-Informationen als Sprachelement
-	- Immer noch eine Zeile pro Wert (starkes vertikales Wachsen)
-	- Deutlich kompakter, dafür ggf. eigene DTD notwendig
-
+	\end{lstlisting}
+	
+	Wie auch beim XmlDataSet sollte der Übersicht wegen für jeden Wert eine Zeile verwendet werden. Durch die fehlende
+	Hierarchie wirkt das FlatXmlDataSet etwas unübersichtlich.
 
 
 	\subsection{Default-Dataset}
@@ -324,22 +339,23 @@ dataSet.addTable(lehrveranstaltung);
 	Fremdschlüssel angegeben werden.
 	
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
-	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser Art
-	nur wenig Vorteile gegenüber den XML-Datasets.
+	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser
+  Art nur wenig Vorteile gegenüber den XML-Datasets.
 
 	\subsection{SB Testing DB}
 	\label{sec:fragestellung:modellierung:sbtesting}
 	
-	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und Default-Datasets
-	aufzufangen.
-	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL können
-	die Testdaten modelliert werden. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
-  in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung mit
-	DbUnit zu verwenden, kann aus dem Modell ein DbUnit-Dataset erzeugt werden. Der Vorteil dieses zusätzlichen Modells ist,
-	dass sich daraus verhältnismäßig einfach Varianten von DbUnit-Datasets erzeugen lassen, z.B. ein Dataset mit dem Ausgangszustand,
-	und ein Dataset mit dem erwarteten Zustand am Ende des Tests. Die Java-DSL sorgt für Typsicherheit zur Compilierzeit\footnote{Gängige
-	Entwicklungsumgebungen wie Eclipse zeigen falsche Typen bereits während der Entwicklung an.}. 
-	Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen Varianten.
+	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und
+	Default-Datasets aufzufangen.
+	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL lassen sich die
+	Testdaten modellieren. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
+  in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung
+	mit DbUnit zu verwenden, kann aus dem Modell ein DbUnit-Dataset erzeugt werden. Der Vorteil dieses zusätzlichen 
+	Modells ist, dass sich daraus verhältnismäßig einfach Varianten von DbUnit-Datasets erzeugen lassen, z.B. ein Dataset
+	mit dem Ausgangszustand, 	und ein Dataset mit dem erwarteten Zustand am Ende des Tests. Die Java-DSL sorgt für
+	Typsicherheit zur Compilierzeit\footnote{Gängige Entwicklungsumgebungen wie Eclipse zeigen falsche Typen bereits
+	während der Entwicklung an.}.  Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen
+	Varianten.
 	
 	\begin{figure}[H]
 		\centering
@@ -381,8 +397,10 @@ table_Lehrveranstaltung
 	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-Datasets dar
 	(\refsec{sec:fragestellung:modellierung:java}). Nach wie vor wächst das Dataset vertikal in der Datei. 
 	
-	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden 
-	(\reflst{listing:sbtestingdataset}).
+	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf M2-Ebene etwas entschärft werden.
+	Ein um Beziehungen erweitertes Modell ermöglicht typsichere Referenzen auf andere Entitäten 
+	(\reflst{listing:sbtestingdataset}, Zeilen 20 und 27). Bei dieser Variante kann unter Umständen darauf
+	verzichtet werden, Primärschlüssel manuell zu vergeben.
 	
 	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (2), label=listing:sbtestingdataset]
