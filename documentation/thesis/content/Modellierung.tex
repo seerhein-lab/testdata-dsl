@@ -183,8 +183,9 @@ mit Java-Anwendungen.
 	
 	Eine DSL kann auf unterschiedliche Art implementiert werden. Groovy bietet dafür zwei Möglichkeiten der
 	Meta-Programmierung an: Laufzeit-Meta-Programmierung und Compiler-Zeit-Meta-Programmierung, letzteres in Form von
-	AST-Transformationen\footnote{AST ist die Abkürzung für \textit{Abstract Syntax Tree}}. Beide Ansätze bieten
-	individuelle Vorteile, die im folgenden diskutiert werden.
+	AST-Transformationen. Beide Ansätze bieten individuelle Vorteile, die im folgenden diskutiert werden.
+	\nomenclature{AST}{Abstract Syntax Tree}
+
 
 
 		\subsubsection{Laufzeit-Meta-Programmierung}
@@ -235,7 +236,10 @@ def fixture = [
 		Dass AST-Transformationen mehr syntaktische Möglichkeiten bietet zeigt sich auch daran, dass hier der 
 		Double-Pipe-Operator verwendet werden kann. Außerdem können Labels erkannt werden und Daten einer Tabelle
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
-		kann er 
+		
+		Allerdings muss zum Auswerten einer Tabelle relativ großer Aufwand betrieben werden mit Hilfe von
+		AST-Transformationen. Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
+		(\cite[331ff]{DESIGN_PATTERNS}).
 		
 		
 \todo{"`Muster"' für 1:1, 1:n und m:n}
