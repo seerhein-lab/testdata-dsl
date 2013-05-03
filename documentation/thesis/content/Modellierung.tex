@@ -191,7 +191,7 @@ mit Java-Anwendungen.
 		\subsubsection{Laufzeit-Meta-Programmierung}
 		
 		Die Tabellen mit den Daten können als Closures an einen Parser zum Interpretieren übergeben werden. 
-		- use zum "`Einblenden"' von Methoden
+		- Categories zum "`Einblenden"' von Methoden
 		- Operator-Überladen der Einfachheit halber statisch (anders nur extrem umständlich)
 		- da statische Operatoren Speichern der Ergebnisse in ThreadLocal-Variable
 		- Kontext des Closures geändert, um lokalen Operatoren Vorrang zu geben
@@ -237,8 +237,8 @@ def fixture = [
 		Double-Pipe-Operator verwendet werden kann. Außerdem können Labels erkannt werden und Daten einer Tabelle
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
-		Allerdings muss zum Auswerten einer Tabelle relativ großer Aufwand betrieben werden mit Hilfe von
-		AST-Transformationen. Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
+		Allerdings muss zum Auswerten einer Tabelle bei AST-Transofrmationen ein relativ großer Aufwand betrieben werden.
+		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
 		(\cite[331ff]{DESIGN_PATTERNS}).
 		
 		
