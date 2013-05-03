@@ -113,9 +113,11 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	\end{lstlisting}
 	\lstSetNotmal
 	
-	Der Entwurf sieht vor, dass assoziative Tabellen (zum Abbilden von n:m-Beziehungen) als zusätzliche Spalte in
-	(mindestens) eine der beteiligten Entitätstypen aufgenommen werden (wie z.B. die Spalte "`beaufsichtigt"' in
-	der Professor-Tabelle).
+	Der Entwurf sieht vor, dass Beziehungen innerhalb beider Entitätstypen ausgedrückt werden können. So kann
+	eine Tabelle um Spalten für Beziehungen ergänzt werden, die in dieser Form nicht Teil des relationalen
+	Modells (\refimg{img:example_relational}) sind. Dazu gehören die Spalten "`leitet"' und "`beaufsichtigt"'
+	der Professor-Tabelle. Erstere drückt die 1:n-Beziehung zu einer Lehrveranstaltung aus, letztere die
+	m:n-Beziehung zu Prüfungen.
 	
 	Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
 	variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
@@ -230,3 +232,5 @@ def fixture = [
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		kann er 
 		
+		
+\todo{"`Muster"' für 1:1, 1:n und m:n}
