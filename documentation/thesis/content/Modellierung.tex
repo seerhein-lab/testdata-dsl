@@ -196,7 +196,10 @@ mit Java-Anwendungen.
 		
 		Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
 		Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \textit{TableParser},
-		enthält dafür die Methode \texttt{parseTableClosure}.
+		enthält dafür die Methode \texttt{parseTableClosure}. Die Methode soll als Ergebnis eine Liste
+		von Tabellenzeilen zurückliefern. Da an dieser Stelle noch keinerlei Interpretation der Tabellenwerte
+		durchgeführt wird, stellt eine Tabellenzeile selbst ebenfalls eine Liste dar - aus den Objekten
+		der Spalten.
 		
 		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator\footnote{Binär
 		bezogen auf die Verknüpfung zweier Werte und nicht auf das Zahlensystem} implementiert werden, ist die
@@ -225,6 +228,7 @@ mit Java-Anwendungen.
 class TableParser {
   
   static or(self, arg) {
+		// ...
   }
 
   def parseTableClosure(Closure tableData){
@@ -238,9 +242,9 @@ class TableParser {
 		
 		Die Methode \texttt{or} erwartet zwei Parameter vom Typ \textit{Object}. Obwohl in Groovy alle Typen von
 		\textit{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
-		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt.
-		Doch auch solche Operationen lassen sich überschreiben, wenn für die Datentypen passende Kategoriemethoden
-		definiert werden.
+		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt,
+		z.B. bei zwei \textit{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
+		die Datentypen passende Kategoriemethoden definiert werden.
 
 		Der Parser in der Form kann noch nicht mit selbst definierten Variablennamen für die Referenzenabbildung
 		umgehen. Aus diesem Grund wird eine Methode \texttt{getProperty} definiert, die für jeden Variablennamen
@@ -252,21 +256,25 @@ class TableParser {
 class TableParser {
   
   static or(self, arg) {
+		// ...
   }
 	
   static or(Integer self, Integer arg) {
+		// ...
   }
 
   static or(Boolean self, Boolean arg) {
+		// ...
 	}
 	
 	def getProperty(String property) {
+		// ...
   }
 	
 
   def parseTableClosure(Closure tableData){
     use(TableParser) {
-      tableData.delegate = this		// Change context
+      tableData.delegate = this		// Change closure's context
       tableData.resolveStrategy = Closure.DELEGATE_FIRST
       tableData()
     }
@@ -275,22 +283,19 @@ class TableParser {
 }
 		\end{lstlisting}
 		
-		
+		Die statischen Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \textit{TableParser}. Ihre Ergebnisse
+		können sie demnach auch nur in statische Elementen aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das
+		gleichzeitige Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale
+		Liste verwendet. \todo{thread local erklären mit quelle} \cite{JAVA_CONCURRENCY_IN_PRACTICE}
 
-		
-		
-		Realisierung:
-		- da statische Operatoren Speichern der Ergebnisse in ThreadLocal-Variable \cite{JAVA_CONCURRENCY_IN_PRACTICE}
-		- Kontext des Closures geändert für getProperty
-		- getProperty-Aufruf bei Variablen/Referenzen
-				
 				
 		Die Laufzeit-Meta-Programmierung kann die Syntax der Sprache nicht beliebig erweitern. Groovy kennt keinen
 		Double-Pipe-Operator. Deshalb kann dieser weder überladen noch über Laufzeit-Meta-Programmierung eingeführt
 		werden. Folglich ist es nicht möglich, den dritten Entwurf über reine Laufzeit-Meta-Programmierung zu
 		realisieren. Allerdings kann eine Syntax erreicht werden, die dem Entwurf sehr nahe kommt
 		(\reflst{listing:dslentwurf3laufzeit}). Ein Platzhalter (Unterstrich) verhindert Syntax-Fehler, wenn in
-		einer Spalte kein Wert vorkommt (siehe Zeile 4, Spalte "`leitet"'). Aus Sicht des Parsers stellt der
+		einer Spalte kein Wert vorkommt (siehe Zeile 4, Spalte "`leitet"'). Der Platzhalter könnte auch verwendet
+		werden, um einem Datensatz keinen Bezeichner für Referenzen zu zu weisen. Aus Sicht des Parsers stellt der
 		dieser eine Variable dar.
 		
 		\lstSetTiny
