@@ -1,6 +1,6 @@
 package com.seitenbau.testdatadsl.dbunitdemo.groovy
 
-def table = TableParser.parse {
+def table = CommonTableParser.parse {
  	a    |  b
   "A"  |  "B"
 	1    |  2
