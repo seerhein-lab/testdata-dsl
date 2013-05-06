@@ -13,24 +13,23 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovyDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyDataSetProvider2;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovySimpleDSLDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyOpOverloadingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 
 public class Tests
 {
 
-  private static final IDataSetProvider PROVIDER =  new GroovyDataSetProvider2();
-      //new JavaDataSetProvider();
-      
-  // GroovyDataSetProvider2();
-
-  // XmlDataSetProvider();
-  // FlatXmlDataSetProvider();
-  // JavaDataSetProvider();
-  // OldSBTestingDataSetProvider();
-  // SBTestingDataSetProvider();
+  private static final IDataSetProvider PROVIDER =  new GroovyOpOverloadingDataSetProvider();
+  
+  // XmlDataSetProvider
+  // FlatXmlDataSetProvider
+  // JavaDataSetProvider
+  // OldSBTestingDataSetProvider
+  // SBTestingDataSetProvider
+  // GroovyASTDataSetProvider
+  // GroovyOpOverloadingDataSetProvider
 
   protected IDatabaseConnection getConnection() throws Exception
   {

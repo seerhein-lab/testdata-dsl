@@ -4,16 +4,16 @@ import org.dbunit.Assertion;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovyDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyDataSetProvider2;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovySimpleDSLDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyOpOverloadingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 
 public class CompareTests
 {
 
-  private static final IDataSetProvider GROOVY = new GroovyDataSetProvider();
-  private static final IDataSetProvider GROOVY2 = new GroovyDataSetProvider2();
+  private static final IDataSetProvider GROOVY = new GroovySimpleDSLDataSetProvider();
+  private static final IDataSetProvider GROOVY2 = new GroovyOpOverloadingDataSetProvider();
   private static final IDataSetProvider XML = new XmlDataSetProvider();
   private static final IDataSetProvider FLATXML = new FlatXmlDataSetProvider();
   private static final IDataSetProvider JAVA = new JavaDataSetProvider();

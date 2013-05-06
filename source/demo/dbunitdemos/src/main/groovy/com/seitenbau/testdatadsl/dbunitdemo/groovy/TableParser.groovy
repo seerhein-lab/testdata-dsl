@@ -50,14 +50,17 @@ class TableParser {
   }
 
   static or(self, arg) {
+    println("or (obj)")
     appendRow(self, arg)
   }
 
   static or(Integer self, Integer arg) {
+    println("or (int)")
     appendRow(self, arg)
   }
 
   static or(Boolean self, Boolean arg) {
+    println("or (bool)")
     appendRow(self, arg)
   }
 
@@ -80,10 +83,15 @@ class TableParser {
     context.set([])
     use(TableParser) {
       tableData.delegate = this
-      tableData.resolveStrategy = Closure.DELEGATE_FIRST
+      //tableData.resolveStrategy = Closure.DELEGATE_FIRST
       tableData()
     }
     context.get()
+    // context aufräumen?
+  }
+  
+  static def parse(Closure tableData) {
+    return new TableParser().parseTableClosure(tableData)  
   }
 
 }

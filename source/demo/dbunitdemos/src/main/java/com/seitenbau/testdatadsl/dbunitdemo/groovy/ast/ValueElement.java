@@ -11,6 +11,6 @@ public class ValueElement extends ColumnElement {
 		if (value == null) {
 			return "null";
 		}
-		return value.toString();
+		return "\"" + value.toString() + "\"";
 	}
 }
