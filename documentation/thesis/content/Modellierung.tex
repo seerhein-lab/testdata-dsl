@@ -196,7 +196,7 @@ mit Java-Anwendungen.
 		
 		Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
 		Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \textit{TableParser},
-		enthält dafür die Methode \textit{parseTableClosure}.
+		enthält dafür die Methode \texttt{parseTableClosure}.
 		
 		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator\footnote{Binär
 		bezogen auf die Verknüpfung zweier Werte und nicht auf das Zahlensystem} implementiert werden, ist die
@@ -209,44 +209,79 @@ mit Java-Anwendungen.
 		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert für um eine Tabelle zu parsen. Dieser wenig
 		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen - kommen neue Datentypen
 		hinzu, müsste der Code erweitert werden.
+		\todo{Mögliche ungewollte Seiteneffekte}
 		
 		Groovy bietet allerdings auch eine zweite Möglichkeit für das Operator-Überladen an. Anstatt den Operator
 		als Methode dem linken Operand (bzw. der Klasse) hinzuzufügen, wird er als statische Methode (in einer
 		beliebigen Klasse) realisiert. Da eine statische Methode ohne Kontext ausgeführt wird, benötigt sie alle
-		beteiligten Operanden als Parameter. Eine solche Methode wird als Kateoriemethode bezeichnet. 
+		beteiligten Operanden als Parameter. Eine solche Methode wird als Kategoriemethode bezeichnet. 
 		Über das Schlüsselwort \textit{use}\footnote{\textit{use} wird in der Literatur meistens als Schlüsselwort
 		bezeichnet, tatsächlich handelt es sich jedoch um eine Groovy-Methode in \texttt{java.lang.Object}}
-		können die Kateogiemethoden in einem Closure verwendet werden. \cite[192]{GROOVY_IM_EINSATZ} 
+		können die Kategoriemethoden in einem Closure verwendet werden. \cite[192]{GROOVY_IM_EINSATZ} 
 		
-		Listing \ref{listing:opoverloading.tableparser} zeigt das Grundgerüst des Tabellenparsers:
+		Listing \ref{listing:opoverloading.tableparser.base} zeigt das Grundgerüst des Tabellenparsers:
 		
-	\begin{lstlisting}[caption=Tabellen-Parser mit Operator-Überladen, label=listing:opoverloading.tableparser]
+		\begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.base]
 class TableParser {
   
   static or(self, arg) {
   }
 
-  def getProperty(String property) {
+  def parseTableClosure(Closure tableData){
+    use(TableParser) {
+      tableData()
+    }
   }
+
+}
+		\end{lstlisting}
+		
+		Die Methode \texttt{or} erwartet zwei Parameter vom Typ \textit{Object}. Obwohl in Groovy alle Typen von
+		\textit{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
+		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt.
+		Doch auch solche Operationen lassen sich überschreiben, wenn für die Datentypen passende Kategoriemethoden
+		definiert werden.
+
+		Der Parser in der Form kann noch nicht mit selbst definierten Variablennamen für die Referenzenabbildung
+		umgehen. Aus diesem Grund wird eine Methode \texttt{getProperty} definiert, die für jeden Variablennamen
+		in der Tabelle aufgerufen werden soll. Dazu muss der Ausführungskontext des Closures auf die Instanz
+		des Tabellenparsers geändert werden. Die Änderungen sind in Listing \ref{listing:opoverloading.tableparser.extended}
+		dargestellt.
+
+		\begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.extended]
+class TableParser {
+  
+  static or(self, arg) {
+  }
+	
+  static or(Integer self, Integer arg) {
+  }
+
+  static or(Boolean self, Boolean arg) {
+	}
+	
+	def getProperty(String property) {
+  }
+	
 
   def parseTableClosure(Closure tableData){
     use(TableParser) {
-      tableData.delegate = this
+      tableData.delegate = this		// Change context
       tableData.resolveStrategy = Closure.DELEGATE_FIRST
       tableData()
     }
   }
 
 }
-\end{lstlisting}
-			
+		\end{lstlisting}
 		
 		
+
 		
 		
-		- Categories zum "`Einblenden"' von Methoden
-		- da statische Operatoren Speichern der Ergebnisse in ThreadLocal-Variable
-		- Kontext des Closures geändert, um lokalen Operatoren Vorrang zu geben
+		Realisierung:
+		- da statische Operatoren Speichern der Ergebnisse in ThreadLocal-Variable \cite{JAVA_CONCURRENCY_IN_PRACTICE}
+		- Kontext des Closures geändert für getProperty
 		- getProperty-Aufruf bei Variablen/Referenzen
 				
 				
