@@ -22,7 +22,7 @@ VSYS = lehrveranstaltung {
 }
 	
 DESIGN_PATTERNS = lehrveranstaltung {
-	name 			"Concurrency and Design Patterns"
+	name 			"Design Patterns"
 	sws             4
 	ects            3
 }

@@ -88,8 +88,6 @@ abstract class AbstractTableModel
   def tables = [:]
   
   def apply(Map fixtureData) {
-    TableParser parser = new TableParser()
-
     def parsedTables = [:]
     def variables = [:]
     
@@ -97,7 +95,7 @@ abstract class AbstractTableModel
       TableModel tableModel = tables[e.key]
       //println e.key
       
-      def data = parser.parseTableClosure(e.value)
+      def data = e.value
       def head = data[0]
       def columns = head.values.size()
       def columnIds = 0
