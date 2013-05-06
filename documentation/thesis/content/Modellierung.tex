@@ -169,8 +169,12 @@ myList.append("value 1").append("value 2");
 myList append "value 1"  append "value 2"  
 	\end{lstlisting}
 
-Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures von Java ab. \todo{Closures
-erklären} Die Unterstützung zur Meta-Programmierung stellt sich beim Implementieren einer DSL ebenfalls als nützlich
+Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures (Funktionsabschlüsse) von
+Java ab. Ein Closure ist ein Codeblock, der wie eine Funktion aufgerufen und genutzt werden kann. In Java lassen
+sich CLosures mit syntaktisch umfangreicheren Methoden-Objekten nachbilden. Ein Methoden-Objekt stellt eine
+Instanz einer (möglicherweise anonymen) Klasse dar, die nur eine Methode implementiert. \cite[40]{GROOVY_IM_EINSATZ} 
+\todo{Quelle Kent Beck Smalltalk Best Practice Patterns} 
+Die Unterstützung zur Meta-Programmierung stellt sich beim Implementieren einer DSL ebenfalls als nützlich
 heraus. Dadurch ist es z.B. möglich, abgeschlossene Klassen innerhalb von Groovy um Methoden zu erweitern oder auf
 den Zugriff von nicht definierten Klassenelementen zu reagieren.
 
@@ -190,9 +194,57 @@ mit Java-Anwendungen.
 
 		\subsubsection{Laufzeit-Meta-Programmierung}
 		
-		Die Tabellen mit den Daten können als Closures an einen Parser zum Interpretieren übergeben werden. 
+		Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
+		Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \textit{TableParser},
+		enthält dafür die Methode \textit{parseTableClosure}.
+		
+		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator\footnote{Binär
+		bezogen auf die Verknüpfung zweier Werte und nicht auf das Zahlensystem} implementiert werden, ist die
+		übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende Methode für den
+		Operator zu erweitern. Diese Methode trägt einen vorgegebenen Namen und erwartet als binärer Operator 
+		den rechten Operanden als Parameter (eine  Übersicht findet sich beispielsweise in 
+		\cite[58]{GROOVY_IM_EINSATZ}).
+		
+		Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
+		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert für um eine Tabelle zu parsen. Dieser wenig
+		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen - kommen neue Datentypen
+		hinzu, müsste der Code erweitert werden.
+		
+		Groovy bietet allerdings auch eine zweite Möglichkeit für das Operator-Überladen an. Anstatt den Operator
+		als Methode dem linken Operand (bzw. der Klasse) hinzuzufügen, wird er als statische Methode (in einer
+		beliebigen Klasse) realisiert. Da eine statische Methode ohne Kontext ausgeführt wird, benötigt sie alle
+		beteiligten Operanden als Parameter. Eine solche Methode wird als Kateoriemethode bezeichnet. 
+		Über das Schlüsselwort \textit{use}\footnote{\textit{use} wird in der Literatur meistens als Schlüsselwort
+		bezeichnet, tatsächlich handelt es sich jedoch um eine Groovy-Methode in \texttt{java.lang.Object}}
+		können die Kateogiemethoden in einem Closure verwendet werden. \cite[192]{GROOVY_IM_EINSATZ} 
+		
+		Listing \ref{listing:opoverloading.tableparser} zeigt das Grundgerüst des Tabellenparsers:
+		
+	\begin{lstlisting}[caption=Tabellen-Parser mit Operator-Überladen, label=listing:opoverloading.tableparser]
+class TableParser {
+  
+  static or(self, arg) {
+  }
+
+  def getProperty(String property) {
+  }
+
+  def parseTableClosure(Closure tableData){
+    use(TableParser) {
+      tableData.delegate = this
+      tableData.resolveStrategy = Closure.DELEGATE_FIRST
+      tableData()
+    }
+  }
+
+}
+\end{lstlisting}
+			
+		
+		
+		
+		
 		- Categories zum "`Einblenden"' von Methoden
-		- Operator-Überladen der Einfachheit halber statisch (anders nur extrem umständlich)
 		- da statische Operatoren Speichern der Ergebnisse in ThreadLocal-Variable
 		- Kontext des Closures geändert, um lokalen Operatoren Vorrang zu geben
 		- getProperty-Aufruf bei Variablen/Referenzen
