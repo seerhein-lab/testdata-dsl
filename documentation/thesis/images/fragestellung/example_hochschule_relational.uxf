@@ -5,11 +5,11 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>216</x>
-      <y>264</y>
+      <y>272</y>
       <w>144</w>
-      <h>144</h>
+      <h>128</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *PROFESSOR*
 --
 id &lt;&lt;PK&gt;&gt;
@@ -28,9 +28,9 @@ raum_id &lt;&lt;FK&gt;&gt;</panel_attributes>
       <x>216</x>
       <y>536</y>
       <w>144</w>
-      <h>104</h>
+      <h>88</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *LEHRVERANSTALTUNG*
 --
 id &lt;&lt;PK&gt;&gt;
@@ -44,25 +44,25 @@ ects : decimal</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>264</x>
-      <y>384</y>
+      <y>376</y>
       <w>40</w>
-      <h>168</h>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=    1
 </panel_attributes>
-    <additional_attributes>24;152;24;24</additional_attributes>
+    <additional_attributes>24;160;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>664</x>
-      <y>264</y>
+      <y>272</y>
       <w>144</w>
-      <h>88</h>
+      <h>72</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *PRUEFUNG*
 --
 id &lt;&lt;PK&gt;&gt;
@@ -78,9 +78,9 @@ zeitpunkt : date
       <x>432</x>
       <y>608</y>
       <w>160</w>
-      <h>64</h>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *IST_TUTOR*
 --
 student_id &lt;&lt;FK&gt;&gt;
@@ -92,11 +92,11 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>440</x>
-      <y>264</y>
+      <y>272</y>
       <w>144</w>
-      <h>64</h>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *BEAUFSICHTIGT*
 --
 professor_id &lt;&lt;FK&gt;&gt;
@@ -110,9 +110,9 @@ pruefung_id &lt;&lt;FK&gt;&gt;
       <x>664</x>
       <y>536</y>
       <w>144</w>
-      <h>120</h>
+      <h>104</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *STUDENT*
 --
 matrikelnummer &lt;&lt;PK&gt;&gt;
@@ -127,11 +127,11 @@ immatrukuliert_seit : date</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>664</x>
-      <y>408</y>
+      <y>416</y>
       <w>144</w>
-      <h>64</h>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *SCHREIBT*
 --
 student_id &lt;&lt;FK&gt;&gt;
@@ -145,9 +145,9 @@ pruefung_id &lt;&lt;FK&gt;&gt;
       <x>432</x>
       <y>536</y>
       <w>160</w>
-      <h>64</h>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *BESUCHT*
 --
 student_id &lt;&lt;FK&gt;&gt;
@@ -159,20 +159,20 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>336</x>
-      <y>328</y>
+      <y>320</y>
       <w>344</w>
-      <h>224</h>
+      <h>232</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=  1</panel_attributes>
-    <additional_attributes>328;24;24;208</additional_attributes>
+    <additional_attributes>328;24;24;216</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>336</x>
-      <y>248</y>
+      <y>256</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -185,7 +185,7 @@ m2=1</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>560</x>
-      <y>248</y>
+      <y>256</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -198,29 +198,29 @@ m2=1..*</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>712</x>
-      <y>328</y>
+      <y>320</y>
       <w>40</w>
-      <h>96</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=   1
 m2=    0..*
 </panel_attributes>
-    <additional_attributes>24;24;24;80</additional_attributes>
+    <additional_attributes>24;24;24;96</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>712</x>
-      <y>448</y>
+      <y>440</y>
       <w>40</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=   1
 </panel_attributes>
-    <additional_attributes>24;24;24;88</additional_attributes>
+    <additional_attributes>24;24;24;96</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
@@ -278,11 +278,11 @@ m2=0..*</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>216</x>
-      <y>128</y>
+      <y>136</y>
       <w>144</w>
-      <h>80</h>
+      <h>64</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;table&gt;&gt;
+    <panel_attributes>
 *RAUM*
 --
 id &lt;&lt;PK&gt;&gt;
@@ -295,14 +295,14 @@ nummer : int
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>264</x>
-      <y>184</y>
+      <y>176</y>
       <w>40</w>
-      <h>96</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..1
 m2=    1
 </panel_attributes>
-    <additional_attributes>24;80;24;24</additional_attributes>
+    <additional_attributes>24;96;24;24</additional_attributes>
   </element>
 </diagram>
