@@ -4,7 +4,7 @@ class Lehrveranstaltung {
 	long id;
 	String name;
 	int sws;
-	int ects;
+	double ects;
 	
 	def Lehrveranstaltung(closure) {
 		closure.delegate = this
@@ -20,7 +20,7 @@ class Lehrveranstaltung {
 		this.sws = sws
 	}
 
-	def ects(int ects) {
+	def ects(double ects) {
 		this.ects = ects
 	}
 }

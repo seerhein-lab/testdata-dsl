@@ -9,6 +9,8 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.DataType;
 
+import com.seitenbau.testdatadsl.dbunitdemo.groovy.DateUtil;
+
 public class JavaDataSetProvider implements IDataSetProvider {
 
 	public interface Parameters {
@@ -42,8 +44,6 @@ public class JavaDataSetProvider implements IDataSetProvider {
 
 	public IDataSet createDataSet() {
 		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat( "dd.MM.yyyy HH:mm:ss" );
-			
 			DefaultDataSet dataSet = new DefaultDataSet();
 
 			DefaultTable professor = new DefaultTable(
@@ -79,7 +79,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 						new Column("professor_id", DataType.BIGINT),
 						new Column("name", DataType.VARCHAR), 
 						new Column("sws", DataType.INTEGER),
-						new Column("ects", DataType.INTEGER),
+						new Column("ects", DataType.DOUBLE),
 					}
 				);
 			lehrveranstaltung.addRow(new Object[] {
@@ -111,13 +111,13 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					Parameters.Pruefung.VERTEILTE_SYSTEME_ID,
 					Parameters.Lehrveranstaltung.VERTEILTE_SYSTEME_ID, 
 					"K90",
-					dateFormat.parse("01.04.2013 14:00:00"),
+					DateUtil.getDate(2013, 4, 1, 14, 0, 0),
 				});
 			pruefung.addRow(new Object[] {
 					Parameters.Pruefung.DESIGN_PATTERNS_ID,
 					Parameters.Lehrveranstaltung.DESIGN_PATTERNS_ID, 
 					"M30",
-					dateFormat.parse("06.01.2013 12:00:00"),
+					DateUtil.getDate(2013, 1, 6, 12, 0, 0),
 				});
 			dataSet.addTable(pruefung);
 
@@ -141,7 +141,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					"Nikolaus",
 					"MSI",
 					4,
-					dateFormat.parse("01.09.2011 00:00:00"),
+					DateUtil.getDate(2011, 9, 1),
 				});
 			student.addRow(new Object[] {
 					Parameters.Student.MAX_MUSTERMANN_ID,
@@ -149,7 +149,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 					"Max",
 					"BIT",
 					"3",
-					dateFormat.parse("01.03.2012 00:00:00"),
+					DateUtil.getDate(2012, 3, 1),
 				});
 			dataSet.addTable(student);
 

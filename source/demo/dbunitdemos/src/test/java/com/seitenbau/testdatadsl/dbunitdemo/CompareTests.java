@@ -14,47 +14,47 @@ public class CompareTests
 
   private static final IDataSetProvider GROOVY = new GroovySimpleDSLDataSetProvider();
   private static final IDataSetProvider GROOVY2 = new GroovyOpOverloadingDataSetProvider();
-  private static final IDataSetProvider XML = new XmlDataSetProvider();
-  private static final IDataSetProvider FLATXML = new FlatXmlDataSetProvider();
+  //private static final IDataSetProvider XML = new XmlDataSetProvider();
+  //private static final IDataSetProvider FLATXML = new FlatXmlDataSetProvider();
   private static final IDataSetProvider JAVA = new JavaDataSetProvider();
   private static final IDataSetProvider SBTESTOLD = new OldSBTestingDataSetProvider();
   private static final IDataSetProvider SBTEST = new SBTestingDataSetProvider();
 
+//  @Test
+//  public void testCompareXMLandJava() throws Exception
+//  {
+//    Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
+//  }
+//
+//  @Test
+//  public void testCompareXMLandFlatXML() throws Exception
+//  {
+//    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
+//  }
+
   @Test
-  public void testCompareXMLandJava() throws Exception
+  public void testCompareJavaAndSBTestOld() throws Exception
   {
-    Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
+    Assertion.assertEquals(JAVA.getDataSet(), SBTESTOLD.getDataSet());
   }
 
   @Test
-  public void testCompareXMLandFlatXML() throws Exception
+  public void testCompareJavaAndSBTest() throws Exception
   {
-    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
-  }
-
-  @Test
-  public void testCompareXMLandSBTestOld() throws Exception
-  {
-    Assertion.assertEquals(XML.getDataSet(), SBTESTOLD.getDataSet());
-  }
-
-  @Test
-  public void testCompareXMLandSBTest() throws Exception
-  {
-    Assertion.assertEquals(XML.getDataSet(), SBTEST.getDataSet());
+    Assertion.assertEquals(JAVA.getDataSet(), SBTEST.getDataSet());
   }
 
   @Ignore
   @Test
-  public void testCompareXMLandGroovyTest() throws Exception
+  public void testCompareJavaAndGroovyTest() throws Exception
   {
-    Assertion.assertEquals(XML.getDataSet(), GROOVY.getDataSet());
+    Assertion.assertEquals(JAVA.getDataSet(), GROOVY.getDataSet());
   }
   
   @Test
-  public void testCompareXMLandGroovy2Test() throws Exception
+  public void testCompareJavaAndGroovy2Test() throws Exception
   {
-    Assertion.assertEquals(XML.getDataSet(), GROOVY2.getDataSet());
+    Assertion.assertEquals(JAVA.getDataSet(), GROOVY2.getDataSet());
   }
   
 }

@@ -29,7 +29,7 @@ DESIGN_PATTERNS = lehrveranstaltung {
 
 P_VSYS = pruefung {
 	typ 			"K90"
-	zeitpunkt       "01.04.2013 14:00:00"
+	zeitpunkt       "Thu May 02 02:00:00 CEST 2013"
 	prueftStoffVon	VSYS
 }
 
