@@ -1,9 +1,11 @@
-package com.seitenbau.testdatadsl.dbunitdemo;
+package com.seitenbau.testdatadsl.dbunitdemo.datasets;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+
+import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
 
 public class FlatXmlDataSetProvider implements IDataSetProvider
 {

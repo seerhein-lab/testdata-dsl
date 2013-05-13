@@ -1,6 +1,22 @@
 package com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy;
 
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitExamplesDataSet
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowBuilder_Professor
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowCollection_Professor
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowBuilder_Lehrveranstaltung
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowCollection_Lehrveranstaltung
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_Pruefung
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowCollection_Pruefung
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowCollection_Student
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable.RowBuilder_Beaufsichtigt
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable.RowCollection_Beaufsichtigt
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowBuilder_Besucht
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowCollection_Besucht
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowBuilder_Isttutor
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable.RowCollection_Isttutor
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowBuilder_Schreibt
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowCollection_Schreibt
 import groovy.transform.ToString
 
 //-----------------------------------
@@ -22,27 +38,34 @@ class ColumnHeader {
   String name
 
   Class type
+  
+  boolean isIdentificator
+  
+  String javaName
 
+}
+
+class DatabaseReference {
 }
 //-----------------------------------
 
-
-class ProfessorId {
+class ProfessorRef extends DatabaseReference {
 
   // TODO NM replace with IdGenerator
   static java.lang.Long nextId = 1
 
   private java.lang.Long id
   
-  def ProfessorId() {
+  def ProfessorRef() {
   }
   
-  def ProfessorId(java.lang.Long id) {
-    this.id = id
+  def ProfessorRef(java.lang.Long id) {
+    setId(id)
   }
 
   java.lang.Long getId() {
     if (id == null) {
+      // TODO NM replace with IdGenerator
       id = nextId++
     }
     return id
@@ -52,6 +75,7 @@ class ProfessorId {
     if (isDefined() && this.id != id) {
       throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: professor]");
     }
+    // TODO NM notify id generator that id is not available anymore
     this.id = id
   }
 
@@ -60,26 +84,42 @@ class ProfessorId {
   }
   
   String toString() {
-    return id
+    return "ProfessorRef[" + id + "]"
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<LehrveranstaltungRef> leitetList = []
+
+  def leitet(LehrveranstaltungRef ... refs) {
+    leitetList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<PruefungRef> beaufsichtigtList = []
+
+  def beaufsichtigt(PruefungRef ... refs) {
+    beaufsichtigtList.addAll(refs)
   }
 
 }
-class LehrveranstaltungId {
+
+class LehrveranstaltungRef extends DatabaseReference {
 
   // TODO NM replace with IdGenerator
   static java.lang.Long nextId = 1
 
   private java.lang.Long id
   
-  def LehrveranstaltungId() {
+  def LehrveranstaltungRef() {
   }
   
-  def LehrveranstaltungId(java.lang.Long id) {
-    this.id = id
+  def LehrveranstaltungRef(java.lang.Long id) {
+    setId(id)
   }
 
   java.lang.Long getId() {
     if (id == null) {
+      // TODO NM replace with IdGenerator
       id = nextId++
     }
     return id
@@ -89,6 +129,7 @@ class LehrveranstaltungId {
     if (isDefined() && this.id != id) {
       throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: lehrveranstaltung]");
     }
+    // TODO NM notify id generator that id is not available anymore
     this.id = id
   }
 
@@ -97,26 +138,56 @@ class LehrveranstaltungId {
   }
   
   String toString() {
-    return id
+    return "LehrveranstaltungRef[" + id + "]"
+  }
+
+  List<PruefungRef> geleitetVonList = []
+
+  // depending on relation type with or without ellipse (...)
+  def geleitetVon(ProfessorRef ... refs) {
+    geleitetVonList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<PruefungRef> hatPruefungList = []
+
+  def hatPruefung(PruefungRef ... refs) {
+    hatPruefungList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<StudentRef> besuchtVonList = []
+
+  def besuchtVon(StudentRef ... refs) {
+    besuchtVonList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<StudentRef> hatTutorList = []
+
+  def hatTutor(StudentRef ... refs) {
+    hatTutorList.addAll(refs)
   }
 
 }
-class PruefungId {
+
+class PruefungRef extends DatabaseReference {
 
   // TODO NM replace with IdGenerator
   static java.lang.Long nextId = 1
 
   private java.lang.Long id
   
-  def PruefungId() {
+  def PruefungRef() {
   }
   
-  def PruefungId(java.lang.Long id) {
-    this.id = id
+  def PruefungRef(java.lang.Long id) {
+    setId(id)
   }
 
   java.lang.Long getId() {
     if (id == null) {
+      // TODO NM replace with IdGenerator
       id = nextId++
     }
     return id
@@ -126,6 +197,7 @@ class PruefungId {
     if (isDefined() && this.id != id) {
       throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: pruefung]");
     }
+    // TODO NM notify id generator that id is not available anymore
     this.id = id
   }
 
@@ -134,16 +206,38 @@ class PruefungId {
   }
   
   String toString() {
-    return id
+    return "PruefungRef[" + id + "]"
+  }
+
+  List<StudentRef> stoffVonList = []
+
+  // depending on relation type with or without ellipse (...)
+  def stoffVon(LehrveranstaltungRef ... refs) {
+    stoffVonList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<ProfessorRef> beaufsichtigtVonList = []
+
+  def beaufsichtigtVon(ProfessorRef ... refs) {
+    beaufsichtigtVonList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<StudentRef> geschriebenVonList = []
+
+  def geschriebenVon(StudentRef ... refs) {
+    geschriebenVonList.addAll(refs)
   }
 
 }
-class StudentId {
+
+class StudentRef extends DatabaseReference {
 
   private java.lang.Long id
   
-  def StudentId(java.lang.Long id) {
-    this.id = id
+  def StudentRef(java.lang.Long id) {
+    setId(id)
   }
 
   java.lang.Long getId() {
@@ -157,6 +251,7 @@ class StudentId {
     if (isDefined() && this.id != id) {
       throw new IllegalStateException("Id already set " + id + " vs " + this.id + " [Table: student]");
     }
+    // TODO NM notify id generator that id is not available anymore
     this.id = id
   }
 
@@ -165,15 +260,82 @@ class StudentId {
   }
   
   String toString() {
-    return id
+    return "StudentRef[" + id + "]"
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<LehrveranstaltungRef> besuchtList = []
+
+  def besucht(LehrveranstaltungRef ... refs) {
+    besuchtList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<LehrveranstaltungRef> istTutorList = []
+
+  def istTutor(LehrveranstaltungRef ... refs) {
+    istTutorList.addAll(refs)
+  }
+
+  // depending on relation type with or with ellipse (...)
+  List<PruefungRef> schreibtList = []
+
+  def schreibt(PruefungRef ... refs) {
+    schreibtList.addAll(refs)
   }
 
 }
 
-class AbstractTableParser {
+class BeaufsichtigtRef extends DatabaseReference {
+  String toString() {
+    return "BeaufsichtigtRef"
+  }
+
+}
+
+class BesuchtRef extends DatabaseReference {
+  String toString() {
+    return "BesuchtRef"
+  }
+
+}
+
+class IsttutorRef extends DatabaseReference {
+  String toString() {
+    return "IsttutorRef"
+  }
+
+}
+
+class SchreibtRef extends DatabaseReference {
+  String toString() {
+    return "SchreibtRef"
+  }
+
+}
+
+class ProfessorTable {
+
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: ProfessorRef.class)
+
+  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long, isIdentificator: true, javaName: "Id" )
+
+  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String, isIdentificator: false, javaName: "Name" )
+
+  ColumnHeader vorname = new ColumnHeader(name: "vorname", type: java.lang.String, isIdentificator: false, javaName: "Vorname" )
+
+  ColumnHeader titel = new ColumnHeader(name: "titel", type: java.lang.String, isIdentificator: false, javaName: "Titel" )
+
+  ColumnHeader fakultaet = new ColumnHeader(name: "fakultaet", type: java.lang.String, isIdentificator: false, javaName: "Fakultaet" )
+
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  static context = new ThreadLocal<List>()
-  
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable table
+
+  def ProfessorTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable table) {
+    this.table = table
+  }
+
   static or(self, arg) {
     appendRow(self, arg)
   }
@@ -191,10 +353,10 @@ class AbstractTableParser {
     context.get().add(row)
     row.or(nextValue)
   }
-  
+
   def parseTable(Closure rows) {
     context.set([])
-    use(AbstractTableParser) {
+    use(ProfessorTable) {
       rows.delegate = this
       rows.resolveStrategy = Closure.DELEGATE_FIRST
       rows()
@@ -207,662 +369,1521 @@ class AbstractTableParser {
       !(value instanceof ColumnHeader)
     }
   }
+  
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
 
   def rows(Closure rows) {
     def tableData = parseTable(rows)
     def head = null
     int columns = 0
+    int lineNr = 0
     
-    tableData.each { row ->
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
       if (isHeadRow(row)) {
         head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
         columns = row.values.size()
-      } else {
-        def resultRow = createRow()
-        for (columnIndex in 0..(columns-1)) {
-          def column = head.values[columnIndex]
-          def method = column.name
-          def value = row.values[columnIndex]
-          resultRow."$method"(value)
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Professor.insertRow()
+		
+        RowBuilder_Professor rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
         }
-       
-        this.rows.add(resultRow)
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Professor with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new ProfessorTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
       }
     }
   }
-}
-
-@Mixin(AbstractTableParser)
-class ProfessorTable {
-
-  ColumnHeader REF = new ColumnHeader(name: "REF", type: ProfessorId.class)
-
-  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long)
-
-  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String)
-
-  ColumnHeader vorname = new ColumnHeader(name: "vorname", type: java.lang.String)
-
-  ColumnHeader titel = new ColumnHeader(name: "titel", type: java.lang.String)
-
-  ColumnHeader fakultaet = new ColumnHeader(name: "fakultaet", type: java.lang.String)
-
   
-  @ToString
-  class ProfessorTableRow {
-    
-    ProfessorId REF
-    
-    def REF(ProfessorId REF){
-      this.REF = REF
-    }
-    
-    def REF() {
-      this.REF
-    }
-    
-    java.lang.Long id
-    
-    def id(java.lang.Long id){
-      this.id = id
-    }
-    
-    def id() {
-      this.id
-    }
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
 
-    java.lang.String name
-    
-    def name(java.lang.String name){
-      this.name = name
-    }
-    
-    def name() {
-      this.name
-    }
-
-    java.lang.String vorname
-    
-    def vorname(java.lang.String vorname){
-      this.vorname = vorname
-    }
-    
-    def vorname() {
-      this.vorname
-    }
-
-    java.lang.String titel
-    
-    def titel(java.lang.String titel){
-      this.titel = titel
-    }
-    
-    def titel() {
-      this.titel
-    }
-
-    java.lang.String fakultaet
-    
-    def fakultaet(java.lang.String fakultaet){
-      this.fakultaet = fakultaet
-    }
-    
-    def fakultaet() {
-      this.fakultaet
-    }
-
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
   }
   
-  List<ProfessorTableRow> rows = []
-  
-  def createRow() {
-    new ProfessorTableRow()
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Professor, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class LehrveranstaltungTable {
 
-  ColumnHeader REF = new ColumnHeader(name: "REF", type: LehrveranstaltungId.class)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: LehrveranstaltungRef.class)
 
-  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long)
+  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long, isIdentificator: true, javaName: "Id" )
 
-  ColumnHeader professor_id = new ColumnHeader(name: "professor_id", type: ProfessorId)
+  ColumnHeader professor_id = new ColumnHeader(name: "professor_id", type: ProfessorRef, isIdentificator: false, javaName: "ProfessorId" )
 
-  ColumnHeader professor = new ColumnHeader(name: "professor", type: ProfessorId)
+  ColumnHeader professor = new ColumnHeader(name: "professor", type: ProfessorRef, javaName: "ProfessorId")
 
-  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String)
+  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String, isIdentificator: false, javaName: "Name" )
 
-  ColumnHeader sws = new ColumnHeader(name: "sws", type: java.lang.Integer)
+  ColumnHeader sws = new ColumnHeader(name: "sws", type: java.lang.Integer, isIdentificator: false, javaName: "Sws" )
 
-  ColumnHeader ects = new ColumnHeader(name: "ects", type: java.lang.Double)
+  ColumnHeader ects = new ColumnHeader(name: "ects", type: java.lang.Double, isIdentificator: false, javaName: "Ects" )
 
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class LehrveranstaltungTableRow {
-    
-    LehrveranstaltungId REF
-    
-    def REF(LehrveranstaltungId REF){
-      this.REF = REF
-    }
-    
-    def REF() {
-      this.REF
-    }
-    
-    java.lang.Long id
-    
-    def id(java.lang.Long id){
-      this.id = id
-    }
-    
-    def id() {
-      this.id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable table
 
-    ProfessorId professor_id
-    
-    def professor_id(ProfessorId professor_id){
-      this.professor_id = professor_id
-    }
-    
-    def professor_id() {
-      this.professor_id
-    }
+  def LehrveranstaltungTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable table) {
+    this.table = table
+  }
 
-    def professor(ProfessorId professor_id){
-      this.professor_id = professor_id
-    }
-    
-    def professor() {
-      this.professor_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.String name
-    
-    def name(java.lang.String name){
-      this.name = name
-    }
-    
-    def name() {
-      this.name
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.Integer sws
-    
-    def sws(java.lang.Integer sws){
-      this.sws = sws
-    }
-    
-    def sws() {
-      this.sws
-    }
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.Double ects
-    
-    def ects(java.lang.Double ects){
-      this.ects = ects
-    }
-    
-    def ects() {
-      this.ects
-    }
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
 
+  def parseTable(Closure rows) {
+    context.set([])
+    use(LehrveranstaltungTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<LehrveranstaltungTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new LehrveranstaltungTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Lehrveranstaltung.insertRow()
+		
+        RowBuilder_Lehrveranstaltung rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Lehrveranstaltung with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new LehrveranstaltungTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Lehrveranstaltung, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class PruefungTable {
 
-  ColumnHeader REF = new ColumnHeader(name: "REF", type: PruefungId.class)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: PruefungRef.class)
 
-  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long)
+  ColumnHeader id = new ColumnHeader(name: "id", type: java.lang.Long, isIdentificator: true, javaName: "Id" )
 
-  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungId)
+  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungRef, isIdentificator: false, javaName: "LehrveranstaltungId" )
 
-  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungId)
+  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungRef, javaName: "LehrveranstaltungId")
 
-  ColumnHeader typ = new ColumnHeader(name: "typ", type: java.lang.String)
+  ColumnHeader typ = new ColumnHeader(name: "typ", type: java.lang.String, isIdentificator: false, javaName: "Typ" )
 
-  ColumnHeader zeitpunkt = new ColumnHeader(name: "zeitpunkt", type: java.util.Date)
+  ColumnHeader zeitpunkt = new ColumnHeader(name: "zeitpunkt", type: java.util.Date, isIdentificator: false, javaName: "Zeitpunkt" )
 
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class PruefungTableRow {
-    
-    PruefungId REF
-    
-    def REF(PruefungId REF){
-      this.REF = REF
-    }
-    
-    def REF() {
-      this.REF
-    }
-    
-    java.lang.Long id
-    
-    def id(java.lang.Long id){
-      this.id = id
-    }
-    
-    def id() {
-      this.id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable table
 
-    LehrveranstaltungId lehrveranstaltung_id
-    
-    def lehrveranstaltung_id(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung_id() {
-      this.lehrveranstaltung_id
-    }
+  def PruefungTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable table) {
+    this.table = table
+  }
 
-    def lehrveranstaltung(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung() {
-      this.lehrveranstaltung_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.String typ
-    
-    def typ(java.lang.String typ){
-      this.typ = typ
-    }
-    
-    def typ() {
-      this.typ
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
-    java.util.Date zeitpunkt
-    
-    def zeitpunkt(java.util.Date zeitpunkt){
-      this.zeitpunkt = zeitpunkt
-    }
-    
-    def zeitpunkt() {
-      this.zeitpunkt
-    }
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
 
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+
+  def parseTable(Closure rows) {
+    context.set([])
+    use(PruefungTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<PruefungTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new PruefungTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Pruefung.insertRow()
+		
+        RowBuilder_Pruefung rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Pruefung with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new PruefungTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Pruefung, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class StudentTable {
 
-  ColumnHeader REF = new ColumnHeader(name: "REF", type: StudentId.class)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: StudentRef.class)
 
-  ColumnHeader matrikelnummer = new ColumnHeader(name: "matrikelnummer", type: java.lang.Long)
+  ColumnHeader matrikelnummer = new ColumnHeader(name: "matrikelnummer", type: java.lang.Long, isIdentificator: true, javaName: "Matrikelnummer" )
 
-  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String)
+  ColumnHeader name = new ColumnHeader(name: "name", type: java.lang.String, isIdentificator: false, javaName: "Name" )
 
-  ColumnHeader vorname = new ColumnHeader(name: "vorname", type: java.lang.String)
+  ColumnHeader vorname = new ColumnHeader(name: "vorname", type: java.lang.String, isIdentificator: false, javaName: "Vorname" )
 
-  ColumnHeader studiengang = new ColumnHeader(name: "studiengang", type: java.lang.String)
+  ColumnHeader studiengang = new ColumnHeader(name: "studiengang", type: java.lang.String, isIdentificator: false, javaName: "Studiengang" )
 
-  ColumnHeader semester = new ColumnHeader(name: "semester", type: java.lang.Integer)
+  ColumnHeader semester = new ColumnHeader(name: "semester", type: java.lang.Integer, isIdentificator: false, javaName: "Semester" )
 
-  ColumnHeader immatrikuliert_seit = new ColumnHeader(name: "immatrikuliert_seit", type: java.util.Date)
+  ColumnHeader immatrikuliert_seit = new ColumnHeader(name: "immatrikuliert_seit", type: java.util.Date, isIdentificator: false, javaName: "ImmatrikuliertSeit" )
 
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class StudentTableRow {
-    
-    StudentId REF
-    
-    def REF(StudentId REF){
-      this.REF = REF
-    }
-    
-    def REF() {
-      this.REF
-    }
-    
-    java.lang.Long matrikelnummer
-    
-    def matrikelnummer(java.lang.Long matrikelnummer){
-      this.matrikelnummer = matrikelnummer
-    }
-    
-    def matrikelnummer() {
-      this.matrikelnummer
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable table
 
-    java.lang.String name
-    
-    def name(java.lang.String name){
-      this.name = name
-    }
-    
-    def name() {
-      this.name
-    }
+  def StudentTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable table) {
+    this.table = table
+  }
 
-    java.lang.String vorname
-    
-    def vorname(java.lang.String vorname){
-      this.vorname = vorname
-    }
-    
-    def vorname() {
-      this.vorname
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.String studiengang
-    
-    def studiengang(java.lang.String studiengang){
-      this.studiengang = studiengang
-    }
-    
-    def studiengang() {
-      this.studiengang
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
-    java.lang.Integer semester
-    
-    def semester(java.lang.Integer semester){
-      this.semester = semester
-    }
-    
-    def semester() {
-      this.semester
-    }
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
 
-    java.util.Date immatrikuliert_seit
-    
-    def immatrikuliert_seit(java.util.Date immatrikuliert_seit){
-      this.immatrikuliert_seit = immatrikuliert_seit
-    }
-    
-    def immatrikuliert_seit() {
-      this.immatrikuliert_seit
-    }
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
 
+  def parseTable(Closure rows) {
+    context.set([])
+    use(StudentTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<StudentTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new StudentTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Student.insertRow()
+		
+        RowBuilder_Student rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Student with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new StudentTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Student, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class BeaufsichtigtTable {
 
-  ColumnHeader professor_id = new ColumnHeader(name: "professor_id", type: ProfessorId)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: BeaufsichtigtRef.class)
 
-  ColumnHeader professor = new ColumnHeader(name: "professor", type: ProfessorId)
+  ColumnHeader professor_id = new ColumnHeader(name: "professor_id", type: ProfessorRef, isIdentificator: false, javaName: "ProfessorId" )
 
-  ColumnHeader pruefung_id = new ColumnHeader(name: "pruefung_id", type: PruefungId)
+  ColumnHeader professor = new ColumnHeader(name: "professor", type: ProfessorRef, javaName: "ProfessorId")
 
-  ColumnHeader pruefung = new ColumnHeader(name: "pruefung", type: PruefungId)
+  ColumnHeader pruefung_id = new ColumnHeader(name: "pruefung_id", type: PruefungRef, isIdentificator: false, javaName: "PruefungId" )
 
+  ColumnHeader pruefung = new ColumnHeader(name: "pruefung", type: PruefungRef, javaName: "PruefungId")
+
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class BeaufsichtigtTableRow {
-    
-    ProfessorId professor_id
-    
-    def professor_id(ProfessorId professor_id){
-      this.professor_id = professor_id
-    }
-    
-    def professor_id() {
-      this.professor_id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable table
 
-    def professor(ProfessorId professor_id){
-      this.professor_id = professor_id
-    }
-    
-    def professor() {
-      this.professor_id
-    }
+  def BeaufsichtigtTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable table) {
+    this.table = table
+  }
 
-    PruefungId pruefung_id
-    
-    def pruefung_id(PruefungId pruefung_id){
-      this.pruefung_id = pruefung_id
-    }
-    
-    def pruefung_id() {
-      this.pruefung_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    def pruefung(PruefungId pruefung_id){
-      this.pruefung_id = pruefung_id
-    }
-    
-    def pruefung() {
-      this.pruefung_id
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
+
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+
+  def parseTable(Closure rows) {
+    context.set([])
+    use(BeaufsichtigtTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<BeaufsichtigtTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new BeaufsichtigtTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Beaufsichtigt.insertRow()
+		
+        RowBuilder_Beaufsichtigt rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Beaufsichtigt with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new BeaufsichtigtTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Beaufsichtigt, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class BesuchtTable {
 
-  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentId)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: BesuchtRef.class)
 
-  ColumnHeader student = new ColumnHeader(name: "student", type: StudentId)
+  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentRef, isIdentificator: false, javaName: "StudentId" )
 
-  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungId)
+  ColumnHeader student = new ColumnHeader(name: "student", type: StudentRef, javaName: "StudentId")
 
-  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungId)
+  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungRef, isIdentificator: false, javaName: "LehrveranstaltungId" )
 
+  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungRef, javaName: "LehrveranstaltungId")
+
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class BesuchtTableRow {
-    
-    StudentId student_id
-    
-    def student_id(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student_id() {
-      this.student_id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable table
 
-    def student(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student() {
-      this.student_id
-    }
+  def BesuchtTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable table) {
+    this.table = table
+  }
 
-    LehrveranstaltungId lehrveranstaltung_id
-    
-    def lehrveranstaltung_id(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung_id() {
-      this.lehrveranstaltung_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    def lehrveranstaltung(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung() {
-      this.lehrveranstaltung_id
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
+
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+
+  def parseTable(Closure rows) {
+    context.set([])
+    use(BesuchtTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<BesuchtTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new BesuchtTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Besucht.insertRow()
+		
+        RowBuilder_Besucht rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Besucht with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new BesuchtTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Besucht, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class IsttutorTable {
 
-  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentId)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: IsttutorRef.class)
 
-  ColumnHeader student = new ColumnHeader(name: "student", type: StudentId)
+  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentRef, isIdentificator: false, javaName: "StudentId" )
 
-  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungId)
+  ColumnHeader student = new ColumnHeader(name: "student", type: StudentRef, javaName: "StudentId")
 
-  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungId)
+  ColumnHeader lehrveranstaltung_id = new ColumnHeader(name: "lehrveranstaltung_id", type: LehrveranstaltungRef, isIdentificator: false, javaName: "LehrveranstaltungId" )
 
+  ColumnHeader lehrveranstaltung = new ColumnHeader(name: "lehrveranstaltung", type: LehrveranstaltungRef, javaName: "LehrveranstaltungId")
+
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class IsttutorTableRow {
-    
-    StudentId student_id
-    
-    def student_id(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student_id() {
-      this.student_id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable table
 
-    def student(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student() {
-      this.student_id
-    }
+  def IsttutorTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.IsttutorTable table) {
+    this.table = table
+  }
 
-    LehrveranstaltungId lehrveranstaltung_id
-    
-    def lehrveranstaltung_id(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung_id() {
-      this.lehrveranstaltung_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    def lehrveranstaltung(LehrveranstaltungId lehrveranstaltung_id){
-      this.lehrveranstaltung_id = lehrveranstaltung_id
-    }
-    
-    def lehrveranstaltung() {
-      this.lehrveranstaltung_id
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
+
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+
+  def parseTable(Closure rows) {
+    context.set([])
+    use(IsttutorTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<IsttutorTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new IsttutorTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Isttutor.insertRow()
+		
+        RowBuilder_Isttutor rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Isttutor with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new IsttutorTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Isttutor, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
-@Mixin(AbstractTableParser)
 class SchreibtTable {
 
-  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentId)
+  ColumnHeader REF = new ColumnHeader(name: "REF", type: SchreibtRef.class)
 
-  ColumnHeader student = new ColumnHeader(name: "student", type: StudentId)
+  ColumnHeader student_id = new ColumnHeader(name: "student_id", type: StudentRef, isIdentificator: false, javaName: "StudentId" )
 
-  ColumnHeader pruefung_id = new ColumnHeader(name: "pruefung_id", type: PruefungId)
+  ColumnHeader student = new ColumnHeader(name: "student", type: StudentRef, javaName: "StudentId")
 
-  ColumnHeader pruefung = new ColumnHeader(name: "pruefung", type: PruefungId)
+  ColumnHeader pruefung_id = new ColumnHeader(name: "pruefung_id", type: PruefungRef, isIdentificator: false, javaName: "PruefungId" )
 
+  ColumnHeader pruefung = new ColumnHeader(name: "pruefung", type: PruefungRef, javaName: "PruefungId")
+
+  static ThreadLocal<List> context = new ThreadLocal<List>()
   
-  @ToString
-  class SchreibtTableRow {
-    
-    StudentId student_id
-    
-    def student_id(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student_id() {
-      this.student_id
-    }
+  com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable table
 
-    def student(StudentId student_id){
-      this.student_id = student_id
-    }
-    
-    def student() {
-      this.student_id
-    }
+  def SchreibtTable(com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable table) {
+    this.table = table
+  }
 
-    PruefungId pruefung_id
-    
-    def pruefung_id(PruefungId pruefung_id){
-      this.pruefung_id = pruefung_id
-    }
-    
-    def pruefung_id() {
-      this.pruefung_id
-    }
+  static or(self, arg) {
+    appendRow(self, arg)
+  }
 
-    def pruefung(PruefungId pruefung_id){
-      this.pruefung_id = pruefung_id
-    }
-    
-    def pruefung() {
-      this.pruefung_id
-    }
+  static or(Integer self, Integer arg) {
+    appendRow(self, arg)
+  }
 
+  static or(Boolean self, Boolean arg) {
+    appendRow(self, arg)
+  }
+
+  static appendRow(value, nextValue) {
+    def row = new Row(values: [value])
+    context.get().add(row)
+    row.or(nextValue)
+  }
+
+  def parseTable(Closure rows) {
+    context.set([])
+    use(SchreibtTable) {
+      rows.delegate = this
+      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows()
+    }
+    context.get()
   }
   
-  List<SchreibtTableRow> rows = []
+  boolean isHeadRow(Row row) {
+    null == row.values.find { value ->
+      !(value instanceof ColumnHeader)
+    }
+  }
   
-  def createRow() {
-    new SchreibtTableRow()
+  int getRefColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.name == "REF") result = index
+      index++
+    }
+    return result
+  }
+  
+  int getIdColumn(Row header) {
+    int result = -1
+    int index = 0
+    header.values.each { ColumnHeader column ->
+      if (column.isIdentificator) result = index
+      index++
+    }
+    return result
+  }
+
+  def rows(Closure rows) {
+    def tableData = parseTable(rows)
+    def head = null
+    int columns = 0
+    int lineNr = 0
+    
+    int colRef = -1
+    int colId = -1
+    
+    tableData.each { Row row ->
+      lineNr++    
+      if (isHeadRow(row)) {
+        head = row
+        colRef = getRefColumn(head)
+        colId = getIdColumn(head)
+        columns = row.values.size()
+      }
+      else {
+        if (row.values.size() != columns) throwColumnsDoNotMatchException(lineNr, row)
+        // rowbuilder = table_Schreibt.insertRow()
+		
+        RowBuilder_Schreibt rowbuilder = null 
+      
+        // TODO NM check if there is a row with that id already
+        // check if there is an ID -> search it
+        // check if there is a Ref -> check if it has an ID -> search it
+        if (colId != -1) {
+          def id = row.values[colId]
+          try {
+            rowbuilder = table.findWhere.id(id)
+          }
+          catch (Exception e) {
+          }
+        }
+        if (colRef != -1) {
+          def ref = row.values[colRef]
+          if (ref.isDefined()) {
+            try {
+              // TODO NM check if there was a rowbuilder already...
+              // Bad: Not possible to compare both rowbuilders :-(
+              rowbuilder = table.findWhere.id(ref.id)
+            }
+            catch (Exception e) {
+            }
+          }
+        }
+        
+        if (rowbuilder != null) {
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "get" + column.javaName
+            def id = row.values[colId]
+            def value = rowbuilder."$method"()
+            if (id != value) throwRedefinedIdException(lineNr, row)
+          }
+        }        
+        
+        if (rowbuilder == null) {
+          rowbuilder = table.insertRow()
+          if (colId != -1) {
+            ColumnHeader column = head.values[colId]
+            def method = "set" + column.javaName
+            def value = row.values[colId]
+          	rowbuilder."$method"(value)
+          	
+          	println "Adding Schreibt with $value"
+          	
+          	if (colRef != -1) {
+              def ref = row.values[colRef]
+              ref.id = value
+          	}
+          }
+        }
+        //def resultRow = new SchreibtTableRow()
+        for (columnIndex in 0..(columns-1)) {
+          if (columnIndex == colRef || columnIndex == colId) {
+            continue;
+          }
+
+          ColumnHeader column = head.values[columnIndex]
+          def method = "set" + column.javaName
+          def value = row.values[columnIndex]
+          if (value instanceof DatabaseReference) {
+            println "Setting $method ( " + value.id + " ) on " + rowbuilder
+          	rowbuilder."$method"(value.id)
+          } else {
+            println "Setting $method ( " + value + " ) on " + rowbuilder
+          	rowbuilder."$method"(value)
+          }
+        }
+      }
+    }
+  }
+  
+  def throwColumnsDoNotMatchException(int lineNr, Row row) {
+    throwException("column count does not match", lineNr, row)
+  }
+
+  def throwRedefinedIdException(int lineNr, Row row) {
+    throwException("Id redefined", lineNr, row)
+  }
+  
+  def throwException(String message, int lineNr, Row row) {
+    StringBuilder builder = new StringBuilder()
+    builder.append("Error in Schreibt, line " + lineNr + ": " + message)
+    if (row.values.size() > 0 ) {
+      builder.append(" [Row: ")
+      row.values.each { value ->
+        builder.append(value)
+        builder.append(" | ")
+      }
+      builder.setLength(builder.length() - 3)
+      builder.append("]")
+    }
+    throw new IllegalArgumentException(builder.toString())
   }
 }
 
+// TODO NM Class should actually be named "DataSet", but there would be a naming conflict...
+class DBUnitExamplesParser {
 
-class DBUnitExamplesTable {
+  DBUnitExamplesDataSet dataset = new DBUnitExamplesDataSet() {
+      void initDataSet() { }
+    }
 
-  ProfessorTable professorTable = new ProfessorTable()
+  ProfessorTable professorTable = new ProfessorTable(dataset.table_Professor)
   
-  LehrveranstaltungTable lehrveranstaltungTable = new LehrveranstaltungTable()
+  LehrveranstaltungTable lehrveranstaltungTable = new LehrveranstaltungTable(dataset.table_Lehrveranstaltung)
   
-  PruefungTable pruefungTable = new PruefungTable()
+  PruefungTable pruefungTable = new PruefungTable(dataset.table_Pruefung)
   
-  StudentTable studentTable = new StudentTable()
+  StudentTable studentTable = new StudentTable(dataset.table_Student)
   
-  BeaufsichtigtTable beaufsichtigtTable = new BeaufsichtigtTable()
+  BeaufsichtigtTable beaufsichtigtTable = new BeaufsichtigtTable(dataset.table_Beaufsichtigt)
   
-  BesuchtTable besuchtTable = new BesuchtTable()
+  BesuchtTable besuchtTable = new BesuchtTable(dataset.table_Besucht)
   
-  IsttutorTable isttutorTable = new IsttutorTable()
+  IsttutorTable isttutorTable = new IsttutorTable(dataset.table_Isttutor)
   
-  SchreibtTable schreibtTable = new SchreibtTable()
-  
+  SchreibtTable schreibtTable = new SchreibtTable(dataset.table_Schreibt)
   
   def tables(Closure table) {
     table.delegate = this
@@ -870,132 +1891,11 @@ class DBUnitExamplesTable {
     table()
   }
   
+  def relations(Closure relations) {
+    relations()
+  }
+ 
   def createDataSet() {
-    DBUnitExamplesDataSet dataset = new DBUnitExamplesDataSet() {
-      void initDataSet() { 
-        addProfessorTable()
-        addLehrveranstaltungTable()
-        addPruefungTable()
-        addStudentTable()
-        addBeaufsichtigtTable()
-        addBesuchtTable()
-        addIsttutorTable()
-        addSchreibtTable()
-      }
-      
-      void addProfessorTable() {
-        professorTable.rows.each { tableRow ->
-          def row = table_Professor.insertRow()
-          // if primary key column has a value set REF to that value else use REFs value
-          if (tableRow.id != null) {
-            row.setId(tableRow.id)
-            tableRow.REF.id = tableRow.id
-          } else {
-            if (tableRow.REF != null) {
-              row.setId(tableRow.REF.id)
-              tableRow.id = tableRow.REF.id
-            }
-          }
-          if (tableRow.name) row.setName(tableRow.name)
-          if (tableRow.vorname) row.setVorname(tableRow.vorname)
-          if (tableRow.titel) row.setTitel(tableRow.titel)
-          if (tableRow.fakultaet) row.setFakultaet(tableRow.fakultaet)
-        }
-      }
-
-      void addLehrveranstaltungTable() {
-        lehrveranstaltungTable.rows.each { tableRow ->
-          def row = table_Lehrveranstaltung.insertRow()
-          // if primary key column has a value set REF to that value else use REFs value
-          if (tableRow.id != null) {
-            row.setId(tableRow.id)
-            tableRow.REF.id = tableRow.id
-          } else {
-            if (tableRow.REF != null) {
-              row.setId(tableRow.REF.id)
-              tableRow.id = tableRow.REF.id
-            }
-          }
-          if (tableRow.professor_id) row.setProfessorId(tableRow.professor_id.id)
-          if (tableRow.name) row.setName(tableRow.name)
-          if (tableRow.sws) row.setSws(tableRow.sws)
-          if (tableRow.ects) row.setEcts(tableRow.ects)
-        }
-      }
-
-      void addPruefungTable() {
-        pruefungTable.rows.each { tableRow ->
-          def row = table_Pruefung.insertRow()
-          // if primary key column has a value set REF to that value else use REFs value
-          if (tableRow.id != null) {
-            row.setId(tableRow.id)
-            tableRow.REF.id = tableRow.id
-          } else {
-            if (tableRow.REF != null) {
-              row.setId(tableRow.REF.id)
-              tableRow.id = tableRow.REF.id
-            }
-          }
-          if (tableRow.lehrveranstaltung_id) row.setLehrveranstaltungId(tableRow.lehrveranstaltung_id.id)
-          if (tableRow.typ) row.setTyp(tableRow.typ)
-          if (tableRow.zeitpunkt) row.setZeitpunkt(tableRow.zeitpunkt)
-        }
-      }
-
-      void addStudentTable() {
-        studentTable.rows.each { tableRow ->
-          def row = table_Student.insertRow()
-          // if primary key column has a value set REF to that value else use REFs value
-          if (tableRow.matrikelnummer != null) {
-            row.setMatrikelnummer(tableRow.matrikelnummer)
-            tableRow.REF.id = tableRow.matrikelnummer
-          } else {
-            if (tableRow.REF != null) {
-              row.setMatrikelnummer(tableRow.REF.id)
-              tableRow.matrikelnummer = tableRow.REF.id
-            }
-          }
-          if (tableRow.name) row.setName(tableRow.name)
-          if (tableRow.vorname) row.setVorname(tableRow.vorname)
-          if (tableRow.studiengang) row.setStudiengang(tableRow.studiengang)
-          if (tableRow.semester) row.setSemester(tableRow.semester)
-          if (tableRow.immatrikuliert_seit) row.setImmatrikuliertSeit(tableRow.immatrikuliert_seit)
-        }
-      }
-
-      void addBeaufsichtigtTable() {
-        beaufsichtigtTable.rows.each { tableRow ->
-          def row = table_Beaufsichtigt.insertRow()
-          if (tableRow.professor_id) row.setProfessorId(tableRow.professor_id.id)
-          if (tableRow.pruefung_id) row.setPruefungId(tableRow.pruefung_id.id)
-        }
-      }
-
-      void addBesuchtTable() {
-        besuchtTable.rows.each { tableRow ->
-          def row = table_Besucht.insertRow()
-          if (tableRow.student_id) row.setStudentId(tableRow.student_id.id)
-          if (tableRow.lehrveranstaltung_id) row.setLehrveranstaltungId(tableRow.lehrveranstaltung_id.id)
-        }
-      }
-
-      void addIsttutorTable() {
-        isttutorTable.rows.each { tableRow ->
-          def row = table_Isttutor.insertRow()
-          if (tableRow.student_id) row.setStudentId(tableRow.student_id.id)
-          if (tableRow.lehrveranstaltung_id) row.setLehrveranstaltungId(tableRow.lehrveranstaltung_id.id)
-        }
-      }
-
-      void addSchreibtTable() {
-        schreibtTable.rows.each { tableRow ->
-          def row = table_Schreibt.insertRow()
-          if (tableRow.student_id) row.setStudentId(tableRow.student_id.id)
-          if (tableRow.pruefung_id) row.setPruefungId(tableRow.pruefung_id.id)
-        }
-      }
-
-    }
     dataset.createDBUnitDataSet()
   }
 }

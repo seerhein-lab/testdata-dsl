@@ -13,10 +13,10 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.GroovySimpleDSLDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.datasets.GroovySimpleDSLDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyOpOverloadingDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.OldSBTestingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.old.OldSBTestingDataSetProvider;
 
 public class Tests
 {

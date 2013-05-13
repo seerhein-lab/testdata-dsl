@@ -1,8 +1,10 @@
-package com.seitenbau.testdatadsl.dbunitdemo;
+package com.seitenbau.testdatadsl.dbunitdemo.datasets;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.XmlDataSet;
+
+import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
 
 public class XmlDataSetProvider implements IDataSetProvider {
 

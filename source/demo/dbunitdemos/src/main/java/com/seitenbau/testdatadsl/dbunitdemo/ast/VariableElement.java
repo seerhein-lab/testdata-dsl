@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.groovy.ast;
+package com.seitenbau.testdatadsl.dbunitdemo.ast;
 
 public class VariableElement extends ColumnElement  {
 

@@ -21,8 +21,8 @@ package com.seitenbau.testdatadsl.dbunitdemo.groovy
 //  def besuchtVon(List ids){
 //    ids.each { studentId ->
 //      testData.lehrveranstalltungStudentTable.rows {
-//        lehrveranstalltung | student
-//        id                 | studentId
+//        lehrveranstaltung | student
+//        id                | studentId
 //      }
 //    }
 //  }

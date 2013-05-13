@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo;
+package com.seitenbau.testdatadsl.dbunitdemo.datasets;
 
 import java.text.SimpleDateFormat;
 
@@ -9,6 +9,7 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.DataType;
 
+import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.groovy.DateUtil;
 
 public class JavaDataSetProvider implements IDataSetProvider {

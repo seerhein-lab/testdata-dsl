@@ -2,34 +2,37 @@ package com.seitenbau.testdatadsl.dbunitdemo.groovy
 
 import static com.seitenbau.testdatadsl.dbunitdemo.groovy.DemoRefs.*
 
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.DBUnitExamplesTable
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.LehrveranstaltungId
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.ProfessorId
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.PruefungId
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.StudentId
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.DBUnitExamplesParser
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.LehrveranstaltungRef
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.ProfessorRef
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.PruefungRef
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.StudentRef
 
 class DemoRefs {
 
-  static ProfessorId WAESCH = new ProfessorId()
-  static ProfessorId HAASE = new ProfessorId()
+  static ProfessorRef WAESCH = new ProfessorRef()
+  static ProfessorRef HAASE = new ProfessorRef()
   
-  static LehrveranstaltungId VSYS = new LehrveranstaltungId()
-  static LehrveranstaltungId DPATTERNS = new LehrveranstaltungId()
+  static LehrveranstaltungRef VSYS = new LehrveranstaltungRef()
+  static LehrveranstaltungRef DPATTERNS = new LehrveranstaltungRef()
 
-  static PruefungId P_VSYS = new PruefungId()
-  static PruefungId P_DPATTERNS = new PruefungId()
+  static PruefungRef P_VSYS = new PruefungRef()
+  static PruefungRef P_DPATTERNS = new PruefungRef()
 
-  static StudentId MOLL = new StudentId(287336)
-  static StudentId MUSTERMANN = new StudentId(123456)
+  static StudentRef MOLL = new StudentRef(287336)
+  static StudentRef MUSTERMANN = new StudentRef(123456)
 }
 
-DBUnitExamplesTable hochschule = new DBUnitExamplesTable()
+DBUnitExamplesParser hochschule = new DBUnitExamplesParser()
 hochschule.tables {
-
+  
   professorTable.rows {
     REF    | id | name    | vorname  | titel            | fakultaet
-    WAESCH | 3 | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
-    HAASE  | 4 | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
+    WAESCH | 3  | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+    HAASE  | 1  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
+
+    REF    | id | name    
+    HAASE  | 1  | "Test" 
   }
 
   lehrveranstaltungTable.rows {
@@ -52,40 +55,30 @@ hochschule.tables {
 
   beaufsichtigtTable.rows {
     professor | pruefung
-    WAESCH    | P_VSYS
     HAASE     | P_DPATTERNS
   }
 
-  besuchtTable.rows {
-    student    | lehrveranstaltung
-    MOLL       | VSYS
-    MUSTERMANN | DPATTERNS
-  }
+}
 
-  isttutorTable.rows {
-    student    | lehrveranstaltung
-    MOLL       | VSYS
-  }
-
-  schreibtTable.rows {
-    student    | pruefung
-    MOLL       | P_VSYS
-  }
+hochschule.relations {
+  DPATTERNS.geleitetVon(HAASE)
+  WAESCH.beaufsichtigt(P_VSYS)
+  // HAASE.beaufsichtigt(P_DPATTERNS)
+  MOLL.besucht(VSYS)
+  MOLL.istTutor(VSYS)
+  P_VSYS.geschriebenVon(MOLL) //MOLL.schreibt(P_VSYS)
+  MUSTERMANN.besucht(DPATTERNS)
 }
 
 println hochschule.createDataSet()
-println hochschule.createDataSet()
+println "Vor Änderung: " + hochschule.dataset.table_Professor.findWhere.id(1).getName()
 
-println hochschule.professorTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.lehrveranstaltungTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.pruefungTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.studentTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.beaufsichtigtTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.besuchtTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.isttutorTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-println hochschule.schreibtTable.rows.toString().replaceAll("com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.", "")
-
-
-
+hochschule.tables {
+  professorTable.rows {
+    REF    | name
+    HAASE  | "Und nochmal"
+  }
+}
+println "Nach Änderung: " + hochschule.dataset.table_Professor.findWhere.id(1).getName()
 
 

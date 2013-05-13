@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.dsl1;
+package com.seitenbau.testdatadsl.dbunitdemo.datasets;
 
 import groovy.lang.Binding;
 import groovy.lang.ExpandoMetaClass;
@@ -13,6 +13,12 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 
 import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.DslBinding;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.DslDefinition;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Lehrveranstaltung;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Professor;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Pruefung;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Student;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable.RowBuilder_Beaufsichtigt;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowBuilder_Besucht;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitExamplesDataSet;

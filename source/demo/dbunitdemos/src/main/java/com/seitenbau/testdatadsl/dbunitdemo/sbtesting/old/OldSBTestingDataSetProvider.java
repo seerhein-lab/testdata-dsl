@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.sbtesting;
+package com.seitenbau.testdatadsl.dbunitdemo.sbtesting.old;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
