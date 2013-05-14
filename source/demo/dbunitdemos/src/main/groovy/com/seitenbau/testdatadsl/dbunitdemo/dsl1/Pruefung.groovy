@@ -10,7 +10,7 @@ class Pruefung {
 	Date zeitpunkt = new Date(0);
 	Object prueftStoffVon
 	
-	def Pruefung(closure) {
+	def Pruefung(Closure closure) {
 		closure.delegate = this
 		closure()
 		//println("Pruefung: $typ, prüft Stoff von $prueftStoffVon")

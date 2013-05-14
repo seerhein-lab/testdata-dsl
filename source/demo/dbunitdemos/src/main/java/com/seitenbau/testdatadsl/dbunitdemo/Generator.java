@@ -7,7 +7,10 @@ import com.seitenbau.testing.dbunit.generator.RelationDescription;
 import com.seitenbau.testing.dbunit.generator.Table;
 
 public class Generator {
+  
+  
 	public static void main(String[] args) throws Exception {
+	  
 		DatabaseModel db = new DatabaseModel() {
 			{
 				database("DBUnitExamples");

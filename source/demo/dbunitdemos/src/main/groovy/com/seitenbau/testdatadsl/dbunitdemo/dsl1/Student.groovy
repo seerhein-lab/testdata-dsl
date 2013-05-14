@@ -12,7 +12,7 @@ class Student {
 	Object[] schreibt
 	Object[] isttutor
 	
-	def Student(closure) {
+	def Student(Closure closure) {
 		closure.delegate = this
 		closure()
 		//println("Student $name, $matrikelnummer, besucht $besucht, schreibt $schreibt, ist Tutor bei $isttutor")	

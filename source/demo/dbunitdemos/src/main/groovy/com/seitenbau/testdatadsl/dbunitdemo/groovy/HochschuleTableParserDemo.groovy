@@ -2,7 +2,7 @@ package com.seitenbau.testdatadsl.dbunitdemo.groovy
 
 import static com.seitenbau.testdatadsl.dbunitdemo.groovy.DemoRefs.*
 
-import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.DBUnitExamplesParser
+import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.DBUnitExamplesDSL
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.LehrveranstaltungRef
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.ProfessorRef
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.groovy.PruefungRef
@@ -23,16 +23,17 @@ class DemoRefs {
   static StudentRef MUSTERMANN = new StudentRef(123456)
 }
 
-DBUnitExamplesParser hochschule = new DBUnitExamplesParser()
+DBUnitExamplesDSL hochschule = new DBUnitExamplesDSL()
 hochschule.tables {
   
   professorTable.rows {
-    REF    | id | name    | vorname  | titel            | fakultaet
-    WAESCH | 3  | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
-    HAASE  | 1  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
+        
+    REF    | name    | vorname  | titel            | fakultaet
+    WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+    HAASE  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
 
     REF    | id | name    
-    HAASE  | 1  | "Test" 
+    WAESCH | 5  | "Test" 
   }
 
   lehrveranstaltungTable.rows {
@@ -61,6 +62,7 @@ hochschule.tables {
 }
 
 hochschule.relations {
+  HAASE.leitet(DPATTERNS)
   DPATTERNS.geleitetVon(HAASE)
   WAESCH.beaufsichtigt(P_VSYS)
   // HAASE.beaufsichtigt(P_DPATTERNS)

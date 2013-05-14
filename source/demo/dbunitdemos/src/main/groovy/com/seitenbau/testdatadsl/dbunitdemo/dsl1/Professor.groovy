@@ -13,7 +13,7 @@ class Professor {
 	Object[] beaufsichtigt;
 	Object[] leitet;
 	
-	def Professor(closure) {
+	def Professor(Closure closure) {
 		closure.delegate = this
 		closure()
 		//println("Professor: $name, leitet: $leitet, beaufsichtigt: $beaufsichtigt")

@@ -6,7 +6,7 @@ class Lehrveranstaltung {
 	int sws;
 	double ects;
 	
-	def Lehrveranstaltung(closure) {
+	def Lehrveranstaltung(Closure closure) {
 		closure.delegate = this
 		closure()
 		//println("Lehrveranstaltung: " + name)
