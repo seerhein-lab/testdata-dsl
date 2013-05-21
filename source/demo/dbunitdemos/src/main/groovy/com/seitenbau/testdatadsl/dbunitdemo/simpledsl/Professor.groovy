@@ -1,6 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.dsl1
-
-// ? -> ExpandoMetaClass.enableGlobally()
+package com.seitenbau.testdatadsl.dbunitdemo.simpledsl
 
 class Professor {
 	
@@ -16,7 +14,6 @@ class Professor {
 	def Professor(Closure closure) {
 		closure.delegate = this
 		closure()
-		//println("Professor: $name, leitet: $leitet, beaufsichtigt: $beaufsichtigt")
 	}
 	
 	def name(String name) {

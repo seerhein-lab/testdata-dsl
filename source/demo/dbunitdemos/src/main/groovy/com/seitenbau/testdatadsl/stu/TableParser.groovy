@@ -4,14 +4,14 @@ import java.util.List;
 
 import groovy.lang.Closure;
 
+public class Context {
+  IParsedTableRowCallback callback
+  TableRowModel activeRow
+}
+
 public class TableParser
 {
-  public interface IParsedRowCallback {
-    void parsedRow(TableRowModel row);
-  }
-  
-  private static ThreadLocal<List<TableRowModel>> context = new ThreadLocal<List<TableRowModel>>()
-  private static ThreadLocal<IParsedRowCallback> callbacks = new ThreadLocal<IParsedRowCallback>()
+  private static ThreadLocal<Context> context = new ThreadLocal<Context>()
   
   public static or(self, arg) {
     appendRow(self, arg)
@@ -25,25 +25,34 @@ public class TableParser
     appendRow(self, arg)
   }
 
+  /**
+   * Called when a new row starts
+   */
   public static appendRow(value, nextValue) {
-    println "appendRow " + value + ", " + nextValue
-    def row = new TableRowModel(values: [value])
-    context.get().add(row)
+    Context currentContext = context.get()
+    TableRowModel lastRow = currentContext.activeRow
+    if (lastRow != null) {
+      currentContext.callback.parsedRow(lastRow);
+    } 
+    TableRowModel row = new TableRowModel(values: [value])
+    currentContext.activeRow = row
     row.or(nextValue)
   }
-
-  public static List<TableRowModel> parseTable(Closure rows, IParsedRowCallback callback) {
-    callbacks.set(callback)
-    context.set([])
+  
+  public static void parseTable(Closure rows, Object owner, Class<?> c, IParsedTableRowCallback callback) {
+    Context currentContext = new Context();
+    currentContext.callback = callback;
+    context.set(currentContext);
     use(TableParser) {
-      rows.delegate = this
-      rows.resolveStrategy = Closure.DELEGATE_FIRST
+      rows.delegate = owner
+      //rows.resolveStrategy = Closure.DELEGATE_FIRST
       rows()
     }
     
-    final List<TableRowModel> result = context.get()
-    context.set([])
-    return result;
+    if (currentContext.activeRow != null) {
+      callback.parsedRow(currentContext.activeRow);
+    }
+    context.remove();
   }
 
 }

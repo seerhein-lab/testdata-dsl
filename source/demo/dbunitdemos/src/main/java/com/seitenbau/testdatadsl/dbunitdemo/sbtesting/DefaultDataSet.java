@@ -1,10 +1,10 @@
 package com.seitenbau.testdatadsl.dbunitdemo.sbtesting;
 
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.DateUtil;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.LehrveranstaltungTable.RowBuilder_Lehrveranstaltung;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowBuilder_Professor;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_Pruefung;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student;
+import com.seitenbau.testdatadsl.stu.util.DateUtil;
 
 public class DefaultDataSet extends DBUnitExamplesDataSet {
 	@Override

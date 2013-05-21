@@ -5,7 +5,7 @@ import groovy.transform.ToString
 @ToString
 class TableRowModel
 {
-  List values = []
+  List<Object> values = []
 
   public TableRowModel or(arg) {
     println "TableRowModel or(" + arg + ")"
@@ -35,7 +35,7 @@ class TableRowModel
     int result = -1;
     int index = 0;
     values.each { ColumnBinding column ->
-      if (column.name == "REF") result = index
+      if (column.isRefColumn()) result = index
       index++
     }
     return result;
@@ -45,7 +45,7 @@ class TableRowModel
     int result = -1;
     int index = 0;
     values.each { ColumnBinding column ->
-      if (column.isIdentificator) result = index
+      if (column.isIdColumn()) result = index
       index++
     }
     return result;

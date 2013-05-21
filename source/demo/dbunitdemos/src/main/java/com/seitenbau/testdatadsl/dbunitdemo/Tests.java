@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.seitenbau.testdatadsl.dbunitdemo.datasets.GroovySimpleDSLDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.GroovyOpOverloadingDataSetProvider;
+import com.seitenbau.testdatadsl.dbunitdemo.dsl.GroovyOpOverloadingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SBTestingDataSetProvider;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.old.OldSBTestingDataSetProvider;
 

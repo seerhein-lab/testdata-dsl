@@ -13,12 +13,6 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 
 import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.DslBinding;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.DslDefinition;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Lehrveranstaltung;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Professor;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Pruefung;
-import com.seitenbau.testdatadsl.dbunitdemo.dsl1.Student;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BeaufsichtigtTable.RowBuilder_Beaufsichtigt;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.BesuchtTable.RowBuilder_Besucht;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitExamplesDataSet;
@@ -28,6 +22,12 @@ import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.ProfessorTable.RowBuilder_
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.PruefungTable.RowBuilder_Pruefung;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.SchreibtTable.RowBuilder_Schreibt;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.StudentTable.RowBuilder_Student;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.DslBinding;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.DslDefinition;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.Lehrveranstaltung;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.Professor;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.Pruefung;
+import com.seitenbau.testdatadsl.dbunitdemo.simpledsl.Student;
 
 public class GroovySimpleDSLDataSetProvider implements IDataSetProvider {
 

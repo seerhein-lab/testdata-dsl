@@ -1,7 +1,5 @@
 package com.seitenbau.testdatadsl.dbunitdemo.datasets;
 
-import java.text.SimpleDateFormat;
-
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultDataSet;
@@ -10,7 +8,7 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.DataType;
 
 import com.seitenbau.testdatadsl.dbunitdemo.IDataSetProvider;
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.DateUtil;
+import com.seitenbau.testdatadsl.stu.util.DateUtil;
 
 public class JavaDataSetProvider implements IDataSetProvider {
 

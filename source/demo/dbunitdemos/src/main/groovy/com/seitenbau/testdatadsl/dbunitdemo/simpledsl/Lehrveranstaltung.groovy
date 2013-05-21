@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.dsl1
+package com.seitenbau.testdatadsl.dbunitdemo.simpledsl
 
 class Lehrveranstaltung {
 	long id;
@@ -9,7 +9,6 @@ class Lehrveranstaltung {
 	def Lehrveranstaltung(Closure closure) {
 		closure.delegate = this
 		closure()
-		//println("Lehrveranstaltung: " + name)
 	}
 	
 	def name(String name) {

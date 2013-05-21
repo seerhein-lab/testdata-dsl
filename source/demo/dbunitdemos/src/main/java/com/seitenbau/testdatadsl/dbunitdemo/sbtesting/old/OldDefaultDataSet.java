@@ -1,8 +1,8 @@
 package com.seitenbau.testdatadsl.dbunitdemo.sbtesting.old;
 
 import com.seitenbau.testdatadsl.dbunitdemo.datasets.JavaDataSetProvider.Parameters;
-import com.seitenbau.testdatadsl.dbunitdemo.groovy.DateUtil;
 import com.seitenbau.testdatadsl.dbunitdemo.sbtesting.DBUnitExamplesDataSet;
+import com.seitenbau.testdatadsl.stu.util.DateUtil;
 
 public class OldDefaultDataSet extends DBUnitExamplesDataSet {
 	@Override

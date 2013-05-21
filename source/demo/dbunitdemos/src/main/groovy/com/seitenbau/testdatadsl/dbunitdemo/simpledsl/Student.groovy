@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.dsl1
+package com.seitenbau.testdatadsl.dbunitdemo.simpledsl
 
 class Student {
 	long matrikelnummer
@@ -15,7 +15,6 @@ class Student {
 	def Student(Closure closure) {
 		closure.delegate = this
 		closure()
-		//println("Student $name, $matrikelnummer, besucht $besucht, schreibt $schreibt, ist Tutor bei $isttutor")	
 	}
 
 	def matrikelnummer(nr) {

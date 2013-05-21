@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunitdemo.dsl1
+package com.seitenbau.testdatadsl.dbunitdemo.simpledsl
 
 abstract class DslDefinition extends Script {
 		
