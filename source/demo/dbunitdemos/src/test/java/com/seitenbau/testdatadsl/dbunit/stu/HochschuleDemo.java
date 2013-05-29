@@ -4,7 +4,6 @@ import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*;
 import com.seitenbau.testdatadsl.dbunit.stu.HochschuleDataSet;
-import static com.seitenbau.testing.dbunit.dsl.ScopeRegistry.use;
 
 public class HochschuleDemo
 {

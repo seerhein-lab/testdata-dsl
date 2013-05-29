@@ -21,7 +21,6 @@ import com.seitenbau.stu.dbunit.hochschule.ProfessorTable.RowBuilder_Professor;
 import com.seitenbau.stu.dbunit.hochschule.PruefungTable.RowBuilder_Pruefung;
 import com.seitenbau.stu.dbunit.hochschule.SchreibtTable.RowBuilder_Schreibt;
 import com.seitenbau.stu.dbunit.hochschule.StudentTable.RowBuilder_Student;
-import com.seitenbau.testdatadsl.dbunit.common.datasetproviders.IDataSetProvider;
 import com.seitenbau.testdatadsl.dbunit.simpledsl.DslBinding;
 import com.seitenbau.testdatadsl.dbunit.simpledsl.DslDefinition;
 import com.seitenbau.testdatadsl.dbunit.simpledsl.Lehrveranstaltung;
@@ -29,7 +28,7 @@ import com.seitenbau.testdatadsl.dbunit.simpledsl.Professor;
 import com.seitenbau.testdatadsl.dbunit.simpledsl.Pruefung;
 import com.seitenbau.testdatadsl.dbunit.simpledsl.Student;
 
-public class SimpleDSLDataSetProvider implements IDataSetProvider {
+public class SimpleDSLDataSetProvider {
 
 	private final IDataSet dataset;
 
@@ -163,8 +162,7 @@ public class SimpleDSLDataSetProvider implements IDataSetProvider {
 		return result.createDBUnitDataSet();
 	}
 
-	public IDataSet getDataSet() throws DataSetException {
-		if (dataset == null) throw new DataSetException("Error in Groovy Data Set");
+	public IDataSet getDataSet() {
 		return dataset;
 	}
 

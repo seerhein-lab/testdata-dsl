@@ -1,4 +1,4 @@
-package com.seitenbau.testdatadsl.dbunit.sbtesting.dataset;
+package com.seitenbau.testdatadsl.dbunit.sbtesting;
 
 import com.seitenbau.stu.dbunit.hochschule.HochschuleDataSet;
 import com.seitenbau.stu.dbunit.hochschule.LehrveranstaltungTable.RowBuilder_Lehrveranstaltung;
@@ -7,7 +7,7 @@ import com.seitenbau.stu.dbunit.hochschule.PruefungTable.RowBuilder_Pruefung;
 import com.seitenbau.stu.dbunit.hochschule.StudentTable.RowBuilder_Student;
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
 
-public class DefaultDataSet extends HochschuleDataSet {
+public class SBTestingDataSet extends HochschuleDataSet {
 	@Override
 	protected void initDataSet() {
     RowBuilder_Professor waesch = 

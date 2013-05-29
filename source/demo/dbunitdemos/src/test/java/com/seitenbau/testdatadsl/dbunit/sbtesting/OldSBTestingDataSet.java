@@ -1,10 +1,10 @@
-package com.seitenbau.testdatadsl.dbunit.sbtesting.dataset;
+package com.seitenbau.testdatadsl.dbunit.sbtesting;
 
 import com.seitenbau.stu.dbunit.hochschule.HochschuleDataSet;
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
 import com.seitenbau.testdatadsl.dbunit.java.JavaDataSetProvider.Parameters;
 
-public class OldDefaultDataSet extends HochschuleDataSet {
+public class OldSBTestingDataSet extends HochschuleDataSet {
 	@Override
 	protected void initDataSet() {
 		table_Professor

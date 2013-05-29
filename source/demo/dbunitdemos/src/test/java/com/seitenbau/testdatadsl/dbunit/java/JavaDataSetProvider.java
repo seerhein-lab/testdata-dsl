@@ -1,16 +1,14 @@
 package com.seitenbau.testdatadsl.dbunit.java;
 
 import org.dbunit.dataset.Column;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.datatype.DataType;
 
-import com.seitenbau.testdatadsl.dbunit.common.datasetproviders.IDataSetProvider;
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
 
-public class JavaDataSetProvider implements IDataSetProvider {
+public class JavaDataSetProvider  {
 
 	public interface Parameters {
 
@@ -35,13 +33,7 @@ public class JavaDataSetProvider implements IDataSetProvider {
 		}
 	}
 
-	private final IDataSet dataset;
-	
-	public JavaDataSetProvider() {
-		dataset = createDataSet();
-	}
-
-	public IDataSet createDataSet() {
+	public static IDataSet createDataSet() {
 		try {
 			DefaultDataSet dataSet = new DefaultDataSet();
 
@@ -224,8 +216,4 @@ public class JavaDataSetProvider implements IDataSetProvider {
 		// assertDatabase(dataSetBuilder.build());
 	}
 
-	public IDataSet getDataSet() throws DataSetException {
-		if (dataset == null) throw new DataSetException("No Java Data Set");
-		return dataset;
-	}
 }

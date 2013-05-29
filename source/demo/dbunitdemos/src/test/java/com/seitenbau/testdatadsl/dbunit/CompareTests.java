@@ -1,55 +1,47 @@
 package com.seitenbau.testdatadsl.dbunit;
 
 import org.dbunit.Assertion;
+import org.dbunit.dataset.IDataSet;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.seitenbau.testdatadsl.dbunit.common.datasetproviders.IDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.flatxml.FlatXmlDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.java.JavaDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.sbtesting.datasetprovider.OldSBTestingDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.sbtesting.datasetprovider.SBTestingDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.simpledsl.SimpleDSLDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.stu.STUDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.xml.XmlDataSetProvider;
 
 public class CompareTests
 {
 
-  private static final IDataSetProvider SIMPLEDSL = new SimpleDSLDataSetProvider();
-  private static final IDataSetProvider STUDATASET = new STUDataSetProvider();
-  private static final IDataSetProvider XML = new XmlDataSetProvider();
-  private static final IDataSetProvider FLATXML = new FlatXmlDataSetProvider();
-  private static final IDataSetProvider JAVA = new JavaDataSetProvider();
-  private static final IDataSetProvider SBTESTOLD = new OldSBTestingDataSetProvider();
-  private static final IDataSetProvider SBTEST = new SBTestingDataSetProvider();
+  private static final IDataSet SIMPLEDSL = DataSetProvider.getSimpleDSLDataSet();
+  private static final IDataSet STUDATASET = DataSetProvider.getSTUDataSet();
+  private static final IDataSet XML = DataSetProvider.getXMLDataSet();
+  private static final IDataSet FLATXML = DataSetProvider.getFlatXmlDataSet();
+  private static final IDataSet JAVA = DataSetProvider.getJavaDataSet();
+  private static final IDataSet SBTESTOLD = DataSetProvider.getOldSBTestingDataSet();
+  private static final IDataSet SBTEST = DataSetProvider.getSBTestingDataSet();
 
   // Date comparison issues
   @Ignore
   @Test
   public void testCompareXMLandJava() throws Exception
   {
-    Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
+    Assertion.assertEquals(XML, JAVA);
   }
 
   // Date comparison issues
   @Ignore
   @Test
-  public void testCompareXMLandFlatXML() throws Exception
+  public void testCompareXMLandFlatXML() throws Exception 
   {
-    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
+    Assertion.assertEquals(XML, FLATXML);
   }
 
   @Test
-  public void testCompareJavaAndSBTestOld() throws Exception
+  public void testCompareJavaAndSBTestOld() throws Exception 
   {
-    Assertion.assertEquals(JAVA.getDataSet(), SBTESTOLD.getDataSet());
+    Assertion.assertEquals(JAVA, SBTESTOLD);
   }
 
   @Test
   public void testCompareJavaAndSBTest() throws Exception
   {
-    Assertion.assertEquals(JAVA.getDataSet(), SBTEST.getDataSet());
+    Assertion.assertEquals(JAVA, SBTEST);
   }
 
   // Date comparison issues
@@ -57,13 +49,13 @@ public class CompareTests
   @Test
   public void testCompareJavaAndSimpleDSLTest() throws Exception
   {
-    Assertion.assertEquals(JAVA.getDataSet(), SIMPLEDSL.getDataSet());
+    Assertion.assertEquals(JAVA, SIMPLEDSL);
   }
   
   @Test
   public void testCompareJavaAndSTUDataSetTest() throws Exception
   {
-    Assertion.assertEquals(JAVA.getDataSet(), STUDATASET.getDataSet());
+    Assertion.assertEquals(JAVA, STUDATASET);
   }
   
 }

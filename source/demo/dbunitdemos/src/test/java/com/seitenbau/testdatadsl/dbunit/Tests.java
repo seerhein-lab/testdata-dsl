@@ -13,25 +13,11 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.testdatadsl.dbunit.common.datasetproviders.IDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.sbtesting.datasetprovider.OldSBTestingDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.sbtesting.datasetprovider.SBTestingDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.simpledsl.SimpleDSLDataSetProvider;
-import com.seitenbau.testdatadsl.dbunit.stu.STUDataSetProvider;
-
 public class Tests
 {
 
-  private static final IDataSetProvider PROVIDER =  new STUDataSetProvider();
+  private static final IDataSet DATASET =  DataSetProvider.getSTUDataSet();
   
-  // XmlDataSetProvider
-  // FlatXmlDataSetProvider
-  // JavaDataSetProvider
-  // OldSBTestingDataSetProvider
-  // SBTestingDataSetProvider
-  // GroovyASTDataSetProvider
-  // STUDataSetProvider
-
   protected IDatabaseConnection getConnection() throws Exception
   {
     Class.forName("com.mysql.jdbc.Driver");
@@ -43,10 +29,9 @@ public class Tests
   public void setUp() throws Exception
   {
     final IDatabaseConnection connection = getConnection();
-    final IDataSet dataSet = PROVIDER.getDataSet();
     try
     {
-      DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+      DatabaseOperation.CLEAN_INSERT.execute(connection, DATASET);
     }
     finally
     {
