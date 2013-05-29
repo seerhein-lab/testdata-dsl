@@ -13,7 +13,6 @@ import com.seitenbau.testdatadsl.dbunit.simpledsl.SimpleDSLDataSetProvider;
 import com.seitenbau.testdatadsl.dbunit.stu.STUDataSetProvider;
 import com.seitenbau.testdatadsl.dbunit.xml.XmlDataSetProvider;
 
-@SuppressWarnings("unused")
 public class CompareTests
 {
 
@@ -25,17 +24,21 @@ public class CompareTests
   private static final IDataSetProvider SBTESTOLD = new OldSBTestingDataSetProvider();
   private static final IDataSetProvider SBTEST = new SBTestingDataSetProvider();
 
-//  @Test
-//  public void testCompareXMLandJava() throws Exception
-//  {
-//    Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
-//  }
-//
-//  @Test
-//  public void testCompareXMLandFlatXML() throws Exception
-//  {
-//    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
-//  }
+  // Date comparison issues
+  @Ignore
+  @Test
+  public void testCompareXMLandJava() throws Exception
+  {
+    Assertion.assertEquals(XML.getDataSet(), JAVA.getDataSet());
+  }
+
+  // Date comparison issues
+  @Ignore
+  @Test
+  public void testCompareXMLandFlatXML() throws Exception
+  {
+    Assertion.assertEquals(XML.getDataSet(), FLATXML.getDataSet());
+  }
 
   @Test
   public void testCompareJavaAndSBTestOld() throws Exception
@@ -49,6 +52,7 @@ public class CompareTests
     Assertion.assertEquals(JAVA.getDataSet(), SBTEST.getDataSet());
   }
 
+  // Date comparison issues
   @Ignore
   @Test
   public void testCompareJavaAndSimpleDSLTest() throws Exception

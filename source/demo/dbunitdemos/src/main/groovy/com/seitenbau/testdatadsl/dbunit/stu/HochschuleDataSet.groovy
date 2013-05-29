@@ -32,27 +32,20 @@ class HochschuleDataSet extends HochschuleDSL
     
       lehrveranstaltungTable.rows {
         REF       | id  | name                | sws | ects
-        VSYS      | 200 | "Verteilte Systeme" | 4   | 5
-        DPATTERNS | 201 | "Design Patterns"   | 4   | 3
+        VSYS      | 1   | "Verteilte Systeme" | 4   | 5
+        DPATTERNS | 2   | "Design Patterns"   | 4   | 3
       }
     
       pruefungTable.rows {
         REF         | id  | typ   | zeitpunkt
-        P_VSYS      | 500 | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
-        P_DPATTERNS | 501 | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
+        P_VSYS      | 1   | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
+        P_DPATTERNS | 2   | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
       }
     
       studentTable.rows {
         REF        | matrikelnummer | name         | vorname    | studiengang | semester | immatrikuliert_seit
         MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"       | 4        | DateUtil.getDate(2011, 9, 1)
         MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
-        _          | 123457         | "Mustermann" | "Bruder"   | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
-      }
-    
-      pruefungTable.rows {
-        id  | typ
-        500 | "a90"
-        501 | "b30"
       }
       
     }
