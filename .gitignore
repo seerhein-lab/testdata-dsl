@@ -5,6 +5,7 @@ bin/
 .project
 .settings
 .groovy
+generated-java/
 
 # IntelliJ
 .idea/
@@ -19,5 +20,13 @@ out/
 # Latex and Maven
 target/
 
+# Gradle
+build
+.gradle
+
 # Velocity (and probably others)
 *.log
+
+# Latex (TexNicCenter)
+*.tps
+*.tmp
