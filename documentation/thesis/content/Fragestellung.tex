@@ -39,6 +39,8 @@ Die allgemeinen Anforderungen an die zu entwickelnde Sprache sind wie folgt:
 
 \end{itemize}
 
+\section{SB Testing DB}
+
 
 
 \section{Fortlaufendes Beispiel}
@@ -160,7 +162,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	einzulesen - eine solche Funktion müsste manuell implementiert werden.
 	
 	\lstSetXML
-	\begin{lstlisting}[caption=XML Dataset, label=listing:xmldataset]
+	\begin{lstlisting}[caption=XML-Dataset, label=listing:xmldataset]
 <!DOCTYPE dataset SYSTEM "dataset.dtd">
 <dataset>
     <table name="PROFESSOR">
@@ -240,7 +242,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	übersichtlicher als das XmlDataSet (\reflst{listing:flatxmldataset}).
   
 	\lstSetXML
-	\begin{lstlisting}[caption=Flat XML Dataset, label=listing:flatxmldataset]
+	\begin{lstlisting}[caption=Flat-XML-Dataset, label=listing:flatxmldataset]
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
     <PROFESSOR id="1" 
@@ -282,7 +284,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	weniger Redundanz lösbar.
 
 	\lstSetJava
-	\begin{lstlisting}[caption=Default Dataset, label=listing:javadataset]
+	\begin{lstlisting}[caption=Default-Dataset, label=listing:javadataset]
 DefaultTable professor = new DefaultTable(
 		"professor",
 		new Column[] { 
@@ -346,7 +348,7 @@ dataSet.addTable(lehrveranstaltung);
 	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-Datasets in dieser
   Art nur wenig Vorteile gegenüber den XML-Datasets.
 
-	\subsection{SB Testing DB}
+	\subsection{SB-Testing-DB-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
 	
 	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und
@@ -360,12 +362,6 @@ dataSet.addTable(lehrveranstaltung);
 	Typsicherheit zur Compilierzeit\footnote{Gängige Entwicklungsumgebungen wie Eclipse zeigen falsche Typen bereits
 	während der Entwicklung an.}.  Die Syntax ist kompakter und dennoch ausdrucksstärker als bei beiden vorherigen
 	Varianten.
-	
-	\begin{figure}[H]
-		\centering
-		 \includegraphics[width=0.95\textwidth]{images/fragestellung/example_hochschule_model.png}
-		\caption{Modell-Beschreibung}\label{img:example_hochschule_model}
-	\end{figure}
 
 	\lstSetJava
 	\begin{lstlisting}[caption=SB Testing Dataset (1), label=listing:sbtestingdataset_old]

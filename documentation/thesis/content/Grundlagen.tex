@@ -7,6 +7,8 @@ noch zu erklären:
 - Tests, Testdatengenerierung
 - Literatur nutzen
 
+
+
 \section{Modellgetriebene Software-Entwicklung}
 
 
@@ -20,6 +22,8 @@ noch zu erklären:
 - Modell, Meta-Modell, Modell-Ebenen
 - http://www.omg.org/spec/MOF/ISO/19502/PDF/ spricht von den klassischen 4 schichten...
 - DSL, intern vs extern
+
+
 
 \section{Software-Tests}
 \label{sec:grundlagen:konzepte:tests}
@@ -60,8 +64,44 @@ verwendeten Datenbank-System. Außerdem setzt der direkte Zugriff auf die Datenba
 zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
 Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
-
 \todo{Layer test erklären}
+
+
+\section{DbUnit}
+
+\todo{DataSets erklären}
+
+
+
+
+\section{SB Testing DB}
+\label{sec:grundlagen:sbtestingdb}
+
+Die Firma Seitenbau GmbH verwendet für die Java-basierten Datenbankanwendungen das Framework JUnit mit der Erweiterung DbUnit. Da
+die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat Seitenbau die Bibliothek SB Testing DB entwickelt. SB Testing DB verfolgt keinen generischen Ansatz, der eine Standard-API für die Modellierung von DataSets definiert. Stattdessen wird für jedes Datenbank-Modell eine individuelle API bzw. eine interne Java-DSL
+generiert.
+
+Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell die Java-DSL erzeugt wird. Ausgangspunkt ist
+ein relationales Datenbankmodell. Dieses liegt üblicherweise als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses muss vor der
+eigentlichen Code-Erzeugung in ein für den Generator interpretierbares Modell (das SB-Testing-DB-Modell) transformiert werden, das die
+Meta-Informationen zur Datenbank enthält. Zu den notwendigen Meta-Informationen gehören Tabellennamen und Daten zu den Spalten, z.B. Name
+und Datentypen. Das SB-Testing-DB-Modell kann manuell gepflegt und auch vollständig manuell entwickelt werden. Mit Hilfe des
+SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL Model).
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=0.95\textwidth]{images/grundlagen/sb_testing_model.png}
+	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
+\end{figure}
+
+Der Generator erzeugt die Java-Klassen mit Hilfe von \textit{Apache Velocity}. Velocity ist eine sogenannte Template-Engine, die aus
+Vorlagen Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
+auch Steueranweisungen, z.B. Verzweigungen und Schleifen.
+
+
+
+
+
 
 \section{Konventionen}
 \label{sec:grundlagen:konventionen}

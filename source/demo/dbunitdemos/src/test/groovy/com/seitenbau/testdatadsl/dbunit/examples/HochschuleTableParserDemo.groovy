@@ -2,11 +2,12 @@ package com.seitenbau.testdatadsl.dbunit.examples
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*
 
-import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleDSL
-import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
+import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleBuilder
+import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil
+import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
 
 ExpandoMetaClass.enableGlobally() 
-HochschuleDSL hochschule = new HochschuleDSL()
+HochschuleBuilder hochschule = new HochschuleBuilder()
 hochschule.tables {
   
   professorTable.rows {
@@ -61,8 +62,9 @@ hochschule.relations {
   MUSTERMANN.besucht(DPATTERNS)
 }
 
-println hochschule.createDataSet()
-println "Vor Änderung: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+ScopeRegistry.use(hochschule)
+println hochschule.createDBUnitDataSet()
+println "Vor Änderung: " + HAASE.getName()
 
 hochschule.tables {
   professorTable.rows {
@@ -70,15 +72,15 @@ hochschule.tables {
     HAASE  | "Und nochmal"
   }
 }
-println "Nach Änderung: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+println "Nach Änderung: " + HAASE.getName()
 hochschule.tables {
   professorTable.rows {
     id | name
     2  | "auch id geht"
   }
 }
-println "Nach Änderung 2: " + hochschule.dataset.table_Professor.findWhere.id(2).getName()
+println "Nach Änderung 2: " + HAASE.getName()
 //println "Wäsch: " + hochschule.dataset.table_Professor.findWhere.id(5).getName()
 
-
+println "Und mit Closure: " + hochschule.professorTable.find({ row -> row.getVorname() == "Oliver" }).getName()
 

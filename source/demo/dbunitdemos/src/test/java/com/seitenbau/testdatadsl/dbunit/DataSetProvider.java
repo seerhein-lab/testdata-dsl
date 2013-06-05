@@ -69,7 +69,7 @@ public class DataSetProvider
   {
     if (stuDataSet == null)
     {
-      stuDataSet = new HochschuleDataSet().createDataSet();
+      stuDataSet = new HochschuleDataSet().createDBUnitDataSet();
     }
     return stuDataSet;
   }

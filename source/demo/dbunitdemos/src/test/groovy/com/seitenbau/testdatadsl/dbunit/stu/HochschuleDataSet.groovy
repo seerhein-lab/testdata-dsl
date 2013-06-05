@@ -1,11 +1,11 @@
 package com.seitenbau.testdatadsl.dbunit.stu
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*
-import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleDSL;
+import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleBuilder;
 
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
 
-class HochschuleDataSet extends HochschuleDSL
+class HochschuleDataSet extends HochschuleBuilder
 {
 
   HochschuleDataSet(){
@@ -46,6 +46,8 @@ class HochschuleDataSet extends HochschuleDSL
         REF        | matrikelnummer | name         | vorname    | studiengang | semester | immatrikuliert_seit
         MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"       | 4        | DateUtil.getDate(2011, 9, 1)
         MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
+        //MUSTERMANN | 123457         | "Mustermann" | "Peter"    | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
+        //_          | 123457         | "Mustermann" | "Peter"    | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
       }
       
     }
