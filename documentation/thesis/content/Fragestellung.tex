@@ -5,7 +5,10 @@
 \label{sec:anforderungen:allgemeineanforderungen}
 
 Die Firma \textit{Seitenbau GmbH} verwendet für die Java-basierten Datenbankanwendungen das Framework \textit{JUnit} und
-die Erweiterung \textit{DbUnit}. Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
+die Erweiterung \textit{DbUnit}. Zwar erlaubt die verwendete Bibliothek SB Testing DB (siehe \ref{sec:grundlagen:sbtestingdb})
+eine einfachere Modellierung als mit DbUnit-eigenen Mitteln, 
+
+Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
 Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen,
 so bleibt die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile verschiedener
 Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung} beschrieben.

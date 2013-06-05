@@ -21,7 +21,7 @@ noch zu erklären:
 
 - Modell, Meta-Modell, Modell-Ebenen
 - http://www.omg.org/spec/MOF/ISO/19502/PDF/ spricht von den klassischen 4 schichten...
-- DSL, intern vs extern
+- DSL, intern vs. extern
 
 
 
@@ -78,15 +78,15 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 \label{sec:grundlagen:sbtestingdb}
 
 Die Firma Seitenbau GmbH verwendet für die Java-basierten Datenbankanwendungen das Framework JUnit mit der Erweiterung DbUnit. Da
-die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat Seitenbau die Bibliothek SB Testing DB entwickelt. SB Testing DB verfolgt keinen generischen Ansatz, der eine Standard-API für die Modellierung von DataSets definiert. Stattdessen wird für jedes Datenbank-Modell eine individuelle API bzw. eine interne Java-DSL
-generiert.
+die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat Seitenbau die Bibliothek SB Testing DB entwickelt. SB Testing DB verfolgt keinen generischen Ansatz, der eine Standard-API für die Modellierung von DataSets definieren würde. Stattdessen wird für jedes Datenbank-Modell ein individuelles API bzw. eine interne 
+Java-DSL generiert.
 
 Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell die Java-DSL erzeugt wird. Ausgangspunkt ist
-ein relationales Datenbankmodell. Dieses liegt üblicherweise als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses muss vor der
-eigentlichen Code-Erzeugung in ein für den Generator interpretierbares Modell (das SB-Testing-DB-Modell) transformiert werden, das die
-Meta-Informationen zur Datenbank enthält. Zu den notwendigen Meta-Informationen gehören Tabellennamen und Daten zu den Spalten, z.B. Name
-und Datentypen. Das SB-Testing-DB-Modell kann manuell gepflegt und auch vollständig manuell entwickelt werden. Mit Hilfe des
-SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL Model).
+ein relationales Datenbankmodell. üblicherweise liegt es bei Seitenbau als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses
+muss vor der eigentlichen Code-Erzeugung in ein für den Generator interpretierbares Modell (das SB-Testing-DB-Modell) transformiert
+werden, das die Meta-Informationen zur Datenbank enthält. Zu den notwendigen Meta-Informationen gehören Tabellennamen und Daten zu den
+Spalten, z.B. Name und Datentypen. Das SB-Testing-DB-Modell kann manuell gepflegt und auch vollständig manuell entwickelt werden. Mit
+Hilfe des SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL Model).
 
 \begin{figure}[H]
 	\centering
@@ -94,11 +94,31 @@ SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL Model).
 	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
 \end{figure}
 
+Das SB-Testing-DB-Modell enthält keine Datenbank-Constraints und eine Abbildung dieser bringt keine wesentliche Vorteile. Das API bzw.
+die erzeugten DataSets sind ausschließlich für den Einsatz Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen die
+in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets und eine Exception wird ausgelöst. Aus
+Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
+das ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist minimal im Vergleich zu dem Aufwand, Constraints
+verschiedener Datenbanken nachzubauen.
+
 Der Generator erzeugt die Java-Klassen mit Hilfe von \textit{Apache Velocity}. Velocity ist eine sogenannte Template-Engine, die aus
 Vorlagen Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
-auch Steueranweisungen, z.B. Verzweigungen und Schleifen.
+auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
 
+Unter anderem werden Klassen der folgenden Kategorien erzeugt:
+\begin{itemize}
 
+	\item \textbf{DataSet}:
+
+	\item \textbf{Table}:
+	
+	\item \textbf{RowBuilder}:
+	
+	\item \textbf{FindWhere}:
+
+\end{itemize}
+
+\todo{einfaches Klassendiagramm für SB Testing DB generierte Klassen}
 
 
 
@@ -114,7 +134,7 @@ auch Steueranweisungen, z.B. Verzweigungen und Schleifen.
 	
 	Erklären:
 	- Spalten/PK/FK
-	- Karidnalitäten
+	- Kardinalitäten
 	
 	Abbildung \ref{img:ambler_table} zeigt ein Diagramm mit zwei Tabellen. Tabelle 2 enthält einen Fremdschlüssel,
 	der einem Primärschlüssel aus Tabelle 1 
