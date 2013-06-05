@@ -144,8 +144,8 @@ mit Tabellen sind}
 
 	
 
-\section{Implementierung}
-\label{sec:modellierung:implementierung}
+\section{Implementierungsvorbereitung}
+\label{sec:modellierung:wahlimplementierung}
 
 Da sich die DSL in die bisherige Werkzeug-Kette von Seitenbau integrieren lassen soll
 (\refsec{sec:anforderungen:allgemeineanforderungen}), sollte die DSL in Java nutzbar sein. Zwar kann eine DSL
@@ -181,15 +181,13 @@ den Zugriff von nicht definierten Klassenelementen zu reagieren.
 Aus diesen Gründen empfiehlt Ghosh in \cite[148]{DSLS_IN_ACTION} Groovy als Host für DSLs in Verbindung
 mit Java-Anwendungen. 
 
-
 	\subsection{Implementierungsvarianten}
 	\label{sec:modellierung:implementierung:varianten}
 	
-	Eine DSL kann auf unterschiedliche Art implementiert werden. Groovy bietet dafür zwei Möglichkeiten der
+	Eine DSL kann auf unterschiedliche Arten implementiert werden. Groovy bietet dafür zwei Möglichkeiten der
 	Meta-Programmierung an: Laufzeit-Meta-Programmierung und Compiler-Zeit-Meta-Programmierung, letzteres in Form von
-	AST-Transformationen. Beide Ansätze bieten individuelle Vorteile, die im folgenden diskutiert werden.
+	AST-Transformationen. Beide Ansätze bieten individuelle Vorteile, die im folgenden diskutiert werden.  
 	\nomenclature{AST}{Abstract Syntax Tree}
-
 
 
 		\subsubsection{Laufzeit-Meta-Programmierung}
@@ -325,7 +323,7 @@ def fixture = [
 		Die AST-Transformationen stellen ein mächtiges Werkzeug zur Erweiterung der Syntax der Sprache dar. Mit Hilfe
 		der Transformationen ist es möglich, Änderungen am AST durchzuführen, bevor er in Java-Bytecode übersetzt wird.
 		
-		Dass AST-Transformationen mehr syntaktische Möglichkeiten bietet zeigt sich auch daran, dass hier der 
+		Dass AST-Transformationen mehr syntaktische Möglichkeiten bieten, zeigt sich auch daran, dass hier der 
 		Double-Pipe-Operator verwendet werden kann. Außerdem können Labels erkannt werden und Daten einer Tabelle
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
@@ -333,5 +331,16 @@ def fixture = [
 		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
 		(\cite[331ff]{DESIGN_PATTERNS}).
 		
+	\subsection{Implementierungsentscheidung}
+	\label{sec:implementierung:entscheidung}
+	
+	Der Vergleich zwischen Laufzeit-Meta-Programmierung und AST-Transformation zeigt, dass sich Groovy als Host-Sprache
+	für die DSL eignet. Die Laufzeit-Meta-Programmierung erlaubt zwar weniger Anpassungen an die Sprache, ist aber für
+	die gewünschte DSL ausreichend und die Umsetzung einfacher. 
+		
+
+\section{Realisisierung}
+\label{sec:modellierung:realisierung}
+
 		
 \todo{"`Muster"' für 1:1, 1:n und m:n}

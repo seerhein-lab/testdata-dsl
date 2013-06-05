@@ -108,7 +108,10 @@ auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schle
 Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 \begin{itemize}
 
-	\item \textbf{DataSet}:
+	\item \textbf{DataSet}: Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
+	  Felder. Die Klasse enthält die Fabrikmethode \texttt{createDBUnitDataSet} zur Erzeugung eines DbUnit-DataSets. Dabei werden
+		Template-Methoden definiert, die genutzt werden können, um in den Erzeungsprozess von DataSets einzugreifen. Die Klasse enthält
+		darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende Tabellen.
 
 	\item \textbf{Table}:
 	
