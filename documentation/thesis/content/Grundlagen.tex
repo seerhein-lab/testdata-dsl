@@ -82,7 +82,7 @@ die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (
 Java-DSL generiert.
 
 Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell die Java-DSL erzeugt wird. Ausgangspunkt ist
-ein relationales Datenbankmodell. üblicherweise liegt es bei Seitenbau als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses
+ein relationales Datenbankmodell. Üblicherweise liegt es bei Seitenbau als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses
 muss vor der eigentlichen Code-Erzeugung in ein für den Generator interpretierbares Modell (das SB-Testing-DB-Modell) transformiert
 werden, das die Meta-Informationen zur Datenbank enthält. Zu den notwendigen Meta-Informationen gehören Tabellennamen und Daten zu den
 Spalten, z.B. Name und Datentypen. Das SB-Testing-DB-Modell kann manuell gepflegt und auch vollständig manuell entwickelt werden. Mit
@@ -109,13 +109,13 @@ Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 \begin{itemize}
 
 	\item \textbf{DataSet}: Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
-	  Felder. Die Klasse enthält die Fabrikmethode \texttt{createDBUnitDataSet} zur Erzeugung eines DbUnit-DataSets. Dabei werden
-		Template-Methoden definiert, die genutzt werden können, um in den Erzeungsprozess von DataSets einzugreifen. Die Klasse enthält
-		darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende Tabellen.
+	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
+		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeungsprozess von DataSets
+		einzugreifen. Die Klasse enthält darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende Tabellen.
 
-	\item \textbf{Table}:
+	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert.
 	
-	\item \textbf{RowBuilder}:
+	\item \textbf{RowBuilder}: 
 	
 	\item \textbf{FindWhere}:
 
