@@ -113,7 +113,12 @@ Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeungsprozess von DataSets
 		einzugreifen. Die Klasse enthält darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende Tabellen.
 
-	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert.
+	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert. 
+	  - Implementiert DbUnit-Interface ITable
+		- Enthält Meta-Informationen zu Spalten
+		- Definiert weitere Tabellen-spezifische Interfaces und Klassen (siehe unten)
+		- Methoden zum Erstellen, Hinzufügen, Löschen von Zeilen und zum Iterieren
+		
 	
 	\item \textbf{RowBuilder}: 
 	
