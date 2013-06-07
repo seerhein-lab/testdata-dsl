@@ -1,10 +1,10 @@
 package com.seitenbau.testdatadsl.dbunit.stu;
 
-import com.seitenbau.stu.dbunit.hochschule.dsl.LehrveranstaltungRef;
-import com.seitenbau.stu.dbunit.hochschule.dsl.ProfessorRef;
-import com.seitenbau.stu.dbunit.hochschule.dsl.PruefungRef;
-import com.seitenbau.stu.dbunit.hochschule.dsl.RefFactory;
-import com.seitenbau.stu.dbunit.hochschule.dsl.StudentRef;
+import com.seitenbau.stu.dbunit.hochschule.LehrveranstaltungRef;
+import com.seitenbau.stu.dbunit.hochschule.ProfessorRef;
+import com.seitenbau.stu.dbunit.hochschule.PruefungRef;
+import com.seitenbau.stu.dbunit.hochschule.RefFactory;
+import com.seitenbau.stu.dbunit.hochschule.StudentRef;
 
 public class HochschuleRefs {
 

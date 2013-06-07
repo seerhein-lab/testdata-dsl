@@ -342,22 +342,106 @@ def fixture = [
 \section{Realisisierung}
 \label{sec:modellierung:realisierung}
 
-Erklären:
-\begin{itemize}
-  \item DSL zusätzliche Schicht über bisherigen Klassen (allerdings sind auch Erweiterungen wie Lazy Values im alten Framework)
-  \item Allgemeine Parser-Klasse, Callback-Klasse
-	\item ScopeRegistry und Scopes
-	\item Referenzen (getter, Methoden für Beziehungen)
-	\item ColumnBinding
-	\item getWhere
-	\item Decorator für RowBuilder
-	\item Verbessertes findWhare
-	\item getWhere
-	\item find
-	\item foreach
-	\item Lazy Values
-	\item JavaDoc
-\end{itemize}
+% Fluent Builder API Java basiert
+% Table DSL Groovy basiert
+
+Erweiterungen und andere Verbesserungen fließen nicht in die bisher genutzte Bibliothek SB Testing DB ein. Stattdessen
+wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU}
+(Simple Test Utils, \url{https://github.com/Seitenbau/stu}) verwendet und unter Open-Source gestellt. Diese Vorgehensweise stellt
+gleichzeitig sicher, dass bisherige Schnittstellen weitergenutzt werden können, erlaubt aber auch punktuelle Änderungen an diesen.
+Auf bisherige Projekte haben diese Anpassungen keinen Einfluss, neue Projekte können von den Verbesserungen profitieren.
+Änderungen an Schnittstellen, bei denen Abwärtskompatiblität verzichtet wird, betreffen vor allem die Builder-Klassen zum
+Beschreiben des Datenbankmodells für den Generator.
+
+	\subsection{Builder-Klassen für das Datenbankmodell}
+	
+	- Umstellung von überladenen Methoden auf flexibleres, erweiterbareres Fluent API
+	
+	\subsection{Flags}
+	
+  \subsection{Architektur der generierten Klassen}
+	
+	Grundsätzlich erzeugt der Generator aus STU zwei APIs für die Modellierung von DataSets:
+	\begin{itemize}
+		\item \textbf{Fluent Builder API} ... Java basiert
+		\item \textbf{Table Builder API} ... Groovy basiert
+	\end{itemize}
+	
+	Die zusätzliche Table Builder API stellt eine zusätzliche Schicht über der bisherigen Fluent Builder API dar und
+	nutzt diese selbst. Auf diese Weise können neue Funktionen ohne Berücksichtigung der Fluent Builder API 
+	hinzugefügt werden. Von Erweiterungen der Fluent Builder API profitiert die Table Builder API ebenfalls.
+
+
+\begin{verbatim}
++=====================================+
+|     Table Builder API    |          |
++--------------------------+          |
+|         Fluent Builder API          |
++=====================================+
+|               DBUnit                |
++=====================================+
+\end{verbatim}
+
+	Das Integrieren neuer Funktionen in die Fluent Builder API hat verschiedene Vorteile:
+	\begin{itemize}
+		\item \textbf{Code-Qualität}: Es gibt verschiedene Ansätze, Klassen um neue Funktionen zu erweitern oder
+		  ihr Verhalten zu ändern. Egal ob auf Vererbung oder Delegation gesetzt wird, werden neue Datentypen benötigt.
+			
+		  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option dar, wenn
+			Klassen von der Fluent-Builder-API-Schicht selbst instantiiert werden. Delegierende Klassen bestehen aus
+			einer Vielzahl von Methoden, die nichts anderes machen, als die Aufgabe dem Delegat zu übergeben.
+			
+			Wenn die Fluent-Builder-API-Schicht selbst geändert wird, gibt es keinen Grund, Vererbung zu verwenden.
+			Die neuen Funktionen können direkt in die bisherigen Klassen integriert werden, vor allem wenn sie die
+			bisherige Schnittstelle der Klasse nicht beeinflussen.
+			
+		\item \textbf{Mehrwert gegenüber SB Testing DB}: Auch wenn auf das neue Table Builder API verzichtet wird,
+		  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
+	
+	  \item \textbf{Einheitliches Verhalten}: Beide APIs zeigen auf diese Weise ein einheitlicheres Verhalten.
+
+	\end{itemize}
+
+	
+	\subsection{Allgemeiner Tabellenparser}
+	
+	\subsection{Builder für DataSet}
+	
+	\subsection{Builder für Tabellen}
+	
+	\subsection{ColumnBinding}
+	
+	\subsection{Referenzen}
+	
+	- Referenzen (getter, Methoden für Beziehungen)
+	
+	\subsection{Scopes}
+	
+	- ScopeRegistry
+	- IScope Interface (DataSetIdentifier)
+	
+
+  \subsection{Erweiterungen in generierter API}
+	
+	Zu den Erweiterungen in der Fluent-Builder-API-Schicht gehören:
+	
+	\begin{itemize}
+		\item \textbf{RowBuilder}:
+		  - Beziehungen über REFs
+			- 
+			
+    \item \textbf{findWhere}:
+		  - REFs anstelle von konkreten Werten
+		  
+	  \item \textbf{getWhere}:
+		  - Zusätzlich zu findWhere
+	  \item \textbf{find}:
+	  \item \textbf{foreach}:
+	  \item \textbf{LazyValues}:
+	\end{itemize}
+	
+	\subsection{JavaDoc}
+
 
 		
 \todo{"`Muster"' für 1:1, 1:n und m:n}

@@ -94,10 +94,10 @@ Hilfe des SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL 
 	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
 \end{figure}
 
-Das SB-Testing-DB-Modell enthält keine Datenbank-Constraints und eine Abbildung dieser bringt keine wesentliche Vorteile. Das API bzw.
-die erzeugten DataSets sind ausschließlich für den Einsatz Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen die
-in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets und eine Exception wird ausgelöst. Aus
-Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
+Das SB-Testing-DB-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentliche Vorteile bringen. Das API
+bzw. die erzeugten DataSets sind ausschließlich für den Einsatz Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
+die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets und eine Exception wird ausgelöst.
+Aus Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
 das ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist minimal im Vergleich zu dem Aufwand, Constraints
 verschiedener Datenbanken nachzubauen.
 
@@ -105,25 +105,37 @@ Der Generator erzeugt die Java-Klassen mit Hilfe von \textit{Apache Velocity}. V
 Vorlagen Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
 auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
 
+Die generierten Klassen setzen das Builder-Pattern mit eiinem Fluent API um.
+\todo{weiter erklären}
+
 Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 \begin{itemize}
 
 	\item \textbf{DataSet}: Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
 	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
 		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeungsprozess von DataSets
-		einzugreifen. Die Klasse enthält darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende Tabellen.
+		einzugreifen. Die Klasse enthält darüber hinaus einige Convenience-Methoden zum Hinzufügen von Zeilen in die entsprechende
+		Tabellen.
 
-	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert. 
-	  - Implementiert DbUnit-Interface ITable
-		- Enthält Meta-Informationen zu Spalten
-		- Definiert weitere Tabellen-spezifische Interfaces und Klassen (siehe unten)
-		- Methoden zum Erstellen, Hinzufügen, Löschen von Zeilen und zum Iterieren
+	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert. Die Klasse stellt Methoden zum
+	  Hinzufügen und zum Löschen von Tabellenzeilen bereit. Für Tabellenzeilen gibt es eine passende RowBuilder-Klasse.
+		Außerdem kann nach Zeilen gesucht werden. Dafür gibt es einerseits  eine Klasse (\textit{FindWhere}, Beschreibung
+		siehe unten) für einfache Werte-Suchen. Andererseits gibt es auch die Möglichkeit, eine Zeile in Form eines
+		RowBuilders als Such-Parameter zu verwenden. Die gefundenen Zeilen müssen in allen auf dem RowBuilder gesetzten
+		Werten in den jeweiligen Spalten übereinstimmen.
 		
+		Da die Klasse das DbUnit-Interface ITable implementiert, kann sie direkt in DbUnit-DataSets verwendet werden. Dafür muss
+		die Klasse auch Meta-Informationen zu den Spalten beinhalten.
 	
-	\item \textbf{RowBuilder}: 
+	\item \textbf{RowBuilder}: Zu jeder Tabelle wird eine Klasse zur Repräsentation einer Tabellenzeile generiert. Die Klasse
+	  beinhaltet für jede Spalte mehrere Methoden zum Setzen und Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich
+		zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und dem Spaltennamen. \todo{Raw-Setter erklären?}
 	
-	\item \textbf{FindWhere}:
-
+	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es die Klasse FindWhere. Sie ermöglicht die Suche nach einem Wert
+	  in einer Spalte. Es wird eine Liste von Tabellenzeilen zurückgeliefert. Nicht zu unrecht trägt sie den Ausdruck \textit{find}
+		im Namen. Sie dient dem Zweck, Zeilen zu finden, von denen bekannt ist, dass es sie gibt. Entsprechend wird eine Exception
+		geworfen, wenn keine Zeile entsprechend dem Suchkriterium gefunden wird.
+	
 \end{itemize}
 
 \todo{einfaches Klassendiagramm für SB Testing DB generierte Klassen}
