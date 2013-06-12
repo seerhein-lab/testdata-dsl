@@ -10,7 +10,17 @@ public class HochschuleModel extends DatabaseModel {
   {
     database("Hochschule");
     packageName("com.seitenbau.stu.dbunit.hochschule");
+    enableTableModelClassesGeneration();
     
+    Table adressen = table("adresse")
+        .description("Die Adressen")
+        .column("id", DataType.BIGINT) 
+          .identifierColumn() 
+          .autoInvokeNext()
+        .column("strasse", DataType.VARCHAR)
+        .column("ort", DataType.VARCHAR)
+      .build();
+
     Table professoren = table("professor")
         .description("Die Tabelle mit den Professoren der Hochschule")
         .column("id", DataType.BIGINT) 
@@ -20,6 +30,8 @@ public class HochschuleModel extends DatabaseModel {
         .column("vorname", DataType.VARCHAR)
         .column("titel", DataType.VARCHAR)
         .column("fakultaet", DataType.VARCHAR)
+        .column("adresse", DataType.BIGINT)
+          .references(adressen)
       .build();
 
     Table lehrveranstaltungen = table("lehrveranstaltung")
@@ -67,6 +79,8 @@ public class HochschuleModel extends DatabaseModel {
         .column("studiengang", DataType.VARCHAR)
         .column("semester", DataType.INTEGER)
         .column("immatrikuliert_seit", DataType.DATE)
+        .column("adresse", DataType.BIGINT)
+          .references(adressen)
       .build();
 
     table("beaufsichtigt")

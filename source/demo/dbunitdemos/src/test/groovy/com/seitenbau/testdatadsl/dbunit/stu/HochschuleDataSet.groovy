@@ -1,7 +1,7 @@
 package com.seitenbau.testdatadsl.dbunit.stu
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*
-import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleBuilder;
+import com.seitenbau.stu.dbunit.hochschule.HochschuleBuilder;
 
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil;
 

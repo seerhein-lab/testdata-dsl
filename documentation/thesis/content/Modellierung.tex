@@ -171,7 +171,7 @@ myList append "value 1"  append "value 2"
 
 Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures (Funktionsabschlüsse) von
 Java ab. Ein Closure ist ein Codeblock, der wie eine Funktion aufgerufen und genutzt werden kann. In Java lassen
-sich CLosures mit syntaktisch umfangreicheren Methoden-Objekten nachbilden. Ein Methoden-Objekt stellt eine
+sich Closures mit syntaktisch umfangreicheren Methoden-Objekten nachbilden. Ein Methoden-Objekt stellt eine
 Instanz einer (möglicherweise anonymen) Klasse dar, die nur eine Methode implementiert. \cite[40]{GROOVY_IM_EINSATZ} 
 \todo{Quelle Kent Beck Smalltalk Best Practice Patterns} 
 Die Unterstützung zur Meta-Programmierung stellt sich beim Implementieren einer DSL ebenfalls als nützlich
@@ -191,6 +191,7 @@ mit Java-Anwendungen.
 
 
 		\subsubsection{Laufzeit-Meta-Programmierung}
+	  \label{sec:modellierung:implementierung:varianten:laufzeit}
 		
 		Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
 		Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \textit{TableParser},
@@ -244,7 +245,7 @@ class TableParser {
 		z.B. bei zwei \textit{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
 		die Datentypen passende Kategoriemethoden definiert werden.
 
-		Der Parser in der Form kann noch nicht mit selbst definierten Variablennamen für die Referenzenabbildung
+		Der Parser in der Form kann noch nicht mit selbst definierten Variablennamen für die Abbildung von Referenzen
 		umgehen. Aus diesem Grund wird eine Methode \texttt{getProperty} definiert, die für jeden Variablennamen
 		in der Tabelle aufgerufen werden soll. Dazu muss der Ausführungskontext des Closures auf die Instanz
 		des Tabellenparsers geändert werden. Die Änderungen sind in Listing \ref{listing:opoverloading.tableparser.extended}
@@ -350,46 +351,87 @@ wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \tex
 (Simple Test Utils, \url{https://github.com/Seitenbau/stu}) verwendet und unter Open-Source gestellt. Diese Vorgehensweise stellt
 gleichzeitig sicher, dass bisherige Schnittstellen weitergenutzt werden können, erlaubt aber auch punktuelle Änderungen an diesen.
 Auf bisherige Projekte haben diese Anpassungen keinen Einfluss, neue Projekte können von den Verbesserungen profitieren.
-Änderungen an Schnittstellen, bei denen Abwärtskompatiblität verzichtet wird, betreffen vor allem die Builder-Klassen zum
+Änderungen an Schnittstellen, bei denen Abwärtskompatibilität verzichtet wird, betreffen vor allem die Builder-Klassen zum
 Beschreiben des Datenbankmodells für den Generator.
 
+
+
+
+- http://martinfowler.com/eaaCatalog/gateway.html\\
+- http://martinfowler.com/eaaCatalog/repository.html\\
+- http://martinfowler.com/eaaCatalog/registry.html
+	
 	\subsection{Builder-Klassen für das Datenbankmodell}
+	\label{sec:modellierung:realisierung:builderdatabasemodel}
 	
-	- Umstellung von überladenen Methoden auf flexibleres, erweiterbareres Fluent API
+	Bei den Builder-Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatiblität verzichtet.
+	Während das alte API auf überladene Methoden mit vielen Parametern setzt, ist das neue API entsprechend dem Builder-Pattern
+	umgesetzt (Quelle). So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle enthält, wovon eine
+	als \textit{deprecated} eingestuft ist. Dieses Design ist unübersichtlich und nur schwer erweiterbar. Jeder weitere optionale
+	Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter
+	eine einzelne Set-Methode.
 	
-	\subsection{Flags}
+	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. So werden Flags für Spalten nicht mehr über ein 
+	\textit{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. Abschnitt \ref{sec:modellierung:realisierung:flags} 
+	geht weiter auf das Thema Flag ein. Darüber hinaus bieten die neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten
+	hinzu zu fügen. Diese werden bei der Code-Generierung für die Erstellung von JavaDoc-Kommentaren verwendet
+	(siehe \ref{sec:modellierung:realisierung:javadoc}).
+	
+	\todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
+	
+	\subsection{Spalten-Flags}
+	\label{sec:modellierung:realisierung:flags}
+	
+	SB Testing DB sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
+	gesetzten Flags müssen über ein \textit{EnumSet} übergeben werden.
 	
   \subsection{Architektur der generierten Klassen}
+	\label{sec:modellierung:realisierung:architektur}
 	
 	Grundsätzlich erzeugt der Generator aus STU zwei APIs für die Modellierung von DataSets:
 	\begin{itemize}
-		\item \textbf{Fluent Builder API} ... Java basiert
-		\item \textbf{Table Builder API} ... Groovy basiert
+		\item \textbf{Fluent Builder API} (Java basiert)
+		\item \textbf{Table Builder API} (Groovy basiert)
 	\end{itemize}
 	
 	Die zusätzliche Table Builder API stellt eine zusätzliche Schicht über der bisherigen Fluent Builder API dar und
-	nutzt diese selbst. Auf diese Weise können neue Funktionen ohne Berücksichtigung der Fluent Builder API 
-	hinzugefügt werden. Von Erweiterungen der Fluent Builder API profitiert die Table Builder API ebenfalls.
-
-
+	nutzt diese selbst. Auf diese Weise können neue Funktionen ohne Berücksichtigung des Fluent Builder APIs
+	hinzugefügt werden. Unter Umständen ist es allerdings sinnvoll oder sogar notwendig, Erweiterungen direkt in das
+	Fluent Builder API zu integrieren. So müssen ursprünglich nur für das Table Builder API vorgesehene Features wie
+	Referenzen und Scopes dem Fluent Builder API nicht vorenthalten werden.
+	
 \begin{verbatim}
-+=====================================+
-|     Table Builder API    |          |
-+--------------------------+          |
-|         Fluent Builder API          |
-+=====================================+
-|               DBUnit                |
-+=====================================+
++=========================================+
+|               Test-Suite                |
++=========================================+
+         |                       |
+         V                       |
++========================+       |
+| Table Builder API |    |       |
++-------------------+    |       |
+|   Fluent Builder API   |       |
++=========================       |
+            |                    |
+            V                    |
++========================+       |
+|         DBUnit         |       |
++========================+       |
+            |                    |
+            V                    V
++=========================================+
+|                  JUnit                  |
++=========================================+
 \end{verbatim}
 
 	Das Integrieren neuer Funktionen in die Fluent Builder API hat verschiedene Vorteile:
 	\begin{itemize}
 		\item \textbf{Code-Qualität}: Es gibt verschiedene Ansätze, Klassen um neue Funktionen zu erweitern oder
-		  ihr Verhalten zu ändern. Egal ob auf Vererbung oder Delegation gesetzt wird, werden neue Datentypen benötigt.
+		  ihr Verhalten zu ändern. Unabhängig davon, ob auf Vererbung oder Delegation gesetzt wird, werden neue
+			Datentypen benötigt.
 			
-		  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option dar, wenn
-			Klassen von der Fluent-Builder-API-Schicht selbst instantiiert werden. Delegierende Klassen bestehen aus
-			einer Vielzahl von Methoden, die nichts anderes machen, als die Aufgabe dem Delegat zu übergeben.
+		  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option zur Erweiterungen
+			von den Klassen dar, die von der Fluent-Builder-API-Schicht selbst instantiiert werden. Delegierende Klassen
+			bestehen aus einer Vielzahl von Methoden, die nichts anderes machen, als die Aufgabe dem Delegat zu übergeben.
 			
 			Wenn die Fluent-Builder-API-Schicht selbst geändert wird, gibt es keinen Grund, Vererbung zu verwenden.
 			Die neuen Funktionen können direkt in die bisherigen Klassen integriert werden, vor allem wenn sie die
@@ -404,24 +446,41 @@ Beschreiben des Datenbankmodells für den Generator.
 
 	
 	\subsection{Allgemeiner Tabellenparser}
+	\label{sec:modellierung:realisierung:parser}
+	
+	Der Tabellenparser basiert auf dem in Abschnitt \ref{sec:modellierung:implementierung:varianten:laufzeit} gezeigten
+	Quellcode. 
+	- TableParser (Groovy)
+	- TableParserContext
+	- TableParserCallback
+	- zeilenweise wegen Exceptions
+	- Groovy-Anteil minimiert
+	- Diagramm :-)
+	
 	
 	\subsection{Builder für DataSet}
+	\label{sec:modellierung:realisierung:builderdataset}
 	
 	\subsection{Builder für Tabellen}
+	\label{sec:modellierung:realisierung:buildertabellen}
 	
 	\subsection{ColumnBinding}
+	\label{sec:modellierung:realisierung:columnbinding}
 	
 	\subsection{Referenzen}
+	\label{sec:modellierung:realisierung:refs}
 	
 	- Referenzen (getter, Methoden für Beziehungen)
 	
 	\subsection{Scopes}
+	\label{sec:modellierung:realisierung:scopes}
 	
 	- ScopeRegistry
 	- IScope Interface (DataSetIdentifier)
 	
 
   \subsection{Erweiterungen in generierter API}
+	\label{sec:modellierung:realisierung:generatedapi}
 	
 	Zu den Erweiterungen in der Fluent-Builder-API-Schicht gehören:
 	
@@ -441,6 +500,7 @@ Beschreiben des Datenbankmodells für den Generator.
 	\end{itemize}
 	
 	\subsection{JavaDoc}
+	\label{sec:modellierung:realisierung:javadoc}
 
 
 		

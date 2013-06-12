@@ -2,9 +2,9 @@ package com.seitenbau.testdatadsl.dbunit.examples
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*
 
-import com.seitenbau.stu.dbunit.hochschule.dsl.HochschuleBuilder
+import com.seitenbau.stu.dbunit.hochschule.HochschuleBuilder
 import com.seitenbau.testdatadsl.dbunit.common.util.DateUtil
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry
 
 ExpandoMetaClass.enableGlobally() 
 HochschuleBuilder hochschule = new HochschuleBuilder()
@@ -62,7 +62,7 @@ hochschule.relations {
   MUSTERMANN.besucht(DPATTERNS)
 }
 
-ScopeRegistry.use(hochschule)
+DataSetRegistry.use(hochschule)
 println hochschule.createDBUnitDataSet()
 println "Vor Änderung: " + HAASE.getName()
 

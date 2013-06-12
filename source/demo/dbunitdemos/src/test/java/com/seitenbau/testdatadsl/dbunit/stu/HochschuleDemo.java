@@ -1,6 +1,6 @@
 package com.seitenbau.testdatadsl.dbunit.stu;
 
-import com.seitenbau.testing.dbunit.dsl.ScopeRegistry;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 
 import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*;
 import com.seitenbau.testdatadsl.dbunit.stu.HochschuleDataSet;
@@ -30,7 +30,7 @@ public class HochschuleDemo
     String moll_lvname = moll_lvid != null ? dataSet.lehrveranstaltungTable.findWhere.id((Long)moll_lvid).getName() : " null";
     println(moll_name + " besucht", moll_lvname);
 
-    ScopeRegistry.use(dataSet);
+    DataSetRegistry.use(dataSet);
    
     println("Nachname " + MUSTERMANN.getName() + " Count", dataSet.studentTable.findWhere.name(MUSTERMANN).getRowCount());
     println("Vorname " + MUSTERMANN.getVorname() + " Count", dataSet.studentTable.findWhere.vorname(MUSTERMANN).getRowCount());
