@@ -12,15 +12,6 @@ public class HochschuleModel extends DatabaseModel {
     packageName("com.seitenbau.stu.dbunit.hochschule");
     enableTableModelClassesGeneration();
     
-    Table adressen = table("adresse")
-        .description("Die Adressen")
-        .column("id", DataType.BIGINT) 
-          .identifierColumn() 
-          .autoInvokeNext()
-        .column("strasse", DataType.VARCHAR)
-        .column("ort", DataType.VARCHAR)
-      .build();
-
     Table professoren = table("professor")
         .description("Die Tabelle mit den Professoren der Hochschule")
         .column("id", DataType.BIGINT) 
@@ -30,8 +21,6 @@ public class HochschuleModel extends DatabaseModel {
         .column("vorname", DataType.VARCHAR)
         .column("titel", DataType.VARCHAR)
         .column("fakultaet", DataType.VARCHAR)
-        .column("adresse", DataType.BIGINT)
-          .references(adressen)
       .build();
 
     Table lehrveranstaltungen = table("lehrveranstaltung")
@@ -45,11 +34,10 @@ public class HochschuleModel extends DatabaseModel {
               .description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
             .remote("leitet")
               .description("Gibt an, welche Lehrveranstaltungen ein Professor leitet.")
-              .min(1)
-              .max(1)
         .column("name", DataType.VARCHAR)
         .column("sws", DataType.INTEGER)
         .column("ects", DataType.DOUBLE)
+        .column("tutoren", DataType.INTEGER)
       .build();
     
     Table pruefungen = table("pruefung")
@@ -63,8 +51,6 @@ public class HochschuleModel extends DatabaseModel {
               .description("Gibt an, zu welcher Lehrvanstaltung eine Prüfung gehört.")
             .remote("hatPruefung")
               .description("Ordnet Prüfungen einer Lehrveranstaltung zu.")
-              .min(1)
-              .max(1)
         .column("typ", DataType.VARCHAR)
         .column("zeitpunkt", DataType.DATE)
       .build();
@@ -79,8 +65,6 @@ public class HochschuleModel extends DatabaseModel {
         .column("studiengang", DataType.VARCHAR)
         .column("semester", DataType.INTEGER)
         .column("immatrikuliert_seit", DataType.DATE)
-        .column("adresse", DataType.BIGINT)
-          .references(adressen)
       .build();
 
     table("beaufsichtigt")
@@ -88,12 +72,10 @@ public class HochschuleModel extends DatabaseModel {
           .references(professoren)
             .remote("beaufsichtigt")
               .description("Gibt an, welche Prüfungen ein Professor beaufsichtigt.")
-              .max(1)
         .column("pruefung_id", DataType.BIGINT)
           .references(pruefungen)
             .remote("beaufsichtigtVon")
               .description("Gibt an, welche Professoren eine Prüfung beaufsichtigen.")
-              .max(1)
       .build();
     
     table("besucht")
@@ -101,12 +83,10 @@ public class HochschuleModel extends DatabaseModel {
           .references(studenten)
             .remote("besucht")
               .description("Gibt an, welche Lehrveranstaltungen ein Student besucht.")
-              .max(1)
         .column("lehrveranstaltung_id", DataType.BIGINT)
           .references(lehrveranstaltungen)
             .remote("besuchtVon")
               .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
-              .max(1)
       .build();
     
     table("isttutor")
@@ -114,12 +94,10 @@ public class HochschuleModel extends DatabaseModel {
           .references(studenten)
             .remote("istTutor")
               .description("Gibt an, bei welchen Lehrveranstaltungen ein Student Tutor ist.")
-              .max(1)
         .column("lehrveranstaltung_id", DataType.BIGINT)
           .references(lehrveranstaltungen)
             .remote("hatTutor")
               .description("Gibt an, welche Tutoren eine Lehrveranstaltung hat.")
-              .max(1)
       .build();
     
     table("schreibt")
@@ -127,12 +105,10 @@ public class HochschuleModel extends DatabaseModel {
           .references(studenten)
             .remote("schreibt")
               .description("Gibt an, welche Prüfungen ein Student schreibt.")
-              .max(1)
         .column("pruefung_id", DataType.BIGINT)
           .references(pruefungen)
             .remote("geschriebenVon")
               .description("Gibt an, welche Studenten eine Prüfung schreiben.")
-              .max(1)
       .build();
   }
   
