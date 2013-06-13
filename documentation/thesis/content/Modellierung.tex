@@ -410,6 +410,61 @@ Beschreiben des Datenbankmodells für den Generator.
 	\subsection{Modellierung von Relationen über Builder-Klassen}
 	
 	
+	\subsection{Alte und neue Builder-Klassen im Vergleich}
+	\label{sec:modellierung:realisierung:buildervergleich}
+	
+	\begin{lstlisting}[caption=Neue Builder-Klassen, label=listing:model:builder:old]
+database("Hochschule");
+packageName("com.seitenbau.sbtesting.dbunit.hochschule");
+
+Table professoren = addTable("professor")
+		.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) 
+		.addColumn("name", DataType.VARCHAR)
+		.addColumn("vorname", DataType.VARCHAR)
+		.addColumn("titel", DataType.VARCHAR)
+		.addColumn("fakultaet", DataType.VARCHAR);
+
+Table lehrveranstaltungen = addTable("lehrveranstaltung")
+		.addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
+		.addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))
+		.addColumn("name", DataType.VARCHAR)
+		.addColumn("sws", DataType.INTEGER)
+		.addColumn("ects", DataType.DOUBLE);
+  \end{lstlisting}
+	
+	\begin{lstlisting}[caption=Neue Builder-Klassen, label=listing:model:builder:new]
+database("Hochschule");
+packageName("com.seitenbau.stu.dbunit.hochschule");
+enableTableModelClassesGeneration();
+
+Table professoren = table("professor")
+		.description("Die Tabelle mit den Professoren der Hochschule")
+		.column("id", DataType.BIGINT) 
+			.identifierColumn() 
+			.autoInvokeNext()
+		.column("name", DataType.VARCHAR)
+		.column("vorname", DataType.VARCHAR)
+		.column("titel", DataType.VARCHAR)
+		.column("fakultaet", DataType.VARCHAR)
+	.build();
+
+Table lehrveranstaltungen = table("lehrveranstaltung")
+		.description("Die Tabelle mit den Lehrveranstaltungen der Hochschule")
+		.column("id", DataType.BIGINT)
+			.identifierColumn() 
+			.autoInvokeNext()
+		.column("professor_id", DataType.BIGINT)
+			.references(professoren)
+				.local("geleitetVon")
+					.description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
+				.remote("leitet")
+					.description("Gibt an, welche Lehrveranstaltungen ein Professor leitet.")
+		.column("name", DataType.VARCHAR)
+		.column("sws", DataType.INTEGER)
+		.column("ects", DataType.DOUBLE)
+	.build();	
+	\end{lstlisting}
+	
 	
   \subsection{Architektur der generierten Klassen}
 	\label{sec:modellierung:realisierung:architektur}
@@ -498,30 +553,58 @@ Beschreiben des Datenbankmodells für den Generator.
 	
 	Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
 	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung zur
-	anstelle von Primärschlüsseln verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten. Wird beispielsweise über
-	Vornamen in der Professor-Tabelle gesucht und eine Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem
-	Vornamen gesucht.
+	anstelle von Primärschlüsseln verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten (mehr dazu in Abschnitt
+	\ref{sec:modellierung:realisierung:apierweiterungen}). 
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \textit{REF} vorgesehen,
 	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bindRef()}.
-	Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden.
 	
-	\todo{kleines Beispiel}
+	\begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:ref:bindingtable]
+professorTable.rows {
+  REF    | name    | vorname  | titel            | fakultaet
+  WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+	...
+}
+	\end{lstlisting}
+  
+	\begin{lstlisting}[caption=Binden von Referenzen (Fluent Builder API), label=listing:ref:bindingfluent]
+table_Professor.insertRow()
+  .bindRef(WAESCH)
+	.setName("Wäsch")
+	.setVorname("Jürgen")
+	.setTitle("Prof. Dr.-Ing.")
+	.setFakultaet("Informatik")
+...
+	\end{lstlisting}
+	
+	Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden.
+	\begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:valueaccess]
+WAESCH.getName()    // Java style
+WAESCH.name         // Groovy style
+	\end{lstlisting}
 	
 	Außerdem können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
+	\begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:relations]
+WAESCH.beaufsichtigt(P_VSYS)
+	\end{lstlisting}
 	
-	Die Referenzen müssen vor ihrer Nutzung instantiiert werden. Es bietet sich an, sie als globale Variablen zu definieren. Verschiedene
-	DataSets (mit dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn sie unterschiedliche Werte repräsentieren.
+	Die Referenzen müssen vor ihrer Nutzung instantiiert werden. Zwar könnten in Groovy auch nicht explizit definierte Referenzen
+	verwendet werden (z.B. über die Methode \texttt{getPropery()}, allerdings würde Tool-Unterstützung verloren gehen (z.B. beim
+	Umbenennen von Referenzen, Erkennen von Tippfehlern bei Bezeichnern). Es bietet sich an, sie als globale Variablen zu definieren.
+	Verschiedene DataSets (mit dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn sie unterschiedliche
+	Werte repräsentieren.
+	
+	Damit die selben Referenzen in unterschiedlichen DataSets genutzt werden können, werden die RowBuilder immer im Kontext des
+	gerade aktiven DataSets gebunden. Das aktive DataSet wird über die \textit{DataSetRegistry} festgelegt (und abgefragt). Pro
+	Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, dass wenn verschiedene Datenbank-Modelle genutzt werden,
+	gleichzeitig ein DataSet aus dem ersten Modell, aber auch ein anderes DataSet aus einem anderen Modell aktiv sein kann.
 	
 	
-	
-	- ScopeRegistry
-	- IScope Interface (DataSetIdentifier)
 	
 	
 
   \subsection{Erweiterungen in generierter API}
-	\label{sec:modellierung:realisierung:generatedapi}
+	\label{sec:modellierung:realisierung:apierweiterungen}
 	
 	Zu den Erweiterungen in der Fluent-Builder-API-Schicht gehören:
 	
@@ -529,7 +612,16 @@ Beschreiben des Datenbankmodells für den Generator.
 		\item \textbf{RowBuilder}:
 		  - Beziehungen über REFs
 			
-    \item \textbf{findWhere}:
+    \item \textbf{findWhere}: .....
+		Wird beispielsweise über Vornamen in der Professor-Tabelle gesucht und eine
+Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem Vornamen
+gesucht.
+	\begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
+dataSet.table_Professor.findWhere.vorname("Oliver").getRowCount();
+dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
+	\end{lstlisting}
+
+		
 		  - REFs anstelle von konkreten Werten
 		  
 	  \item \textbf{getWhere}:
@@ -547,6 +639,18 @@ Beschreiben des Datenbankmodells für den Generator.
 	
 	\subsection{JavaDoc}
 	\label{sec:modellierung:realisierung:javadoc}
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.5]{images/realisierung/javadoc_tooltip_table.png}
+	\caption{Tooltip Tabelle}\label{img:javadoc_tooltip_table}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.5]{images/realisierung/javadoc_tooltip_rows.png}
+	\caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
+\end{figure}
 
 
 		
