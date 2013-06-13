@@ -635,6 +635,36 @@ dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
 	  
 		\item \textbf{LazyValues}:
 	
+	\begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:lazyvalues]
+class HochschuleDataSet extends HochschuleBuilder
+{
+
+  def tables() {
+        
+    lehrveranstaltungTable.rows {
+      REF       | name                | sws | ects | tutoren
+      VSYS      | "Verteilte Systeme" | 4   | 5    | tutors(VSYS)
+      DPATTERNS | "Design Patterns"   | 4   | 3    | tutors(DPATTERNS)
+    }
+    
+    ...
+  }
+    
+  ...
+
+  def tutors(LehrveranstaltungRef ref) {
+    return {
+      // findWhere throws an exception if no rows are found
+      if (isttutorTable.getWhere.lehrveranstaltungId(ref).present) { 
+        def rows = isttutorTable.findWhere.lehrveranstaltungId(ref);
+        return rows.getRowCount()
+      }
+      return 0;
+    }
+  }
+}
+	\end{lstlisting}
+	
 	\end{itemize}
 	
 	\subsection{JavaDoc}
