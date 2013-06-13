@@ -328,7 +328,7 @@ def fixture = [
 		Double-Pipe-Operator verwendet werden kann. Außerdem können Labels erkannt werden und Daten einer Tabelle
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
-		Allerdings muss zum Auswerten einer Tabelle bei AST-Transofrmationen ein relativ großer Aufwand betrieben werden.
+		Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
 		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
 		(\cite[331ff]{DESIGN_PATTERNS}).
 		
@@ -372,9 +372,9 @@ Beschreiben des Datenbankmodells für den Generator.
 	eine einzelne Set-Methode.
 	
 	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. So werden Flags für Spalten nicht mehr über ein 
-	\textit{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. Abschnitt \ref{sec:modellierung:realisierung:flags} 
-	geht weiter auf das Thema Flag ein. Darüber hinaus bieten die neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten
-	hinzu zu fügen. Diese werden bei der Code-Generierung für die Erstellung von JavaDoc-Kommentaren verwendet
+	\textit{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt \ref{sec:modellierung:realisierung:flags} 
+	wird weiter auf das Thema Flag eingegangen. Darüber hinaus bieten die neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und
+	Spalten hinzu zu fügen. Diese werden bei der Code-Generierung für die Erstellung von JavaDoc-Kommentaren verwendet
 	(siehe \ref{sec:modellierung:realisierung:javadoc}).
 	
 	\todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
@@ -383,7 +383,33 @@ Beschreiben des Datenbankmodells für den Generator.
 	\label{sec:modellierung:realisierung:flags}
 	
 	SB Testing DB sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
-	gesetzten Flags müssen über ein \textit{EnumSet} übergeben werden.
+	gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet} übergeben werden. Bei dem neuen Builder-API werden
+	die Flags über spezielle Methoden gesetzt.
+	
+	Zu den in STU enthaltenen Standard-Spalten-Flags gehören:
+	\begin{itemize}
+		\item \textbf{Primär-Schlüssel}: Über die Methode \texttt{identifierColumn()} kann eine Spalte als Primär-Schlüssel-Spalte 
+		  markiert werden. Diese Information wird sowohl vom Generator als auch vom Tabellenparser verwendet. 
+
+		\item \textbf{Next-Value-Methode}: SB Testing DB (und damit auch STU) bietet die Möglichkeit, Werte-Generatoren zu verwenden
+		  um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der Generator über
+			eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem Spaltennamen
+			zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das entsprechende
+			Flag über \texttt{addNextMethod()} aus dem Builder-API gesetzt wurde. Standardmäßig muss die Next-Value-Methode manuell
+			aufgerufen werden, über ein Flag kann dies auch automatisch erfolgen.
+			
+		\item \textbf{Automatischer Aufruf der Next-Value-Methode}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
+		  Anlegen einer neuen Tabellenzeile automatisch aufgerufen. Beim Setzen des Flags über die Builder-Methode
+			\texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt.
+			
+		\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
+		  
+	\end{itemize}
+	
+	
+	\subsection{Modellierung von Relationen über Builder-Klassen}
+	
+	
 	
   \subsection{Architektur der generierten Klassen}
 	\label{sec:modellierung:realisierung:architektur}
@@ -467,16 +493,31 @@ Beschreiben des Datenbankmodells für den Generator.
 	\subsection{ColumnBinding}
 	\label{sec:modellierung:realisierung:columnbinding}
 	
-	\subsection{Referenzen}
-	\label{sec:modellierung:realisierung:refs}
+	\subsection{Referenzen und Scopes}
+	\label{sec:modellierung:realisierung:refs_and_scopes}
 	
-	- Referenzen (getter, Methoden für Beziehungen)
+	Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
+	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung zur
+	anstelle von Primärschlüsseln verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten. Wird beispielsweise über
+	Vornamen in der Professor-Tabelle gesucht und eine Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem
+	Vornamen gesucht.
 	
-	\subsection{Scopes}
-	\label{sec:modellierung:realisierung:scopes}
+	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \textit{REF} vorgesehen,
+	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bindRef()}.
+	Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden.
+	
+	\todo{kleines Beispiel}
+	
+	Außerdem können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
+	
+	Die Referenzen müssen vor ihrer Nutzung instantiiert werden. Es bietet sich an, sie als globale Variablen zu definieren. Verschiedene
+	DataSets (mit dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn sie unterschiedliche Werte repräsentieren.
+	
+	
 	
 	- ScopeRegistry
 	- IScope Interface (DataSetIdentifier)
+	
 	
 
   \subsection{Erweiterungen in generierter API}
@@ -487,16 +528,21 @@ Beschreiben des Datenbankmodells für den Generator.
 	\begin{itemize}
 		\item \textbf{RowBuilder}:
 		  - Beziehungen über REFs
-			- 
 			
     \item \textbf{findWhere}:
 		  - REFs anstelle von konkreten Werten
 		  
 	  \item \textbf{getWhere}:
 		  - Zusätzlich zu findWhere
-	  \item \textbf{find}:
-	  \item \textbf{foreach}:
-	  \item \textbf{LazyValues}:
+	  
+		\item \textbf{find}: 
+		  - Such-Anfragen über Filter. Bei Groovy auch Closure
+	  
+		\item \textbf{foreach}:
+		  - Iteration über Zeilen 
+	  
+		\item \textbf{LazyValues}:
+	
 	\end{itemize}
 	
 	\subsection{JavaDoc}
