@@ -375,7 +375,7 @@ Beschreiben des Datenbankmodells für den Generator.
 	\textit{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt \ref{sec:modellierung:realisierung:flags} 
 	wird weiter auf das Thema Flag eingegangen. Darüber hinaus bieten die neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und
 	Spalten hinzu zu fügen. Diese werden bei der Code-Generierung für die Erstellung von JavaDoc-Kommentaren verwendet
-	(siehe \ref{sec:modellierung:realisierung:javadoc}).
+	(\refsec{sec:modellierung:realisierung:javadoc}).
 	
 	\todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
 	
@@ -479,7 +479,8 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	nutzt diese selbst. Auf diese Weise können neue Funktionen ohne Berücksichtigung des Fluent Builder APIs
 	hinzugefügt werden. Unter Umständen ist es allerdings sinnvoll oder sogar notwendig, Erweiterungen direkt in das
 	Fluent Builder API zu integrieren. So müssen ursprünglich nur für das Table Builder API vorgesehene Features wie
-	Referenzen und Scopes dem Fluent Builder API nicht vorenthalten werden.
+	Referenzen und Scopes dem Fluent Builder API nicht vorenthalten werden
+	(\refsec{sec:modellierung:realisierung:refs_and_scopes}).
 	
 \begin{verbatim}
 +=========================================+
@@ -600,7 +601,7 @@ WAESCH.beaufsichtigt(P_VSYS)
 	gleichzeitig ein DataSet aus dem ersten Modell, aber auch ein anderes DataSet aus einem anderen Modell aktiv sein kann.
 	
 	
-	
+	\subsection{Erweiterungen von DataSets}
 	
 
   \subsection{Erweiterungen in generierter API}
@@ -613,13 +614,14 @@ WAESCH.beaufsichtigt(P_VSYS)
 		  - Beziehungen über REFs
 			
     \item \textbf{findWhere}: .....
-		Wird beispielsweise über Vornamen in der Professor-Tabelle gesucht und eine
-Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem Vornamen
-gesucht.
-	\begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
+		  Wird beispielsweise über Vornamen in der Professor-Tabelle gesucht und eine
+			Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem Vornamen
+			gesucht.
+	
+	    \begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
 dataSet.table_Professor.findWhere.vorname("Oliver").getRowCount();
 dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
-	\end{lstlisting}
+	    \end{lstlisting}
 
 		
 		  - REFs anstelle von konkreten Werten
@@ -628,14 +630,40 @@ dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
 		  - Zusätzlich zu findWhere
 	  
 		\item \textbf{find}: 
+	    \begin{lstlisting}[caption=Beispiel für find, label=listing:find]
+Filter<RowBuilder_Professor> FILTER = 
+  new Filter<RowBuilder_Professor>() 
+	  {
+		  @Override
+		  public boolean accept(RowBuilder_Professor value)
+		  {
+			  return value.getVorname().length() == 6;
+		  }
+	  };
+	
+RowCollection_Professor profs = dataSet.professorTable.find(FILTER);
+  	  \end{lstlisting}
+
 		  - Such-Anfragen über Filter. Bei Groovy auch Closure
 	  
-		\item \textbf{foreach}:
-		  - Iteration über Zeilen 
-	  
+    \item \textbf{foreach}:
+	    \begin{lstlisting}[caption=Beispiel für foreach, label=listing:foreach]
+Action<RowBuilder_Professor> ACTION = 
+  new Action<RowBuilder_Professor>() 
+	  {
+		  @Override
+		  public boolean accept(RowBuilder_Professor value)
+		  {
+			  System.out.println("Professor: " + value.getName());
+		  }
+	  };
+	
+dataSet.professorTable.foreach(ACTION);
+  	  \end{lstlisting}
+				
 		\item \textbf{LazyValues}:
 	
-	\begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:lazyvalues]
+	    \begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:lazyvalues]
 class HochschuleDataSet extends HochschuleBuilder
 {
 
@@ -663,7 +691,7 @@ class HochschuleDataSet extends HochschuleBuilder
     }
   }
 }
-	\end{lstlisting}
+  	  \end{lstlisting}
 	
 	\end{itemize}
 	
