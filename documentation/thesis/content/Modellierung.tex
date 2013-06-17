@@ -471,8 +471,12 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	
 	Grundsätzlich erzeugt der Generator aus STU zwei APIs für die Modellierung von DataSets:
 	\begin{itemize}
-		\item \textbf{Fluent Builder API} (Java basiert)
-		\item \textbf{Table Builder API} (Groovy basiert)
+		\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es nutzt das Builder Pattern in Verbindung mit
+		  einem Fluent Interface (ref builder pattern).
+			
+		\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
+		  zu modellieren.
+			
 	\end{itemize}
 	
 	Die zusätzliche Table Builder API stellt eine zusätzliche Schicht über der bisherigen Fluent Builder API dar und
@@ -481,30 +485,14 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	Fluent Builder API zu integrieren. So müssen ursprünglich nur für das Table Builder API vorgesehene Features wie
 	Referenzen und Scopes dem Fluent Builder API nicht vorenthalten werden
 	(\refsec{sec:modellierung:realisierung:refs_and_scopes}).
-	
-\begin{verbatim}
-+=========================================+
-|               Test-Suite                |
-+=========================================+
-         |                       |
-         V                       |
-+========================+       |
-| Table Builder API |    |       |
-+-------------------+    |       |
-|   Fluent Builder API   |       |
-+=========================       |
-            |                    |
-            V                    |
-+========================+       |
-|         DBUnit         |       |
-+========================+       |
-            |                    |
-            V                    V
-+=========================================+
-|                  JUnit                  |
-+=========================================+
-\end{verbatim}
 
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.75]{images/realisierung/architektur.png}
+	\caption{Architektur}\label{img:architektur}
+\end{figure}
+	
 	Das Integrieren neuer Funktionen in die Fluent Builder API hat verschiedene Vorteile:
 	\begin{itemize}
 		\item \textbf{Code-Qualität}: Es gibt verschiedene Ansätze, Klassen um neue Funktionen zu erweitern oder
@@ -559,6 +547,8 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \textit{REF} vorgesehen,
 	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bindRef()}.
+	Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung der selben Zeile einmal 
+	mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
 	
 	\begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:ref:bindingtable]
 professorTable.rows {
@@ -578,22 +568,26 @@ table_Professor.insertRow()
 ...
 	\end{lstlisting}
 	
-	Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden.
+	Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden 
+	(\reflst{listing:ref:valueaccess}).
+	
 	\begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:valueaccess]
 WAESCH.getName()    // Java style
 WAESCH.name         // Groovy style
 	\end{lstlisting}
 	
-	Außerdem können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
+	Darüber hinaus können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
+	Die Methodennamen entsprechen den im Generator-Modell angegebenen Relationsnamen. Listing \ref{listing:ref:relations} zeigt
+	ein Beispiel,wie die Relation zwischen einem Professor und einer Prüfung modellieren lässt.
 	\begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:relations]
 WAESCH.beaufsichtigt(P_VSYS)
 	\end{lstlisting}
 	
-	Die Referenzen müssen vor ihrer Nutzung instantiiert werden. Zwar könnten in Groovy auch nicht explizit definierte Referenzen
-	verwendet werden (z.B. über die Methode \texttt{getPropery()}, allerdings würde Tool-Unterstützung verloren gehen (z.B. beim
-	Umbenennen von Referenzen, Erkennen von Tippfehlern bei Bezeichnern). Es bietet sich an, sie als globale Variablen zu definieren.
-	Verschiedene DataSets (mit dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn sie unterschiedliche
-	Werte repräsentieren.
+	Die Referenzen müssen vor ihrer Nutzung definiert (also deklariert und instantiiert) werden. Zwar könnten in Groovy auch nicht
+	explizit definierte Referenzen verwendet werden (z.B. über die Methode \texttt{getPropery()}, allerdings würde Tool-Unterstützung
+	verloren gehen (z.B. beim Umbenennen von Referenzen, Erkennen von Tippfehlern bei Bezeichnern). Außerdem könnten sie auch nicht
+	im normalen Java-Code verwendet werden. Es bietet sich an, sie als globale Variablen zu definieren. Verschiedene DataSets (mit
+	dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn  sie unterschiedliche Werte repräsentieren.
 	
 	Damit die selben Referenzen in unterschiedlichen DataSets genutzt werden können, werden die RowBuilder immer im Kontext des
 	gerade aktiven DataSets gebunden. Das aktive DataSet wird über die \textit{DataSetRegistry} festgelegt (und abgefragt). Pro
@@ -601,7 +595,9 @@ WAESCH.beaufsichtigt(P_VSYS)
 	gleichzeitig ein DataSet aus dem ersten Modell, aber auch ein anderes DataSet aus einem anderen Modell aktiv sein kann.
 	
 	
-	\subsection{Erweiterungen von DataSets}
+	\subsection{Komposition von DataSets}
+	\label{sec:modellierung:realisierung:kompositiondatasets}
+	
 	
 
   \subsection{Erweiterungen in generierter API}

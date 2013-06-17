@@ -10,7 +10,7 @@ public class HochschuleRefs {
 
   public static ProfessorRef WAESCH = RefFactory.createProfessorRef();
   public static ProfessorRef HAASE = RefFactory.createProfessorRef();
-  
+
   public static LehrveranstaltungRef VSYS = RefFactory.createLehrveranstaltungRef();
   public static LehrveranstaltungRef DPATTERNS = RefFactory.createLehrveranstaltungRef();
 
