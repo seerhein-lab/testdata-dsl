@@ -500,12 +500,20 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 			Datentypen benötigt.
 			
 		  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option zur Erweiterungen
-			von den Klassen dar, die von der Fluent-Builder-API-Schicht selbst instantiiert werden. Delegierende Klassen
-			bestehen aus einer Vielzahl von Methoden, die nichts anderes machen, als die Aufgabe dem Delegat zu übergeben.
+			von den Klassen dar, die von der Fluent-Builder-API-Schicht selbst instantiiert werden. Eine Lösung könnten
+			Adapter-Klassen sein, die sämtliche Methoden der zu adaptierenden Klasse beinhalten, aber auch die Erweiterungen.
+			Eine solche Adapter-Klasse kann aus einer Vielzahl an Methoden bestehen, die nichts anderes machen, als die Aufgabe
+			weiter zu delegieren.
 			
-			Wenn die Fluent-Builder-API-Schicht selbst geändert wird, gibt es keinen Grund, Vererbung zu verwenden.
-			Die neuen Funktionen können direkt in die bisherigen Klassen integriert werden, vor allem wenn sie die
-			bisherige Schnittstelle der Klasse nicht beeinflussen.
+			Insgesamt stellen Adapterklassen in Kombination mit Delegation keine elegante Lösungen dar. Neben der unübersichtlicheren 
+			und aufgeblähten Klassenhierarchie, müssten alle Zeilen-Funktionen im Table Builder API die entsprechenden Typen
+			zurückliefern - was neue Datentypen mit erneuter Delegation zur Folge hätte. Delegation stellt des
+			
+			Vererbung hat ähnliche Nachteile was die Klassenhierarchie betrifft und würde außerdem noch Änderungen in der
+			Fluent-Builder-API-Schicht nach sich ziehen. Wenn allerdings Änderungen innerhalb dieser Schicht gemacht werden,
+			dann können die Erweiterungen auch direkt in dieser Schicht, also den bisherigen Klassen gemacht werden.
+			So lange nur neue Funktionen hinzukommen und das Verhalten bestehender Methoden nicht verändert wird, müssen bestehende
+			Tests nicht an die neuen Schnittstellen angepasst werden.
 			
 		\item \textbf{Mehrwert gegenüber SB Testing DB}: Auch wenn auf das neue Table Builder API verzichtet wird,
 		  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
@@ -658,6 +666,8 @@ dataSet.professorTable.foreach(ACTION);
   	  \end{lstlisting}
 				
 		\item \textbf{LazyValues}:
+		
+		  
 	
 	    \begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:lazyvalues]
 class HochschuleDataSet extends HochschuleBuilder
@@ -707,5 +717,38 @@ class HochschuleDataSet extends HochschuleBuilder
 \end{figure}
 
 
+  \subsection{Nicht umgesetzt}
+	\label{sec:modellierung:realisierung:nichtumgesetzt}
+	
+	Die Realisierung könnte an manchen Stellen dem Test-Ingenieur mehr manuelle Arbeit abnehmen. So wird darauf verzichtet,
+	beim Löschen einer Zeile aus einer Tabelle auch alle beteiligten Beziehungen zu entfernen. Listing \ref{listing:deleteexample}
+	zeigt, wie ein Professor aus der Professoren-Tabelle entfernt wird. Die erste Zeile entfernt keine Einträge in 
+	anderen Tabellen wie z.B. der Beaufsichtigt-Tabelle. Folglich müssen die Relationen (mehr oder weniger) manuell
+	aus anderen Tabellen entfernt werden.
+
+  \begin{lstlisting}[caption=Löschen von Zeilen, label=listing:deleteexample]
+dataSet.professorTable.deleteRow(HAASE);
+dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
+  \end{lstlisting}
+	
+	Diese Entscheidung hat unterschiedliche Gründe:
+	\begin{itemize}
+		\item \textbf{Einsatzgebiet}: Die Bibliothek soll Unit-Tests in Verbindung mit Datenbanken vereinfachen. Es handelt sich
+		  hier nicht um ein API, das in einer Anwendung ausgeliefert wird. Während es in einem API für produktive Anwendungen
+			durchaus wünschenswert sein kann, dass das System beim Löschen von Entitäten gewisse Aufgaben automatisch erledigt,
+			ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
+			Tabellen verbessert die Ausdrucksstärke des Tests.
+			
+		\item \textbf{Code-Qualität}: Nach Robert C. Martin soll eine Funktion (Methode) genau eine Aufgabe erledigen. Wenn
+		  deleteRow zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
+			\cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
+		
+		\item \textbf{Klarheit}: Es ist nicht eindeutig, wie beim Entfernen von Zeilen vorgegangen werden soll, wenn sie
+		  Teil einer Relation sind. Bei einer n:m-Relation könnte sich die Regel ableiten lassen, dass beim Löschen einer
+			Zeile auch alle assoziierten n:m-Relationen entfernt werden können. Aber was ist bei einer 1:n-Relation? Wenn
+			ein Professor entfernt wird, was soll mit Lehrveranstaltungen passieren, die ihm zugeordnet sind?
+	\end{itemize}
+
+  
 		
 \todo{"`Muster"' für 1:1, 1:n und m:n}
