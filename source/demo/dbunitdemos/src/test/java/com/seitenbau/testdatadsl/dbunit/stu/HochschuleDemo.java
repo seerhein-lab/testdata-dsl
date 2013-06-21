@@ -1,9 +1,10 @@
 package com.seitenbau.testdatadsl.dbunit.stu;
 
-import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
+import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.HAASE;
+import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.MUSTERMANN;
+import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.VSYS;
 
-import static com.seitenbau.testdatadsl.dbunit.stu.HochschuleRefs.*;
-import com.seitenbau.testdatadsl.dbunit.stu.HochschuleDataSet;
+import com.seitenbau.testing.dbunit.dsl.DataSetRegistry;
 
 public class HochschuleDemo
 {
@@ -23,22 +24,28 @@ public class HochschuleDemo
     String profname = profid != null ? dataSet.professorTable.findWhere.id((Long)profid).getName() : "null";
     println("Leiter von " + lvname, profname + " [erwartet: Haase]");
 
-    
-    
+
+
     moll_name = dataSet.studentTable.findWhere.matrikelnummer(moll_nr).getName();
     moll_lvid = dataSet.besuchtTable.findWhere.studentId(moll_nr).getLehrveranstaltungId();
     String moll_lvname = moll_lvid != null ? dataSet.lehrveranstaltungTable.findWhere.id((Long)moll_lvid).getName() : " null";
     println(moll_name + " besucht", moll_lvname);
 
     DataSetRegistry.use(dataSet);
-   
+
     println("Nachname " + MUSTERMANN.getName() + " Count", dataSet.studentTable.findWhere.name(MUSTERMANN).getRowCount());
     println("Vorname " + MUSTERMANN.getVorname() + " Count", dataSet.studentTable.findWhere.vorname(MUSTERMANN).getRowCount());
+
+    dataSet.professorTable.deleteRow(HAASE);
+    println("HAASE REL COUNT: ", dataSet.beaufsichtigtTable.getWhere.professorId(HAASE).isPresent());
+    dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
+    println("HAASE REL COUNT: ", dataSet.beaufsichtigtTable.getWhere.professorId(HAASE).isPresent());
+   //dataSet.professorTable.deleteRow(HAASE);
   }
 
-  private static void println(String message, Object value) 
+  private static void println(String message, Object value)
   {
     System.out.println(message + " = " + value);
   }
-  
+
 }

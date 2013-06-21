@@ -403,6 +403,12 @@ Beschreiben des Datenbankmodells für den Generator.
 			\texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt.
 			
 		\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
+		
+		\item \textbf{Unveränderbar}:
+		
+		\item \textbf{Einmalig}:
+		
+		\item \textbf{Identifkator}:
 		  
 	\end{itemize}
 	
@@ -413,7 +419,7 @@ Beschreiben des Datenbankmodells für den Generator.
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
 	\label{sec:modellierung:realisierung:buildervergleich}
 	
-	\begin{lstlisting}[caption=Neue Builder-Klassen, label=listing:model:builder:old]
+	\begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
 database("Hochschule");
 packageName("com.seitenbau.sbtesting.dbunit.hochschule");
 
@@ -432,7 +438,7 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
 		.addColumn("ects", DataType.DOUBLE);
   \end{lstlisting}
 	
-	\begin{lstlisting}[caption=Neue Builder-Klassen, label=listing:model:builder:new]
+	\begin{lstlisting}[caption=Beispiel STU-Builder, label=listing:model:builder:new]
 database("Hochschule");
 packageName("com.seitenbau.stu.dbunit.hochschule");
 enableTableModelClassesGeneration();
@@ -554,7 +560,7 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	\ref{sec:modellierung:realisierung:apierweiterungen}). 
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \textit{REF} vorgesehen,
-	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bindRef()}.
+	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
 	Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung der selben Zeile einmal 
 	mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
 	
@@ -568,7 +574,7 @@ professorTable.rows {
   
 	\begin{lstlisting}[caption=Binden von Referenzen (Fluent Builder API), label=listing:ref:bindingfluent]
 table_Professor.insertRow()
-  .bindRef(WAESCH)
+  .bind(WAESCH)
 	.setName("Wäsch")
 	.setVorname("Jürgen")
 	.setTitle("Prof. Dr.-Ing.")
@@ -633,7 +639,9 @@ dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
 	  \item \textbf{getWhere}:
 		  - Zusätzlich zu findWhere
 	  
-		\item \textbf{find}: 
+		\item \textbf{find}: Reichen die einfachen Such-Anfragen von \texttt{findWhere} und \texttt{getWhere} nicht aus,
+		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden.
+			
 	    \begin{lstlisting}[caption=Beispiel für find, label=listing:find]
 Filter<RowBuilder_Professor> FILTER = 
   new Filter<RowBuilder_Professor>() 
@@ -656,7 +664,7 @@ Action<RowBuilder_Professor> ACTION =
   new Action<RowBuilder_Professor>() 
 	  {
 		  @Override
-		  public boolean accept(RowBuilder_Professor value)
+		  public void call(RowBuilder_Professor value)
 		  {
 			  System.out.println("Professor: " + value.getName());
 		  }
@@ -669,7 +677,7 @@ dataSet.professorTable.foreach(ACTION);
 		
 		  
 	
-	    \begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:lazyvalues]
+	    \begin{lstlisting}[caption=Beispiel Lazy Valunes, label=listing:lazyvalues]
 class HochschuleDataSet extends HochschuleBuilder
 {
 
