@@ -6,16 +6,16 @@ Einleiten: Zwei Fragestellungen, DSL und Generierung
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
 
-Die Firma \textit{Seitenbau GmbH} verwendet für die Java-basierten Datenbankanwendungen das Framework \textit{JUnit} und
-die Erweiterung \textit{DbUnit}. Zwar erlaubt die verwendete Bibliothek SB Testing DB (siehe \ref{sec:grundlagen:sbtestingdb})
-eine einfachere Modellierung als mit DbUnit-eigenen Mitteln, 
-
 Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
-Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen,
-so bleibt die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile verschiedener
-Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung} beschrieben.
+Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen.
+So bleibt Unter anderem die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile
+verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung}
+beschrieben.
 
-Die allgemeinen Anforderungen an die zu entwickelnde Sprache sind wie folgt:
+\todo{Kurz Ziele}
+Kurz Ziele
+
+Die allgemeinen Anforderungen an die zu entwickelnde DSL sind wie folgt:
 \begin{itemize}
 	\item \textbf{Integration in Werkzeugkette}: Eine der wichtigsten Anforderungen an die DSL ist, dass sie sich in die
 		bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss. Daraus folgt die Anforderung, dass sie sich in
@@ -91,19 +91,19 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	
 	Die Beziehungen der Entitätstypen stellen sich wie folgt dar: 
 	\begin{itemize}
-		\item Eine Lehrveranstaltung muss von genau einem Professor geleitet werden, ein Professor kann beliebig viele
+		\item \textbf{leitet}: Eine Lehrveranstaltung muss von genau einem Professor geleitet werden, ein Professor kann beliebig viele
 		  (also auch keine) Lehrveranstaltungen leiten.
-		\item Eine Prüfung ist genau einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen haben
-			(z.B. Nachschreibprüfung).
-		\item Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in beliebig vielen
-			Prüfungen Aufsicht haben. 
-		\item Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch mindestens
-		  drei Besucher um stattzufinden und sind aus Kapazitätsgründen auf 100 Teilnehmer begrenzt.
-		\item Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
+		\item \textbf{geprüft}: Eine Prüfung ist genau einer Lehrveranstaltung zugeordnet. Eine Lehrveranstaltung kann mehrere Prüfungen 
+		  haben (z.B. Nachschreibprüfung).
+		\item \textbf{beaufsichtigt}: Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in 
+		  beliebig vielen Prüfungen Aufsicht haben. 
+		\item \textbf{besucht}: Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch 
+		  mindestens drei Besucher um stattzufinden und sind aus Kapazitätsgründen auf 100 Teilnehmer begrenzt.
+		\item \textbf{ist Tutor}: Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
 			kann beliebig viele Tutoren haben. 
-		\item Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer beliebigen
-			Anzahl von Studenten geschrieben werden.
-		\item Ein Raum ist genau einem Professor zugewiesen. Ein Professor kann genau einen oder keinen Raum haben.
+		\item \textbf{schreibt}: Jeder	Student kann an beliebig vielen Prüfungen teilnehmen und umgekehrt eine Prüfung von einer
+		  beliebigen Anzahl von Studenten geschrieben werden.
+		\item \textbf{hat Büro}: Ein Raum ist genau einem Professor zugewiesen. Ein Professor kann genau einen oder keinen Raum haben.
 	\end{itemize}
 
 	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms.
@@ -167,9 +167,12 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor}
 	und \textit{Lehrveranstaltung} definiert werden.
 	
-	BLOBs können in XML problematisch werden. Werden sie direkt in die XML-Datei eingebettet, müssen sie in ein
-	XML-kompatibles Format codiert werden. Die DbUnit-Datasets sehen keinen Mechanismus vor, BLOBs aus anderen Dateien
-	einzulesen - eine solche Funktion müsste manuell implementiert werden.
+	BLOBs lassen sich bei den meisten Modellierungsvarianten nur mit eigenem Aufwand realisieren. Eine direkte Darstellung
+	ist in den meisten Sprachen nicht möglich, allerdings in Bezug auf die Übersicht auch nicht unbedingt erwünscht. Egal ob
+	sie in die XML-Datei eingebettet werden mit Hilfe einer XML-kompatiblen Codierung, oder ob ein Bezug auf externe
+	Ressourcen genommen werden soll, solche Funktionen müssen für DbUnit-Datasets manuell implementiert werden. Hier bietet
+	die Modellierung über eine Programmiersprache wie Java die meisten Freiheiten: Das Datenobjekt kann auf beliebige Art und
+	Weise zur Laufzeit erzeugt werden (Einlesen aus Datei, Generierung, ...).
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML-Dataset, label=listing:xmldataset]
@@ -246,9 +249,9 @@ Problemstellung umsetzen und die Testdaten modellieren.
 
 
 	Es gibt noch eine zweite Möglichkeit, Datasets via XML zu erzeugen: Das \textit{FlatXmlDataSet}. Hierbei gibt es keine
-	vordefinierte DTD, da die Tags den Tabellen-Namen entsprechen\footnote{Es ist möglich, eine eigene DTD zu definieren.}.
-	Eine solche XML-Datei kommt ohne explizite Meta-Informationen zu den Tabellen aus. Stattdessen stellen sie eine Art
-	Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das FlatXmlDataSet
+	von DbUnit vorgegebene DTD, da die Tags den Tabellen-Namen entsprechen\footnote{Es ist möglich, eine eigene DTD zu
+	definieren.}. Eine solche XML-Datei kommt ohne explizite Meta-Informationen zu den Tabellen aus. Stattdessen stellen sie
+	eine Art Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das FlatXmlDataSet
 	übersichtlicher als das XmlDataSet (\reflst{listing:flatxmldataset}).
   
 	\lstSetXML
@@ -361,8 +364,8 @@ dataSet.addTable(lehrveranstaltung);
 	\subsection{SB-Testing-DB-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
 	
-	Die Bibliothek \textit{SB Testing DB} der Firma \textit{Seitenbau GmbH} versucht Nachteile der Xml- und
-	Default-Datasets aufzufangen.
+	Die Bibliothek SB Testing DB der Firma \textit{Seitenbau GmbH} versucht Nachteile der XML- und
+	Default-Datasets aufzufangen. In Abschnitt \ref{sec:grundlagen:sbtestingdb} wird diese Bibliothek beschrieben.
 	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL lassen sich die
 	Testdaten modellieren. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
   in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung

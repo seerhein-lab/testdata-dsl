@@ -235,7 +235,7 @@ nummer
     </coordinates>
     <panel_attributes>lt=-
 m1=    1
-m2=    0..*
+m2=    0..1
 hat Büro</panel_attributes>
     <additional_attributes>60;30;60;130</additional_attributes>
   </element>

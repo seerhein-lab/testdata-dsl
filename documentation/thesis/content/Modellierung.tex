@@ -142,6 +142,7 @@ Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen d
 Die Darstellung wirkt übersichtlich, da Tabellen ... \todo{Hier wäre eine Quelle super, dass Menschen vertraut
 mit Tabellen sind}
 
+\todo{Einfache Sprachdefinition, Grammatik}
 	
 
 \section{Implementierungsvorbereitung}
@@ -151,6 +152,7 @@ Da sich die DSL in die bisherige Werkzeug-Kette von Seitenbau integrieren lassen
 (\refsec{sec:anforderungen:allgemeineanforderungen}), sollte die DSL in Java nutzbar sein. Zwar kann eine DSL
 grundsätzlich auch in Java realisiert werden, doch die Möglichkeiten diesbezüglich sind relativ eingeschränkt 
 und die DSL sieht immer noch nach Java aus. Es lassen sich allerdings auch andere Sprachen im Java-Umfeld nutzen.
+
 Eine davon ist \textit{Groovy}. Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
 typisierten Sprachen finden bei dynamisch typisierten Typ-Überprüfungen überwiegend zur Laufzeit statt.}, die
 direkt in Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine ausgeführt wird. Sie teilt
@@ -208,7 +210,7 @@ mit Java-Anwendungen.
 		\cite[58]{GROOVY_IM_EINSATZ}).
 		
 		Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
-		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert für um eine Tabelle zu parsen. Dieser wenig
+		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert um eine Tabelle zu parsen. Dieser wenig
 		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen - kommen neue Datentypen
 		hinzu, müsste der Code erweitert werden.
 		\todo{Mögliche ungewollte Seiteneffekte}
