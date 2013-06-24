@@ -748,13 +748,31 @@ dataSet.professorTable.foreach(ACTION);
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.5]{images/realisierung/javadoc_tooltip_table.png}
+	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_builder.png}
+	\caption{Tooltip Builder}\label{img:javadoc_tooltip_builder}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_tables.png}
+	\caption{Tooltip tables()}\label{img:javadoc_tooltip_tables}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_relations.png}
+	\caption{Tooltip relations()}\label{img:javadoc_tooltip_relations}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_table.png}
 	\caption{Tooltip Tabelle}\label{img:javadoc_tooltip_table}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.5]{images/realisierung/javadoc_tooltip_rows.png}
+	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_rows.png}
 	\caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
 \end{figure}
 
@@ -781,8 +799,8 @@ dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
 			ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
 			Tabellen verbessert die Ausdrucksstärke des Tests.
 			
-		\item \textbf{Code-Qualität}: Nach Robert C. Martin soll eine Funktion (Methode) genau eine Aufgabe erledigen. Wenn
-		  deleteRow zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
+		\item \textbf{Code-Qualität}: Nach Robert C. Martin soll eine Funktion (bzw. Methode) genau eine Aufgabe erledigen. Wenn
+		  \texttt{deleteRow} zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
 			\cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
 		
 		\item \textbf{Klarheit}: Es ist nicht eindeutig, wie beim Entfernen von Zeilen vorgegangen werden soll, wenn sie
