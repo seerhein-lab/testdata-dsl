@@ -390,8 +390,15 @@ Beschreiben des Datenbankmodells für den Generator.
 	
 	Zu den in STU enthaltenen Standard-Spalten-Flags gehören:
 	\begin{itemize}
-		\item \textbf{Primär-Schlüssel}: Über die Methode \texttt{identifierColumn()} kann eine Spalte als Primär-Schlüssel-Spalte 
-		  markiert werden. Diese Information wird sowohl vom Generator als auch vom Tabellenparser verwendet. 
+		\item \textbf{Identifkator-Spalte}: Als Identifikator-Spalte wird die Spalte bezeichnet, die einen für die Zeile einmaligen
+		  Wert enthält, über die eine Zeile zweifelsfrei identifiziert werden kann. In dieser Eigenschaft ähnelt sie dem Primärschlüssel
+			in Datenbanken. Es bietet sich an, Primärschlüssel als Identifikator-Spalte zu modellieren. Dennoch gibt es keine Kausalität
+			zwischen Identifikator-Spalte und Primärschlüssel: Ein Primärschlüssel muss nicht als Identifikator-Spalte modelliert werden,
+			und eine Identifikator-Spalte muss kein Primärschlüssel sein.
+			
+			Die Identifikator-Spalte ist die Spalte, die bei Beziehungen verwendet wird, wenn das Ziel eine Tabelle und nicht eine Spalte
+			der Tabelle ist. Das Flag wird über die Methode \texttt{identifierColumn} aktiviert. Dabei werden die Flags Unveränderbar und
+			Einmalig ebenfalls aktiviert.
 
 		\item \textbf{Next-Value-Methode}: SB Testing DB (und damit auch STU) bietet die Möglichkeit, Werte-Generatoren zu verwenden
 		  um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der Generator über
@@ -406,11 +413,14 @@ Beschreiben des Datenbankmodells für den Generator.
 			
 		\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
 		
-		\item \textbf{Unveränderbar}:
+		\item \textbf{Unveränderbar}: 
 		
-		\item \textbf{Einmalig}:
-		
-		\item \textbf{Identifkator}:
+		\item \textbf{Einmalig}: Dieses Flag gibt an, dass die Werte einer Spalte nur jeweils ein Mal vorkommen, und sie deshalb
+		  zur Identifikation einer Zeile verwendet werden können. Das Flag sollte auch nur dann verwendet werden, wenn eine solche
+			Identifikation erwünscht ist.
+			
+			Aufgrund des Anwendungszwecks wird das Flag Unveränderbar implizit aktiviert. Das Einmalig-Flag wird über die Methode
+			\texttt{unique()} aktiviert und setzt keine Unique-Eigenschaft in der Datenbank voraus.
 		  
 	\end{itemize}
 	
@@ -619,67 +629,32 @@ WAESCH.beaufsichtigt(P_VSYS)
   \subsection{Erweiterungen in generierter API}
 	\label{sec:modellierung:realisierung:apierweiterungen}
 	
-	Zu den Erweiterungen in der Fluent-Builder-API-Schicht gehören:
+	Die meisten Erweiterungen an der Fluant-Builder-API-Schicht betreffen die Möglichkeit, Ref-Typen statt konkreter Werte
+	zu verwenden. Dazu gehören unter anderem:
 	
 	\begin{itemize}
-		\item \textbf{RowBuilder}:
-		  - Beziehungen über REFs
+		\item \textbf{RowBuilder}: Die Erweiterungen der RowBuilder betreffen vor allem die verbesserten Möglichkeiten
+		  Relationen auszudrücken. So gibt es für Spalten, die eine Relation zu einer anderen Spalte enthalten, nun neben
+			einem Setter für den konkreten Wert (z.B. des Fremdschlüssels) einen Setter zum Setzen des entsprechenden
+			Ref-Typs. 
 			
-    \item \textbf{findWhere}: .....
-		  Wird beispielsweise über Vornamen in der Professor-Tabelle gesucht und eine
-			Professor-Referenz als Suchwert übergeben, werden alle Professoren mit diesem Vornamen
-			gesucht.
-	
-	    \begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
-dataSet.table_Professor.findWhere.vorname("Oliver").getRowCount();
-dataSet.table_Professor.findWhere.vorname(HAASE).getRowCount();
-	    \end{lstlisting}
+		  Anstelle des von der Ref repräsentierten Wertes wird die Ref selbst im RowBuilder abgespeichert. Das hat zwei
+			Vorteile:
+     	\begin{enumerate}
+		    \item \textbf{Reihenfolge}: Die Modellierung der Daten ist in diesem Fall keiner strengen Reihenfolge unterworfen.
+				  Es ist egal, ob die Zeile, auf die Bezug genommen wird, überhaupt schon initialisiert wurde.
 
-		
-		  - REFs anstelle von konkreten Werten
-		  
-	  \item \textbf{getWhere}:
-		  - Zusätzlich zu findWhere
-	  
-		\item \textbf{find}: Reichen die einfachen Such-Anfragen von \texttt{findWhere} und \texttt{getWhere} nicht aus,
-		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden.
+		    \item \textbf{Konsistenz}: Die Werte werden nicht redundant gespeichert. Wird der Wert an einer Stelle geändert,
+				  ist dieser Wert unmittelbar im gesamten DataSet so sichtbar.
+		  \end{enumerate}
 			
-	    \begin{lstlisting}[caption=Beispiel für find, label=listing:find]
-Filter<RowBuilder_Professor> FILTER = 
-  new Filter<RowBuilder_Professor>() 
-	  {
-		  @Override
-		  public boolean accept(RowBuilder_Professor value)
-		  {
-			  return value.getVorname().length() == 6;
-		  }
-	  };
-	
-RowCollection_Professor profs = dataSet.professorTable.find(FILTER);
-  	  \end{lstlisting}
-
-		  - Such-Anfragen über Filter. Bei Groovy auch Closure
-	  
-    \item \textbf{foreach}:
-	    \begin{lstlisting}[caption=Beispiel für foreach, label=listing:foreach]
-Action<RowBuilder_Professor> ACTION = 
-  new Action<RowBuilder_Professor>() 
-	  {
-		  @Override
-		  public void call(RowBuilder_Professor value)
-		  {
-			  System.out.println("Professor: " + value.getName());
-		  }
-	  };
-	
-dataSet.professorTable.foreach(ACTION);
-  	  \end{lstlisting}
-				
-		\item \textbf{LazyValues}:
+		\item \textbf{Future Values}: Eine der wenigen Erweiterungen, die nicht auf die Einführung der Ref-Typen zurückzuführen
+		  sind, sind Future Values. Dabei handelt es sich um Werte, die erst beim Abfragen ausgewertet werden. Dies kann nützlich
+			sein, wenn sich Werte abhängig von anderen Daten ändern. Listing \ref{listing:futurevalues} zeigt ein Beispiel, in der
+			die Lehrveranstaltungstabelle um eine Spalte erweitert wurde. Diese Spalte soll die Anzahl der Tutoren aufnehmen, die
+			die Lehrveranstaltung betreuen.
 		
-		  
-	
-	    \begin{lstlisting}[caption=Beispiel Lazy Valunes, label=listing:lazyvalues]
+	    \begin{lstlisting}[caption=Beispiel Lazy Valunes, label=listing:futurevalues]
 class HochschuleDataSet extends HochschuleBuilder
 {
 
@@ -696,6 +671,7 @@ class HochschuleDataSet extends HochschuleBuilder
     
   ...
 
+  // returns a Closure which is threated as future value
   def tutors(LehrveranstaltungRef ref) {
     return {
       // findWhere throws an exception if no rows are found
@@ -708,7 +684,63 @@ class HochschuleDataSet extends HochschuleBuilder
   }
 }
   	  \end{lstlisting}
+			
+			Durch die Nutzung von Future Values enthält die Tabelle immer die korrekte Anzahl, ohne dass beim Modellieren
+	    der Tutoren-Beziehungen Anpassungen notwendig wurden. In Groovy können Closures verwendet werden, ...
+
+
+    \item \textbf{findWhere}: Das bisherige API sah Suchen von Zeilen in einer Tabelle ausschließlich über konkrete Werte
+		  vor. Die Erweiterung sieht vor, dass Ref-Typen statt konkreter Werte verwendet werden können. Werden beispielsweise 
+			in der Professor-Tabelle alle Professoren mit einem bestimmten Vornamen gesucht und als Such-Wert eine 
+			Professor-Referenz übergeben, werden alle Professoren mit diesem Vornamen gesucht. Listing
+			\ref{listing:apierweiterung:findexample} zeigt zwei Such-Anfragen, die beide auf den Beispieldaten das selbe Ergebnis
+			liefern.
 	
+	    \begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
+dataSet.table_Professor.findWhere.vorname("Oliver");
+dataSet.table_Professor.findWhere.vorname(HAASE);
+	    \end{lstlisting}
+
+		  
+	  \item \textbf{getWhere}:
+		  - Zusätzlich zu findWhere
+	  
+		\item \textbf{find}: Sind die einfachen Such-Anfragen über \texttt{findWhere} bzw. \texttt{getWhere} nicht mächtig genug,
+		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden. In Listing \ref{listing:find} wird
+			ein Filter gezeigt, der alle Professoren findet, deren Vorname die Länge sechs hat.
+			
+	    \begin{lstlisting}[caption=Beispiel für find, label=listing:find]
+Filter<RowBuilder_Professor> FILTER = 
+  new Filter<RowBuilder_Professor>() 
+	  {
+		  @Override
+		  public boolean accept(RowBuilder_Professor value)
+		  {
+			  return value.getVorname().length() == 6;
+		  }
+	  };
+		
+RowCollection_Professor profs = dataSet.professorTable.find(FILTER);
+  	  \end{lstlisting}
+			
+			In Groovy können auch direkt Closures übergeben werden, die als Argument einen entsprechenden RowBuilder übergeben
+			bekommen.
+	  
+    \item \textbf{foreach}:
+	    \begin{lstlisting}[caption=Beispiel für foreach, label=listing:foreach]
+Action<RowBuilder_Professor> ACTION = 
+  new Action<RowBuilder_Professor>() 
+	  {
+		  @Override
+		  public void call(RowBuilder_Professor value)
+		  {
+			  System.out.println("Professor: " + value.getName());
+		  }
+	  };
+	
+dataSet.professorTable.foreach(ACTION);
+  	  \end{lstlisting}
+				
 	\end{itemize}
 	
 	\subsection{JavaDoc}
