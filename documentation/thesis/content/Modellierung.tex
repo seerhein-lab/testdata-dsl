@@ -409,11 +409,14 @@ Beschreiben des Datenbankmodells für den Generator.
 			
 		\item \textbf{Automatischer Aufruf der Next-Value-Methode}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
 		  Anlegen einer neuen Tabellenzeile automatisch aufgerufen. Beim Setzen des Flags über die Builder-Methode
-			\texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt.
+			\texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt. 
 			
 		\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
 		
-		\item \textbf{Unveränderbar}: 
+		\item \textbf{Unveränderbar}: Ist dieses Flag gesetzt, kann ein Wert in einer Spalte nur ein Mal gesetzt werden, und danach
+		  nicht mehr verändert werden. Wenn das Flag zum automatischen Aufruf der Next-Value-Methode aktiviert ist, kann der
+			automatisch erzeugte Wert allerdings überschrieben werden. Die Methode zum
+			Aktivieren des Flags heißt \texttt{immutable()}.
 		
 		\item \textbf{Einmalig}: Dieses Flag gibt an, dass die Werte einer Spalte nur jeweils ein Mal vorkommen, und sie deshalb
 		  zur Identifikation einer Zeile verwendet werden können. Das Flag sollte auch nur dann verwendet werden, wenn eine solche
@@ -563,13 +566,30 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	\subsection{ColumnBinding}
 	\label{sec:modellierung:realisierung:columnbinding}
 	
+	ColumnBindings sind Variablen in den jeweiligen Tabellen-Adaptern, ihre Namen entsprechenden den Tabellenspalten.
+	Sie lösen zwei Probleme:
+	
+	\begin{enumerate}
+		\item \textbf{Tool-Support}: Elemente der Tabellen-Header-Zeile, Auto-Vervollständigung, Liste von nutzbaren Elementen
+		
+		\item \textbf{Operationen für den Parser}: Operationen auf den ColumnBindings vereinfachen den Tabellen-Parser. Der
+		  Tabellen-Parser setzt die Werte auf den RowBuildern. Die Setter-Namen hängen aber vom Namen der Spalte ab. Anstelle
+			eines generischen Ansatzes über Reflection, wird ein allgemeiner Setter auf der ColumnnBinding-Klasse verwendet,
+			und in den jeweiligen zu den Spalten zugehörigen ColumnBindings wird auf den eigentlichen Setter auf dem RowBuilder
+			delegiert.
+			
+			Außerdem kann der Parser auch Informationen zu der Spalte abfragen, z.B. ob es sich um ein Feld mit einmaligen Werten
+			handelt, die zur Identifizierung genutzt werden können. Für solche Spalten gibt es auch eine Such-Methode auf dem
+			ColumnBinding, die den zugehörigen RowBuilder zurückliefern, falls es einen gibt.
+	\end{enumerate}
+	
 	\subsection{Referenzen und Scopes}
 	\label{sec:modellierung:realisierung:refs_and_scopes}
 	
 	Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
-	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung zur
-	anstelle von Primärschlüsseln verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten (mehr dazu in Abschnitt
-	\ref{sec:modellierung:realisierung:apierweiterungen}). 
+	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung 
+	anstelle konkreter Werte (wie Primärschlüssel) verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten
+	(mehr dazu in Abschnitt \ref{sec:modellierung:realisierung:apierweiterungen}). 
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \textit{REF} vorgesehen,
 	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
@@ -690,7 +710,7 @@ class HochschuleDataSet extends HochschuleBuilder
 
 
     \item \textbf{findWhere}: Das bisherige API sah Suchen von Zeilen in einer Tabelle ausschließlich über konkrete Werte
-		  vor. Die Erweiterung sieht vor, dass Ref-Typen statt konkreter Werte verwendet werden können. Werden beispielsweise 
+		  vor. Die Erweiterung ermöglicht es, dass Ref-Typen statt konkreter Werte verwendet werden können. Werden beispielsweise 
 			in der Professor-Tabelle alle Professoren mit einem bestimmten Vornamen gesucht und als Such-Wert eine 
 			Professor-Referenz übergeben, werden alle Professoren mit diesem Vornamen gesucht. Listing
 			\ref{listing:apierweiterung:findexample} zeigt zwei Such-Anfragen, die beide auf den Beispieldaten das selbe Ergebnis
