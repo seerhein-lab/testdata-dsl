@@ -8,7 +8,7 @@ Einleiten: Zwei Fragestellungen, DSL und Generierung
 
 Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
 Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen.
-So bleibt Unter anderem die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile
+So bleibt unter anderem die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile
 verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung}
 beschrieben.
 
@@ -48,7 +48,7 @@ Die allgemeinen Anforderungen an die zu entwickelnde DSL sind wie folgt:
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
 	\item \textbf{Kompatiblität}: Die Generierung der Testdaten soll nicht nur bei Nutzung der neuen Modellierungssprache
-	  verwendet werden können. Stattdessen sollte der Testdaten-Generator auch DataSets auf Basis der bisherigen SB-Testing-DB-Builder
+	  verwendet werden können. Der Testdaten-Generator soll auch DataSets auf Basis der bisherigen SB-Testing-DB-Builder
 		erstellen können.
 \end{itemize}
 
@@ -57,7 +57,7 @@ Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen z
 \label{sec:fragestellung:beispiel}
 
 % Beispiel einleiten
-Eine einheitliche und fortlaufende Problemstellung soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
+Ein einheitliches und fortlaufendes Beispiel soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
 einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden diese
 Problemstellung umsetzen und die Testdaten modellieren.  
 
@@ -106,7 +106,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 		\item \textbf{hat Büro}: Ein Raum ist genau einem Professor zugewiesen. Ein Professor kann genau einen oder keinen Raum haben.
 	\end{itemize}
 
-	Abbildung \ref{img:example_er} zeigt die Problemstellung grafisch in Form eines ER-Diagramms.
+	Abbildung \ref{img:example_er} zeigt das Beispiel grafisch in Form eines ER-Diagramms.
 	\todo{Beispiel erweitern für 1:1-Beziehungen} \todo{Attribute einführen} \todo{Diagramm evtl in Chen-Notation}
 
 	\begin{figure}[H]
@@ -163,16 +163,16 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	\label{sec:fragestellung:modellierung:xml}
 	
 	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu die Klasse
-	\textit{XmlDataSet}, das eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing
+	\textit{XmlDataSet}, die eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing
 	\ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor}
 	und \textit{Lehrveranstaltung} definiert werden.
 	
-	BLOBs lassen sich bei den meisten Modellierungsvarianten nur mit eigenem Aufwand realisieren. Eine direkte Darstellung
+	BLOBs lassen sich bei den meisten Modellierungsvarianten nur mit zusätzlichem Aufwand realisieren. Eine direkte Darstellung
 	ist in den meisten Sprachen nicht möglich, allerdings in Bezug auf die Übersicht auch nicht unbedingt erwünscht. Egal ob
 	sie in die XML-Datei eingebettet werden mit Hilfe einer XML-kompatiblen Codierung, oder ob ein Bezug auf externe
 	Ressourcen genommen werden soll, solche Funktionen müssen für DbUnit-Datasets manuell implementiert werden. Hier bietet
 	die Modellierung über eine Programmiersprache wie Java die meisten Freiheiten: Das Datenobjekt kann auf beliebige Art und
-	Weise zur Laufzeit erzeugt werden (Einlesen aus Datei, Generierung, ...).
+	Weise zur Laufzeit erzeugt werden (Einlesen aus Datei, Generierung, etc.).
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML-Dataset, label=listing:xmldataset]

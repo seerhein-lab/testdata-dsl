@@ -1,15 +1,84 @@
 \chapter{Modellierung der Test-Daten}
 \label{chap:modellierung}
 
+Die Erweiterungen und andere Verbesserungen fließen nicht in die bisher genutzte Bibliothek \textit{SB Testing DB} ein.
+Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
+\url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz XYZ\todo{Welche Lizenz?}
 
+Die bisherigen Schnittstellen sollen so weit möglich nur ergänzt und nicht verändert werden, so dass auf
+\textit{SB Testing DB} basierende Tests möglichst leicht auf \textit{STU} portiert werden können. Neue bzw. angepasste
+Tests können jedoch von den neuen Möglichkeiten profitieren.
 
-\section{DSL-Entwürfe}
+Bei den Schnittstellen zur Beschreibung des Datenbankmodells für den Generator wird jedoch auf Kompatibilität verzichtet.
 
-	\subsection{Entwurf 1}
+\section{Architektur der generierten Klassen}
+\label{sec:modellierung:architektur}
+
+Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
+\begin{itemize}
+	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es nutzt das Builder-Pattern in Verbindung mit
+	  einem Fluent Interface (ref builder pattern).
+			
+	\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
+	  zu modellieren.
+			
+\end{itemize}
+
+Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[scale=0.75]{images/realisierung/architektur.png}
+	\caption{Architektur}\label{img:architektur}
+\end{figure}
+\todo{Neues Bild für Schichten}
 	
-	Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
+Die neue Table Builder API stellt eine Schicht über der bisherigen Fluent Builder API dar. Neue Funktionen müssen 
+jedoch nicht zwangsläufig in der Table Builder API hinzugefügt werden, unter Umständen kann es vorteilhaft sein, sie
+direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
+\begin{itemize}
+	\item \textbf{Code-Qualität}: Es gibt verschiedene Ansätze, Klassen um neue Funktionen zu erweitern oder
+	  ihr Verhalten zu ändern. Unabhängig davon, ob auf Vererbung oder Delegation gesetzt wird, werden neue
+		Datentypen benötigt.
+			
+	  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option zur Erweiterungen
+		von den Klassen dar, die von der Fluent-Builder-API-Schicht selbst instantiiert werden. Eine Lösung könnten
+		Adapter-Klassen sein, die sämtliche Methoden der zu adaptierenden Klasse beinhalten, aber auch die Erweiterungen.
+		Eine solche Adapter-Klasse kann aus einer Vielzahl an Methoden bestehen, die nichts anderes machen, als die Aufgabe
+		weiter zu delegieren.
+			
+		Insgesamt stellen Adapterklassen in Kombination mit Delegation keine elegante Lösungen dar. Die unübersichtlicheren 
+		und aufgeblähten Klassenhierarchie ist dabei noch das kleinere Problem. Gravierender ist, dass innerhalb der
+		Table Builder API konsequenterweise nur noch die Adapter-Klasse statt der ursprünglichen Klasse als Rückgabetyp
+		von Methoden in Frage kommen darf. Das würde bedeuten, dass weitere Klassen adaptiert werden müssten, nur um den
+		Rückgabetyp anzupassen.
+			
+		Vererbung hat ähnliche Nachteile was die Klassenhierarchie betrifft und würde außerdem noch Änderungen in der
+		Fluent-Builder-API-Schicht nach sich ziehen. Wenn allerdings Änderungen innerhalb dieser Schicht gemacht werden,
+		dann können die Erweiterungen auch direkt in dieser Schicht, also den bisherigen Klassen gemacht werden.
+		So lange nur neue Funktionen hinzukommen und das Verhalten bestehender Methoden nicht verändert wird, müssen bestehende
+		Tests nicht an die neuen Schnittstellen angepasst werden.
+			
+	\item \textbf{Mehrwert gegenüber SB Testing DB}: Auch wenn auf das neue Table Builder API verzichtet wird,
+	  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
 	
-	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
+  \item \textbf{Einheitliches Verhalten}: Beide APIs zeigen auf diese Weise ein einheitlicheres Verhalten.
+
+\end{itemize}
+
+
+
+\section{Entwurf der DSL}
+
+... Vor- und Nachteile einzelner Entwürfe ...
+
+	\subsection{DSL-Entwürfe}
+
+		\subsubsection{Entwurf 1}
+		
+		Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
+		
+		\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
 	name			"Haase"
 	vorname   "Oliver"
@@ -44,20 +113,20 @@ HAASE beaufsichtigt	P_DPATTERNS
 WAESCH beaufsichtigt P_VSYS
 ...
 
-	\end{lstlisting}
-	
-	Diese DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet Variablennamen für die Modellierung von Beziehungen. 
-	Da für jeden Wert eine eigene Zeile verwendet wird, werden umfangreiche Daten schnell unübersichtlich. Die Beschreibung
-	der Beziehungen abseits der Definition der Daten erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+		\end{lstlisting}
+		
+		Diese DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet Variablennamen für die Modellierung von Beziehungen. 
+		Da für jeden Wert eine eigene Zeile verwendet wird, werden umfangreiche Daten schnell unübersichtlich. Die Beschreibung
+		der Beziehungen abseits der Definition der Daten erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 
 
-	\subsection{Entwurf 2}
-	
-	Ein leicht abgewandelter Entwurf zeigt, wie sich die Beziehungen näher an den eigentlichen Daten beschreiben lassen könnten.
-	An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
-	
+		\subsubsection{Entwurf 2}
+		
+		Ein leicht abgewandelter Entwurf zeigt, wie sich die Beziehungen näher an den eigentlichen Daten beschreiben lassen könnten.
+		An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
+		
 
-	\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
+		\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
 HAASE = professor {
 	name      "Haase"
 	vorname   "Oliver"
@@ -91,14 +160,16 @@ DPATTERNS = lehrveranstaltung {
 	\end{lstlisting}
 	
 
-	\subsection{Entwurf 3}
-	
-	Der dritte Entwurf versucht die Daten durch eine tabellarische Struktur übersichtlich zu gestalten. Sie kommt mit
-	wenig syntaktischem Ballast aus. Ein Label vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die
-	Tabelle selbst beginnt mit einer Kopfzeile, die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7).
+		\subsubsection{Entwurf 3}
+		
+		Der dritte Entwurf versucht die Daten durch eine tabellarische Struktur übersichtlich zu gestalten. Sie kommt mit
+		wenig syntaktischem Ballast aus. Ein Label vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die
+		Tabelle selbst beginnt mit einer Kopfzeile, die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten
+		werden vom Oder-Operator (|) getrennt. Die erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten
+		mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
 
-	\lstSetTiny
-	\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
+		\lstSetTiny
+		\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
 professor:
 REF    || name    | vorname  | titel            | fakultaet    | leitet          | beaufsichtigt
 HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | VSYS, DPATTERNS | P_DPATTERNS   
@@ -132,15 +203,11 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	
 	Zur besseren Übersicht kann es bei größeren Tabellen sinnvoll sein, den Tabellenkopf zu wiederholen.
 	
-	Der Double-Pipe-Operator (||) soll die Spalte mit dem Entitätsidentifikatoren visuell von den Datenspalten  
-	trennen.
-	
-	
-\section{Wahl der DSL}
+  \subsection{Entscheidung}
 
-Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
-Die Darstellung wirkt übersichtlich, da Tabellen ... \todo{Hier wäre eine Quelle super, dass Menschen vertraut
-mit Tabellen sind}
+	Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
+	Die Darstellung wirkt übersichtlich, da Tabellen ... \todo{Hier wäre eine Quelle super, dass Menschen vertraut
+	mit Tabellen sind}
 
 \todo{Einfache Sprachdefinition, Grammatik}
 	
@@ -342,29 +409,12 @@ def fixture = [
 	die gewünschte DSL ausreichend und die Umsetzung einfacher. 
 		
 
-\section{Realisisierung}
-\label{sec:modellierung:realisierung}
-
-% Fluent Builder API Java basiert
-% Table DSL Groovy basiert
-
-Erweiterungen und andere Verbesserungen fließen nicht in die bisher genutzte Bibliothek SB Testing DB ein. Stattdessen
-wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU}
-(Simple Test Utils, \url{https://github.com/Seitenbau/stu}) verwendet und unter Open-Source gestellt. Diese Vorgehensweise stellt
-gleichzeitig sicher, dass bisherige Schnittstellen weitergenutzt werden können, erlaubt aber auch punktuelle Änderungen an diesen.
-Auf bisherige Projekte haben diese Anpassungen keinen Einfluss, neue Projekte können von den Verbesserungen profitieren.
-Änderungen an Schnittstellen, bei denen Abwärtskompatibilität verzichtet wird, betreffen vor allem die Builder-Klassen zum
-Beschreiben des Datenbankmodells für den Generator.
+\section{Änderungen am Generator-Modell}
+\label{sec:modellierung:generatormodell}
 
 
-
-
-- http://martinfowler.com/eaaCatalog/gateway.html\\
-- http://martinfowler.com/eaaCatalog/repository.html\\
-- http://martinfowler.com/eaaCatalog/registry.html
-	
-	\subsection{Builder-Klassen für das Datenbankmodell}
-	\label{sec:modellierung:realisierung:builderdatabasemodel}
+  \subsection{Builder-Klassen für das Datenbankmodell}
+	\label{sec:modellierung:generatormodell:builder}
 	
 	Bei den Builder-Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatiblität verzichtet.
 	Während das alte API auf überladene Methoden mit vielen Parametern setzt, ist das neue API entsprechend dem Builder-Pattern
@@ -373,16 +423,16 @@ Beschreiben des Datenbankmodells für den Generator.
 	Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter
 	eine einzelne Set-Methode.
 	
-	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. So werden Flags für Spalten nicht mehr über ein 
-	\textit{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt \ref{sec:modellierung:realisierung:flags} 
-	wird weiter auf das Thema Flag eingegangen. Darüber hinaus bieten die neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und
-	Spalten hinzu zu fügen. Diese werden bei der Code-Generierung für die Erstellung von JavaDoc-Kommentaren verwendet
-	(\refsec{sec:modellierung:realisierung:javadoc}).
+	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. So werden Flags für Spalten nicht mehr über 
+	ein \texttt{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt 
+	\ref{sec:modellierung:generatormodell:flags}  wird weiter auf das Thema Flag eingegangen. Darüber hinaus bieten die
+	neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten hinzu zu fügen. Diese werden bei der Code-Generierung
+	für die Erstellung von JavaDoc-Kommentaren verwendet (\refsec{sec:modellierung:realisierung:javadoc}).
 	
 	\todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
 	
 	\subsection{Spalten-Flags}
-	\label{sec:modellierung:realisierung:flags}
+	\label{sec:modellierung:generatormodell:flags}
 	
 	SB Testing DB sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
 	gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet} übergeben werden. Bei dem neuen Builder-API werden
@@ -432,7 +482,7 @@ Beschreiben des Datenbankmodells für den Generator.
 	
 	
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
-	\label{sec:modellierung:realisierung:buildervergleich}
+	\label{sec:modellierung:generatormodell:buildervergleich}
 	
 	\begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
 database("Hochschule");
@@ -485,63 +535,26 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 		.column("ects", DataType.DOUBLE)
 	.build();	
 	\end{lstlisting}
-	
-	
-  \subsection{Architektur der generierten Klassen}
-	\label{sec:modellierung:realisierung:architektur}
-	
-	Grundsätzlich erzeugt der Generator aus STU zwei APIs für die Modellierung von DataSets:
-	\begin{itemize}
-		\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es nutzt das Builder Pattern in Verbindung mit
-		  einem Fluent Interface (ref builder pattern).
-			
-		\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
-		  zu modellieren.
-			
-	\end{itemize}
-	
-	Die zusätzliche Table Builder API stellt eine zusätzliche Schicht über der bisherigen Fluent Builder API dar und
-	nutzt diese selbst. Auf diese Weise können neue Funktionen ohne Berücksichtigung des Fluent Builder APIs
-	hinzugefügt werden. Unter Umständen ist es allerdings sinnvoll oder sogar notwendig, Erweiterungen direkt in das
-	Fluent Builder API zu integrieren. So müssen ursprünglich nur für das Table Builder API vorgesehene Features wie
-	Referenzen und Scopes dem Fluent Builder API nicht vorenthalten werden
-	(\refsec{sec:modellierung:realisierung:refs_and_scopes}).
 
 
-\begin{figure}[H]
-	\centering
-	 \includegraphics[scale=0.75]{images/realisierung/architektur.png}
-	\caption{Architektur}\label{img:architektur}
-\end{figure}
-	
-	Das Integrieren neuer Funktionen in die Fluent Builder API hat verschiedene Vorteile:
-	\begin{itemize}
-		\item \textbf{Code-Qualität}: Es gibt verschiedene Ansätze, Klassen um neue Funktionen zu erweitern oder
-		  ihr Verhalten zu ändern. Unabhängig davon, ob auf Vererbung oder Delegation gesetzt wird, werden neue
-			Datentypen benötigt.
-			
-		  Soll die Schicht der Fluent Builder API nicht verändert werden, stellt Vererbung keine Option zur Erweiterungen
-			von den Klassen dar, die von der Fluent-Builder-API-Schicht selbst instantiiert werden. Eine Lösung könnten
-			Adapter-Klassen sein, die sämtliche Methoden der zu adaptierenden Klasse beinhalten, aber auch die Erweiterungen.
-			Eine solche Adapter-Klasse kann aus einer Vielzahl an Methoden bestehen, die nichts anderes machen, als die Aufgabe
-			weiter zu delegieren.
-			
-			Insgesamt stellen Adapterklassen in Kombination mit Delegation keine elegante Lösungen dar. Neben der unübersichtlicheren 
-			und aufgeblähten Klassenhierarchie, müssten alle Zeilen-Funktionen im Table Builder API die entsprechenden Typen
-			zurückliefern - was neue Datentypen mit erneuter Delegation zur Folge hätte. Delegation stellt des
-			
-			Vererbung hat ähnliche Nachteile was die Klassenhierarchie betrifft und würde außerdem noch Änderungen in der
-			Fluent-Builder-API-Schicht nach sich ziehen. Wenn allerdings Änderungen innerhalb dieser Schicht gemacht werden,
-			dann können die Erweiterungen auch direkt in dieser Schicht, also den bisherigen Klassen gemacht werden.
-			So lange nur neue Funktionen hinzukommen und das Verhalten bestehender Methoden nicht verändert wird, müssen bestehende
-			Tests nicht an die neuen Schnittstellen angepasst werden.
-			
-		\item \textbf{Mehrwert gegenüber SB Testing DB}: Auch wenn auf das neue Table Builder API verzichtet wird,
-		  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
-	
-	  \item \textbf{Einheitliches Verhalten}: Beide APIs zeigen auf diese Weise ein einheitlicheres Verhalten.
 
-	\end{itemize}
+\section{Realisisierung}
+\label{sec:modellierung:realisierung}
+
+% Fluent Builder API Java basiert
+% Table DSL Groovy basiert
+
+
+
+
+
+- http://martinfowler.com/eaaCatalog/gateway.html\\
+- http://martinfowler.com/eaaCatalog/repository.html\\
+- http://martinfowler.com/eaaCatalog/registry.html
+	
+	
+	
+	
 
 	
 	\subsection{Allgemeiner Tabellenparser}

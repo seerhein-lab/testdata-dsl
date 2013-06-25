@@ -15,7 +15,7 @@ class HochschuleDataSet extends HochschuleBuilder
     HAASE.beaufsichtigt(P_DPATTERNS)
     P_VSYS.stoffVon(VSYS)
     DPATTERNS.hatPruefung(P_DPATTERNS)
-    MOLL.schreibt(P_VSYS)
+    MOLL.schreibt(P_VSYS).version(1)
     MOLL.besucht(VSYS)
     VSYS.hatTutor(MOLL)
     MUSTERMANN.besucht(DPATTERNS)
@@ -30,9 +30,9 @@ class HochschuleDataSet extends HochschuleBuilder
     }
 
     lehrveranstaltungTable.rows {
-      REF       | id  | name                | sws | ects //| tutoren
-      VSYS      | 1   | "Verteilte Systeme" | 4   | 5    //| tutors(VSYS)
-      DPATTERNS | 2   | "Design Patterns"   | 4   | 3    //| tutors(DPATTERNS)
+      REF       | id  | name                | sws | ects
+      VSYS      | 1   | "Verteilte Systeme" | 4   | 5
+      DPATTERNS | 2   | "Design Patterns"   | 4   | 3
     }
 
     pruefungTable.rows {
@@ -45,8 +45,12 @@ class HochschuleDataSet extends HochschuleBuilder
       REF        | matrikelnummer | name         | vorname    | studiengang | semester | immatrikuliert_seit
       MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"       | 4        | DateUtil.getDate(2011, 9, 1)
       MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
-      //MUSTERMANN | 123457         | "Mustermann" | "Peter"    | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
-      //_          | 123457         | "Mustermann" | "Peter"    | "BIT"       | 3        | DateUtil.getDate(2012, 3, 1)
+    }
+
+    besuchtTable.rows {
+      student_id    | lehrveranstaltung_id | version
+      MOLL          | VSYS                 | 1
+
     }
 
   }

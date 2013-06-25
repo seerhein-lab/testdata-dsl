@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>14</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>294</x>
+      <y>168</y>
+      <w>462</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Test</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>294</x>
+      <y>210</y>
+      <w>196</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Table Builder API</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>294</x>
+      <y>210</y>
+      <w>280</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes> 
+ 
+Fluent Builder API</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>294</x>
+      <y>210</y>
+      <w>364</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes> 
+ 
+ 
+ 
+DBUnit</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>658</x>
+      <y>210</y>
+      <w>98</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes> 
+
+JUnit</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

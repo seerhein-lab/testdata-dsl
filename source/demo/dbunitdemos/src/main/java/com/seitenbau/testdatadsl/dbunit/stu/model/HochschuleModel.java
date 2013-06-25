@@ -29,10 +29,12 @@ public class HochschuleModel extends DatabaseModel {
           .identifierColumn()
           .autoInvokeNext()
         .column("professor_id", DataType.BIGINT)
-          .relationTo(professoren)
-            .local("geleitetVon")
+          .references
+            .local
+              .name("geleitetVon")
               .description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
-            .target("leitet")
+            .foreign(professoren)
+              .name("leitet")
               .description("Gibt an, welche Lehrveranstaltungen ein Professor leitet.")
         .column("name", DataType.VARCHAR)
         .column("sws", DataType.INTEGER)
@@ -45,10 +47,14 @@ public class HochschuleModel extends DatabaseModel {
           .identifierColumn()
           .autoInvokeNext()
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .relationTo(lehrveranstaltungen)
-            .local("stoffVon")
+          .references
+            .local
+              .name("stoffVon")
+              .multiplicities("0..*")
               .description("Gibt an, zu welcher Lehrvanstaltung eine Prüfung gehört.")
-            .target("hatPruefung")
+            .foreign(lehrveranstaltungen)
+              .name("hatPruefung")
+              .multiplicities("1")
               .description("Ordnet Prüfungen einer Lehrveranstaltung zu.")
         .column("typ", DataType.VARCHAR)
         .column("zeitpunkt", DataType.DATE)
@@ -66,47 +72,59 @@ public class HochschuleModel extends DatabaseModel {
         .column("immatrikuliert_seit", DataType.DATE)
       .build();
 
-    table("beaufsichtigt")
+    associativeTable("beaufsichtigt")
         .column("professor_id", DataType.BIGINT)
-          .relationTo(professoren)
-            .target("beaufsichtigt")
+          .references
+            .foreign(professoren)
+              .name("beaufsichtigt")
               .description("Gibt an, welche Prüfungen ein Professor beaufsichtigt.")
+              .multiplicities("1..*")
         .column("pruefung_id", DataType.BIGINT)
-          .relationTo(pruefungen)
-            .target("beaufsichtigtVon")
+          .references
+            .foreign(pruefungen)
+              .name("beaufsichtigtVon")
               .description("Gibt an, welche Professoren eine Prüfung beaufsichtigen.")
+              .multiplicities("1..*")
       .build();
 
-    table("besucht")
+    associativeTable("besucht")
         .column("student_id", DataType.BIGINT)
-          .relationTo(studenten)
-            .target("besucht")
+          .references
+            .foreign(studenten)
+              .name("besucht")
               .description("Gibt an, welche Lehrveranstaltungen ein Student besucht.")
+              .multiplicities("1")
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .relationTo(lehrveranstaltungen)
-            .target("besuchtVon")
+          .references
+            .foreign(lehrveranstaltungen)
+              .name("besuchtVon")
               .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
+              .multiplicities("3..100")
       .build();
 
-    table("isttutor")
+    associativeTable("isttutor")
         .column("student_id", DataType.BIGINT)
-          .relationTo(studenten)
-            .target("istTutor")
+          .references
+            .foreign(studenten)
+              .name("istTutor")
               .description("Gibt an, bei welchen Lehrveranstaltungen ein Student Tutor ist.")
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .relationTo(lehrveranstaltungen)
-            .target("hatTutor")
+          .references
+            .foreign(lehrveranstaltungen)
+              .name("hatTutor")
               .description("Gibt an, welche Tutoren eine Lehrveranstaltung hat.")
       .build();
 
-    table("schreibt")
+    associativeTable("schreibt")
         .column("student_id", DataType.BIGINT)
-          .relationTo(studenten)
-            .target("schreibt")
+          .references
+            .foreign(studenten)
+              .name("schreibt")
               .description("Gibt an, welche Prüfungen ein Student schreibt.")
         .column("pruefung_id", DataType.BIGINT)
-          .relationTo(pruefungen)
-            .target("geschriebenVon")
+          .references
+            .foreign(pruefungen)
+              .name("geschriebenVon")
               .description("Gibt an, welche Studenten eine Prüfung schreiben.")
       .build();
   }
