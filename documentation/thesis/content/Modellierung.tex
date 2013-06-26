@@ -308,8 +308,8 @@ class TableParser {
 }
 		\end{lstlisting}
 		
-		Die Methode \texttt{or} erwartet zwei Parameter vom Typ \textit{Object}. Obwohl in Groovy alle Typen von
-		\textit{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
+		Die Methode \texttt{or} erwartet zwei Parameter vom Typ \texttt{Object}. Obwohl in Groovy alle Typen von
+		\texttt{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
 		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt,
 		z.B. bei zwei \textit{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
 		die Datentypen passende Kategoriemethoden definiert werden.
@@ -361,14 +361,15 @@ class TableParser {
 		Double-Pipe-Operator. Deshalb kann dieser weder überladen noch über Laufzeit-Meta-Programmierung eingeführt
 		werden. Folglich ist es nicht möglich, den dritten Entwurf über reine Laufzeit-Meta-Programmierung zu
 		realisieren. Allerdings kann eine Syntax erreicht werden, die dem Entwurf sehr nahe kommt
-		(\reflst{listing:dslentwurf3laufzeit}). Ein Platzhalter (Unterstrich) verhindert Syntax-Fehler, wenn in
+		(\reflst{listing:dslentwurf3laufzeit}). Das DataSet wird als Map definiert, mit den Tabellennamen als
+		Schlüsseln und Closures als Werte. Ein Platzhalter (Unterstrich) verhindert Syntax-Fehler, wenn in
 		einer Spalte kein Wert vorkommt (siehe Zeile 4, Spalte "`leitet"'). Der Platzhalter könnte auch verwendet
 		werden, um einem Datensatz keinen Bezeichner für Referenzen zu zu weisen. Aus Sicht des Parsers stellt
 		der Unterstrich eine Variable dar.
 		
 		\lstSetTiny
 		\begin{lstlisting}[caption=DSL-Entwurf 3 für Laufzeit-Meta-Programmierung angepasst, label=listing:dslentwurf3laufzeit]
-def fixture = [
+def dataset = [
   professor: {
 	  REF    | name    | vorname  | titel            | fakultaet    | leitet           | beaufsichtigt
 		WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" | _                | P_VSYS
@@ -412,16 +413,12 @@ def fixture = [
 \section{Änderungen am Generator-Modell}
 \label{sec:modellierung:generatormodell}
 
-
-  \subsection{Builder-Klassen für das Datenbankmodell}
-	\label{sec:modellierung:generatormodell:builder}
-	
-	Bei den Builder-Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatiblität verzichtet.
+	Bei den Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatibilität verzichtet.
 	Während das alte API auf überladene Methoden mit vielen Parametern setzt, ist das neue API entsprechend dem Builder-Pattern
-	umgesetzt (Quelle). So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle enthält, wovon eine
-	als \textit{deprecated} eingestuft ist. Dieses Design ist unübersichtlich und nur schwer erweiterbar. Jeder weitere optionale
-	Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter
-	eine einzelne Set-Methode.
+	umgesetzt \cite[11ff]{EFFECTIVEJAVA2ND}. So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle
+	enthält, wovon eine als \textit{deprecated} eingestuft ist. Dieses Design ist unübersichtlich und nur schwer erweiterbar. 
+	Jeder weitere optionale Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für
+	jeden optionalen Parameter eine einzelne Set-Methode.
 	
 	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. So werden Flags für Spalten nicht mehr über 
 	ein \texttt{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt 
@@ -484,6 +481,8 @@ def fixture = [
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
 	\label{sec:modellierung:generatormodell:buildervergleich}
 	
+	von 9 addColumn-Varianten werden hier nur 2 genutzt!
+	
 	\begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
 database("Hochschule");
 packageName("com.seitenbau.sbtesting.dbunit.hochschule");
@@ -525,10 +524,12 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 			.identifierColumn() 
 			.autoInvokeNext()
 		.column("professor_id", DataType.BIGINT)
-			.references(professoren)
-				.local("geleitetVon")
+			.reference
+				.local
+				  .name("geleitetVon")
 					.description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
-				.remote("leitet")
+				.foreign(professoren)
+				  .name("leitet")
 					.description("Gibt an, welche Lehrveranstaltungen ein Professor leitet.")
 		.column("name", DataType.VARCHAR)
 		.column("sws", DataType.INTEGER)
@@ -541,22 +542,46 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 \section{Realisisierung}
 \label{sec:modellierung:realisierung}
 
-% Fluent Builder API Java basiert
-% Table DSL Groovy basiert
+Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
+dass Bezeichner wie Tabellen- und Spaltennamen nicht nur erkannt werden, sondern auch automatisch vervollständigt werden können.
+Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem Anspruch nicht genügen. Falsche Tabellennamen können
+erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
+Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
 
-
-
-
-
-- http://martinfowler.com/eaaCatalog/gateway.html\\
-- http://martinfowler.com/eaaCatalog/repository.html\\
-- http://martinfowler.com/eaaCatalog/registry.html
+  \section{Neue DataSet-Builder-Klassen}
+	\label{sec:modellierung:realisierung:neuebuilder}
 	
+	Für die tabellarisch definierten DataSets wird eine neue Builder-Klasse generiert, die über Komposition und Delegation die
+	bisherige, auf dem Fluent-Builder-API-basierende DataSet-Klasse nutzt.
+
+  Der Großteil des IDE-Supports wird über Adapter-Klassen für die bisherigen Tabellen realisiert. Zu jeder Tabellen-Klasse wird
+	eine zusätzliche Adapter-Klasse generiert. Dort sind die Tabellen-spezifischen Spaltenbezeichner für die tabellarische DSL
+	definiert. Die Methode \texttt{rows} startet das Parsen der Tabellenzeilen, die wie im Entwurf als Closure übergeben werden.
+	Innerhalb dieses Closures sind die in der Tabelle definierten Bezeichner nutzbar. Neben den Spaltenbezeichnern wird auch ein
+	Spaltenbezeichner \texttt{REF} und auch der Platzhalter (Unterstrich) generiert. Die Adapter nutzen intern eine aggregierte
+	Tabellen-Klasse. Dabei bildet der Adapter die Schnittstelle der Tabellen-Klasse nach und delegiert die Aufrufe.
+
+	Für jede Tabelle gibt es in der Builder-Klasse eine öffentliche Instanz der Adapter-Klasse. Auf diese Weise wird der
+	IDE-Support bzgl. der Tabellennamen sichergestellt.
+
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.75\textwidth]{images/realisierung/builderarchitecture.pdf}
+		\caption{Klassendiagramm der DataSet-Builder}\label{img:builderarchitecture}
+	\end{figure}
+		
 	
-	
+  
+  
 	
 
-	
+
+
+% http://martinfowler.com/eaaCatalog/gateway.html
+% http://martinfowler.com/eaaCatalog/repository.html
+% http://martinfowler.com/eaaCatalog/registry.html
+
+		
 	\subsection{Allgemeiner Tabellenparser}
 	\label{sec:modellierung:realisierung:parser}
 	
