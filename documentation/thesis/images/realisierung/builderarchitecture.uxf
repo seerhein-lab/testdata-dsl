@@ -126,9 +126,34 @@ m2=1</panel_attributes>
       <x>580</x>
       <y>90</y>
       <w>50</w>
-      <h>280</h>
+      <h>400</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
-    <additional_attributes>30;30;30;260</additional_attributes>
+    <additional_attributes>30;30;30;380</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>420</x>
+      <y>410</y>
+      <w>140</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>ColumnBinding</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>460</x>
+      <y>300</y>
+      <w>50</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1= 1
+m2=   0..*
+</panel_attributes>
+    <additional_attributes>30;30;30;110</additional_attributes>
   </element>
 </diagram>
