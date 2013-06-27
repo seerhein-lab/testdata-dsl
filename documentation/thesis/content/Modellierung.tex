@@ -486,7 +486,11 @@ def dataset = [
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
 	\label{sec:modellierung:generatormodell:buildervergleich}
 	
-	von 9 addColumn-Varianten werden hier nur 2 genutzt!
+	Die Vorteile der Umstellung auf das Builder-Pattern sollen die beiden folgenden Listings zeigen. Sie zeigen
+	die Modellierung der Datenbank für den Generator. Der Übersicht halber wurde der Code auf die Anweisungen
+	im Konstruktor der Modell-Klasse und die Definition von zwei Tabellen reduziert. Listing 
+	\ref{listing:model:builder:old} zeigt die Modellierung in \textit{SB Testing DB}, während Listing
+	\ref{listing:model:builder:new} die in \textit{STU} eingeführten Builder veranschaulicht.
 	
 	\begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
 database("Hochschule");
@@ -506,6 +510,9 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
 		.addColumn("sws", DataType.INTEGER)
 		.addColumn("ects", DataType.DOUBLE);
   \end{lstlisting}
+	
+	In diesem Beispiel - inkl. der nicht dargestellten Tabellen-Definitionen - werden lediglich drei der
+	insgesamt neun \texttt{addColumn}-Methoden verwendet.
 	
 	\begin{lstlisting}[caption=Beispiel STU-Builder, label=listing:model:builder:new]
 database("Hochschule");
@@ -806,7 +813,7 @@ class HochschuleDataSet extends HochschuleBuilder
 	Entität übergeben werden muss (Zeile 39), wird in den Zeilen 30 bis 36 eine entsprechende Instanz erstellt und
 	konfiguriert. 
 	
-	\begin{lstlisting}[caption=JUnit-Tests, label=listing:junittest]
+	\begin{lstlisting}[caption=JUnit-Tests (reiner Java-Code), label=listing:junittest]
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=HochschuleContext.class)
 public class HochschuleDataSetDatabaseTest
@@ -862,6 +869,36 @@ public class HochschuleDataSetDatabaseTest
 	In den Zeilen 42 und 43 werden die erwarteten Änderungen im DataSet ebenfalls durchgeführt, um in Zeile 45 die
 	Datenbank gegen das DataSet zu vergleichen.
 	
+	Die neue DSL kann in Groovy-basierten Tests verwendet. Listing \ref{listing:junittest:groovy} zeigt beispielhaft 
+	eine entsprechende Test-Methode. In diesem Test wird eine neue Lehrveranstaltung erstellt und einem Professor
+	zugeordnet.
+	
+	\begin{lstlisting}[caption=Test-Methode in Groovy, label=listing:junittest:groovy]
+  @Test
+  @DatabaseSetup(prepare = HochschuleDataSet)
+  def addLehrveranstaltung() {
+    // prepare
+    Lehrveranstaltung lv = new Lehrveranstaltung()
+    lv.setName("Programmieren")
+    lv.setProfessor(HAASE.id)
+    lv.setSws(4)
+    lv.setEcts(6.0)
+
+    // execute
+    def addedLv = sut.addLehrveranstaltung(lv)
+
+    // verify
+    dataSet.lehrveranstaltungTable.rows {
+
+      id         | professor | name            | sws | ects
+      addedLv.id | HAASE     | "Programmieren" | 4   | 6.0
+
+    }
+
+    dbTester.assertDataBase(dataSet)
+  }
+	\end{lstlisting}
+		
 	\subsection{Komposition von DataSets}
 	\label{sec:modellierung:realisierung:kompositiondatasets}
 	
