@@ -26,7 +26,7 @@ Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von D
 
 Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 	\centering
 	 \includegraphics[scale=0.75]{images/realisierung/architektur.png}
 	\caption{Architektur}\label{img:architektur}
@@ -208,6 +208,8 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
 	Die Darstellung wirkt übersichtlich, da Tabellen ... \todo{Hier wäre eine Quelle super, dass Menschen vertraut
 	mit Tabellen sind}
+	
+	+ Möglichkeit, Beziehungen über eine spezielle Syntax wie in Entwurf 1 auszudrücken
 
 \todo{Einfache Sprachdefinition, Grammatik}
 	
@@ -269,11 +271,10 @@ mit Java-Anwendungen.
 		durchgeführt wird, stellt eine Tabellenzeile selbst ebenfalls eine Liste dar - aus den Objekten
 		der Spalten.
 		
-		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator\footnote{Binär
-		bezogen auf die Verknüpfung zweier Werte und nicht auf das Zahlensystem} implementiert werden, ist die
-		übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende Methode für den
-		Operator zu erweitern. Diese Methode trägt einen vorgegebenen Namen und erwartet als binärer Operator 
-		den rechten Operanden als Parameter (eine  Übersicht findet sich beispielsweise in 
+		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator implementiert
+		werden, ist die übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende
+		Methode für den Operator zu erweitern. Diese Methode trägt einen vorgegebenen Namen und erwartet als
+		binärer Operator  den rechten Operanden als Parameter (eine  Übersicht findet sich beispielsweise in 
 		\cite[58]{GROOVY_IM_EINSATZ}).
 		
 		Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
@@ -295,8 +296,8 @@ mit Java-Anwendungen.
 		\begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.base]
 class TableParser {
   
-  static or(self, arg) {
-		// ...
+  static or(Object self, Object arg) {
+		...
   }
 
   def parseTableClosure(Closure tableData){
@@ -314,29 +315,34 @@ class TableParser {
 		z.B. bei zwei \textit{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
 		die Datentypen passende Kategoriemethoden definiert werden.
 
-		Der Parser in der Form kann noch nicht mit selbst definierten Variablennamen für die Abbildung von Referenzen
-		umgehen. Aus diesem Grund wird eine Methode \texttt{getProperty} definiert, die für jeden Variablennamen
-		in der Tabelle aufgerufen werden soll. Dazu muss der Ausführungskontext des Closures auf die Instanz
-		des Tabellenparsers geändert werden. Die Änderungen sind in Listing \ref{listing:opoverloading.tableparser.extended}
-		dargestellt.
+		Der Parser in der Form kann noch nicht mit selbst definierten Spaltennamen und Bezeichner für die einzelnen
+		Entitäten umgehen. Der Compiler versucht, diese Ausdrücke aufzulösen und sucht nach entsprechenden Properties.
+		Properties können normale Variablen sein oder parameterlose Get-Methoden, die beim Aufruf in Groovy ohne das
+		Präfix \texttt{get} und den runden Klammern verwendet werden können. Kann Groovy eine Property nicht auflösen
+		ruft es in der aktuellen Klasse (bzw. dem Ausführungskotext) die Methode \texttt{propertyMissing} auf. Durch
+		Überschreiben dieser Methode kann auf nicht auflösbare Bezeichner reagiert werden. Damit Groovy die
+		gewünschte Methode bei der Ausführung eines Closures aufruft, kann der Ausführungskontext von Closures
+		gesetzt werden. Auf diese Weise werden Properties und Methoden von der als Ausführungskontext festgelegten
+		Instanz verwendet. In diesem Prototyp wird der Kontext auf den Tabellenparser selbst gesetzt.
+	  Die Änderungen sind in Listing \ref{listing:opoverloading.tableparser.extended} dargestellt.
 
 		\begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.extended]
 class TableParser {
   
-  static or(self, arg) {
-		// ...
+  static or(Object self, Object arg) {
+		...
   }
 	
   static or(Integer self, Integer arg) {
-		// ...
+		...
   }
 
   static or(Boolean self, Boolean arg) {
-		// ...
+		...
 	}
 	
-	def getProperty(String property) {
-		// ...
+	def propertyMissing(String property) {
+		...
   }
 	
 
@@ -356,7 +362,6 @@ class TableParser {
 		gleichzeitige Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale
 		Liste verwendet. \todo{thread local erklären mit quelle} \cite{JAVA_CONCURRENCY_IN_PRACTICE}
 
-				
 		Die Laufzeit-Meta-Programmierung kann die Syntax der Sprache nicht beliebig erweitern. Groovy kennt keinen
 		Double-Pipe-Operator. Deshalb kann dieser weder überladen noch über Laufzeit-Meta-Programmierung eingeführt
 		werden. Folglich ist es nicht möglich, den dritten Entwurf über reine Laufzeit-Meta-Programmierung zu
@@ -399,7 +404,7 @@ def dataset = [
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
 		Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
-		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern
+		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern 
 		(\cite[331ff]{DESIGN_PATTERNS}).
 		
 	\subsection{Implementierungsentscheidung}
@@ -570,7 +575,7 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	Für jede Tabelle gibt es in der Builder-Klasse eine öffentliche Instanz der Adapter-Klasse. Auf diese Weise wird der
 	IDE-Support bzgl. der Tabellennamen sichergestellt. Das Klassendiagramm ist Abbildung \ref{img:builderarchitecture} dargestellt.
 
-	\begin{figure}[H]
+	\begin{figure}[htbp]
 		\centering
 		 \includegraphics[width=0.6\textwidth]{images/realisierung/builderarchitecture.pdf}
 		\caption{Klassendiagramm der DataSet-Builder}\label{img:builderarchitecture}
@@ -638,8 +643,8 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	
 	Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
 	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung 
-	anstelle konkreter Werte (wie Primärschlüssel) verwendet werden, oder bei Such-Anfragen anstelle von konkreten Werten
-	(mehr dazu in Abschnitt \ref{sec:modellierung:realisierung:apierweiterungen}). 
+	oder auch bei Such-Anfragen anstelle konkreter Werte (wie Primärschlüssel) verwendet werden. Die Such-Anfrage-Möglichkeiten
+	werden in Abschnitt \ref{sec:modellierung:realisierung:apierweiterungen} erläutert.
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \texttt{REF} vorgesehen,
 	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
@@ -675,7 +680,7 @@ WAESCH.name         // Groovy style
 	Darüber hinaus können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
 	Die Methodennamen entsprechen den im Generator-Modell angegebenen Relationsnamen. Listing \ref{listing:ref:relations} zeigt
 	ein Beispiel,wie die Relation zwischen einem Professor und einer Prüfung modellieren lässt.
-	\begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:relations]
+	\begin{lstlisting}[caption=Definition von Beziehungen über Referenzen, label=listing:ref:relations]
 WAESCH.beaufsichtigt(P_VSYS)
 	\end{lstlisting}
 	
@@ -688,9 +693,9 @@ WAESCH.beaufsichtigt(P_VSYS)
 	Damit die selben Referenzen in unterschiedlichen DataSets genutzt werden können, werden die RowBuilder immer im Kontext des
 	gerade aktiven DataSets gebunden. Das aktive DataSet wird über die \texttt{DataSetRegistry} festgelegt (und abgefragt). Pro
 	Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, dass wenn verschiedene Datenbank-Modelle genutzt werden,
-	gleichzeitig ein DataSet aus dem ersten Modell, aber auch ein anderes DataSet aus einem anderen Modell aktiv sein kann.
+	aus jedem Modell jeweils ein DataSet gleichzeitig aktiv sein kann.
 	
-	\subsection{Beispiel-DataSet}
+	\subsection{Beispiel-DataSet in Groovy}
 	\label{sec:modellierung:realisierung:beispieldataset}
 	
 	In Kapitel \ref{chap:anforderungen} wurden Beispiel-Daten in unterschiedlichen Verfahren modelliert. Aufgrund der Übersicht
@@ -722,9 +727,9 @@ class HochschuleDataSet extends HochschuleBuilder
     }
 
     studentTable.rows {
-      REF        | matrikelnummer | name         | vorname    | studieng...
-      MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"   ...   
-      MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"   ...   
+      REF        | matrikelnummer | name         | vorname    | studiengang
+      MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"      
+      MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"      
 
       REF        | semester | immatrikuliert_seit
       MUSTERMANN | 3        | DateUtil.getDate(2012, 3, 1)
@@ -748,12 +753,58 @@ class HochschuleDataSet extends HochschuleBuilder
 }
 	\end{lstlisting}
 	
-	Aufgrund der eingeschränkten Seitenbreite ist die Tabelle mit den Studenten in zwei Blöcke aufgeteilt.
-	Die Darstellung ist sehr übersichtlich.
+	Insgesamt ist die Darstellung sehr übersichtlich und kommt ohne syntaktischen Ballast aus. Die DataSet-Klasse
+	erweitert die generierte Klasse \texttt{HochschuleBuilder} und überschreibt die beiden Methoden \texttt{tables}
+	und \texttt{relations}. In diesen Methoden sollen die Tabellendaten bzw. die Beziehungen der Entitäten
+	modelliert werden.
 	
-	\subsection{Nutzung des DataSets in einem Java-Test}
-	\label{sec:modellierung:realisierung:javatest}
+	Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht angepasst und die Tabelle mit den Studenten in zwei
+	Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist diese Darstellung eher unüblich, aber der Parser
+	unterstützt auch die Definition von Teiltabellen mit unterschiedlichen Spalten innerhalb eines Closures.
+
+	Auffällig ist, dass keine der assoziativen Tabellen explizit auftaucht, diese werden implizit durch die
+	Beziehungen modelliert. Assoziativer Beziehungen können mit Hilfe der DSL nicht nur auf Datenbank-Ebene,
+	sondern auch auf der abstrakteren ER-Ebene ausgedrückt werden. Es wäre allerdings auch möglich, die
+	assoziativen Beziehungen innerhalb der Methode \texttt{tables} zu definieren (siehe Listing 
+	\ref{listing:hochschuledataset:tableassoc}).
+
+	\begin{lstlisting}[caption=Assoziative Beziehung über Tabelle, label=listing:hochschuledataset:tableassoc]
+class HochschuleDataSet extends HochschuleBuilder
+{
+
+  def tables() {
+    
+		...
+		
+    beaufsichtigtTable.rows {
+      professor | pruefung
+      WAESCH    | P_VSYS
+      HAASE     | DPATTERNS
+    }
+
+  }
 	
+	...
+	
+}
+	\end{lstlisting}
+
+
+	\subsection{Nutzung des DataSets in einem JUnit-Test}
+	\label{sec:modellierung:realisierung:junittest}
+	
+	Wie das Beispiel-DataSet aus Listing \ref{listing:hochschuledataset:table} in einem JUnit-Test verwendet werden kann,
+	zeigt Listing \ref{listing:junittest}. Beim getesteten System (System under test), repräsentiert von der Variable
+	\texttt{sut} in Zeile  21, handelt es sich um einen Spring-Service \todo{Quelle Spring Service}. 
+	
+	Das in einem Test verwendete DataSet kann als Klasse über die Annotation \texttt{DatabaseSetup} konfiguriert werden
+	(Zeile 27). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
+	mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 23 und 24). Außerdem wird dieses DataSet auch bei
+	der \texttt{DataSetRegistry} als aktives DataSet registriert und die Daten in die Datenbank eingespielt. Dadurch
+	kommen die Test-Methoden ohne Verwaltungsaufgaben aus. Der Test \texttt{removeStudent} testet, ob das System die
+	richtigen Änderungen macht, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service die zu löschende
+	Entität übergeben werden muss (Zeile 39), wird in den Zeilen 30 bis 36 eine entsprechende Instanz erstellt und
+	konfiguriert. 
 	
 	\begin{lstlisting}[caption=JUnit-Tests, label=listing:junittest]
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -808,6 +859,8 @@ public class HochschuleDataSetDatabaseTest
 }	
 	\end{lstlisting}
 	
+	In den Zeilen 42 und 43 werden die erwarteten Änderungen im DataSet ebenfalls durchgeführt, um in Zeile 45 die
+	Datenbank gegen das DataSet zu vergleichen.
 	
 	\subsection{Komposition von DataSets}
 	\label{sec:modellierung:realisierung:kompositiondatasets}
@@ -933,6 +986,9 @@ dataSet.professorTable.foreach(ACTION);
 	
 	\subsection{JavaDoc}
 	\label{sec:modellierung:realisierung:javadoc}
+	
+	Zum guten IDE-Support gehört auch, dass der Tester beim Erstellen der Tests durch aussagekräftige
+	JavaDoc unterstützt wird.
 
 \begin{figure}[H]
 	\centering
@@ -987,7 +1043,7 @@ dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
 			ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
 			Tabellen verbessert die Ausdrucksstärke des Tests.
 			
-		\item \textbf{Code-Qualität}: Nach Robert C. Martin soll eine Funktion (bzw. Methode) genau eine Aufgabe erledigen. Wenn
+		\item \textbf{Code-Qualität}: Eine Funktion (bzw. Methode) sollte genau eine Aufgabe erledigen. Wenn
 		  \texttt{deleteRow} zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
 			\cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
 		
