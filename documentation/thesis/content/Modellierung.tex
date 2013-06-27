@@ -514,6 +514,11 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
 	In diesem Beispiel - inkl. der nicht dargestellten Tabellen-Definitionen - werden lediglich drei der
 	insgesamt neun \texttt{addColumn}-Methoden verwendet.
 	
+	Beide Varianten ähneln sich, Unterschiede liegen - mit Ausnahme der Flags und Relationen - eher im Detail.
+	Die kürzeren Parameterlisten und die zusätzlichen Funktionen führen dazu, dass die selben Modelle in
+	\textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke macht diesen Nachteil allerdings
+	mehr als wett.
+	
 	\begin{lstlisting}[caption=Beispiel STU-Builder, label=listing:model:builder:new]
 database("Hochschule");
 packageName("com.seitenbau.stu.dbunit.hochschule");
@@ -797,7 +802,7 @@ class HochschuleDataSet extends HochschuleBuilder
 	\end{lstlisting}
 
 
-	\subsection{Nutzung des DataSets in einem JUnit-Test}
+	\subsection{Nutzung des DataSets in Unit-Tests}
 	\label{sec:modellierung:realisierung:junittest}
 	
 	Wie das Beispiel-DataSet aus Listing \ref{listing:hochschuledataset:table} in einem JUnit-Test verwendet werden kann,
@@ -1056,6 +1061,9 @@ dataSet.professorTable.foreach(ACTION);
 	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_rows.png}
 	\caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
 \end{figure}
+
+  \subsection{Verhalten bei Fehlern in den Tabellendefinitionen}
+	
 
 
   \subsection{Nicht umgesetzt}
