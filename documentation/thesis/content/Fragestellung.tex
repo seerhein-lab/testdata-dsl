@@ -6,8 +6,8 @@ Einleiten: Zwei Fragestellungen, DSL und Generierung
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
 
-Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat
-Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann SB Testing DB nicht alle Nachteile wett machen.
+Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat die Seitenbau GmbH die
+Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann \textit{SB Testing DB} nicht alle Nachteile wett machen.
 So bleibt unter anderem die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile
 verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung}
 beschrieben.
@@ -21,6 +21,9 @@ Die allgemeinen Anforderungen an die zu entwickelnde DSL sind wie folgt:
 		bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss. Daraus folgt die Anforderung, dass sie sich in
 		Java nutzen lassen soll. Ähnlich wie bei \textit{SB Testing DB} sollen Datasets auch nachträglich veränderbar sein. 
 		
+	\item \textbf{IDE-Support}: Die DSL sollte sich gut in gängige Entwicklungsumgebungen wie Eclipse und IntelliJ
+	  integrieren lassen.
+	
 	\item \textbf{Schlankheit}: Die Sprache soll auf syntaktischen Ballast verzichten und einen übersichtlichen Code zur
 		Modellierung der Daten ermöglichen. Meta-Informationen sollten ausschließlich in Form von Sprachelementen auftauchen.
 
@@ -111,7 +114,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 
 	\begin{figure}[H]
 		\centering
-		 \includegraphics[width=0.8\textwidth]{images/fragestellung/example_hochschule_er.pdf}
+		 \includegraphics[width=0.7\textwidth]{images/fragestellung/example_hochschule_er.pdf}
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
@@ -364,8 +367,8 @@ dataSet.addTable(lehrveranstaltung);
 	\subsection{SB-Testing-DB-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
 	
-	Die Bibliothek SB Testing DB der Firma \textit{Seitenbau GmbH} versucht Nachteile der XML- und
-	Default-Datasets aufzufangen. In Abschnitt \ref{sec:grundlagen:sbtestingdb} wird diese Bibliothek beschrieben.
+	Die Bibliothek \textit{SB Testing DB} der Firma Seitenbau GmbH versucht Nachteile der XML- und
+	Default-DataSets aufzufangen. In Abschnitt \ref{sec:grundlagen:sbtestingdb} wird diese Bibliothek beschrieben.
 	Ein Generator erzeugt aus Meta-Informationen zu den Tabellen eine einfache Java-DSL. Über diese DSL lassen sich die
 	Testdaten modellieren. Im Gegensatz zu DbUnit-Datasets unterliegt dieses Modell weniger strikten Einschränkungen
   in Bezug auf Modifikationen, und erlaubt auch das Löschen von Datensätzen. Um die modellierten Daten in Verbindung

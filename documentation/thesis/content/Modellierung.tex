@@ -59,7 +59,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 		So lange nur neue Funktionen hinzukommen und das Verhalten bestehender Methoden nicht verändert wird, müssen bestehende
 		Tests nicht an die neuen Schnittstellen angepasst werden.
 			
-	\item \textbf{Mehrwert gegenüber SB Testing DB}: Auch wenn auf das neue Table Builder API verzichtet wird,
+	\item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
 	  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
 	
   \item \textbf{Einheitliches Verhalten}: Beide APIs zeigen auf diese Weise ein einheitlicheres Verhalten.
@@ -312,7 +312,7 @@ class TableParser {
 		Die Methode \texttt{or} erwartet zwei Parameter vom Typ \texttt{Object}. Obwohl in Groovy alle Typen von
 		\texttt{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
 		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt,
-		z.B. bei zwei \textit{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
+		z.B. bei zwei \texttt{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
 		die Datentypen passende Kategoriemethoden definiert werden.
 
 		Der Parser in der Form kann noch nicht mit selbst definierten Spaltennamen und Bezeichner für die einzelnen
@@ -404,15 +404,43 @@ def dataset = [
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
 		Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
-		Der Zugriff auf den AST erfolgt dabei über das Visitor-Pattern 
-		(\cite[331ff]{DESIGN_PATTERNS}).
+		Ein AST-Transformationsklasse, erhält über das Visitor-Pattern zugriff auf die abstrakten Syntaxbäume einzelner
+		Module (\cite[331ff]{DESIGN_PATTERNS}). Groovy Module beinhalten Klassen, aber auch die modulspezifischen
+		Import-Anweisungen. Auf die einzelnen Klassen kann erneut über das Visitor-Pattern auf die einzelnen Methoden
+		zugegriffen werden. Diese lassen sich dann Statement für Statement untersuchen.
+		
+		Für das Parsen interessante Statements sind von den Typ \texttt{ExpressionStatement}. Es kann abgefragt werden,
+		ob ein Label Teil des Statements ist. Über ein solches Label können die Daten den einzelnen Tabellen zugeordnet
+		werden. Das eigentliche \texttt{ExpressionStatement} kann danach analysiert werden. Drei Arten von Ausdrücken
+		sind dabei für das Parsen relevant:
+		
+		\begin{itemize}
+			\item \textbf{\texttt{BinaryExpression}}: Ein binärer Ausdruck besteht aus zwei Operanden und einem Operator.
+			  Wenn es sich beim Operator um einen Pipe oder Double-Pipe-Operator handelt, werden die linken und rechten
+				Operanden, die selbst vom Typ \texttt{ExpressionStatement} sind, rekursiv behandelt.
+				
+			\item \textbf{\texttt{ConstantExpression}}: Konstante Ausdrücke sind Literale, die als Spaltenwert verwendet werden.
+			
+			
+			\item \textbf{\texttt{VariableExpression}}: Ein Bezeichner einer Variablen. Dazu gehören die 
+			  Spalten-Bezeichner und die Bezeichner für die einzelnen Zeilen.
+		\end{itemize}
+		
+    Insgesamt muss viel Aufwand betrieben werden, um den AST zu analysieren. Dabei wirft die IDE-Unterstützung noch
+		einige Fragezeichen auf: Die Labels werden kaum über Auto-Vervollständigung oder Vorschläge innerhalb der IDE
+		nutzbar sein.
+		
 		
 	\subsection{Implementierungsentscheidung}
 	\label{sec:implementierung:entscheidung}
 	
 	Der Vergleich zwischen Laufzeit-Meta-Programmierung und AST-Transformation zeigt, dass sich Groovy als Host-Sprache
-	für die DSL eignet. Die Laufzeit-Meta-Programmierung erlaubt zwar weniger Anpassungen an die Sprache, ist aber für
-	die gewünschte DSL ausreichend und die Umsetzung einfacher. 
+	für die DSL eignet. Grundsätzlich kann das Parsen der Tabelle über beide Varianten durchgeführt werden. 
+	Die Laufzeit-Meta-Programmierung erlaubt zwar weniger Anpassungen an die Sprache, ist aber für
+	die gewünschte DSL ausreichend und die Umsetzung einfacher. AST-Transformationen könnten zwar Mehrwert bieten, z.B.
+	könnte auch der Double-Pipe-Operator genutzt werden und Labels, allerdings überwiegen die Nachteile des weniger
+	ausdrucksstarken und damit wartungsunfreundicheren Codes. Als Konsequenz wird die einfachere
+	Laufzeit-Meta-Programmierung verwendet.
 		
 
 \section{Änderungen am Generator-Modell}
@@ -436,11 +464,11 @@ def dataset = [
 	\subsection{Spalten-Flags}
 	\label{sec:modellierung:generatormodell:flags}
 	
-	SB Testing DB sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
+	\textit{SB Testing DB} sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
 	gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet} übergeben werden. Bei dem neuen Builder-API werden
 	die Flags über spezielle Methoden gesetzt.
 	
-	Zu den in STU enthaltenen Standard-Spalten-Flags gehören:
+	Zu den in \textit{STU} enthaltenen Standard-Spalten-Flags gehören:
 	\begin{itemize}
 		\item \textbf{Identifikator-Spalte}: Als Identifikator-Spalte wird die Spalte bezeichnet, die einen für die Zeile einmaligen
 		  Wert enthält, über die eine Zeile zweifelsfrei identifiziert werden kann. In dieser Eigenschaft ähnelt sie dem Primärschlüssel
@@ -452,12 +480,12 @@ def dataset = [
 			der Tabelle ist. Das Flag wird über die Methode \texttt{identifierColumn} aktiviert. Dabei werden die Flags Unveränderbar und
 			Einmalig ebenfalls aktiviert.
 
-		\item \textbf{Next-Value-Methode}: SB Testing DB (und damit auch STU) bietet die Möglichkeit, Werte-Generatoren zu verwenden
-		  um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der Generator über
-			eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem Spaltennamen
-			zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das entsprechende
-			Flag über \texttt{addNextMethod()} aus dem Builder-API gesetzt wurde. Standardmäßig muss die Next-Value-Methode manuell
-			aufgerufen werden, über ein Flag kann dies auch automatisch erfolgen.
+		\item \textbf{Next-Value-Methode}: \textit{SB Testing DB} (und damit auch \textit{STU}) bietet die Möglichkeit, Werte-Generatoren 
+		  zu verwenden um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der 
+			Generator über eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem
+			Spaltennamen zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das
+			entsprechende Flag über \texttt{addNextMethod()} aus dem Builder-API gesetzt wurde. Standardmäßig muss die Next-Value-Methode
+			manuell aufgerufen werden, über ein Flag kann dies auch automatisch erfolgen.
 			
 		\item \textbf{Automatischer Aufruf der Next-Value-Methode}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
 		  Anlegen einer neuen Tabellenzeile automatisch aufgerufen. Beim Setzen des Flags über die Builder-Methode
@@ -519,7 +547,7 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
 	\textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke macht diesen Nachteil allerdings
 	mehr als wett.
 	
-	\begin{lstlisting}[caption=Beispiel STU-Builder, label=listing:model:builder:new]
+	\begin{lstlisting}[caption=Beispiel \textit{STU}-Builder, label=listing:model:builder:new]
 database("Hochschule");
 packageName("com.seitenbau.stu.dbunit.hochschule");
 enableTableModelClassesGeneration();
@@ -654,7 +682,7 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	\label{sec:modellierung:realisierung:refs_and_scopes}
 	
 	Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
-	In STU ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung 
+	In \textit{STU} ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung 
 	oder auch bei Such-Anfragen anstelle konkreter Werte (wie Primärschlüssel) verwendet werden. Die Such-Anfrage-Möglichkeiten
 	werden in Abschnitt \ref{sec:modellierung:realisierung:apierweiterungen} erläutert.
 	
@@ -775,7 +803,7 @@ class HochschuleDataSet extends HochschuleBuilder
 	unterstützt auch die Definition von Teiltabellen mit unterschiedlichen Spalten innerhalb eines Closures.
 
 	Auffällig ist, dass keine der assoziativen Tabellen explizit auftaucht, diese werden implizit durch die
-	Beziehungen modelliert. Assoziativer Beziehungen können mit Hilfe der DSL nicht nur auf Datenbank-Ebene,
+	Beziehungen modelliert. D.h. assoziativer Beziehungen können mit Hilfe der DSL nicht nur auf Datenbank-Ebene,
 	sondern auch auf der abstrakteren ER-Ebene ausgedrückt werden. Es wäre allerdings auch möglich, die
 	assoziativen Beziehungen innerhalb der Methode \texttt{tables} zu definieren (siehe Listing 
 	\ref{listing:hochschuledataset:tableassoc}).
@@ -806,23 +834,22 @@ class HochschuleDataSet extends HochschuleBuilder
 	\label{sec:modellierung:realisierung:junittest}
 	
 	Wie das Beispiel-DataSet aus Listing \ref{listing:hochschuledataset:table} in einem JUnit-Test verwendet werden kann,
-	zeigt Listing \ref{listing:junittest}. Beim getesteten System (System under test), repräsentiert von der Variable
-	\texttt{sut} in Zeile  21, handelt es sich um einen Spring-Service \todo{Quelle Spring Service}. 
+	zeigt Listing \ref{listing:junittest}. Das System Under Test (siehe Abschnitt \ref{sec:grundlagen:konzepte:tests})
+	ist ein Spring-Service, der von der Variable \texttt{sut} (Zeile 20) repräsentiert wird. \todo{Quelle Spring Service}
 	
 	Das in einem Test verwendete DataSet kann als Klasse über die Annotation \texttt{DatabaseSetup} konfiguriert werden
-	(Zeile 27). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
-	mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 23 und 24). Außerdem wird dieses DataSet auch bei
+	(Zeile 26). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
+	mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 22 und 23). Außerdem wird dieses DataSet auch bei
 	der \texttt{DataSetRegistry} als aktives DataSet registriert und die Daten in die Datenbank eingespielt. Dadurch
 	kommen die Test-Methoden ohne Verwaltungsaufgaben aus. Der Test \texttt{removeStudent} testet, ob das System die
 	richtigen Änderungen macht, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service die zu löschende
-	Entität übergeben werden muss (Zeile 39), wird in den Zeilen 30 bis 36 eine entsprechende Instanz erstellt und
+	Entität übergeben werden muss (Zeile 38), wird in den Zeilen 29 bis 35 eine entsprechende Instanz erstellt und
 	konfiguriert. 
 	
 	\begin{lstlisting}[caption=JUnit-Tests (reiner Java-Code), label=listing:junittest]
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=HochschuleContext.class)
-public class HochschuleDataSetDatabaseTest
-{
+public class HochschuleDataSetDatabaseTest {
 
   @Autowired
   DataSource dataSource;
@@ -871,12 +898,12 @@ public class HochschuleDataSetDatabaseTest
 }	
 	\end{lstlisting}
 	
-	In den Zeilen 42 und 43 werden die erwarteten Änderungen im DataSet ebenfalls durchgeführt, um in Zeile 45 die
+	In den Zeilen 41 und 42 werden die erwarteten Änderungen im DataSet ebenfalls durchgeführt, um in Zeile 44 die
 	Datenbank gegen das DataSet zu vergleichen.
 	
-	Die neue DSL kann in Groovy-basierten Tests verwendet. Listing \ref{listing:junittest:groovy} zeigt beispielhaft 
-	eine entsprechende Test-Methode. In diesem Test wird eine neue Lehrveranstaltung erstellt und einem Professor
-	zugeordnet.
+	Die neue DSL kann in Groovy-basierten Tests verwendet werden. Listing \ref{listing:junittest:groovy} zeigt
+	beispielhaft eine entsprechende Test-Methode. In diesem Test wird eine neue Lehrveranstaltung erstellt und
+	einem Professor zugeordnet.
 	
 	\begin{lstlisting}[caption=Test-Methode in Groovy, label=listing:junittest:groovy]
   @Test
@@ -894,20 +921,78 @@ public class HochschuleDataSetDatabaseTest
 
     // verify
     dataSet.lehrveranstaltungTable.rows {
-
       id         | professor | name            | sws | ects
       addedLv.id | HAASE     | "Programmieren" | 4   | 6.0
-
     }
 
     dbTester.assertDataBase(dataSet)
   }
 	\end{lstlisting}
+	
+	Sicherheitshalber wird die vom Spring-Service erzeugte ID verwendet, um die Änderungen am DataSet
+	nach zu modellieren. Auf diese Weise bleibt der Test stabil, auch wenn sich das Verhalten des Services
+	bezüglich der ID-Generierung ändern sollte.
 		
 	\subsection{Komposition von DataSets}
 	\label{sec:modellierung:realisierung:kompositiondatasets}
 	
+	DataSets lassen sich für Tests auch aus anderen zusammensetzen. Dieses Feature setzt nicht auf Konzepte
+	der Objektorientierung wie Vererbung. Vererbung würde zu mehr syntaktischem Ballast führen, da die Methoden
+	\texttt{tables} und \texttt{relations} explizit die Methoden aus der Super-Klasse aufrufen müssten. 
 	
+	Der realisierte Mechanismus sieht vor, dass die DataSet-Klassen, die als Basis für das gerade definierte
+	DataSet dienen sollen, über die Hook-Methoden \texttt{extendsDataSet} (bei einem Basis-DataSet) bzw.
+	\texttt{extendsDataSets} (für mehrere Basis-DataSets) zurückgeliefert werden. Listing
+	\ref{listing:extendeddataset} zeigt, wie ein DataSet ein anderes als Basis verwendet. 
+	
+	\begin{lstlisting}[caption=Erweitertes DataSet, label=listing:extendeddataset]
+class ExtendedHochschuleDataSet extends HochschuleBuilder {
+
+  def extendsDataSet() { HochschuleDataSet }
+
+  def tables() {
+
+   lehrveranstaltungTable.rows {
+      REF       | id  | name                | sws | ects
+      PROGR     | 3   | "Programmieren"     | 4   | 6.0
+		}
+  
+	}
+
+  def relations() {
+    HAASE.leitet(PROGR)
+  }
+
+}	
+	\end{lstlisting}
+	
+	Die Syntax für die Komposition aus den drei DataSet-Klassen \texttt{DataSet1}, \texttt{DataSet2} und
+	\texttt{DataSet3} ist in Listing \ref{listing:multiextendeddataset} dargestellt:
+	\begin{lstlisting}[caption=Erweitertes DataSet, label=listing:multiextendeddataset]
+  def extendsDataSets() { [ DataSet1, DataSet2, DataSet3 ] }
+	\end{lstlisting}
+	
+	Das erweiterte DataSet kann in den selben Unit-Tests verwendet werden. Dabei reicht es aus,
+	die Annotation \texttt{DatabaseSetup} entsprechend anzupassen (siehe Listing 
+	\ref{listing:junittest:extendeddataset}).
+	
+	\begin{lstlisting}[caption=Test auf erweiterem DataSet, label=listing:junittest:extendeddataset]
+  @Test
+  @DatabaseSetup(prepare = ExtendedHochschuleDataSet)
+  public void assignedLehrveranstaltungen() throws Exception {
+    // prepare
+    Professor haase = new Professor();
+    haase.setId(HAASE.id);
+
+    // execute
+    List<Lehrveranstaltung> items = sut.findLehrveranstaltungen(haase);
+
+    // verify
+		def findWhere = dataSet.lehrveranstaltungTable.findWhere
+    int count = findWhere.professorId(HAASE).rowCount
+    assertThat(items).hasSize(count);
+  }
+	\end{lstlisting}
 
   \subsection{Erweiterungen in generierter API}
 	\label{sec:modellierung:realisierung:apierweiterungen}
