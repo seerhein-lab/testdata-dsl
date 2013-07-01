@@ -536,7 +536,6 @@ def dataset = [
 	
 	\subsection{Modellierung von Relationen über Builder-Klassen}
 	
-	
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
 	\label{sec:modellierung:generatormodell:buildervergleich}
 	
@@ -608,7 +607,44 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	.build();	
 	\end{lstlisting}
 
+	\subsection{Modellierungskonzepte für Beziehungen}
+	\label{sec:modellierung:generatormodell:modellierungskonzepte}
+	
+	Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
+	Dabei können Beziehungen selbst auch Attribute haben. Die folgenden drei grundsätzlichen Beziehungsarten
+	werden dabei unterschieden:
+	
+	  \subsubsection{1:1-Beziehungen}
+	  \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
+		
+		Eine Entität hat eine Beziehung mit einer anderen Entität. Eine solche Beziehung kann realisiert werden,
+		in dem eine Entität einen Fremdschlüssel auf die andere Entität hält. Dabei sollte der Fremdschlüssel
+		und auch die beziehungsbeschreibenden Attribute immer einer Entität hinzugefügt werden, die zwingend
+		eine Beziehung zu einer anderen Entität hat.
+		
+		Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
+		kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
 
+		\subsubsection{1:n-Beziehungen}
+	  \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
+
+    Wenn Attribute für alle Beziehungen gelten in die Tabelle mit "`one"', ansonsten in die Tabelle mit "`many"',
+		FK in Tabelle mit "`many"'
+		
+		
+		\subsubsection{n:m-Beziehungen}
+	  \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
+		
+		assoziative Tabelle, Attribute auf Beziehung in die assoziative Tabelle aufnehmen.
+		Kann für jede Beziehung verwendet werden, gerade wenn Attribute zur Beziehung gehören eine Option.
+		JPA kennt keine Attribute auf assoziativen Tabellen, STU schon
+
+    \subsubsection{Andere Beziehungen}
+	  \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
+		
+		In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
+		auch für zirkuläre und reflexive Beziehungen.
+		
 
 \section{Realisisierung}
 \label{sec:modellierung:realisierung}
@@ -781,15 +817,15 @@ class HochschuleDataSet extends HochschuleBuilder
     }
 
     lehrveranstaltungTable.rows {
-      REF       | id  | name                | sws | ects
-      VSYS      | 1   | "Verteilte Systeme" | 4   | 5
-      DPATTERNS | 2   | "Design Patterns"   | 4   | 3
+      REF       | name                | sws | ects
+      VSYS      | "Verteilte Systeme" | 4   | 5
+      DPATTERNS | "Design Patterns"   | 4   | 3
     }
 
     pruefungTable.rows {
-      REF         | id  | typ   | zeitpunkt
-      P_VSYS      | 1   | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
-      P_DPATTERNS | 2   | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
+      REF         | typ   | zeitpunkt
+      P_VSYS      | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
+      P_DPATTERNS | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
     }
 
     studentTable.rows {
@@ -854,6 +890,13 @@ class HochschuleDataSet extends HochschuleBuilder
 	
 }
 	\end{lstlisting}
+	
+	Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
+	So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
+	ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
+	Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
+	Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwaldung über einen
+	einfachen Type-Cast hinaus.
 
 
 	\subsection{Nutzung des DataSets in Unit-Tests}
@@ -1144,33 +1187,35 @@ dataSet.professorTable.foreach(ACTION);
 	Zum guten IDE-Support gehört auch, dass der Tester beim Erstellen der Tests durch aussagekräftige
 	JavaDoc unterstützt wird.
 
+
+  Entscheiden welche Bilder und neue Screenshots machen
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_builder.png}
+	 \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_builder.png}
 	\caption{Tooltip Builder}\label{img:javadoc_tooltip_builder}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_tables.png}
+	 \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_tables.png}
 	\caption{Tooltip tables()}\label{img:javadoc_tooltip_tables}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_relations.png}
+	 \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_relations.png}
 	\caption{Tooltip relations()}\label{img:javadoc_tooltip_relations}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_table.png}
+	 \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_table.png}
 	\caption{Tooltip Tabelle}\label{img:javadoc_tooltip_table}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	 \includegraphics[scale=0.4]{images/realisierung/javadoc_tooltip_rows.png}
+	 \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_rows.png}
 	\caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
 \end{figure}
 
@@ -1209,7 +1254,3 @@ dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
 			Zeile auch alle assoziierten n:m-Relationen entfernt werden können. Aber was ist bei einer 1:n-Relation? Wenn
 			ein Professor entfernt wird, was soll mit Lehrveranstaltungen passieren, die ihm zugeordnet sind?
 	\end{itemize}
-
-  
-		
-\todo{"`Muster"' für 1:1, 1:n und m:n}
