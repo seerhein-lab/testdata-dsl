@@ -106,8 +106,12 @@ Der Generator erzeugt die Java-Klassen mit Hilfe von \textit{Apache Velocity}. V
 Templates Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
 auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
 
-Die generierten Klassen setzen das Builder-Pattern mit einem Fluent API um.
-\todo{weiter erklären}
+Die generierten Klassen setzen das Builder-Pattern (\cite[11ff]{EFFECTIVEJAVA2ND}) mit einem Fluent API
+(\cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES}) um. In Java werden Fluant APIs mit Hilfe von Method Chaining verwirklicht. Dabei liefern
+Modifikator-Methoden wie Setter das Host-Objekt selbst zurück. Das erlaubt es, mehrere Modifikationen auf dem selben Objekt 
+mit nur einem Ausdruck durchzuführen \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte so aussehen:
+\texttt{student.name("Moll").vorname("Nikolaus")}.
+
 
 Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 \begin{itemize}
@@ -142,8 +146,8 @@ Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Kla
 
 \begin{figure}[H]
   \centering
-	 \includegraphics[scale=0.75]{images/grundlagen/sb_testing_classes.png}
-	\caption{Klassendiagramm: SB Testing DataSet Builder}\label{img:sb_testing_classes}
+	 \includegraphics[width=0.4\textwidth]{images/grundlagen/sb_testing_classes.pdf}
+	\caption{UML-Klassendiagramm der SB Testing DataSet Klassen}\label{img:sb_testing_classes}
 \end{figure}
 
 

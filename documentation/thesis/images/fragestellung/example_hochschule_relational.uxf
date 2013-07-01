@@ -4,10 +4,10 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>216</x>
-      <y>272</y>
+      <x>128</x>
+      <y>296</y>
       <w>144</w>
-      <h>128</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>
 *PROFESSOR*
@@ -18,15 +18,14 @@ vorname : varchar
 titel : varchar
 geschlaecht : char
 fakultaet : enumeration
-foto : blob
-raum_id &lt;&lt;FK&gt;&gt;</panel_attributes>
+foto : blob</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>216</x>
-      <y>536</y>
+      <x>128</x>
+      <y>560</y>
       <w>144</w>
       <h>88</h>
     </coordinates>
@@ -43,24 +42,24 @@ ects : decimal</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>264</x>
-      <y>376</y>
+      <x>176</x>
+      <y>392</y>
       <w>40</w>
-      <h>176</h>
+      <h>184</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=    1
 </panel_attributes>
-    <additional_attributes>24;160;24;24</additional_attributes>
+    <additional_attributes>24;168;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>664</x>
-      <y>272</y>
+      <x>576</x>
+      <y>296</y>
       <w>144</w>
-      <h>72</h>
+      <h>80</h>
     </coordinates>
     <panel_attributes>
 *PRUEFUNG*
@@ -75,8 +74,8 @@ zeitpunkt : date
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>432</x>
-      <y>608</y>
+      <x>344</x>
+      <y>632</y>
       <w>160</w>
       <h>48</h>
     </coordinates>
@@ -91,8 +90,8 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>440</x>
-      <y>272</y>
+      <x>352</x>
+      <y>296</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
@@ -107,8 +106,8 @@ pruefung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>664</x>
-      <y>536</y>
+      <x>576</x>
+      <y>560</y>
       <w>144</w>
       <h>104</h>
     </coordinates>
@@ -126,8 +125,8 @@ immatrukuliert_seit : date</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>664</x>
-      <y>416</y>
+      <x>576</x>
+      <y>440</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
@@ -142,8 +141,8 @@ pruefung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>432</x>
-      <y>536</y>
+      <x>344</x>
+      <y>560</y>
       <w>160</w>
       <h>48</h>
     </coordinates>
@@ -158,21 +157,21 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>336</x>
-      <y>320</y>
+      <x>248</x>
+      <y>352</y>
       <w>344</w>
-      <h>232</h>
+      <h>224</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..*
 m2=  1</panel_attributes>
-    <additional_attributes>328;24;24;216</additional_attributes>
+    <additional_attributes>328;24;24;208</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>336</x>
-      <y>256</y>
+      <x>248</x>
+      <y>280</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -184,8 +183,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>560</x>
-      <y>256</y>
+      <x>472</x>
+      <y>280</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -197,22 +196,22 @@ m2=1..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>712</x>
-      <y>320</y>
+      <x>624</x>
+      <y>352</y>
       <w>40</w>
-      <h>112</h>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=   1
 m2=    0..*
 </panel_attributes>
-    <additional_attributes>24;24;24;96</additional_attributes>
+    <additional_attributes>24;24;24;88</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>712</x>
-      <y>440</y>
+      <x>624</x>
+      <y>464</y>
       <w>40</w>
       <h>112</h>
     </coordinates>
@@ -225,8 +224,8 @@ m2=   1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>336</x>
-      <y>520</y>
+      <x>248</x>
+      <y>544</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -238,8 +237,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>336</x>
-      <y>592</y>
+      <x>248</x>
+      <y>616</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -251,8 +250,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>568</x>
-      <y>592</y>
+      <x>480</x>
+      <y>616</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -264,8 +263,8 @@ m2=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>568</x>
-      <y>520</y>
+      <x>480</x>
+      <y>544</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -277,10 +276,10 @@ m2=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>216</x>
-      <y>136</y>
+      <x>128</x>
+      <y>160</y>
       <w>144</w>
-      <h>64</h>
+      <h>80</h>
     </coordinates>
     <panel_attributes>
 *RAUM*
@@ -288,21 +287,22 @@ m2=0..*</panel_attributes>
 id &lt;&lt;PK&gt;&gt;
 gebaeude : char
 nummer : int
+professor_id &lt;&lt;FK&gt;&gt;
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>264</x>
-      <y>176</y>
+      <x>176</x>
+      <y>216</y>
       <w>40</w>
-      <h>112</h>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=    0..1
 m2=    1
 </panel_attributes>
-    <additional_attributes>24;96;24;24</additional_attributes>
+    <additional_attributes>24;80;24;24</additional_attributes>
   </element>
 </diagram>

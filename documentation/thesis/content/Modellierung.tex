@@ -17,7 +17,7 @@ Bei den Schnittstellen zur Beschreibung des Datenbankmodells für den Generator w
 Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
 \begin{itemize}
 	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es nutzt das Builder-Pattern in Verbindung mit
-	  einem Fluent Interface (ref builder pattern).
+	  einem Fluent Interface.
 			
 	\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
 	  zu modellieren.
@@ -31,8 +31,7 @@ Abbildung \ref{img:architektur} stellt die Architektur grafisch dar.
 	 \includegraphics[scale=1]{images/realisierung/stu_architektur.png}
 	\caption{Architektur}\label{img:architektur}
 \end{figure}
-\todo{Neues Bild für Schichten}
-	
+
 Die neue Table Builder API stellt eine Schicht über der bisherigen Fluent Builder API dar. Neue Funktionen müssen 
 jedoch nicht zwangsläufig in der Table Builder API hinzugefügt werden, unter Umständen kann es vorteilhaft sein, sie
 direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
@@ -210,7 +209,8 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	überblickt werden. Die tabellarische Schreibweise sollte für die Zielgruppe vertraut wirken und intuitiver
 	sein als die anderen Darstellungsformen.
 	
-	EBNF einleiten
+	Die Syntax der Sprache wird mit Hilfe der Erweiterten Backus-Nauer-Form in Listing \ref{listing:ebnf:table}
+	definiert. 
 	
 \lstSetEBNF
 \begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
@@ -303,8 +303,9 @@ mit Java-Anwendungen.
 		Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
 		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert um eine Tabelle zu parsen. Dieser wenig
 		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen - kommen neue Datentypen
-		hinzu, müsste der Code erweitert werden.
-		\todo{Mögliche ungewollte Seiteneffekte}
+		hinzu, müsste der Code erweitert werden. Schlimmer wiegt jedoch, dass diese Anpassungen global
+		für die entsprechenden Klassen gelten. Das könnte ungewollte Seiteneffekte nach sich ziehen, wenn 
+		Oder-Operatoren auch an anderer Stelle verwendet werden, wie z.B. zum Berechnen eines Spalten-Wertes.
 		
 		Groovy bietet allerdings auch eine zweite Möglichkeit für das Operator-Überladen an. Anstatt den Operator
 		als Methode dem linken Operand (bzw. der Klasse) hinzuzufügen, wird er als statische Methode (in einer
@@ -473,7 +474,7 @@ def dataset = [
 
 	Bei den Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatibilität verzichtet.
 	Während das alte API auf überladene Methoden mit vielen Parametern setzt, ist das neue API entsprechend dem Builder-Pattern
-	umgesetzt \cite[11ff]{EFFECTIVEJAVA2ND}. So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle
+	umgesetzt. So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle
 	enthält, wovon eine als \textit{deprecated} eingestuft ist. Dieses Design ist unübersichtlich und nur schwer erweiterbar. 
 	Jeder weitere optionale Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für
 	jeden optionalen Parameter eine einzelne Set-Methode.
@@ -965,9 +966,10 @@ public class HochschuleDataSetDatabaseTest {
 	der Objektorientierung wie Vererbung. Vererbung würde zu mehr syntaktischem Ballast führen, da die Methoden
 	\texttt{tables} und \texttt{relations} explizit die Methoden aus der Super-Klasse aufrufen müssten. 
 	
-	Der realisierte Mechanismus sieht vor, dass die DataSet-Klassen, die als Basis für das gerade definierte
-	DataSet dienen sollen, über die Hook-Methoden \texttt{extendsDataSet} (bei einem Basis-DataSet) bzw.
-	\texttt{extendsDataSets} (für mehrere Basis-DataSets) zurückgeliefert werden. Listing
+	Der realisierte Mechanismus sieht vor, dass DataSetss andere DataSet-Klassen als Basis verwenden können.
+	Gibt es ein Basis-Datenset, kann die Methode \texttt{extendsDataSet} so überschrieben werden, dass sie
+	die Klasse des Basis-DataSets zurückliefert. Analog dazu gibt es die Methode \texttt{extendsDataSets}, 
+	falls es mehrere Basis-DataSets gibt. Diese muss eine Liste von DataSet-Klassen zurückliefern. Listing
 	\ref{listing:extendeddataset} zeigt, wie ein DataSet ein anderes als Basis verwendet. 
 	
 	\begin{lstlisting}[caption=Erweitertes DataSet, label=listing:extendeddataset]

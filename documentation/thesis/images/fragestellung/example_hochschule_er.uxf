@@ -5,7 +5,7 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>200</x>
-      <y>270</y>
+      <y>280</y>
       <w>160</w>
       <h>130</h>
     </coordinates>
@@ -24,7 +24,7 @@ foto
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>510</x>
-      <y>270</y>
+      <y>280</y>
       <w>160</w>
       <h>60</h>
     </coordinates>
@@ -39,7 +39,7 @@ zeitpunkt
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>200</x>
-      <y>490</y>
+      <y>500</y>
       <w>160</w>
       <h>80</h>
     </coordinates>
@@ -54,7 +54,7 @@ ects </panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>510</x>
-      <y>490</y>
+      <y>500</y>
       <w>160</w>
       <h>120</h>
     </coordinates>
@@ -71,7 +71,7 @@ immatrukuliert_seit</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>250</y>
+      <y>260</y>
       <w>200</w>
       <h>70</h>
     </coordinates>
@@ -85,7 +85,7 @@ beaufsichtigt</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>470</y>
+      <y>480</y>
       <w>200</w>
       <h>70</h>
     </coordinates>
@@ -99,7 +99,7 @@ besucht</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>230</x>
-      <y>370</y>
+      <y>380</y>
       <w>88</w>
       <h>140</h>
     </coordinates>
@@ -113,7 +113,7 @@ leitet</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>530</x>
-      <y>300</y>
+      <y>310</y>
       <w>108</w>
       <h>210</h>
     </coordinates>
@@ -127,7 +127,7 @@ schreibt</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>510</y>
+      <y>520</y>
       <w>200</w>
       <h>70</h>
     </coordinates>
@@ -141,7 +141,7 @@ ist Tutor</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>300</y>
+      <y>310</y>
       <w>200</w>
       <h>210</h>
     </coordinates>
@@ -155,7 +155,7 @@ geprüft</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>220</x>
-      <y>640</y>
+      <y>650</y>
       <w>40</w>
       <h>30</h>
     </coordinates>
@@ -166,7 +166,7 @@ geprüft</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>370</x>
-      <y>640</y>
+      <y>650</y>
       <w>40</w>
       <h>30</h>
     </coordinates>
@@ -177,7 +177,7 @@ geprüft</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>230</x>
-      <y>600</y>
+      <y>610</y>
       <w>160</w>
       <h>70</h>
     </coordinates>
@@ -191,7 +191,7 @@ verbindet</panel_attributes>
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>420</x>
-      <y>630</y>
+      <y>640</y>
       <w>260</w>
       <h>50</h>
     </coordinates>
@@ -203,7 +203,7 @@ Ein B ist genau mit einem A verbunden</panel_attributes>
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>220</x>
-      <y>610</y>
+      <y>620</y>
       <w>250</w>
       <h>20</h>
     </coordinates>
@@ -214,7 +214,7 @@ Ein B ist genau mit einem A verbunden</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>200</x>
-      <y>120</y>
+      <y>130</y>
       <w>160</w>
       <h>60</h>
     </coordinates>
@@ -229,7 +229,7 @@ nummer
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>220</x>
-      <y>150</y>
+      <y>160</y>
       <w>110</w>
       <h>140</h>
     </coordinates>
@@ -237,6 +237,6 @@ nummer
 m1=    1
 m2=    0..1
 hat Büro</panel_attributes>
-    <additional_attributes>60;30;60;120</additional_attributes>
+    <additional_attributes>60;30;60;90;60;80;60;90;60;30;60;120</additional_attributes>
   </element>
 </diagram>
