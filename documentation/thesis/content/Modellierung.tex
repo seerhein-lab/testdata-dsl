@@ -28,7 +28,7 @@ Abbildung \ref{img:architektur} stellt die Architektur grafisch dar.
 
 \begin{figure}[htbp]
 	\centering
-	 \includegraphics[scale=0.75]{images/realisierung/architektur.png}
+	 \includegraphics[scale=1]{images/realisierung/stu_architektur.png}
 	\caption{Architektur}\label{img:architektur}
 \end{figure}
 \todo{Neues Bild für Schichten}
@@ -206,12 +206,35 @@ DPATTERNS || "Design Patterns"   | 4   | 3
   \subsection{Entscheidung}
 
 	Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
-	Die Darstellung wirkt übersichtlich, da Tabellen ... \todo{Hier wäre eine Quelle super, dass Menschen vertraut
-	mit Tabellen sind}
+	Die Darstellung wirkt übersichtlich, da sie wenig syntaktischen Ballast hat. Es können schnell viele Daten
+	überblickt werden. Die tabellarische Schreibweise sollte für die Zielgruppe vertraut wirken und intuitiver
+	sein als die anderen Darstellungsformen.
 	
-	+ Möglichkeit, Beziehungen über eine spezielle Syntax wie in Entwurf 1 auszudrücken
+	EBNF einleiten
+	
+\lstSetEBNF
+\begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
+Table         = TableName, ".rows {", NewLine, { HeadRow, { DataRow } }, 
+                NewLine, "}";
+TableName     = Character, { ( Character | Digit | Underscore ) };
+HeadRow       = ColumnName, { Separator, ColumnName }, NewLine;
+DataRow       = ColumnData, { Separator, ColumnData }, NewLine;
+ColumnName    = Character, { ( Character | Digit | Underscore ) };
+ColumnData    = ? numerische Literale, symbolische Konstanten, 
+                Methodenaufrufe ?
+Separator     = "|";
+NewLine       = "\n";
+Underscore    = "_";
+Digit         = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9";
+Character     = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"|
+                "n"|"o"|"p"|"q"|"r"|"s"|"t"|"u"|"v"|"w"|"x"|"y"|"z"|
+                "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K"|"L"|"M"|
+                "N"|"O"|"P"|"Q"|"R"|"S"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z";
+\end{lstlisting}
+\lstSetJava
 
-\todo{Einfache Sprachdefinition, Grammatik}
+	Darüber hinaus soll es möglich sein, Beziehungen auch außerhalb der Tabellen zu beschreiben. Dafür wäre eine Syntax
+	denkbar, die sich an die Modellierung der Beziehungen in Listing \ref{listing:dslentwurf1} orientiert.
 	
 
 \section{Implementierungsvorbereitung}
@@ -427,8 +450,10 @@ def dataset = [
 		\end{itemize}
 		
     Insgesamt muss viel Aufwand betrieben werden, um den AST zu analysieren. Dabei wirft die IDE-Unterstützung noch
-		einige Fragezeichen auf: Die Labels werden kaum über Auto-Vervollständigung oder Vorschläge innerhalb der IDE
-		nutzbar sein.
+		einige Fragezeichen auf: Eine IDE-Unterstützung für Labels (Auto-Vervollständigung, Vorschläge) ist mit einfachen
+		Mitteln kaum realisierbar.
+		
+		
 		
 		
 	\subsection{Implementierungsentscheidung}

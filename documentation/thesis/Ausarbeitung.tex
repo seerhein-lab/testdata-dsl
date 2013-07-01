@@ -122,7 +122,30 @@
 	escapeend={\lstsmallmathend},
 	morekeywords={encoding,xs:schema,xs:element,xs:complexType,xs:sequence,xs:attribute}
 }}
-
+\lstdefinelanguage{EBNF}{
+  keywords={procedure,end,return,integer,real,foreach,for,each,
+  do,if,then,else,while,until,true,false,algorithm}, 
+  comment=[l]{//}
+}
+\newcommand{\lstSetEBNF}{\lstset{
+  language=EBNF,
+  frame=single, %shadowbox,
+  rulesepcolor=\color{black},
+  showspaces=false,
+	showtabs=false,
+	tabsize=2,
+  numberstyle=\tiny\ttfamily,
+	numbers=left,
+  basicstyle=\scriptsize\ttfamily,
+  stringstyle=\color{sh_string},
+  keywordstyle=\color{sh_keyword}\bfseries,
+  commentstyle=\color{sh_comment}\itshape,
+  captionpos=b,
+  xleftmargin=0.7cm,
+	xrightmargin=0.5cm,
+  lineskip=-0.1em,
+	breaklines=true,
+}}
 
 \lstSetJava
 
