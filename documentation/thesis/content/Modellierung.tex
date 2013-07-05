@@ -16,8 +16,9 @@ Bei den Schnittstellen zur Beschreibung des Datenbankmodells für den Generator w
 
 Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
 \begin{itemize}
-	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es nutzt das Builder-Pattern in Verbindung mit
-	  einem Fluent Interface.
+	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es basiert auf \textit{SB Testing DB} und ist
+	  zu diesem abwärtskompatibel. Der Name spiegelt wieder, dass ein Fluent-Java-API verwendet wird (siehe auch Abschnitt 
+		\ref{sec:grundlagen:sbtestingdb}).
 			
 	\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
 	  zu modellieren.
@@ -59,9 +60,13 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 		Tests nicht an die neuen Schnittstellen angepasst werden.
 			
 	\item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
-	  bietet das Fluent Builder API einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung.
-	
-  \item \textbf{Einheitliches Verhalten}: Beide APIs zeigen auf diese Weise ein einheitlicheres Verhalten.
+	  kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
+		Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
+		und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
+			
+  \item \textbf{Einheitlicher Funktionsumfang}: Funktionen, die in das Fluent Builder API integriert werden, können in
+	  beiden APIs genutzt werden. Die Folge ist, dass der Funktionsumfang nicht bzw. weniger stark von der genutzten API
+		abhängt. 
 
 \end{itemize}
 
@@ -74,6 +79,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 	\subsection{DSL-Entwürfe}
 
 		\subsubsection{Entwurf 1}
+		\label{sec:implementierung:entwurf:1}
 		
 		Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
 		
@@ -114,14 +120,17 @@ WAESCH beaufsichtigt P_VSYS
 
 		\end{lstlisting}
 		
-		Diese DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet Variablennamen für die Modellierung von Beziehungen. 
-		Da für jeden Wert eine eigene Zeile verwendet wird, werden umfangreiche Daten schnell unübersichtlich. Die Beschreibung
-		der Beziehungen abseits der Definition der Daten erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+		Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
+		Variablennamen für die Modellierung von Beziehungen. Da für jeden Wert eine eigene Zeile verwendet wird, werden
+		umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der Definition der Daten
+		erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 
 
 		\subsubsection{Entwurf 2}
+		\label{sec:implementierung:entwurf:2}
 		
-		Ein leicht abgewandelter Entwurf zeigt, wie sich die Beziehungen näher an den eigentlichen Daten beschreiben lassen könnten.
+		Ein leicht abgewandelter Entwurf (siehe Listing \ref{listing:dslentwurf2}) zeigt, wie sich die Beziehungen näher an
+		den eigentlichen Daten beschreiben lassen könnten.
 		An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
 		
 
@@ -160,12 +169,13 @@ DPATTERNS = lehrveranstaltung {
 	
 
 		\subsubsection{Entwurf 3}
+		\label{sec:implementierung:entwurf:3}
 		
-		Der dritte Entwurf versucht die Daten durch eine tabellarische Struktur übersichtlich zu gestalten. Sie kommt mit
-		wenig syntaktischem Ballast aus. Ein Label vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die
-		Tabelle selbst beginnt mit einer Kopfzeile, die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten
-		werden vom Oder-Operator (|) getrennt. Die erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten
-		mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
+		Listing \ref{listing:dslentwurf3} zeigt den dritten Entwurf einer DSL. Es wird versucht die Daten durch eine
+		tabellarische Struktur übersichtlich zu gestalten. Die Sprache kommt mit wenig syntaktischem Ballast aus. Ein Label
+		vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die Tabelle selbst beginnt mit einer Kopfzeile,
+		die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten werden vom Oder-Operator (|) getrennt. Die
+		erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
 
 		\lstSetTiny
 		\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
@@ -202,37 +212,13 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	
 	Zur besseren Übersicht kann es bei größeren Tabellen sinnvoll sein, den Tabellenkopf zu wiederholen.
 	
-  \subsection{Entscheidung}
+  \subsection{Gewählter DSL-Entwurf}
 
 	Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
 	Die Darstellung wirkt übersichtlich, da sie wenig syntaktischen Ballast hat. Es können schnell viele Daten
 	überblickt werden. Die tabellarische Schreibweise sollte für die Zielgruppe vertraut wirken und intuitiver
 	sein als die anderen Darstellungsformen.
 	
-	Die Syntax der Sprache wird mit Hilfe der Erweiterten Backus-Nauer-Form in Listing \ref{listing:ebnf:table}
-	definiert. 
-	
-\lstSetEBNF
-\begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
-Table         = TableName, ".rows {", NewLine, { HeadRow, { DataRow } }, 
-                NewLine, "}";
-TableName     = Character, { ( Character | Digit | Underscore ) };
-HeadRow       = ColumnName, { Separator, ColumnName }, NewLine;
-DataRow       = ColumnData, { Separator, ColumnData }, NewLine;
-ColumnName    = Character, { ( Character | Digit | Underscore ) };
-ColumnData    = ? numerische Literale, symbolische Konstanten, 
-                Methodenaufrufe ?
-Separator     = "|";
-NewLine       = "\n";
-Underscore    = "_";
-Digit         = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9";
-Character     = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"|
-                "n"|"o"|"p"|"q"|"r"|"s"|"t"|"u"|"v"|"w"|"x"|"y"|"z"|
-                "A"|"B"|"C"|"D"|"E"|"F"|"G"|"H"|"I"|"J"|"K"|"L"|"M"|
-                "N"|"O"|"P"|"Q"|"R"|"S"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z";
-\end{lstlisting}
-\lstSetJava
-
 	Darüber hinaus soll es möglich sein, Beziehungen auch außerhalb der Tabellen zu beschreiben. Dafür wäre eine Syntax
 	denkbar, die sich an die Modellierung der Beziehungen in Listing \ref{listing:dslentwurf1} orientiert.
 	
@@ -242,7 +228,7 @@ Character     = "a"|"b"|"c"|"d"|"e"|"f"|"g"|"h"|"i"|"j"|"k"|"l"|"m"|
 
 Da sich die DSL in die bisherige Werkzeug-Kette von Seitenbau integrieren lassen soll
 (\refsec{sec:anforderungen:allgemeineanforderungen}), sollte die DSL in Java nutzbar sein. Zwar kann eine DSL
-grundsätzlich auch in Java realisiert werden, doch die Möglichkeiten diesbezüglich sind relativ eingeschränkt 
+grundsätzlich in Java realisiert werden, doch die Möglichkeiten diesbezüglich sind relativ eingeschränkt 
 und die DSL sieht immer noch nach Java aus. Es lassen sich allerdings auch andere Sprachen im Java-Umfeld nutzen.
 
 Eine davon ist {Groovy. Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
@@ -263,8 +249,8 @@ myList.append("value 1").append("value 2");
 myList append "value 1"  append "value 2"  
 	\end{lstlisting}
 
-Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures (Funktionsabschlüsse) von
-Java ab. Ein Closure ist ein Codeblock, der wie eine Funktion aufgerufen und genutzt werden kann. In Java lassen
+Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures von Java ab. Ein Closure
+(Funktionsabschluss) ist ein Codeblock, der wie eine Funktion aufgerufen und genutzt werden kann. In Java lassen
 sich Closures mit syntaktisch umfangreicheren Methoden-Objekten nachbilden. Ein Methoden-Objekt stellt eine
 Instanz einer (möglicherweise anonymen) Klasse dar, die nur eine Methode implementiert. \cite[40]{GROOVY_IM_EINSATZ} 
 \todo{Quelle Kent Beck Smalltalk Best Practice Patterns} 
@@ -291,18 +277,18 @@ mit Java-Anwendungen.
 		Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \texttt{TableParser},
 		enthält dafür die Methode \texttt{parseTableClosure}. Die Methode soll als Ergebnis eine Liste
 		von Tabellenzeilen zurückliefern. Da an dieser Stelle noch keinerlei Interpretation der Tabellenwerte
-		durchgeführt wird, stellt eine Tabellenzeile selbst ebenfalls eine Liste dar - aus den Objekten
+		durchgeführt wird, stellt eine Tabellenzeile selbst ebenfalls eine Liste dar -- aus den Objekten
 		der Spalten.
 		
 		Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator implementiert
 		werden, ist die übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende
 		Methode für den Operator zu erweitern. Diese Methode trägt einen vorgegebenen Namen und erwartet als
-		binärer Operator  den rechten Operanden als Parameter (eine  Übersicht findet sich beispielsweise in 
+		binärer Operator  den rechten Operanden als Parameter (eine Übersicht findet sich beispielsweise in 
 		\cite[58]{GROOVY_IM_EINSATZ}).
 		
 		Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
 		ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert um eine Tabelle zu parsen. Dieser wenig
-		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen - kommen neue Datentypen
+		generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen -- kommen neue Datentypen
 		hinzu, müsste der Code erweitert werden. Schlimmer wiegt jedoch, dass diese Anpassungen global
 		für die entsprechenden Klassen gelten. Das könnte ungewollte Seiteneffekte nach sich ziehen, wenn 
 		Oder-Operatoren auch an anderer Stelle verwendet werden, wie z.B. zum Berechnen eines Spalten-Wertes.
@@ -381,7 +367,9 @@ class TableParser {
 }
 		\end{lstlisting}
 		
-		Die statischen Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \textit{TableParser}. Ihre Ergebnisse
+		\todo{delegate this und resolve strategy erläutern :-) }
+		
+		Die statischen Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. Ihre Ergebnisse
 		können sie demnach auch nur in statische Elementen aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das
 		gleichzeitige Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale
 		Liste verwendet. \todo{thread local erklären mit quelle} \cite{JAVA_CONCURRENCY_IN_PRACTICE}
@@ -428,7 +416,7 @@ def dataset = [
 		müssen nicht zwangsläufig in einem eigenen Block definiert werden.
 		
 		Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
-		Ein AST-Transformationsklasse, erhält über das Visitor-Pattern zugriff auf die abstrakten Syntaxbäume einzelner
+		Ein AST-Transformationsklasse, erhält über das Visitor-Pattern Zugriff auf die abstrakten Syntaxbäume einzelner
 		Module (\cite[331ff]{DESIGN_PATTERNS}). Groovy Module beinhalten Klassen, aber auch die modulspezifischen
 		Import-Anweisungen. Auf die einzelnen Klassen kann erneut über das Visitor-Pattern auf die einzelnen Methoden
 		zugegriffen werden. Diese lassen sich dann Statement für Statement untersuchen.
@@ -465,9 +453,161 @@ def dataset = [
 	Die Laufzeit-Meta-Programmierung erlaubt zwar weniger Anpassungen an die Sprache, ist aber für
 	die gewünschte DSL ausreichend und die Umsetzung einfacher. AST-Transformationen könnten zwar Mehrwert bieten, z.B.
 	könnte auch der Double-Pipe-Operator genutzt werden und Labels, allerdings überwiegen die Nachteile des weniger
-	ausdrucksstarken und damit wartungsunfreundicheren Codes. Als Konsequenz wird die einfachere
+	ausdrucksstarken und damit wartungsunfreundlicheren Codes. Als Konsequenz wird die einfachere
 	Laufzeit-Meta-Programmierung verwendet.
 		
+\section{Definition der Sprache}
+\label{sec:implementierung:sprachdefinition}
+
+Die Entscheidung zugunsten der Laufzeit-Meta-Programmierung führt zu einigen Änderungen an der Sprache aus dem dritten
+Entwurf (siehe Abschnitt \ref{sec:implementierung:entwurf:3}). Wie beschrieben, wird auf den Double-Pipe-Operator
+verzichtet. Anstelle der Labels treten vordefinierte Variablen, deren Namen sich nach jeweiligen Tabellenbezeichnungen 
+richten. Auf diesen Variablen kann zum Definieren von Tabellendaten die Methode \texttt{rows} aufgerufen werden.
+Die Daten werden in Form eines Closures übergeben. 
+
+Zur Übersicht sollen einzelne DataSets als eigene Klassen definiert werden, die auf einer Datenbank-Modell-spezifischen
+abstrakten Klasse basiert. Für die Definition der Tabellen-Daten ist die Methode \texttt{tables} vorgesehen, über die
+DSL ausgedrückte Beziehungen sollen innerhalb der Methode \texttt{relations} modelliert werden.
+
+Die Syntax für die Definition der Daten einer Tabelle wird mit Hilfe der Erweiterten Backus-Naur-Form in
+Listing \ref{listing:ebnf:table} definiert.
+	
+\lstSetEBNF
+\begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
+Table       = TableName, "Table.rows ", TableData;
+TableName   = ? Name einer Tabelle im Modell ?;
+TableData   = {", NewLine, { HeadRow, { DataRow } }, NewLine, "}"
+HeadRow     = ColumnName, { Separator, ColumnName }, NewLine;
+DataRow     = ColumnData, { Separator, ColumnData }, NewLine;
+ColumnName  = ? vorgegeben durch Tabelle ?;
+ColumnData  = ? numerische Literale, symbolische Konstanten, 
+              Methodenaufrufe ?
+Separator   = "|";
+NewLine     = "\n";
+\end{lstlisting}
+\lstSetJava
+
+\lstSetEBNF
+\begin{lstlisting}[caption=EBNF der Relationen, label=listing:ebnf:relations]
+Relations   = {", NewLine, { Relation, NewLine }, "}"
+Relation    = Ref, ".", RelationName, "(", RefList, ")", [ Attributes ]
+RefList     = Ref, [ { ", ", Ref } ]
+Ref         = ? ... ?
+Attributes  = { ".", Attribute, "(", Value, ")" } ]
+Attribute   = ? ... ?
+Value       = ? numerische Literale, symbolische Konstanten, 
+              Methodenaufrufe ?
+NewLine     = "\n";
+\end{lstlisting}
+\lstSetJava
+
+\section{Beispiel-DataSet in Groovy}
+\label{sec:modellierung:beispieldataset}
+
+In Kapitel \ref{chap:anforderungen} wurden Beispiel-Daten in unterschiedlichen Verfahren modelliert. Aufgrund der Übersicht
+wurden dort nur jeweils zwei Tabellen dargestellt. Listing \ref{listing:hochschuledataset:table} zeigt, wie sich die selben
+Daten mit der neuen DSL modellieren lassen -- diesmal allerdings in vollem Umfang.
+	
+\begin{lstlisting}[caption=DataSet modelliert mit Table Builder API, label=listing:hochschuledataset:table]
+class HochschuleDataSet extends HochschuleBuilder
+{
+
+def tables() {
+
+	professorTable.rows {
+		REF    | name    | vorname  | titel            | fakultaet
+		WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+		HAASE  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
+	}
+
+	lehrveranstaltungTable.rows {
+		REF       | name                | sws | ects
+		VSYS      | "Verteilte Systeme" | 4   | 5
+		DPATTERNS | "Design Patterns"   | 4   | 3
+	}
+
+	pruefungTable.rows {
+		REF         | typ   | zeitpunkt
+		P_VSYS      | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
+		P_DPATTERNS | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
+	}
+
+	studentTable.rows {
+		REF        | matrikelnummer | name         | vorname    | studiengang
+		MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"      
+		MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"      
+
+		REF        | semester | immatrikuliert_seit
+		MUSTERMANN | 3        | DateUtil.getDate(2012, 3, 1)
+		MOLL       | 4        | DateUtil.getDate(2011, 9, 1)
+	}
+
+}
+
+def relations() {
+	WAESCH.beaufsichtigt(P_VSYS)
+	HAASE.leitet(VSYS, DPATTERNS)
+	HAASE.beaufsichtigt(P_DPATTERNS)
+	P_VSYS.stoffVon(VSYS)
+	DPATTERNS.hatPruefung(P_DPATTERNS)
+	MOLL.schreibt(P_VSYS)
+	MOLL.besucht(VSYS)
+	VSYS.hatTutor(MOLL)
+	MUSTERMANN.besucht(DPATTERNS)
+}
+
+}
+\end{lstlisting}
+
+Insgesamt ist die Darstellung sehr übersichtlich und kommt ohne syntaktischen Ballast aus. Die DataSet-Klasse
+erweitert die generierte Klasse \texttt{HochschuleBuilder} und überschreibt die beiden Methoden \texttt{tables}
+und \texttt{relations}. In diesen Methoden sollen die Tabellendaten bzw. die Beziehungen der Entitäten
+modelliert werden.
+
+Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht angepasst und die Tabelle mit den Studenten in zwei
+Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist diese Darstellung eher unüblich, aber der Parser
+unterstützt auch die Definition von Teiltabellen mit unterschiedlichen Spalten innerhalb eines Closures.
+
+Auffällig ist, dass keine der assoziativen Tabellen explizit auftaucht, diese werden implizit durch die
+Beziehungen modelliert. Assoziative Beziehungen lassen sich genauso wie 1:1- und 1:n-Beziehungen mit Hilfe der DSL
+nicht nur auf Datenbank-Ebene, sondern auch auf der abstrakteren ER-Ebene ausgedrückt werden. Es wäre allerdings
+auch möglich, diese Beziehungsarten innerhalb der Methode \texttt{tables} zu definieren (siehe Listing 
+\ref{listing:hochschuledataset:tablerelations}).
+
+\begin{lstlisting}[caption=Beziehungen innerhalb von Tabellen, label=listing:hochschuledataset:tablerelations]
+class HochschuleDataSet extends HochschuleBuilder
+{
+
+  def tables() {
+    
+		...
+
+  	lehrveranstaltungTable.rows {
+		  REF       | professor
+   		VSYS      | HAASE
+		  DPATTERNS | HAASE
+	  }
+		
+    beaufsichtigtTable.rows {
+      professor | pruefung
+      WAESCH    | P_VSYS
+      HAASE     | DPATTERNS
+    }
+
+  }
+	
+	...
+	
+}
+\end{lstlisting}
+
+Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
+So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
+ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
+Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
+Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwaldung über einen
+einfachen Type-Cast hinaus.
+
 
 \section{Änderungen am Generator-Modell}
 \label{sec:modellierung:generatormodell}
@@ -564,18 +704,18 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
 		.addColumn("ects", DataType.DOUBLE);
   \end{lstlisting}
 	
-	In diesem Beispiel - inkl. der nicht dargestellten Tabellen-Definitionen - werden lediglich drei der
+	In diesem Beispiel -- inkl. der nicht dargestellten Tabellen-Definitionen -- werden lediglich drei der
 	insgesamt neun \texttt{addColumn}-Methoden verwendet.
 	
-	Beide Varianten ähneln sich, Unterschiede liegen - mit Ausnahme der Flags und Relationen - eher im Detail.
-	Die kürzeren Parameterlisten und die zusätzlichen Funktionen führen dazu, dass die selben Modelle in
-	\textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke macht diesen Nachteil allerdings
-	mehr als wett.
+	Die Codes zur Modellierung mit der alten und der neuen API ähnelt sich, die Unterschiede liegen abgesehen
+	von den Flags und Relationen eher im Detail. Listing \ref{listing:model:builder:new} zeigt die Modellierung
+	der selben Tabellen mit dem neuen API. Die kürzeren Parameterlisten und die zusätzlichen Funktionen führen
+	dazu, dass die selben Modelle in \textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke
+	macht diesen Nachteil allerdings mehr als wett.
 	
 	\begin{lstlisting}[caption=Beispiel \textit{STU}-Builder, label=listing:model:builder:new]
 database("Hochschule");
 packageName("com.seitenbau.stu.dbunit.hochschule");
-enableTableModelClassesGeneration();
 
 Table professoren = table("professor")
 		.description("Die Tabelle mit den Professoren der Hochschule")
@@ -611,16 +751,16 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 	\label{sec:modellierung:generatormodell:modellierungskonzepte}
 	
 	Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
-	Dabei können Beziehungen selbst auch Attribute haben. Die folgenden drei grundsätzlichen Beziehungsarten
-	werden dabei unterschieden:
+	Dabei können Beziehungen selbst auch Attribute haben.
+	Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 	
 	  \subsubsection{1:1-Beziehungen}
 	  \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
 		
-		Eine Entität hat eine Beziehung mit einer anderen Entität. Eine solche Beziehung kann realisiert werden,
-		in dem eine Entität einen Fremdschlüssel auf die andere Entität hält. Dabei sollte der Fremdschlüssel
-		und auch die beziehungsbeschreibenden Attribute immer einer Entität hinzugefügt werden, die zwingend
-		eine Beziehung zu einer anderen Entität hat.
+		Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
+		anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
+		Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
+		Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
 		
 		Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
 		kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
@@ -628,22 +768,35 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 		\subsubsection{1:n-Beziehungen}
 	  \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
 
-    Wenn Attribute für alle Beziehungen gelten in die Tabelle mit "`one"', ansonsten in die Tabelle mit "`many"',
-		FK in Tabelle mit "`many"'
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
+		Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
+		stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
 		
+		Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
+		und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
+		der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
 		
 		\subsubsection{n:m-Beziehungen}
 	  \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
 		
-		assoziative Tabelle, Attribute auf Beziehung in die assoziative Tabelle aufnehmen.
-		Kann für jede Beziehung verwendet werden, gerade wenn Attribute zur Beziehung gehören eine Option.
-		JPA kennt keine Attribute auf assoziativen Tabellen, STU schon
+		Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
+		des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
+		die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
+		werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
+		aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
+		
+		Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
+		nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
+		
+		Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
+		die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
+		sorgen.
 
     \subsubsection{Andere Beziehungen}
 	  \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
 		
 		In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
-		auch für zirkuläre und reflexive Beziehungen.
+		auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
 		
 
 \section{Realisisierung}
@@ -707,7 +860,7 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	\end{enumerate}
 
 	Der Nachteil, redundanten Code zu generieren, mag gering erscheinen. Gerade bei generiertem Code wird redundanter Code weniger
-	kritisch gesehen. Allerdings erreicht der Code für zum Parsen einer Tabelle eine gewisse Komplexität, die die Pflege des Codes
+	kritisch gesehen. Allerdings erreicht der Code zum Parsen einer Tabelle eine gewisse Komplexität, die die Pflege des Codes
 	auf Template-Ebene erschwert. Die generische Klasse muss zwar einige Hürden überwinden, hat aber einige Vorteile: Die Wartung
 	erfolgt IDE-unterstützt und Änderungen erfordern in der Regel keine Neu-Generierung der Tabellen-Klassen. Aus Architektur-Sicht
 	ist der größte Vorteil jedoch, dass keine der zu generierenden Klassen spezielle Groovy-Features nutzen muss und es damit 
@@ -750,8 +903,8 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	
 	Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \texttt{REF} vorgesehen,
 	die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
-	Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung der selben Zeile einmal 
-	mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
+	Die Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung der selben Zeile 
+	einmal mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
 	
 	\begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:ref:bindingtable]
 professorTable.rows {
@@ -797,108 +950,6 @@ WAESCH.beaufsichtigt(P_VSYS)
 	Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, dass wenn verschiedene Datenbank-Modelle genutzt werden,
 	aus jedem Modell jeweils ein DataSet gleichzeitig aktiv sein kann.
 	
-	\subsection{Beispiel-DataSet in Groovy}
-	\label{sec:modellierung:realisierung:beispieldataset}
-	
-	In Kapitel \ref{chap:anforderungen} wurden Beispiel-Daten in unterschiedlichen Verfahren modelliert. Aufgrund der Übersicht
-	wurden dort nur jeweils zwei Tabellen dargestellt. Listing \ref{listing:hochschuledataset:table} zeigt, wie sich die selben
-	Daten mit der neuen DSL modellieren lassen - diesmal allerdings in vollem Umfang.
-		
-	\begin{lstlisting}[caption=DataSet modelliert mit Table Builder API, label=listing:hochschuledataset:table]
-class HochschuleDataSet extends HochschuleBuilder
-{
-
-  def tables() {
-
-    professorTable.rows {
-      REF    | name    | vorname  | titel            | fakultaet
-      WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
-      HAASE  | "Haase" | "Oliver" | "Prof. Dr."      | "Informatik"
-    }
-
-    lehrveranstaltungTable.rows {
-      REF       | name                | sws | ects
-      VSYS      | "Verteilte Systeme" | 4   | 5
-      DPATTERNS | "Design Patterns"   | 4   | 3
-    }
-
-    pruefungTable.rows {
-      REF         | typ   | zeitpunkt
-      P_VSYS      | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
-      P_DPATTERNS | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
-    }
-
-    studentTable.rows {
-      REF        | matrikelnummer | name         | vorname    | studiengang
-      MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"      
-      MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"      
-
-      REF        | semester | immatrikuliert_seit
-      MUSTERMANN | 3        | DateUtil.getDate(2012, 3, 1)
-      MOLL       | 4        | DateUtil.getDate(2011, 9, 1)
-    }
-
-  }
-
-  def relations() {
-    WAESCH.beaufsichtigt(P_VSYS)
-    HAASE.leitet(VSYS, DPATTERNS)
-    HAASE.beaufsichtigt(P_DPATTERNS)
-    P_VSYS.stoffVon(VSYS)
-    DPATTERNS.hatPruefung(P_DPATTERNS)
-    MOLL.schreibt(P_VSYS)
-    MOLL.besucht(VSYS)
-    VSYS.hatTutor(MOLL)
-    MUSTERMANN.besucht(DPATTERNS)
-  }
-
-}
-	\end{lstlisting}
-	
-	Insgesamt ist die Darstellung sehr übersichtlich und kommt ohne syntaktischen Ballast aus. Die DataSet-Klasse
-	erweitert die generierte Klasse \texttt{HochschuleBuilder} und überschreibt die beiden Methoden \texttt{tables}
-	und \texttt{relations}. In diesen Methoden sollen die Tabellendaten bzw. die Beziehungen der Entitäten
-	modelliert werden.
-	
-	Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht angepasst und die Tabelle mit den Studenten in zwei
-	Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist diese Darstellung eher unüblich, aber der Parser
-	unterstützt auch die Definition von Teiltabellen mit unterschiedlichen Spalten innerhalb eines Closures.
-
-	Auffällig ist, dass keine der assoziativen Tabellen explizit auftaucht, diese werden implizit durch die
-	Beziehungen modelliert. D.h. assoziativer Beziehungen können mit Hilfe der DSL nicht nur auf Datenbank-Ebene,
-	sondern auch auf der abstrakteren ER-Ebene ausgedrückt werden. Es wäre allerdings auch möglich, die
-	assoziativen Beziehungen innerhalb der Methode \texttt{tables} zu definieren (siehe Listing 
-	\ref{listing:hochschuledataset:tableassoc}).
-
-	\begin{lstlisting}[caption=Assoziative Beziehung über Tabelle, label=listing:hochschuledataset:tableassoc]
-class HochschuleDataSet extends HochschuleBuilder
-{
-
-  def tables() {
-    
-		...
-		
-    beaufsichtigtTable.rows {
-      professor | pruefung
-      WAESCH    | P_VSYS
-      HAASE     | DPATTERNS
-    }
-
-  }
-	
-	...
-	
-}
-	\end{lstlisting}
-	
-	Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
-	So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
-	ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
-	Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
-	Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwaldung über einen
-	einfachen Type-Cast hinaus.
-
-
 	\subsection{Nutzung des DataSets in Unit-Tests}
 	\label{sec:modellierung:realisierung:junittest}
 	
@@ -911,9 +962,11 @@ class HochschuleDataSet extends HochschuleBuilder
 	mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 22 und 23). Außerdem wird dieses DataSet auch bei
 	der \texttt{DataSetRegistry} als aktives DataSet registriert und die Daten in die Datenbank eingespielt. Dadurch
 	kommen die Test-Methoden ohne Verwaltungsaufgaben aus. Der Test \texttt{removeStudent} testet, ob das System die
-	richtigen Änderungen macht, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service die zu löschende
-	Entität übergeben werden muss (Zeile 38), wird in den Zeilen 29 bis 35 eine entsprechende Instanz erstellt und
-	konfiguriert. 
+	richtigen Änderungen in der Datenbank vornimmt, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service
+	die zu löschende Entität übergeben werden muss (Zeile 38), wird in den Zeilen 29 bis 35 eine entsprechende Instanz
+	erstellt und konfiguriert. 
+	
+	\todo{Future erklären bei der Rule}
 	
 	\begin{lstlisting}[caption=JUnit-Tests (reiner Java-Code), label=listing:junittest]
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -998,8 +1051,8 @@ public class HochschuleDataSetDatabaseTest {
   }
 	\end{lstlisting}
 	
-	Sicherheitshalber wird die vom Spring-Service erzeugte ID verwendet, um die Änderungen am DataSet
-	nach zu modellieren. Auf diese Weise bleibt der Test stabil, auch wenn sich das Verhalten des Services
+	Sicherheitshalber wird die vom Spring-Service erzeugte ID verwendet, um die Änderungen am Test-DataSet
+	durchzuführen. Auf diese Weise bleibt der Test stabil, auch wenn sich das Verhalten des Services
 	bezüglich der ID-Generierung ändern sollte.
 		
 	\subsection{Komposition von DataSets}
@@ -1009,7 +1062,7 @@ public class HochschuleDataSetDatabaseTest {
 	der Objektorientierung wie Vererbung. Vererbung würde zu mehr syntaktischem Ballast führen, da die Methoden
 	\texttt{tables} und \texttt{relations} explizit die Methoden aus der Super-Klasse aufrufen müssten. 
 	
-	Der realisierte Mechanismus sieht vor, dass DataSetss andere DataSet-Klassen als Basis verwenden können.
+	Der realisierte Mechanismus sieht vor, dass DataSets andere DataSet-Klassen als Basis verwenden können.
 	Gibt es ein Basis-Datenset, kann die Methode \texttt{extendsDataSet} so überschrieben werden, dass sie
 	die Klasse des Basis-DataSets zurückliefert. Analog dazu gibt es die Methode \texttt{extendsDataSets}, 
 	falls es mehrere Basis-DataSets gibt. Diese muss eine Liste von DataSet-Klassen zurückliefern. Listing
@@ -1042,7 +1095,7 @@ class ExtendedHochschuleDataSet extends HochschuleBuilder {
   def extendsDataSets() { [ DataSet1, DataSet2, DataSet3 ] }
 	\end{lstlisting}
 	
-	Das erweiterte DataSet kann in den selben Unit-Tests verwendet werden. Dabei reicht es aus,
+	Das erweiterte DataSet kann in denselben Unit-Tests verwendet werden. Dabei reicht es aus,
 	die Annotation \texttt{DatabaseSetup} entsprechend anzupassen (siehe Listing 
 	\ref{listing:junittest:extendeddataset}).
 	
@@ -1067,7 +1120,7 @@ class ExtendedHochschuleDataSet extends HochschuleBuilder {
   \subsection{Erweiterungen in generierter API}
 	\label{sec:modellierung:realisierung:apierweiterungen}
 	
-	Die meisten Erweiterungen an der Fluant-Builder-API-Schicht betreffen die Möglichkeit, Ref-Typen statt konkreter Werte
+	Die meisten Erweiterungen an der Fluent-Builder-API-Schicht betreffen die Möglichkeit, Ref-Typen statt konkreter Werte
 	zu verwenden. Dazu gehören unter anderem:
 	
 	\begin{itemize}
@@ -1220,37 +1273,64 @@ dataSet.professorTable.foreach(ACTION);
 \end{figure}
 
   \subsection{Verhalten bei Fehlern in den Tabellendefinitionen}
+	\label{sec:modellierung:realisierung:verhaltenfehler}
+	
+  Selbst eine übersichtliche Darstellung von Tabellendaten schützt nicht vor Fehleingaben. Viele Fehler lassen sich mit
+	Hilfe statischer Analysen erkennen. So werden ungültige Tabellen- und Spaltennamen vom Compiler entdeckt.
+
+  Fehler in der eigentlichen Tabellenstruktur, z.B. eine abweichende Anzahl von Spalten, kann der Standard-Compiler
+	nicht erkennen, genauso wie ungültige Spaltenwerte bzw. ungültige Typen. Solche Fehler werden in der gegenwärtigen
+	Implementierung zur Laufzeit erkannt und führen zum Scheitern der Tests.
+	
+	Die geworfene Ausnahme versucht dem Entwickler dabei zu helfen, die Fehlerstelle zu lokalisieren.
+	Einige können direkt
+	durch den Compiler erkannt werden, z.B. bei Tabellen- und Spalten-Namen.
 	
 
 
   \subsection{Nicht umgesetzt}
 	\label{sec:modellierung:realisierung:nichtumgesetzt}
 	
-	Die Realisierung könnte an manchen Stellen dem Test-Ingenieur mehr manuelle Arbeit abnehmen. So wird darauf verzichtet,
-	beim Löschen einer Zeile aus einer Tabelle auch alle beteiligten Beziehungen zu entfernen. Listing \ref{listing:deleteexample}
-	zeigt, wie ein Professor aus der Professoren-Tabelle entfernt wird. Die erste Zeile entfernt keine Einträge in 
-	anderen Tabellen wie z.B. der Beaufsichtigt-Tabelle. Folglich müssen die Relationen (mehr oder weniger) manuell
-	aus anderen Tabellen entfernt werden.
+	Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
+	warum diese Funktion nicht in \textit{STU} implementiert ist.
+
+		\subsubsection{Zusammengesetzte Schlüssel}
+
+		\subsubsection{Unterstützung für weitere Beziehungstypen}
+		
+		\begin{itemize}
+			\item \textbf{Zirkuläre Beziehungen}
+			\item \textbf{Reflexive Beziehungen}
+			\item \textbf{Ternäre Beziehungen}
+		\end{itemize}
+	
+		\subsubsection{Komfortfunktionen}
+		
+		Die Realisierung könnte an manchen Stellen dem Test-Ingenieur mehr manuelle Arbeit abnehmen. So wird darauf verzichtet,
+		beim Löschen einer Zeile aus einer Tabelle auch alle beteiligten Beziehungen zu entfernen. Listing \ref{listing:deleteexample}
+		zeigt, wie ein Professor aus der Professoren-Tabelle entfernt wird. Die erste Zeile entfernt keine Einträge in 
+		anderen Tabellen wie z.B. der Beaufsichtigt-Tabelle. Folglich müssen die Relationen (mehr oder weniger) manuell
+		aus anderen Tabellen entfernt werden.
 
   \begin{lstlisting}[caption=Löschen von Zeilen, label=listing:deleteexample]
 dataSet.professorTable.deleteRow(HAASE);
 dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
   \end{lstlisting}
 	
-	Diese Entscheidung hat unterschiedliche Gründe:
-	\begin{itemize}
-		\item \textbf{Einsatzgebiet}: Die Bibliothek soll Unit-Tests in Verbindung mit Datenbanken vereinfachen. Es handelt sich
-		  hier nicht um ein API, das in einer Anwendung ausgeliefert wird. Während es in einem API für produktive Anwendungen
-			durchaus wünschenswert sein kann, dass das System beim Löschen von Entitäten gewisse Aufgaben automatisch erledigt,
-			ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
-			Tabellen verbessert die Ausdrucksstärke des Tests.
+		Diese Entscheidung hat unterschiedliche Gründe:
+		\begin{itemize}
+			\item \textbf{Einsatzgebiet}: Die Bibliothek soll Unit-Tests in Verbindung mit Datenbanken vereinfachen. Es handelt sich
+				hier nicht um ein API, das in einer Anwendung ausgeliefert wird. Während es in einem API für produktive Anwendungen
+				durchaus wünschenswert sein kann, dass das System beim Löschen von Entitäten gewisse Aufgaben automatisch erledigt,
+				ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
+				Tabellen verbessert die Ausdrucksstärke des Tests.
+				
+			\item \textbf{Code-Qualität}: Eine Funktion (bzw. Methode) sollte genau eine Aufgabe erledigen. Wenn
+				\texttt{deleteRow} zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
+				\cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
 			
-		\item \textbf{Code-Qualität}: Eine Funktion (bzw. Methode) sollte genau eine Aufgabe erledigen. Wenn
-		  \texttt{deleteRow} zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
-			\cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
-		
-		\item \textbf{Klarheit}: Es ist nicht eindeutig, wie beim Entfernen von Zeilen vorgegangen werden soll, wenn sie
-		  Teil einer Relation sind. Bei einer n:m-Relation könnte sich die Regel ableiten lassen, dass beim Löschen einer
-			Zeile auch alle assoziierten n:m-Relationen entfernt werden können. Aber was ist bei einer 1:n-Relation? Wenn
-			ein Professor entfernt wird, was soll mit Lehrveranstaltungen passieren, die ihm zugeordnet sind?
-	\end{itemize}
+			\item \textbf{Klarheit}: Es ist nicht eindeutig, wie beim Entfernen von Zeilen vorgegangen werden soll, wenn sie
+				Teil einer Relation sind. Bei einer n:m-Relation könnte sich die Regel ableiten lassen, dass beim Löschen einer
+				Zeile auch alle assoziierten n:m-Relationen entfernt werden können. Aber was ist bei einer 1:n-Relation? Wenn
+				ein Professor entfernt wird, was soll mit Lehrveranstaltungen passieren, die ihm zugeordnet sind?
+		\end{itemize}
