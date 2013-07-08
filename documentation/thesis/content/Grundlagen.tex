@@ -29,25 +29,29 @@ noch zu erklären:
 \label{sec:grundlagen:konzepte:tests}
 
 \nomenclature{SUT}{System Under Test (\refsec{sec:grundlagen:konzepte:tests})}
-Das zu testende System wird im Rahmen von Software-Tests als \textit{System Under Test} (abgekürzt SUT) bezeichnet. Dabei kann
-es sich je nach Test und Kontext auf Klassen, Objekte, Methoden, vollständige Anwendungen oder Teile davon beziehen. 
+Eine zu prüfende Anwendung wird im Kontext von Software-Tests als \textit{System Under Test} (abgekürzt SUT) bezeichnet.
+Dabei bezeichnet SUT je nach Test Klassen, Objekte, Methoden oder vollständige Anwendungen. 
 \cite[810f]{XUNIT_TEST_PATTERNS}
 
-Alle Voraussetzungen und Vorbedingungen für einen Testlauf werden unter der Bezeichnung \textit{Test Fixture} zusammengefasst.
-Es repräsentiert den Zustand des SUT vor den Tests. \cite[814]{XUNIT_TEST_PATTERNS} Es gibt verschiedene Arten von Test Fixtures.
-Die im Rahmen dieser Arbeit relevanten sind \textit{Standard Fixture} und \textit{Minimal Fixture}.
+Alle Voraussetzungen und Vorbedingungen für einen Test werden unter der Bezeichnung \textit{Test Fixture} zusammengefasst.
+Ein Test Fixture repräsentiert den Zustand des SUT vor den Tests. \cite[814]{XUNIT_TEST_PATTERNS} Es gibt verschiedene
+Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relevant:
 
-Ein Test Fixture wird als Standard Fixture bezeichnet, wenn es für alle bzw. fast alle Tests verwendet werden kann. Ein Standard
-Feature reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die einzelnen Tests, sondern verhindert darüber hinaus,
-dass der Test-Ingenieur  sich bei verschiedenen Tests immer wieder in unterschiedliche Test-Daten hineinversetzen muss. Nur in
-Ausnahmefällen sollten Tests modifizierte oder eigene Testdaten verwenden. (\cite[305]{XUNIT_TEST_PATTERNS})
+\begin{itemize}
+	\item \textbf{Standard Fixture}: Ein Test Fixture wird als Standard Fixture bezeichnet, wenn es für alle bzw. fast alle 
+	  Tests verwendet werden kann. Ein Standard Feature reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die
+		einzelnen Tests, sondern verhindert darüber hinaus, dass der Test-Ingenieur  sich bei verschiedenen Tests immer wieder
+		in unterschiedliche Test-Daten hineinversetzen muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene 
+		Testdaten verwenden. (\cite[305]{XUNIT_TEST_PATTERNS})
+	
+	\item \textbf{Minimal Fixture}: Minimal Fixtures stellen Test Fixtures dar, deren Umfang auf ein Minimum reduziert wurde. 
+	  Dadurch lassen sich Minimal Fixture im Allgemeinen leichter verstehen. Das Reduzieren der Daten kann auch zu
+		Leistungsvorteilen bei der Ausführung der Tests führen.
+\end{itemize}
 
-Minimal Fixtures stellen Test Fixtures dar, deren Umfang auf ein Minimum reduziert wurde. Dadurch lassen sich Minimal Fixtures
-im Allgemeinen leichter verstehen. Das Reduzieren der Daten kann auch zu Leistungsvorteilen bei der Ausführung der Tests führen.
 (\cite[302]{XUNIT_TEST_PATTERNS})
 
-%\subsection{Datenbanktests}
-Eine übliche Vorgehensweise, Systeme in Verbindung mit Datenbanken zu testen, stellt \textit{Back Door Manipulation} dar.
+Eine übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}.
 Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
 Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
 verhalten hat, wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen - ebenfalls am zu testenden System vorbei.
@@ -60,7 +64,8 @@ semantische Fehler im zu testenden System unter Umständen nur so gefunden werden
 schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
 in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
 nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
-verwendeten Datenbank-System. Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
+verwendeten Datenbank-System. Wird die Datenbank von SQL auf NoSQL umgestellt, müssen die Tests angepasst werden. 
+Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
 zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
 Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
@@ -77,16 +82,20 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 \section{SB Testing DB}
 \label{sec:grundlagen:sbtestingdb}
 
-Die Firma Seitenbau GmbH verwendet für die Java-basierten Datenbankanwendungen das Framework JUnit mit der Erweiterung DbUnit. Da
-die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat Seitenbau die Bibliothek \textit{SB Testing DB} entwickelt. Sie verfolgt keinen generischen Ansatz, der eine Standard-API für die Modellierung von DataSets definieren würde. Stattdessen wird für jedes Datenbank-Modell ein individuelles API bzw. eine interne 
-Java-DSL generiert.
+Die Firma SEITENBAU verwendet für die Java-basierten Datenbankanwendungen das Framework JUnit mit der Erweiterung DbUnit. Da
+die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat SEITENBAU die Bibliothek \textit{SB Testing DB} entwickelt.  \textit{SB Testing DB} generiert anhand eines Domänen-spezifischen
+Datenbank-Modells ein individuelle Klassen zur Modellierung von Testdaten.
 
-Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell die Java-DSL erzeugt wird. Ausgangspunkt ist
-ein relationales Datenbankmodell. Üblicherweise liegt es bei Seitenbau als \textit{Apache-Torque}-Modell im XML-Format vor. Dieses
-muss vor der eigentlichen Code-Erzeugung in ein für den Generator interpretierbares Modell (das SB-Testing-DB-Modell) transformiert
-werden, das die Meta-Informationen zur Datenbank enthält. Zu den notwendigen Meta-Informationen gehören Tabellennamen und Daten zu den
-Spalten, z.B. Name und Datentypen. Das SB-Testing-DB-Modell kann manuell gepflegt und auch vollständig manuell entwickelt werden. Mit
-Hilfe des SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL Model).
+Die generierten Klassen setzen das Builder-Pattern (\cite[11ff]{EFFECTIVEJAVA2ND}) mit einem Fluent API
+(\cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES}) um. In Java werden Fluant APIs mit Hilfe von Method Chaining verwirklicht. Dabei
+liefern Modifikator-Methoden wie Setter das Host-Objekt selbst zurück. Das erlaubt es, mehrere Modifikationen auf dem selben
+Objekt  mit nur einem Ausdruck durchzuführen \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte so aussehen:
+\texttt{student.name("Moll").vorname("Nikolaus")}.
+
+Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell das Fluent API erzeugt wird. Ausgangspunkt ist
+ein relationales Datenbankmodell. Dieses Modell muss in ein für den Generator interpretierbares Modell, das das SB-Testing-DB-Modell,
+transformiert werden. Dies kann automatisch (z.B. wenn das Modell in Form eines \textit{Apache-Torque}-Modell vorliegt) oder manuell
+geschehen. Das SB-Testing-DB-Modell enthält Informationen zu Tabellennamen und Angaben zu den Spalten, z.B. Namen und Datentypen. 
 
 \begin{figure}[H]
 	\centering
@@ -96,21 +105,20 @@ Hilfe des SB-Testing-DB-Modells erzeugt der Generator die interne Java-DSL (DSL 
 
 Das SB-Testing-DB-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentliche Vorteile bringen. Das API
 bzw. die erzeugten DataSets sind ausschließlich für den Einsatz im Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
-die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Exception
+die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Fehlermeldung
 wird ausgelöst.
 Aus Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
 dass ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist gering im Vergleich zu dem Aufwand, 
 Constraint-Mechanismen verschiedener Datenbanksysteme nachzubauen.
 
-Der Generator erzeugt die Java-Klassen mit Hilfe von \textit{Apache Velocity}. Velocity ist eine sogenannte Template-Engine, die aus
+Der Generator nutzt für die Code-Generierung \textit{Apache Velocity}. Velocity ist eine Template-Engine, die Dokumente mit Hilfe von
+Templates erzeugt. Diese Templates bestehen aus Text und besonderen Velocity-Anweisungen. Zu den Anweisungen gehören unter anderem
+Platzhalter, die während der Generierung durch konkrete Werte ausgetauscht werden. Velocity bietet mit Verzweigungen und Schleifen
+auch Anweisungen zur Steuerung der Generierung.
+
 Templates Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
 auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
 
-Die generierten Klassen setzen das Builder-Pattern (\cite[11ff]{EFFECTIVEJAVA2ND}) mit einem Fluent API
-(\cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES}) um. In Java werden Fluant APIs mit Hilfe von Method Chaining verwirklicht. Dabei liefern
-Modifikator-Methoden wie Setter das Host-Objekt selbst zurück. Das erlaubt es, mehrere Modifikationen auf dem selben Objekt 
-mit nur einem Ausdruck durchzuführen \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte so aussehen:
-\texttt{student.name("Moll").vorname("Nikolaus")}.
 
 
 Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
@@ -123,26 +131,24 @@ Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Kla
 		Tabellen.
 
 	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert. Der Klassenname setzt sich aus dem Namen
-	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum
-	  Hinzufügen und zum Löschen von Tabellenzeilen bereit. Für Tabellenzeilen gibt es eine passende RowBuilder-Klasse.
-		Außerdem kann nach Zeilen gesucht werden. Dafür gibt es einerseits  eine Klasse (\texttt{FindWhere}, Beschreibung
-		siehe unten) für einfache Werte-Suchen. Andererseits gibt es auch die Möglichkeit, eine Zeile in Form eines
-		RowBuilders als Such-Parameter zu verwenden. Die gefundenen Zeilen müssen in allen auf dem RowBuilder gesetzten
-		Werten in den jeweiligen Spalten übereinstimmen.
-		
-		Da die Klasse das DbUnit-Interface \texttt{ITable} implementiert, kann sie direkt in DbUnit-DataSets verwendet werden. 
-		Dafür muss die Klasse auch Meta-Informationen zu den Spalten beinhalten.
+	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum Modellieren der Daten und für den Zugriff
+		auf Tabellenzeilen bereit. 
+		Einzelne Tabellenzeilen werden von einer passenden RowBuilder-Klasse repräsentiert.
+		Damit die Klasse direkt zur Erstellung von DbUnit-DataSets verwendet werden kann, implementiert sie das DbUnit-Interface
+		\texttt{ITable}.
 	
 	\item \textbf{RowBuilder}: Zu jeder Tabelle wird eine Klasse zur Repräsentation einer Tabellenzeile generiert. Die Klasse
 	  beinhaltet für jede Spalte mehrere Methoden zum Setzen und Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich
 		zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und dem Spaltennamen. \todo{Raw-Setter erklären?}
 	
 	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es für jede Tabelle die innere Klasse \texttt{FindWhere}. Sie ermöglicht
-	  die Suche nach  einem Wert in einer Spalte. Es wird eine Liste von Tabellenzeilen zurückgeliefert. Nicht zu unrecht trägt sie
-		den Ausdruck "`Find"' im Namen. Sie dient dem Zweck, Zeilen zu finden, von denen bekannt ist, dass es sie gibt. Entsprechend
-		wird eine Exception geworfen, wenn keine Zeile entsprechend dem Suchkriterium gefunden wird.
+	  die Suche nach  einem Wert in einer Spalte und liefert eine Liste von Tabellenzeilen. Die Methode ist zur Suche nach Zeilen
+		vorgesehen, von denen erwartet wird, dass es sie gibt. Passt keine Zeile zum Suchkriterium gefunden, wird eine
+		Exception ausgelöst.
 	
 \end{itemize}
+
+\todo{Bild mit Text integrieren}
 
 \begin{figure}[H]
   \centering

@@ -3,7 +3,8 @@
 
 Die Erweiterungen und andere Verbesserungen fließen nicht in die bisher genutzte Bibliothek \textit{SB Testing DB} ein.
 Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
-\url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz XYZ\todo{Welche Lizenz?}
+\url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz Apache ... 
+\todo{Welche Lizenz?}
 
 Die bisherigen Schnittstellen sollen so weit möglich nur ergänzt und nicht verändert werden, so dass auf
 \textit{SB Testing DB} basierende Tests möglichst leicht auf \textit{STU} portiert werden können. Neue bzw. angepasste
@@ -73,6 +74,8 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 
 
 \section{Entwurf der DSL}
+
+
 
 ... Vor- und Nachteile einzelner Entwürfe ...
 
@@ -489,7 +492,7 @@ NewLine     = "\n";
 
 \lstSetEBNF
 \begin{lstlisting}[caption=EBNF der Relationen, label=listing:ebnf:relations]
-Relations   = {", NewLine, { Relation, NewLine }, "}"
+Relations   = { Relation, NewLine }
 Relation    = Ref, ".", RelationName, "(", RefList, ")", [ Attributes ]
 RefList     = Ref, [ { ", ", Ref } ]
 Ref         = ? ... ?
@@ -636,45 +639,64 @@ einfachen Type-Cast hinaus.
 	
 	Zu den in \textit{STU} enthaltenen Standard-Spalten-Flags gehören:
 	\begin{itemize}
-		\item \textbf{Identifikator-Spalte}: Als Identifikator-Spalte wird die Spalte bezeichnet, die einen für die Zeile einmaligen
-		  Wert enthält, über die eine Zeile zweifelsfrei identifiziert werden kann. In dieser Eigenschaft ähnelt sie dem Primärschlüssel
-			in Datenbanken. Es bietet sich an, Primärschlüssel als Identifikator-Spalte zu modellieren. Dennoch gibt es keine Kausalität
-			zwischen Identifikator-Spalte und Primärschlüssel: Ein Primärschlüssel muss nicht als Identifikator-Spalte modelliert werden,
-			und eine Identifikator-Spalte muss kein Primärschlüssel sein.
-			
-			Die Identifikator-Spalte ist die Spalte, die bei Beziehungen verwendet wird, wenn das Ziel eine Tabelle und nicht eine Spalte
-			der Tabelle ist. Das Flag wird über die Methode \texttt{identifierColumn} aktiviert. Dabei werden die Flags Unveränderbar und
-			Einmalig ebenfalls aktiviert.
+		\item \textbf{Identifier}: Als Identifikator-Spalte wird die Spalte bezeichnet, die einen für die Zeile einmaligen
+		  Wert enthält, über die eine Zeile zweifelsfrei identifiziert werden kann. Ein Primärschlüssel stellt eine solche
+			Spalte dar, ist jedoch keine Voraussetzung für dieses Flag. Das Flag wird über die Methode \texttt{identifier()}
+			aktiviert. Dabei wird das Flag \texttt{Immutable} implizit aktiviert.
 
-		\item \textbf{Next-Value-Methode}: \textit{SB Testing DB} (und damit auch \textit{STU}) bietet die Möglichkeit, Werte-Generatoren 
+		\item \textbf{Default Identifier}: Dieses Flag stellt eine Art Erweiterung für die das Flag \texttt{Identifier} dar. Die mit
+		  diesem Flag markierte Spalte wird für Foreign-Key-Beziehungen auf die Tabelle verwendet, sofern nicht explizit eine
+			andere Spalte angegeben wird. Die Methode zum setzen des Flags ist \texttt{defaultIdentifier()}, die Flags \texttt{Identifier}
+			und \texttt{Immuatable} werden automatisch aktiviert.
+			
+		\item \textbf{Add Next Method}: \textit{SB Testing DB} (und damit auch \textit{STU}) bietet die Möglichkeit, Werte-Generatoren 
 		  zu verwenden um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der 
 			Generator über eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem
 			Spaltennamen zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das
 			entsprechende Flag über \texttt{addNextMethod()} aus dem Builder-API gesetzt wurde. Standardmäßig muss die Next-Value-Methode
 			manuell aufgerufen werden, über ein Flag kann dies auch automatisch erfolgen.
 			
-		\item \textbf{Automatischer Aufruf der Next-Value-Methode}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
+		\item \textbf{Auto Invoke Next}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
 		  Anlegen einer neuen Tabellenzeile automatisch aufgerufen. Beim Setzen des Flags über die Builder-Methode
 			\texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt. 
-			
-		\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
 		
-		\item \textbf{Unveränderbar}: Ist dieses Flag gesetzt, kann ein Wert in einer Spalte nur ein Mal gesetzt werden, und danach
+		\item \textbf{Immutable}: Ist dieses Flag gesetzt, kann ein Wert in einer Spalte nur ein Mal gesetzt werden, und danach
 		  nicht mehr verändert werden. Wenn das Flag zum automatischen Aufruf der Next-Value-Methode aktiviert ist, kann der
 			automatisch erzeugte Wert allerdings überschrieben werden. Die Methode zum
 			Aktivieren des Flags heißt \texttt{immutable()}.
-		
-		\item \textbf{Einmalig}: Dieses Flag gibt an, dass die Werte einer Spalte nur jeweils ein Mal vorkommen, und sie deshalb
-		  zur Identifikation einer Zeile verwendet werden können. Das Flag sollte auch nur dann verwendet werden, wenn eine solche
-			Identifikation erwünscht ist.
 			
-			Aufgrund des Anwendungszwecks wird das Flag Unveränderbar implizit aktiviert. Das Einmalig-Flag wird über die Methode
-			\texttt{unique()} aktiviert und setzt keine Unique-Eigenschaft in der Datenbank voraus.
+		%\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
 		  
 	\end{itemize}
 	
 	
 	\subsection{Modellierung von Relationen über Builder-Klassen}
+	\label{sec:modellierung:generatormodell:relationen}
+	
+	In Bezug auf die Modellierung des Datenbank-Modells für den Generator stellt das neue API zur Modellierung der 
+	Relationen die größte Verändernug in \textit{STU} gegenüber \textit{SB Testing DB} dar. Über \texttt{reference}
+	kann der Builder zur Beschreibung der Relation aufgerufen werden. Die Beschreibung findet auf zwei Ebenen statt:
+	
+	\begin{itemize}
+		\item \textbf{local}: Der als \texttt{local} bezeichnete Teil beschreibt die Beziehung aus Sicht der Tabelle,
+		  in der sich die Spalte befindet. 
+			
+		\item \textbf{foreign}: Der \texttt{foreign}-Teil dient der Beschreibung der Beziehung aus Sicht der Tabelle,
+		  mit der die Beziehung hergestellt wird.
+		
+	\end{itemize}
+	
+	Beide Ebenen erlauben die Angabe eines Bezeichners, der die Beziehung in die jeweilige Richtung beschreibt,
+	der Ausgangspunkt wird durch die Ebene bestimmt. Dieser Bezeichner werden für die Methoden zur Modellierung
+	der Beziehungen verwendet. Daneben können auch noch Beschreibungstexte angegeben werden, die für die JavaDoc
+	genutzt werden.
+	
+	In Abschnitt \ref{sec:modellierung:generatormodell:buildervergleich} befindet sich ein Beispiel für die 
+	Modellierung von Relationen.
+	
+	Durch die Nutzung des Builder-Patterns lassen sich weitere Attribute verhältnismäßig einfach hinzufügen, z.B.
+	für die Generierung der Testdaten (siehe Kapitel \ref{chap:generieren}).
+	
 	
 	\subsection{Alte und neue Builder-Klassen im Vergleich}
 	\label{sec:modellierung:generatormodell:buildervergleich}
@@ -791,6 +813,26 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
 		Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
 		die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
 		sorgen.
+		
+		Bei der Modellierung von n:m-Beziehungen kann auf den \texttt{local}-Teil der Beziehung verzichtet werden.
+		\textit{STU} verwendet automatisch den \texttt{foreign}-Teil der assoziierten Spalte. Anstelle der Methode
+		\texttt{table} wird eine assoziative Tabelle mit der Methode \texttt{associativeTable} beschrieben. Listing
+		\ref{listing:model:builder:assoc} zeigt ein Beispiel für die Modellierung einer assoziativen Tabelle:
+
+	  \begin{lstlisting}[caption=Beispiel für assoziative Tabelle, label=listing:model:builder:assoc]
+associativeTable("besucht")
+  .column("student_id", DataType.BIGINT)
+    .reference
+      .foreign(studenten)
+        .name("besucht")
+        .description("Die Lehrveranstaltungen, die ein Student besucht.")
+  .column("lehrveranstaltung_id", DataType.BIGINT)
+    .reference
+      .foreign(lehrveranstaltungen)
+        .name("besuchtVon")
+        .description("Die Studenten, die eine Lehrveranstaltung besuchen.")
+ .build();
+    \end{lstlisting}
 
     \subsubsection{Andere Beziehungen}
 	  \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
@@ -884,15 +926,6 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 	\texttt{ColumnBinding} implementiert, die es erlaubt den zu einem Wert gehörenden RowBuilder zu finden.
 	
 	
-
-	- TableParser (Groovy)
-	- TableParserContext
-	- TableParserCallback
-	- zeilenweise wegen Exceptions
-	- Groovy-Anteil minimiert
-	- Diagramm :-)
-	
-	
 	\subsection{Referenzen und Scopes}
 	\label{sec:modellierung:realisierung:refs_and_scopes}
 	
@@ -966,7 +999,12 @@ WAESCH.beaufsichtigt(P_VSYS)
 	die zu löschende Entität übergeben werden muss (Zeile 38), wird in den Zeilen 29 bis 35 eine entsprechende Instanz
 	erstellt und konfiguriert. 
 	
-	\todo{Future erklären bei der Rule}
+	Der Test verwendet eine \texttt{DatabaseTesterRule} (Zeile 9), die unter anderem für die Vergleiche der Datenbank
+	mit den DataSets verantwortlich ist. Dazu muss ihr die Datenbank bekannt sein, die in Form einer \texttt{DataSource}
+	vorliegt (Zeile 6). Da dieses Feld durch \textit{Depenency Injection} (\todo{Literatur dependency injection}) erst
+	nach der Instantiierung der Klasse belegt wird, kann bei der Erzeugung von \texttt{dbTester} der Wert noch nicht
+	verwendet werden. Dies wird durch die Verwendung eines Future-Objekts gelöst, das die \texttt{DataSource} erst dann
+	zurückliefert, wenn sie gebraucht wird (Zeilen 10 bis 15). 
 	
 	\begin{lstlisting}[caption=JUnit-Tests (reiner Java-Code), label=listing:junittest]
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -1177,7 +1215,9 @@ class HochschuleDataSet extends HochschuleBuilder
   	  \end{lstlisting}
 			
 			Durch die Nutzung von Future Values enthält die Tabelle immer die korrekte Anzahl, ohne dass beim Modellieren
-	    der Tutoren-Beziehungen Anpassungen notwendig wurden. In Groovy können Closures verwendet werden, ...
+	    der Tutoren-Beziehungen Anpassungen notwendig wurden. Da die Verwendung von Future Values den Code etwas aufbläht,
+			interpretiert \texttt{STU} Groovy Closures in Tabellen automatisch als Future Values. Die Methode \texttt{tutors()}
+			liefert ein solches Closure zurück.
 
 
     \item \textbf{findWhere}: Das bisherige API sah Suchen von Zeilen in einer Tabelle ausschließlich über konkrete Werte
@@ -1193,8 +1233,10 @@ dataSet.table_Professor.findWhere.vorname(HAASE);
 	    \end{lstlisting}
 
 		  
-	  \item \textbf{getWhere}:
-		  - Zusätzlich zu findWhere
+	  \item \textbf{getWhere}: Analog zu \texttt{findWhere} gibt es die Möglichkeit, einzelne Zeilen über \texttt{getWhere}
+		  abzufragen. Der einzige Unterschied zwischen beiden ist, dass \texttt{getWhere} das Ergebnis in Form eines 
+			\texttt{Optional}-Wertes zurückliefert. Für den Fall, dass nur ein Ergebnis oder unter Umständen gar kein Ergebnis
+			erwartet wird, kann \texttt{getWhere} anstelle von \texttt{findWhere} genutzt werden.
 	  
 		\item \textbf{find}: Sind die einfachen Such-Anfragen über \texttt{findWhere} bzw. \texttt{getWhere} nicht mächtig genug,
 		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden. In Listing \ref{listing:find} wird
@@ -1238,8 +1280,16 @@ dataSet.professorTable.foreach(ACTION);
 	\label{sec:modellierung:realisierung:javadoc}
 	
 	Zum guten IDE-Support gehört auch, dass der Tester beim Erstellen der Tests durch aussagekräftige
-	JavaDoc unterstützt wird.
-
+	JavaDoc unterstützt wird. Der Generator erzeugt für das DataSet, für die Tabellen und für die Referenz-Typen
+	JavaDoc, das neben einer reinen Beschreibung auch Beispiele für die Nutzung enthält.
+	
+  Die in der JavaDoc enthaltenen Beispiel-Daten werden auf sehr einfache Art generiert, für jeden Java-Datentyp
+	gibt es einen Beispielwert. Sie sollen mit Hilfe der Erkenntnisse bezüglich der Generierung von Testdaten 
+	verbessert werden.
+	
+	Einige Beispiel-Quellcodes in den Builder-Klassen zur Beschreibung des Datenbank-Modells werden über
+	Unit-Tests überprüft. Auf diese Weise soll sichergestellt werden, dass Änderungen am API auch auf die JavaDoc
+	übertragen werden.
 
   Entscheiden welche Bilder und neue Screenshots machen
 \begin{figure}[H]
@@ -1279,14 +1329,19 @@ dataSet.professorTable.foreach(ACTION);
 	Hilfe statischer Analysen erkennen. So werden ungültige Tabellen- und Spaltennamen vom Compiler entdeckt.
 
   Fehler in der eigentlichen Tabellenstruktur, z.B. eine abweichende Anzahl von Spalten, kann der Standard-Compiler
-	nicht erkennen, genauso wie ungültige Spaltenwerte bzw. ungültige Typen. Solche Fehler werden in der gegenwärtigen
-	Implementierung zur Laufzeit erkannt und führen zum Scheitern der Tests.
+	nicht erkennen, genauso wie ungültige Werte bzw. ungültige Typen. Solche Fehler werden in der gegenwärtigen
+	Implementierung zur Laufzeit erkannt und führen zum Scheitern der Tests. Dazu wirft der Tabellen-Parser eine
+	Exception der Klasse \texttt{TableParserException}. Wenn ein falscher Typ verwendet wird, könnte die Meldung
+	der Exception so aussehen: \textit{Cannot set value <5> of type java.lang.Integer, expected class java.lang.String
+	in [TableRowModel: <JobsRef> | 5 | "Creating software"]}
 	
-	Die geworfene Ausnahme versucht dem Entwickler dabei zu helfen, die Fehlerstelle zu lokalisieren.
-	Einige können direkt
-	durch den Compiler erkannt werden, z.B. bei Tabellen- und Spalten-Namen.
-	
-
+	Um die Lokalisation der fehlerhaften Stelle zu erleichtern, wird der Stack-Trace der geworfenen Exception angepasst.
+	Die Ursache dafür liegt in der Arbeitsweise des Tabellen-Parsers: Der Parser arbeitet zeilenweise,
+	d.h. er liest immer eine Zeile vollständig ein und interpretiert die Daten erst im Anschluss - wenn die
+	Ausführung der Zeile abgeschlossen ist. Kommt es zu einem Fehler, befindet sich das Programm aber nicht mehr
+	in der Fehler-verursachenden Zeile. Deshalb wird beim Parsen bei jedem Tabellen-Element der Stack-Trace
+	analysiert und das Stack-Trace-Element bestimmt, das zu der Tabellenzeile gehört. Sollte es beim Setzen
+	der Werte einen Fehler geben, wird dieses Element als erstes Element des Stack-Traces hinzugefügt.
 
   \subsection{Nicht umgesetzt}
 	\label{sec:modellierung:realisierung:nichtumgesetzt}
@@ -1294,13 +1349,24 @@ dataSet.professorTable.foreach(ACTION);
 	Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
 	warum diese Funktion nicht in \textit{STU} implementiert ist.
 
-		\subsubsection{Zusammengesetzte Schlüssel}
+		\subsubsection{Zusammengesetzte Schlüssel}: 
 
-		\subsubsection{Unterstützung für weitere Beziehungstypen}
+		\subsubsection{Unterstützung für weitere Beziehungstypen}:
+		Folgende Beziehungstypen müssen manuell umgesetzt werden.
 		
 		\begin{itemize}
 			\item \textbf{Zirkuläre Beziehungen}
 			\item \textbf{Reflexive Beziehungen}
+
+  	    \begin{lstlisting}[caption=Reflexiv, label=listing:reflexiv]
+Table knoten = table("knoten")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+    .column("parent", DataType.BIGINT)
+  .build();
+        \end{lstlisting} 
+			
 			\item \textbf{Ternäre Beziehungen}
 		\end{itemize}
 	
@@ -1312,10 +1378,10 @@ dataSet.professorTable.foreach(ACTION);
 		anderen Tabellen wie z.B. der Beaufsichtigt-Tabelle. Folglich müssen die Relationen (mehr oder weniger) manuell
 		aus anderen Tabellen entfernt werden.
 
-  \begin{lstlisting}[caption=Löschen von Zeilen, label=listing:deleteexample]
+    \begin{lstlisting}[caption=Löschen von Zeilen, label=listing:deleteexample]
 dataSet.professorTable.deleteRow(HAASE);
 dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
-  \end{lstlisting}
+    \end{lstlisting} 
 	
 		Diese Entscheidung hat unterschiedliche Gründe:
 		\begin{itemize}

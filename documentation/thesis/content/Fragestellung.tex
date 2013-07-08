@@ -6,44 +6,43 @@ Einleiten: Zwei Fragestellungen, DSL und Generierung
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
 
-Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat die Seitenbau GmbH die
-Bibliothek \textit{SB Testing DB} entwickelt. Allerdings kann \textit{SB Testing DB} nicht alle Nachteile wett machen.
-So bleibt unter anderem die Modellierung von Beziehungen unübersichtlich. Eine genauere Betrachtung der Vor- und Nachteile
-verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit wird in Abschnitt \ref{sec:fragestellung:modellierung}
-beschrieben.
+Da die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat, hat SEITENBAU die
+Bibliothek \textit{SB Testing DB} entwickelt. \textit{SB Testing DB} erweitert DbUnit um zusätzliche
+Funktionen, löst aber nicht alle Schwierigkeiten bei der Modellierung von Test-Daten. Eine genauere
+Betrachtung der Vor- und Nachteile verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit
+wird in Abschnitt \ref{sec:fragestellung:modellierung} dargelegt. Die Betrachtung der verschiedenen
+Modellierungsvarianten soll als Grundlage für die Lösung dienen.
 
-\todo{Kurz Ziele}
-Kurz Ziele
+Die Hauptziele dieser Arbeit sind, die Modellierung von Beziehungen zu vereinfachen und die Modellierung
+der Test-Daten übersichtlicher zu gestalten. Außerdem sollen Test-Daten automatisch generiert werden.
+Dabei gelten diese allgemeinen Anforderungen:
 
-Die allgemeinen Anforderungen an die zu entwickelnde DSL sind wie folgt:
+
 \begin{itemize}
-	\item \textbf{Integration in Werkzeugkette}: Eine der wichtigsten Anforderungen an die DSL ist, dass sie sich in die
-		bestehende Werkzeugkette der Firma Seitenbau integrieren lassen muss. Daraus folgt die Anforderung, dass sie sich in
-		Java nutzen lassen soll. Ähnlich wie bei \textit{SB Testing DB} sollen Datasets auch nachträglich veränderbar sein. 
+	\item \textbf{Integration in bestehende Werkzeugkette}: Eine der wichtigsten Anforderungen ist, dass sich
+	  die Lösung in die bestehende Werkzeugkette von SEITENBAU integrieren lassen muss. Daraus folgt die Anforderung,
+		dass sie sich in Java nutzen lassen soll. 
 		
-	\item \textbf{IDE-Support}: Die DSL sollte sich gut in gängige Entwicklungsumgebungen wie Eclipse und IntelliJ
-	  integrieren lassen.
+  \item \textbf{Komfort}: Eine der wichtigsten Anforderungen ist Komfort. Daten sollen komfortabel modelliert werden
+	  können. Dazu gehört auch die Integration in Entwicklungsumgebungen wie Eclipse oder IntelliJ IDEA. Ähnlich wie
+		bei \textit{SB Testing DB} sollen DataSets auch nachträglich veränderbar sein. 
 	
-	\item \textbf{Schlankheit}: Die Sprache soll auf syntaktischen Ballast verzichten und einen übersichtlichen Code zur
-		Modellierung der Daten ermöglichen. Meta-Informationen sollten ausschließlich in Form von Sprachelementen auftauchen.
-
-	\item \textbf{Beziehungen}: Beziehungen sollen sich einfach und typsicher modellieren lassen. Es soll nicht mehr
-		notwendig sein, symbolische Java-Konstanten z.B. für die Definition von ID-Nummern zu verwenden. 
+	\item \textbf{Beziehungen}: Beziehungen sollen sich einfach modellieren lassen. 
 
 	\item \textbf{Typ-Sicherheit}: Beim Test müssen falsche Typen (z.B. bei Beziehungen) erkannt werden und den Test
 		scheitern lassen. Idealerweise sollten die Typen allerdings schon zur Compilier-Zeit überprüft werden können.
 		
-	\item \textbf{Funktionen als Werte}: 
-	- Datumswerte
-	- Berechnungen
-	- Einlesen von BLOBs
+	\item \textbf{Funktionen als Werte}:\\
+	- Datumswerte\\
+	- Berechnungen\\
+	- Einlesen von BLOBs\\
 		
 	\item \textbf{Gültigkeitsbereiche}: 
 	
-	\item \textbf{Zielgruppe}: Die Zielgruppe für die DSL sind überwiegend Software-Entwickler. Anwender, die versiert
-		sind im Umgang mit Datenbanken, sollten zumindest keine Probleme beim Lesen und Verstehen der DSL haben. 
+	\item \textbf{Zielgruppe}: Die Zielgruppe für die DSL sind Software-Entwickler und Tester. Der Code zur Modellierung
+	  der Daten sollte auch für andere Projekt-Mitglieder lesbar und verständlich sein.
 
-	\item \textbf{-Diskussion-}: Sollen sich auch "`ungültige Daten"' modellieren lassen?
+	\item \textbf{Ungültige Daten}: Es sollen sich auch aus Sicht der Datenbank oder des SUT ungültige Daten modellieren lassen.
 
 \end{itemize}
 
@@ -61,10 +60,10 @@ Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen z
 
 % Beispiel einleiten
 Ein einheitliches und fortlaufendes Beispiel soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
-einem Modell und einem Satz von Testdaten. Alle im weiteren Verlauf diskutierten Modellierungsvarianten werden diese
-Problemstellung umsetzen und die Testdaten modellieren.  
+einem Modell und einem Satz von Testdaten. Diese Testdaten dienen als Grundlage für die Diskussion der unterschiedlichen
+Modellierungsvarianten.
 
-	\subsection{Voraussetzungen}
+	\subsection{Anforderungen an das Beispiel}
 	\label{sec:fragestellung:beispiel:voraussetzungen}
 
 	Der Schwerpunkt der Modellierung liegt bei der Darstellung von Beziehungstypen zwischen Entitätstypen. Dabei soll die
@@ -158,17 +157,18 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	allerdings nicht die Möglichkeit, aus einem bestehenden Dataset ein zweites zu erzeugen, das die Änderungen an der
 	Datenbank beinhaltet. 
 	
-	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-Datasets diskutiert. Die Erkenntnisse sollen in die 
-	Anforderungen an die DSL einfließen.
+	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-Datasets diskutiert. Die Ergebnisse stellen die Grundlage
+	für die konkretere Zielsetzung dar.
 	
 
 	\subsection{XML-Dataset}
 	\label{sec:fragestellung:modellierung:xml}
 	
-	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu die Klasse
-	\textit{XmlDataSet}, die eine XML-Datei nach einem vorgegebenen Dokumententyp einlesen kann. Das Listing
-	\ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen \textit{Professor}
-	und \textit{Lehrveranstaltung} definiert werden.
+	Eine Variante, ein Dataset für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu zwei Klassen an.
+	
+	Die erste Klasse ist \textit{XmlDataSet}. Sie liest XML-Datei nach einem von DbUnit vorgegebenen Dokumententyp ein.
+	Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen
+	\textit{Professor} und \textit{Lehrveranstaltung} definiert werden.
 	
 	BLOBs lassen sich bei den meisten Modellierungsvarianten nur mit zusätzlichem Aufwand realisieren. Eine direkte Darstellung
 	ist in den meisten Sprachen nicht möglich, allerdings in Bezug auf die Übersicht auch nicht unbedingt erwünscht. Egal ob
@@ -227,7 +227,7 @@ Problemstellung umsetzen und die Testdaten modellieren.
 </dataset>
 	\end{lstlisting}
 	
-	Die positiven Eigenschaften bei der Modellierung in XML sind unter anderem, dass für XML ein breites Angebot an
+	Die positiven Eigenschaften bei der Modellierung mit XML sind unter anderem, dass für XML ein breites Angebot an
 	Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
 	
 	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in
@@ -239,22 +239,21 @@ Problemstellung umsetzen und die Testdaten modellieren.
 	unkommentierte Beziehungen für Betrachter nur schwer nach zu vollziehen, da ein Schlüsselwert üblicherweise keinen
 	unmittelbaren Rückschluss auf den referenzierten Datensatz erlaubt.
 	
-	Ein großer Nachteil von XML-Datasets ist, dass der erwartete Datenbankzustand selbst wieder den kompletten
-	Datenbankbestand umfassen muss. DbUnit erlaubt zwar mehrere Datasets zu einem zusammenzufassen, das Entfernen 
+	Ein großer Nachteil bei der Nutzung von \texttt{XmlDataSet} ist, dass der erwartete Datenbankzustand selbst wieder den 
+	kompletten Datenbankbestand umfassen muss. DbUnit erlaubt zwar mehrere Datasets zu einem zusammenzufassen, das Entfernen 
 	von Datensätzen ist darüber aber nicht möglich. Mehrere XML-Dateien mit ähnlichen, überwiegend sogar gleichen Daten,
 	sorgen für ein hohes Maß an Redundanz.
 	
-	Datasets in XML wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel syntaktischen Overhead.
-	Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 
-	und 26).
+  DbUnit-konforme XML-Dateien wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel
+	syntaktischen Overhead. Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken
+	Beziehungen aus (Zeilen 21 und 26).
 	
 	% Modellieren Assoziativer Tabellen ansprechen?
 
-
-	Es gibt noch eine zweite Möglichkeit, Datasets via XML zu erzeugen: Das \textit{FlatXmlDataSet}. Hierbei gibt es keine
+  Die zweite Klasse von DbUnit bereitgestellte Klasse ist \texttt{FlatXmlDataSet}. Hierbei gibt es keine
 	von DbUnit vorgegebene DTD, da die Tags den Tabellen-Namen entsprechen\footnote{Es ist möglich, eine eigene DTD zu
 	definieren.}. Eine solche XML-Datei kommt ohne explizite Meta-Informationen zu den Tabellen aus. Stattdessen stellen sie
-	eine Art Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das FlatXmlDataSet
+	eine Art Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das \texttt{FlatXmlDataSet}
 	übersichtlicher als das XmlDataSet (\reflst{listing:flatxmldataset}).
   
 	\lstSetXML
@@ -285,8 +284,8 @@ Problemstellung umsetzen und die Testdaten modellieren.
 </dataset>
 	\end{lstlisting}
 	
-	Wie auch beim XmlDataSet sollte der Übersicht wegen für jeden Wert eine Zeile verwendet werden. Durch die fehlende
-	Hierarchie wirkt das FlatXmlDataSet etwas unübersichtlich.
+	Wie auch beim \texttt{XmlDataSet} sollte der Übersicht wegen für jeden Wert eine Zeile verwendet werden. Durch die fehlende
+	Hierarchie wirkt das \texttt{FlatXmlDataSet} etwas unübersichtlich.
 
 
 	\subsection{Default-Dataset}
