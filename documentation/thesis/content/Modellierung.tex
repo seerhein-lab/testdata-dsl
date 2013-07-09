@@ -1,69 +1,47 @@
 \chapter{Modellierung der Test-Daten}
 \label{chap:modellierung}
 
-Die Erweiterungen und andere Verbesserungen fließen nicht in die bisher genutzte Bibliothek \textit{SB Testing DB} ein.
+\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Aus einem domänenspezifischen
+Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
+zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
+Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
+\cite[185]{DESIGN_PATTERNS}. 
+
+Eine Möglichkeit, eine solche Fassade zu realisieren, stellen domänenspezifische Sprachen dar. Eine domänenspezifische
+Sprache zeichnet sich dadurch aus, dass sie für ein spezielles Problemfeld entworfen wurde. Martin Fowler erklärt in
+\cite[xix]{DOMAIN_SPECIFIC_LANGUAGES}, dass die meisten domänenspezifischen Sprachen lediglich eine dünne Fassade über
+einer Bibliothek oder einem Framework sind.
+
+Um Probleme bezüglich Abwärtskompatiblität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
 Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
 \url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz 
 \textit{Apache License 2.0} [Quelle/Beschreibung, http://www.apache.org/licenses/LICENSE-2.0.html]
 
-Als eigenständiges Projekt kann in \textit{STU} auf Abwärtskompatibilität verzichtet werden. 
-
-\section{Architektur der generierten Klassen}
-\label{sec:modellierung:architektur}
-
-Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
-\begin{itemize}
-	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Es basiert auf \textit{SB Testing DB} und ist
-	  zu diesem abwärtskompatibel. Der Name spiegelt wieder, dass ein Java Fluent API verwendet wird (siehe auch Abschnitt 
-		\ref{sec:grundlagen:sbtestingdb}). Ein solches API wird auch als interne DSL bezeichnet.
-			
-	\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API, das es erlaubt, die Testdaten tabellarisch
-	  zu modellieren.
-			
-\end{itemize}
-
-Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
+Die Auswirkungen auf die Architektur von Tests zeigt Abbildung \ref{img:entwurf_architektur}. Der Test basiert auf 
+einem Test-Framework wie \textit{JUnit}, der Testbibliothek \textit{STU}) und der Bibliothek \textit{DbUnit}.
+\textit{STU} setzt sich aus zwei Schichten zusammen: Der zusätzlichen Schicht \textit{DSL} und der bisherigen
+Schicht, die als \textit{Fluent Builder API} bezeichnet wird.
 
 \begin{figure}[htbp]
 	\centering
-	 \includegraphics[scale=1]{images/realisierung/stu_architektur.png}
-	\caption{Architektur}\label{img:architektur}
+	 \includegraphics[scale=1]{images/realisierung/stu_architektur_facade.png}
+	\caption{Entwurf der Architektur}\label{img:entwurf_architektur}
 \end{figure}
-
-Die neue Table Builder API stellt eine Schicht über der bisherigen Fluent Builder API dar. Neue Funktionen müssen 
-jedoch nicht zwangsläufig in der Table Builder API hinzugefügt werden, unter Umständen kann es vorteilhaft sein, sie
-direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
-\begin{itemize}
-	\item \textbf{Code-Qualität}: Die neuen Funktionen können direkt in bestehende Klassen integriert werden, anstatt
-	  neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
-			
-	\item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
-	  kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
-		Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
-		und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
-			
-  \item \textbf{Einheitlicher Funktionsumfang}: Funktionen, die in das Fluent Builder API integriert werden, können in
-	  beiden APIs genutzt werden. Die Folge ist, dass der Funktionsumfang nicht bzw. weniger stark von der genutzten API
-		abhängt. 
-
-\end{itemize}
-
 
 
 \section{Entwurf der DSL}
+\label{sec:implementierung:entwurf}
+
+Als Grundlage für den Entwurf der DSL sollen mehrere Beispiel-Entwürfe dienen. Deren Vor- und Nachteile sollen in den
+finalen Entwurf einfließen. 
 
 
-
-... Vor- und Nachteile einzelner Entwürfe ...
-
-	\subsection{DSL-Entwürfe}
-
-		\subsubsection{Entwurf 1}
-		\label{sec:implementierung:entwurf:1}
-		
-		Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
-		
-		\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
+	\subsection{Entwurf 1}
+	\label{sec:implementierung:entwurf:1}
+	
+	Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
+	
+	\begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
 	name			"Haase"
 	vorname   "Oliver"
@@ -98,23 +76,23 @@ HAASE beaufsichtigt	P_DPATTERNS
 WAESCH beaufsichtigt P_VSYS
 ...
 
-		\end{lstlisting}
-		
-		Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
-		Variablennamen für die Modellierung von Beziehungen. Da für jeden Wert eine eigene Zeile verwendet wird, werden
-		umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der Definition der Daten
-		erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+	\end{lstlisting}
+	
+	Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
+	Variablennamen für die Modellierung von Beziehungen. Da für jeden Wert eine eigene Zeile verwendet wird, werden
+	umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der Definition der Daten
+	erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 
 
-		\subsubsection{Entwurf 2}
-		\label{sec:implementierung:entwurf:2}
-		
-		Ein leicht abgewandelter Entwurf (siehe Listing \ref{listing:dslentwurf2}) zeigt, wie sich die Beziehungen näher an
-		den eigentlichen Daten beschreiben lassen könnten.
-		An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
+	\subsection{Entwurf 2}
+	\label{sec:implementierung:entwurf:2}
+	
+	Ein leicht abgewandelter Entwurf (siehe Listing \ref{listing:dslentwurf2}) zeigt, wie sich die Beziehungen näher an
+	den eigentlichen Daten beschreiben lassen könnten.
+	An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
 		
 
-		\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
+	\begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
 HAASE = professor {
 	name      "Haase"
 	vorname   "Oliver"
@@ -148,17 +126,17 @@ DPATTERNS = lehrveranstaltung {
 	\end{lstlisting}
 	
 
-		\subsubsection{Entwurf 3}
-		\label{sec:implementierung:entwurf:3}
+  \subsection{Entwurf 3}
+	\label{sec:implementierung:entwurf:3}
 		
-		Listing \ref{listing:dslentwurf3} zeigt den dritten Entwurf einer DSL. Es wird versucht die Daten durch eine
-		tabellarische Struktur übersichtlich zu gestalten. Die Sprache kommt mit wenig syntaktischem Ballast aus. Ein Label
-		vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die Tabelle selbst beginnt mit einer Kopfzeile,
-		die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten werden vom Oder-Operator (|) getrennt. Die
-		erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
+	Listing \ref{listing:dslentwurf3} zeigt den dritten Entwurf einer DSL. Es wird versucht die Daten durch eine
+	tabellarische Struktur übersichtlich zu gestalten. Die Sprache kommt mit wenig syntaktischem Ballast aus. Ein Label
+	vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die Tabelle selbst beginnt mit einer Kopfzeile,
+	die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten werden vom Oder-Operator (|) getrennt. Die
+	erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
 
-		\lstSetTiny
-		\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
+	\lstSetTiny
+	\begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
 professor:
 REF    || name    | vorname  | titel            | fakultaet    | leitet          | beaufsichtigt
 HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | VSYS, DPATTERNS | P_DPATTERNS   
@@ -190,9 +168,11 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	einer Tabellen-DSL hilfreich sein kann. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
 	Leerzeichen eingefügt oder entfernt werden.
 	
-	Zur besseren Übersicht kann es bei größeren Tabellen sinnvoll sein, den Tabellenkopf zu wiederholen.
+	Bei umfangreichen Tabellen, die möglicherweise nicht mehr auf eine Bildschirmseite passen, kann es sinnvoll sein,
+	den Tabellenkopf zu wiederholen. Dies sollte von der Implementierung genauso unterstützt werden wie die Definition
+	neuer Tabellenköpfe mit unterschiedlichen Spalten.
 	
-  \subsection{Gewählter DSL-Entwurf}
+  \subsection{Finaler DSL-Entwurf}
 
 	Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
 	Die Darstellung wirkt übersichtlich, da sie wenig syntaktischen Ballast hat. Es können schnell viele Daten
@@ -200,33 +180,37 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	sein als die anderen Darstellungsformen.
 	
 	Darüber hinaus soll es möglich sein, Beziehungen auch außerhalb der Tabellen zu beschreiben. Dafür wäre eine Syntax
-	denkbar, die sich an die Modellierung der Beziehungen in Listing \ref{listing:dslentwurf1} orientiert.
+	denkbar, die sich an die Modellierung der Beziehungen aus Entwurf 1 orientiert (siehe Listing \ref{listing:dslentwurf1}).
+	
+	Der finale Entwurf stellt eine Kombination aus der tabellarischen Syntax von Entwurf 3 und der Modellierung der
+	Beziehungen aus Entwurf 1 dar.
 	
 
-\section{Implementierungsvorbereitung}
+\section{Wahl der Technologie}
 \label{sec:modellierung:wahlimplementierung}
 
-Da sich die DSL in die bisherige Werkzeug-Kette von SEITENBAU integrieren lassen soll
-(\refsec{sec:anforderungen:allgemeineanforderungen}), sollte die DSL in Java nutzbar sein. Zwar kann eine DSL
-grundsätzlich in Java realisiert werden, doch die Möglichkeiten diesbezüglich sind relativ eingeschränkt 
-und die DSL sieht immer noch nach Java aus. Es lassen sich allerdings auch andere Sprachen im Java-Umfeld nutzen.
+Die DSL soll sich in die bisherige Werkzeugkette von SEITENBAU integrieren lassen 
+(\refsec{sec:anforderungen:allgemeineanforderungen}). In \cite[148]{DSLS_IN_ACTION}
+empfiehlt Ghosh die Programmiersprache Groovy als Host für DSLs in Verbindung mit Java-Anwendungen. 
 
-Eine davon ist {Groovy. Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
+Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
 typisierten Sprachen finden bei dynamisch typisierten Typ-Überprüfungen überwiegend zur Laufzeit statt.}, die
-direkt in Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine ausgeführt wird. Sie teilt
-sich das Objekt-Modell mit Java, so dass aus Groovy heraus instantiierte Objekte auch in der Host-Anwendung 
-nutzbar sind (und umgekehrt). Auch wenn Java-Code bis auf wenige Ausnahmen gültiger Groovy-Code und sich dort
-gleich verhält, enthält Groovy Techniken, die den Code mehr wie eine natürliche Sprache aussehen lassen.
-So kann oftmals auf die Semikolons am Ende einer Anweisung verzichtet werden, und auch auf das Einklammern
-von Parametern kann bei Methoden aufrufen verzichtet werden (wenn die Methode genau einen Parameter erwartet).
-Außerdem kann statt dem Punkt zwischen Objekt und Methode beim Aufruf verzichtet werden.
+direkt in Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine (JVM) ausgeführt wird.
+Dies ermöglicht die Nutzung von Groovy-Klassen und Groovy-Objekten in Java und umgekehrt.
 
-Listing \ref{listing:groovyexamples} zeigt einen Befehl einmal in typischer Java-Syntax und einmal mit den
-Syntax-Vereinfachungen von Groovy:
+Java-Code ist bis auf wenige Ausnahmen gültiger Groovy-Code. Allerdings bietet Groovy Möglichkeiten, Code
+von sogenanntem syntaktischem Ballast zu befreien. Beispielsweise können Semikolons am Ende einer Anweisung
+meistens weggelassen werden. Der Punkt zwischen einer Variable und der Methode ist unter gewissen Bedingungen
+ebenfalls optional. Häufig kann auch auf die Klammerung von Methodenparametern verzichtet werden.
+werden. Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie eine natürlichen Sprache 
+aussehen lässt.
+
+Listing \ref{listing:groovyexamples} zeigt die selben Anweisungen einmal in typischer Java-Syntax (Zeile 1)
+und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2):
 
 	\begin{lstlisting}[caption=Vereinfachung von Ausdrücken in Groovy, label=listing:groovyexamples]
-myList.append("value 1").append("value 2");
-myList append "value 1"  append "value 2"  
+take(coffee).with(sugar, milk).and(liquor);
+take coffee  with sugar, milk  and liquor
 	\end{lstlisting}
 
 Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures von Java ab. Ein Closure
@@ -234,14 +218,13 @@ Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch 
 sich Closures mit syntaktisch umfangreicheren Methoden-Objekten nachbilden. Ein Methoden-Objekt stellt eine
 Instanz einer (möglicherweise anonymen) Klasse dar, die nur eine Methode implementiert. \cite[40]{GROOVY_IM_EINSATZ} 
 \todo{Quelle Kent Beck Smalltalk Best Practice Patterns} 
+
 Die Unterstützung zur Meta-Programmierung stellt sich beim Implementieren einer DSL ebenfalls als nützlich
 heraus. Dadurch ist es z.B. möglich, abgeschlossene Klassen innerhalb von Groovy um Methoden zu erweitern oder auf
 den Zugriff von nicht definierten Klassenelementen zu reagieren.
 
-Aus diesen Gründen empfiehlt Ghosh in \cite[148]{DSLS_IN_ACTION} Groovy als Host für DSLs in Verbindung
-mit Java-Anwendungen. 
 
-	\subsection{Implementierungsvarianten}
+	\subsection{Implementierungsvarianten mit Groovy}
 	\label{sec:modellierung:implementierung:varianten}
 	
 	Eine DSL kann auf unterschiedliche Arten implementiert werden. Groovy bietet dafür zwei Möglichkeiten der
@@ -403,8 +386,8 @@ def dataset = [
 		
 		Für das Parsen interessante Statements sind von den Typ \texttt{ExpressionStatement}. Es kann abgefragt werden,
 		ob ein Label Teil des Statements ist. Über ein solches Label können die Daten den einzelnen Tabellen zugeordnet
-		werden. Das eigentliche \texttt{ExpressionStatement} kann danach analysiert werden. Drei Arten von Ausdrücken
-		sind dabei für das Parsen relevant:
+		werden. Das eigentliche \texttt{ExpressionStatement} kann danach analysiert werden. Die folgenden drei Arten von
+		Ausdrücken sind relevant für das Parsen:
 		
 		\begin{itemize}
 			\item \textbf{\texttt{BinaryExpression}}: Ein binärer Ausdruck besteht aus zwei Operanden und einem Operator.
@@ -418,24 +401,68 @@ def dataset = [
 			  Spalten-Bezeichner und die Bezeichner für die einzelnen Zeilen.
 		\end{itemize}
 		
-    Insgesamt muss viel Aufwand betrieben werden, um den AST zu analysieren. Dabei wirft die IDE-Unterstützung noch
-		einige Fragezeichen auf: Eine IDE-Unterstützung für Labels (Auto-Vervollständigung, Vorschläge) ist mit einfachen
-		Mitteln kaum realisierbar.
-		
-		
+    Insgesamt muss viel Aufwand betrieben werden, um den AST zu analysieren. Möglicherweise kann durch die Nutzung
+		von sogenannten DSL Descriptoren für die Groovy-Plugins gängiger IDEs auch eine IDE-Unterstützung für Labels
+		und Spalten erreicht werden. Dieser Frage wird allerdings im weiteren Verlauf nicht nachgegangen.
 		
 		
 	\subsection{Implementierungsentscheidung}
 	\label{sec:implementierung:entscheidung}
 	
 	Der Vergleich zwischen Laufzeit-Meta-Programmierung und AST-Transformation zeigt, dass sich Groovy als Host-Sprache
-	für die DSL eignet. Grundsätzlich kann das Parsen der Tabelle über beide Varianten durchgeführt werden. 
-	Die Laufzeit-Meta-Programmierung erlaubt zwar weniger Anpassungen an die Sprache, ist aber für
-	die gewünschte DSL ausreichend und die Umsetzung einfacher. AST-Transformationen könnten zwar Mehrwert bieten, z.B.
-	könnte auch der Double-Pipe-Operator genutzt werden und Labels, allerdings überwiegen die Nachteile des weniger
-	ausdrucksstarken und damit wartungsunfreundlicheren Codes. Als Konsequenz wird die einfachere
-	Laufzeit-Meta-Programmierung verwendet.
-		
+	für die DSL eignet. Grundsätzlich kann das Parsen der Tabelle über beide Varianten durchgeführt werden und beide
+	Varianten erfüllen die Anforderungen.
+	
+	Die Entscheidung fällt auf die Laufzeit-Meta-Programmierung. Der Grund dafür ist, dass sie einfacher zu verwenden ist. 
+	AST-Transformationen würden bezogen auf die Anforderungen keinen Mehrwert bieten. Darüber hinaus dürfte der Code zur
+	AST-Transformation komplexer und wartungsunfreundlicher ausfallen.
+
+
+
+\section{Architektur der generierten Klassen}
+\label{sec:modellierung:architektur}
+
+Die Architektur stellt sich 
+Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
+\begin{itemize}
+	\item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Der Name spiegelt wieder, dass es ein Java
+	  Fluent API bereit stellt (siehe auch Abschnitt \ref{sec:grundlagen:sbtestingdb}). Ein solches API wird auch als
+		interne DSL bezeichnet.
+			
+	\item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API bzw. die neue DSL. Über diese DSL können
+	  die Testdaten tabellarisch modelliert werden.
+			
+\end{itemize}
+
+Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
+
+\begin{figure}[htbp]
+	\centering
+	 \includegraphics[scale=1]{images/realisierung/stu_architektur.png}
+	\caption{Architektur}\label{img:architektur}
+\end{figure}
+
+Das neue Table Builder API stellt eine Schicht über dem bisherigen Fluent Builder API dar. Neue Funktionen müssen 
+jedoch nicht zwangsläufig im Table Builder API hinzugefügt werden, unter Umständen kann es vorteilhaft sein, sie
+direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
+\begin{itemize}
+	\item \textbf{Code-Qualität}: Die neuen Funktionen können direkt in bestehende Klassen integriert werden, anstatt
+	  neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
+			
+	\item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
+	  kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
+		Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
+		und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
+			
+  \item \textbf{Einheitlicher Funktionsumfang}: Funktionen, die in das Fluent Builder API integriert werden, können in
+	  beiden APIs genutzt werden. Die Folge ist, dass der Funktionsumfang nicht bzw. weniger stark von der genutzten API
+		abhängt. 
+
+\end{itemize}
+
+
+
+
 \section{Definition der Sprache}
 \label{sec:implementierung:sprachdefinition}
 
@@ -592,14 +619,17 @@ einfachen Type-Cast hinaus.
 \section{Änderungen am Generator-Modell}
 \label{sec:modellierung:generatormodell}
 
-	Bei den Klassen für die Modellierung des zu Grunde liegenden Datenbankmodells wird auf Abwärtskompatibilität verzichtet.
-	Während das alte API auf überladene Methoden mit vielen Parametern setzt, ist das neue API entsprechend dem Builder-Pattern
-	umgesetzt. So enthält das alte API neun Methoden zum Hinzufügen einer Spalte in einer Tabelle
-	enthält, wovon eine als \textit{deprecated} eingestuft ist. Dieses Design ist unübersichtlich und nur schwer erweiterbar. 
-	Jeder weitere optionale Parameter könnte die Anzahl der Methoden verdoppeln. Demgegenüber gibt es beim Builder-Pattern für
-	jeden optionalen Parameter eine einzelne Set-Methode.
+  Die hinzugekommenen Funktionen erfordern Erweiterungen in den Klassen zur Modellierung der zu Grunde liegenden Datenbank.
+	Da das API in \textit{SB Testing DB} überladene Methoden mit vielen Parametern zur Beschreibung von Spalten nutzt (es gibt
+	dafür zwölf reguläre und eine als \textit{deprecated} eingestufte Methoden), soll in \texttt{STU} das anwenderfreundlichere
+	Builder-Pattern verwendet werden.
 	
-	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. Dabei werden Flags für Spalten nicht mehr über 
+	Durch den Einsatz dieses Patterns sollen die Klassen wartbarer und erweiterbarer bleiben. Beim Überladen von Methoden
+	würde sich bei jedem weiteren optionalen Parameter die Anzahl an Methoden unter Umständen verdoppeln. Außerdem sind lange
+	Parameterlisten für Programmierer nicht immer intuitiv: Die Reihenfolge lässt sich oft nur schwer merken.
+  Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter eine einzelne Set-Methode.
+	
+	Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. Dabei werden Eigenschaften für Spalten nicht mehr über 
 	ein \texttt{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt 
 	\ref{sec:modellierung:generatormodell:flags}  wird weiter auf das Thema Flags eingegangen. Darüber hinaus bieten die
 	neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten hinzu zu fügen. Diese werden bei der Code-Generierung
@@ -607,19 +637,39 @@ einfachen Type-Cast hinaus.
 	
 	\todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
 	
-	\subsection{Spalten-Flags}
+	\subsection{Spalten-Eigenschaften}
 	\label{sec:modellierung:generatormodell:flags}
 	
-	\textit{SB Testing DB} sieht verschiedene Flags für Spalten vor, die in einem \textit{Enum} zusammengefasst sind. Alle für eine Spalte 
-	gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet} übergeben werden. Bei dem neuen Builder-API werden
-	die Flags über spezielle Methoden gesetzt.
+	\textit{SB Testing DB} sieht verschiedene Eigenschaften, sogenannte Flags, für Spalten vor, die in einem \textit{Enum}
+	zusammengefasst sind. Alle für eine Spalte gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet}
+	übergeben werden. Bei dem neuen Builder-API werden die Flags über spezielle Methoden gesetzt.
 	
 	Zu den in \textit{STU} enthaltenen Standard-Spalten-Flags gehören:
 	\begin{itemize}
-		\item \textbf{Identifier}: Als Identifikator-Spalte wird die Spalte bezeichnet, die einen für die Zeile einmaligen
-		  Wert enthält, über die eine Zeile zweifelsfrei identifiziert werden kann. Ein Primärschlüssel stellt eine solche
-			Spalte dar, ist jedoch keine Voraussetzung für dieses Flag. Das Flag wird über die Methode \texttt{identifier()}
-			aktiviert. Dabei wird das Flag \texttt{Immutable} implizit aktiviert.
+		\item \textbf{Identifier}: Dieses Flag gibt an, dass die Werte einer Spalte die Zeile eindeutig identifizieren. 
+		  Sollen Werte in einer Zeile abgefragt oder verändert werden, kann die Zeile mit Hilfe einer solchen Spalte 
+			bestimmt werden.
+	 		
+			Da die Werte zur Identifikation verwendet werden, ist ein nachträgliches Ändern nicht erlaubt. Dies soll anhand eines
+			kurzen Beispiels begründet werden (siehe Listing \ref{listing:beispielimmutable}). Es zeigt einen Ausschnitt einer
+			Studenten-Tabelle. Die Spalten \texttt{id} und \texttt{matrikelnummer} sind mit dem Flag \texttt{Identifier}
+			versehen. In Zeile 2 werden Daten mit der ID 1 und der Matrikelnummer 123456 definiert. Zeile 3 steht für beliebige
+			Anweisungen, in Zeile 4 und 5 wird die Studententabelle erweitert, z.B. innerhalb eines Unit-Tests. Zeile 5
+			definiert Daten mit der ID 2 und der vorherigen Matrikelnummer. Beziehen sich beide Zeilen auf den
+			selben Studenten und die ID soll verändert werden? Oder wurde die Matrikelnummer irrtümlich falsch angegeben?
+			Die ID des Studenten Mustermann auf 2 zu ändern könnte zu Problemen führen, da nicht klar ist, an welchen Stellen
+			bereits auf ID 1 Bezug genommen wird.
+			
+      \begin{lstlisting}[caption=Beispiel für unveränderliche Identifikatoren, label=listing:beispielimmutable]
+id | matrikelnummer | Name      
+1  | 123456         | "Mustermann" 
+...
+id | matrikelnummer | vorname 
+2  | 123456         | "Nikolaus"       
+			\end{lstlisting}
+			
+			
+		  Das Flag wird über die Methode \texttt{identifier()} gesetzt, dabei wird das Flag \texttt{Immutable} implizit aktiviert.
 
 		\item \textbf{Default Identifier}: Dieses Flag stellt eine Art Erweiterung für die das Flag \texttt{Identifier} dar. Die mit
 		  diesem Flag markierte Spalte wird für Foreign-Key-Beziehungen auf die Tabelle verwendet, sofern nicht explizit eine
@@ -1326,13 +1376,12 @@ dataSet.professorTable.foreach(ACTION);
 	Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
 	warum diese Funktion nicht in \textit{STU} implementiert ist.
 
-		\subsubsection{Zusammengesetzte Schlüssel}: 
+		\subsubsection{Zusammengesetzte Schlüssel}
 
-		\subsubsection{Unterstützung für weitere Beziehungstypen}:
+		\subsubsection{Unterstützung für weitere Beziehungstypen}
 		Folgende Beziehungstypen müssen manuell umgesetzt werden.
 		
 		\begin{itemize}
-			\item \textbf{Zirkuläre Beziehungen}
 			\item \textbf{Reflexive Beziehungen}
 
   	    \begin{lstlisting}[caption=Reflexiv, label=listing:reflexiv]
@@ -1342,6 +1391,12 @@ Table knoten = table("knoten")
     .column("name", DataType.VARCHAR)
     .column("parent", DataType.BIGINT)
   .build();
+        \end{lstlisting} 
+
+			\item \textbf{Zirkuläre Beziehungen}
+
+  	    \begin{lstlisting}[caption=Zirkulär, label=listing:zirkulaer]
+
         \end{lstlisting} 
 			
 			\item \textbf{Ternäre Beziehungen}
