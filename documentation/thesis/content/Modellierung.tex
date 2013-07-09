@@ -1028,7 +1028,7 @@ WAESCH.beaufsichtigt(P_VSYS)
 	
 	Der Test verwendet eine \texttt{DatabaseTesterRule} (Zeile 9), die unter anderem für die Vergleiche der Datenbank
 	mit den DataSets verantwortlich ist. Dazu muss ihr die Datenbank bekannt sein, die in Form einer \texttt{DataSource}
-	vorliegt (Zeile 6). Da dieses Feld durch \textit{Depenency Injection} (\todo{Literatur dependency injection}) erst
+	vorliegt (Zeile 6). Da dieses Feld durch \textit{Depenency Injection} (\cite[4]{PRO_SPRING}) erst
 	nach der Instantiierung der Klasse belegt wird, kann bei der Erzeugung von \texttt{dbTester} der Wert noch nicht
 	verwendet werden. Dies wird durch die Verwendung eines Future-Objekts gelöst, das die \texttt{DataSource} erst dann
 	zurückliefert, wenn sie gebraucht wird (Zeilen 10 bis 15). 
