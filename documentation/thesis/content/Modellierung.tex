@@ -1377,14 +1377,24 @@ dataSet.professorTable.foreach(ACTION);
 	warum diese Funktion nicht in \textit{STU} implementiert ist.
 
 		\subsubsection{Zusammengesetzte Schlüssel}
+	  Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen -- wie auch in 
+		\textit{SB Testing DB} -- komplett manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
+		Spalte im Datenbank-Modell angelegt werden. So lange zum Zugriff auf Tabellenzeilen die Referenz-Typen
+		verwendet werden, stellt dies kein spürbarer Nachteil dar. Sollte die Zeile in Abhängigkeit ihres
+		Schlüssels dynamisch gesucht werden, kann auf die neue \texttt{find}-Methode zurückgegriffen werden.
 
 		\subsubsection{Unterstützung für weitere Beziehungstypen}
 		Folgende Beziehungstypen müssen manuell umgesetzt werden.
 		
 		\begin{itemize}
 			\item \textbf{Reflexive Beziehungen}
-
-  	    \begin{lstlisting}[caption=Reflexiv, label=listing:reflexiv]
+			  Eine reflexive Beziehung kann in \textit{STU} nur manuell ausgedrückt werden. Die Definition einer
+				einfachen Tabelle für einen Baum, der aus einzelnen Konten besteht, könnte wie folgt aussehen
+				(siehe Listing \ref{listing:reflexiv:manuell}). Ein Knoten-Element kennt den zugehörigen Eltern-Knoten
+				(Zeile 5). Eine Referenz auf die Tabelle ist an dieser Stelle nicht möglich, die Relation muss
+				manuell ohne besondere Tool-Unterstützung durch \textit{STU} realisiert werden.
+			
+  	    \begin{lstlisting}[caption=Reflexive Beziehungen manuell, label=listing:reflexiv:manuell]
 Table knoten = table("knoten")
     .column("id", DataType.BIGINT)
       .defaultIdentifier()
@@ -1392,11 +1402,75 @@ Table knoten = table("knoten")
     .column("parent", DataType.BIGINT)
   .build();
         \end{lstlisting} 
+				
+				Die Konsequenz ist, dass die Beziehungen nicht typsicher über die Referenz-Klasse modelliert werden
+				können, sondern die Primär- und Fremdschlüssel manuell im DataSet gepflegt werden müssen.
+				
+				Ein anderer Ansatz stellt das Refaktorisieren der Datenbank und der beteiligten Systeme dar. Dies ist
+				leider nicht immer möglich. Die Refaktorisierung sieht eine assoziative Tabelle für die Modellierung
+				der Beziehung vor (siehe Listing \ref{listing:reflexiv:assoc}).
+				
+				
+  	    \begin{lstlisting}[caption=Reflexive Beziehungen mit Hilfe assoziativer Tabelle, label=listing:reflexiv:assoc]
+Table knoten = table("knoten")
+		.column("id", DataType.BIGINT)
+			.defaultIdentifier()
+		.column("name", DataType.VARCHAR)
+	.build();
+
+associativeTable("parents")
+		.column("parent", DataType.BIGINT)
+			.reference
+				.foreign(knoten)
+		.column("child", DataType.BIGINT)
+			.reference
+				.foreign(knoten)
+	.build();
+        \end{lstlisting} 
 
 			\item \textbf{Zirkuläre Beziehungen}
 
-  	    \begin{lstlisting}[caption=Zirkulär, label=listing:zirkulaer]
+  	    \begin{lstlisting}[caption=Zirkuläre Beziehungen manuell, label=listing:zirkulaer:manuell]
+Table event = table("event")
+		.column("id", DataType.BIGINT)
+			.defaultIdentifier()
+		.column("name", DataType.VARCHAR)
+		.column("organizer", DataType.BIGINT)
+	.build();
 
+Table person = table("person")
+		.column("id", DataType.BIGINT)
+			.defaultIdentifier()
+		.column("name", DataType.VARCHAR)
+		.column("participates", DataType.BIGINT)
+			.reference
+				.foreign(event)
+	.build();
+        \end{lstlisting} 
+			
+			
+  	    \begin{lstlisting}[caption=Zirkuläre Beziehungen mit assoziativer Tabelle, label=listing:zirkulaer:assoc]
+Table person = table("person")
+		.column("id", DataType.BIGINT)
+			.defaultIdentifier()
+		.column("name", DataType.VARCHAR)
+	.build();
+
+Table event = table("event")
+		.column("id", DataType.BIGINT)
+			.defaultIdentifier()
+		.column("name", DataType.VARCHAR)
+		.column("organizer", DataType.BIGINT)
+	.build();
+
+associativeTable("parcipations")
+		.column("event", DataType.BIGINT)
+			.reference
+				.foreign(event)
+		.column("participant", DataType.BIGINT)
+			.reference
+				.foreign(person)
+	.build();
         \end{lstlisting} 
 			
 			\item \textbf{Ternäre Beziehungen}
