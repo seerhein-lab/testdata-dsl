@@ -1230,12 +1230,8 @@ class HochschuleDataSet extends HochschuleBuilder
   // returns a Closure which is threated as future value
   def tutors(LehrveranstaltungRef ref) {
     return {
-      // findWhere throws an exception if no rows are found
-      if (isttutorTable.getWhere.lehrveranstaltungId(ref).present) { 
-        def rows = isttutorTable.findWhere.lehrveranstaltungId(ref);
-        return rows.getRowCount()
-      }
-      return 0;
+      def rows = isttutorTable.quietFindWhere.lehrveranstaltungId(ref)
+      return rows.rowCount
     }
   }
 }
@@ -1259,11 +1255,15 @@ dataSet.table_Professor.findWhere.vorname("Oliver");
 dataSet.table_Professor.findWhere.vorname(HAASE);
 	    \end{lstlisting}
 
+    \item \textbf{quietFindWhere}: In wenigen Fällen kann es sinnvoll sein, bei einer Suche ohne Treffer keine Ausnahme
+		  auszulösen. Ein Beispiel dafür ist das Closure in Listing \ref{listing:futurevalues}. Eine Lehrveranstaltung ohne
+			Tutoren kann in diesem Beispiel normal sein.
 		  
 	  \item \textbf{getWhere}: Analog zu \texttt{findWhere} gibt es die Möglichkeit, einzelne Zeilen über \texttt{getWhere}
 		  abzufragen. Der einzige Unterschied zwischen beiden ist, dass \texttt{getWhere} das Ergebnis in Form eines 
 			\texttt{Optional}-Wertes zurückliefert. Für den Fall, dass nur ein Ergebnis oder unter Umständen gar kein Ergebnis
-			erwartet wird, kann \texttt{getWhere} anstelle von \texttt{findWhere} genutzt werden.
+			erwartet wird, kann \texttt{getWhere} anstelle von \texttt{findWhere} genutzt werden. Gibt es mehrere Treffer,
+			wird eine Exception ausgelöst.
 	  
 		\item \textbf{find}: Sind die einfachen Such-Anfragen über \texttt{findWhere} bzw. \texttt{getWhere} nicht mächtig genug,
 		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden. In Listing \ref{listing:find} wird
