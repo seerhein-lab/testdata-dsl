@@ -1,0 +1,970 @@
+\chapter{Realisierung der Sprache}
+\label{chap:realiserungdsl}
+
+\todo{Erklären, warum SB Testing DB eine gute Grundlage ist: Kompatibilität, Verbesserungen gegenüber DBUnit, ähnliche Ziele...}
+
+
+Im Folgenden wir die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
+gezeigt, wie die DSL praktisch genutzt werden kann. 
+Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
+dass Bezeichner wie Tabellen- und Spaltennamen nicht nur erkannt werden, sondern auch automatisch vervollständigt werden können.
+Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem Anspruch nicht genügen. Falsche Tabellennamen können
+erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
+Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
+
+\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Aus einem domänenspezifischen
+Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
+zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
+Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
+\cite[185]{DESIGN_PATTERNS}. 
+
+Eine Möglichkeit, eine solche Fassade zu realisieren, stellen domänenspezifische Sprachen dar. Eine domänenspezifische
+Sprache zeichnet sich dadurch aus, dass sie für ein spezielles Problemfeld entworfen wurde. Martin Fowler erklärt in
+\cite[xix]{DOMAIN_SPECIFIC_LANGUAGES}, dass die meisten domänenspezifischen Sprachen lediglich eine dünne Fassade über
+einer Bibliothek oder einem Framework sind.
+
+Um Probleme bezüglich Abwärtskompatiblität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
+Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
+\url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz 
+\textit{Apache License 2.0}. \cite{APACHE_LICENSE_2}
+
+Die Auswirkungen auf die Architektur von Tests zeigt Abbildung \ref{img:architektur}. Der Test basiert auf 
+einem Test-Framework wie \textit{JUnit}, der Testbibliothek \textit{STU}) und der Bibliothek \textit{DbUnit}.
+\textit{STU} setzt sich aus zwei Schichten zusammen: Der zusätzlichen Schicht \textit{DSL} und der bisherigen
+Schicht, die als \textit{Fluent Builder API} bezeichnet wird.
+
+Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
+\begin{itemize}
+  \item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Der Name spiegelt wieder, dass es ein Java
+    Fluent API bereit stellt (siehe auch Abschnitt \ref{sec:grundlagen:sbtestingdb}). Ein solches API wird auch als
+    interne DSL bezeichnet.
+      
+  \item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API bzw. die neue DSL. Über diese DSL können
+    die Testdaten tabellarisch modelliert werden.
+      
+\end{itemize}
+
+Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
+
+\begin{figure}[htbp]
+  \centering
+   \includegraphics[scale=1]{images/realisierung/stu_architektur.png}
+  \caption{Architektur}\label{img:architektur}
+\end{figure}
+
+Das neue Table Builder API stellt eine Schicht über dem bisherigen Fluent Builder API dar. Neue Funktionen müssen 
+jedoch nicht zwangsläufig im Table Builder API hinzugefügt werden, unter Umständen kann es vorteilhaft sein, sie
+direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
+\begin{itemize}
+  \item \textbf{Code-Qualität}: Die neuen Funktionen können direkt in bestehende Klassen integriert werden, anstatt
+    neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
+      
+  \item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
+    kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
+    Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
+    und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
+      
+  \item \textbf{Einheitlicher Funktionsumfang}: Funktionen, die in das Fluent Builder API integriert werden, können in
+    beiden APIs genutzt werden. Die Folge ist, dass der Funktionsumfang nicht bzw. weniger stark von der genutzten API
+    abhängt. 
+
+\end{itemize}
+
+
+
+
+
+
+
+
+--------------- gehört nicht in den abschnitt ---------
+
+
+Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
+So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
+ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
+Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
+Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwaldung über einen
+einfachen Type-Cast hinaus.
+
+
+\section{Änderungen am Generator-Modell}
+\label{sec:modellierung:generatormodell}
+
+  Die hinzugekommenen Funktionen erfordern Erweiterungen in den Klassen zur Modellierung der zu Grunde liegenden Datenbank.
+  Da das API in \textit{SB Testing DB} überladene Methoden mit vielen Parametern zur Beschreibung von Spalten nutzt (es gibt
+  dafür zwölf reguläre und eine als \textit{deprecated} eingestufte Methoden), soll in \texttt{STU} das anwenderfreundlichere
+  Builder-Pattern verwendet werden.
+  
+  Durch den Einsatz dieses Patterns sollen die Klassen wartbarer und erweiterbarer bleiben. Beim Überladen von Methoden
+  würde sich bei jedem weiteren optionalen Parameter die Anzahl an Methoden unter Umständen verdoppeln. Außerdem sind lange
+  Parameterlisten für Programmierer nicht immer intuitiv: Die Reihenfolge lässt sich oft nur schwer merken.
+  Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter eine einzelne Set-Methode.
+  
+  Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. Dabei werden Eigenschaften für Spalten nicht mehr über 
+  ein \texttt{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt 
+  \ref{sec:modellierung:generatormodell:flags}  wird weiter auf das Thema Flags eingegangen. Darüber hinaus bieten die
+  neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten hinzu zu fügen. Diese werden bei der Code-Generierung
+  für die Erstellung von JavaDoc-Kommentaren verwendet (\refsec{sec:ralisierungdsl:javadoc}).
+  
+  \todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
+  
+  \subsection{Spalten-Eigenschaften}
+  \label{sec:modellierung:generatormodell:flags}
+  
+  \textit{SB Testing DB} sieht verschiedene Eigenschaften, sogenannte Flags, für Spalten vor, die in einem \textit{Enum}
+  zusammengefasst sind. Alle für eine Spalte gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet}
+  übergeben werden. Bei dem neuen Builder-API werden die Flags über spezielle Methoden gesetzt.
+  
+  Zu den in \textit{STU} enthaltenen Standard-Spalten-Flags gehören:
+  \begin{itemize}
+    \item \textbf{Identifier}: Dieses Flag gibt an, dass die Werte einer Spalte die Zeile eindeutig identifizieren. 
+      Sollen Werte in einer Zeile abgefragt oder verändert werden, kann die Zeile mit Hilfe einer solchen Spalte 
+      bestimmt werden.
+       
+      Da die Werte zur Identifikation verwendet werden, ist ein nachträgliches Ändern nicht erlaubt. Dies soll anhand eines
+      kurzen Beispiels begründet werden (siehe Listing \ref{listing:beispielimmutable}). Es zeigt einen Ausschnitt einer
+      Studenten-Tabelle. Die Spalten \texttt{id} und \texttt{matrikelnummer} sind mit dem Flag \texttt{Identifier}
+      versehen. In Zeile 2 werden Daten mit der ID 1 und der Matrikelnummer 123456 definiert. Zeile 3 steht für beliebige
+      Anweisungen, in Zeile 4 und 5 wird die Studententabelle erweitert, z.B. innerhalb eines Unit-Tests. Zeile 5
+      definiert Daten mit der ID 2 und der vorherigen Matrikelnummer. Beziehen sich beide Zeilen auf den
+      selben Studenten und die ID soll verändert werden? Oder wurde die Matrikelnummer irrtümlich falsch angegeben?
+      Die ID des Studenten Mustermann auf 2 zu ändern könnte zu Problemen führen, da nicht bekannt ist, an welchen Stellen
+      bereits auf ID 1 Bezug genommen wird.
+      
+      \begin{lstlisting}[caption=Beispiel für unveränderliche Identifikatoren, label=listing:beispielimmutable]
+id | matrikelnummer | Name      
+1  | 123456         | "Mustermann" 
+...
+id | matrikelnummer | vorname 
+2  | 123456         | "Nikolaus"       
+      \end{lstlisting}
+      
+      
+      Das Flag wird über die Methode \texttt{identifier()} gesetzt, dabei wird das Flag \texttt{Immutable} implizit aktiviert.
+
+    \item \textbf{Default Identifier}: Dieses Flag stellt eine Art Erweiterung für die das Flag \texttt{Identifier} dar. Die mit
+      diesem Flag markierte Spalte wird für Foreign-Key-Beziehungen auf die Tabelle verwendet, sofern nicht explizit eine
+      andere Spalte angegeben wird. Die Methode zum setzen des Flags ist \texttt{defaultIdentifier()}, die Flags \texttt{Identifier}
+      und \texttt{Immuatable} werden automatisch aktiviert.
+      
+    \item \textbf{Add Next Method}: \textit{SB Testing DB} (und damit auch \textit{STU}) bietet die Möglichkeit, Werte-Generatoren 
+      zu verwenden um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der 
+      Generator über eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem
+      Spaltennamen zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das
+      entsprechende Flag über \texttt{addNextMethod()} aus dem Builder-API gesetzt wurde. Standardmäßig muss die Next-Value-Methode
+      manuell aufgerufen werden, über ein Flag kann dies auch automatisch erfolgen.
+      
+    \item \textbf{Auto Invoke Next}: Ist dieses Flag aktiviert, wird die Next-Value-Methode beim 
+      Anlegen einer neuen Tabellenzeile automatisch aufgerufen. Beim Setzen des Flags über die Builder-Methode
+      \texttt{autoInvokeNext()} wird automatisch auch das Flag zum Generieren der Next-Value-Methode gesetzt. 
+    
+    \item \textbf{Immutable}: Ist dieses Flag gesetzt, kann ein Wert in einer Spalte nur ein Mal gesetzt werden, und danach
+      nicht mehr verändert werden. Wenn das Flag zum automatischen Aufruf der Next-Value-Methode aktiviert ist, kann der
+      automatisch erzeugte Wert allerdings überschrieben werden. Die Methode zum
+      Aktivieren des Flags heißt \texttt{immutable()}.
+      
+    %\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
+      
+  \end{itemize}
+  
+  
+  \subsection{Modellierung von Relationen über Builder-Klassen}
+  \label{sec:modellierung:generatormodell:relationen}
+  
+  In Bezug auf die Modellierung des Datenbank-Modells für den Generator stellt das neue API zur Modellierung der 
+  Relationen die größte Verändernug in \textit{STU} gegenüber \textit{SB Testing DB} dar. Über \texttt{reference}
+  kann der Builder zur Beschreibung der Relation aufgerufen werden. Die Beschreibung findet auf zwei Ebenen statt:
+  
+  \begin{itemize}
+    \item \textbf{local}: Der als \texttt{local} bezeichnete Teil beschreibt die Beziehung aus Sicht der Tabelle,
+      in der sich die Spalte befindet. 
+      
+    \item \textbf{foreign}: Der \texttt{foreign}-Teil dient der Beschreibung der Beziehung aus Sicht der Tabelle,
+      mit der die Beziehung hergestellt wird.
+    
+  \end{itemize}
+  
+  Beide Ebenen erlauben die Angabe eines Bezeichners, der die Beziehung in die jeweilige Richtung beschreibt,
+  der Ausgangspunkt wird durch die Ebene bestimmt. Dieser Bezeichner werden für die Methoden zur Modellierung
+  der Beziehungen verwendet. Daneben können auch noch Beschreibungstexte angegeben werden, die für die JavaDoc
+  genutzt werden.
+  
+  In Abschnitt \ref{sec:modellierung:generatormodell:buildervergleich} befindet sich ein Beispiel für die 
+  Modellierung von Relationen.
+  
+  Durch die Nutzung des Builder-Patterns lassen sich weitere Attribute verhältnismäßig einfach hinzufügen, z.B.
+  für die Generierung der Testdaten (siehe Kapitel \ref{chap:generieren}).
+  
+  
+  \subsection{Alte und neue Builder-Klassen im Vergleich}
+  \label{sec:modellierung:generatormodell:buildervergleich}
+  
+  Die Vorteile der Umstellung auf das Builder-Pattern sollen die beiden folgenden Listings zeigen. Sie zeigen
+  die Modellierung der Datenbank für den Generator. Der Übersicht halber wurde der Code auf die Anweisungen
+  im Konstruktor der Modell-Klasse und die Definition von zwei Tabellen reduziert. Listing 
+  \ref{listing:model:builder:old} zeigt die Modellierung in \textit{SB Testing DB}, während Listing
+  \ref{listing:model:builder:new} die in \textit{STU} eingeführten Builder veranschaulicht.
+  
+  \begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
+database("Hochschule");
+packageName("com.seitenbau.sbtesting.dbunit.hochschule");
+
+Table professoren = addTable("professor")
+    .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) 
+    .addColumn("name", DataType.VARCHAR)
+    .addColumn("vorname", DataType.VARCHAR)
+    .addColumn("titel", DataType.VARCHAR)
+    .addColumn("fakultaet", DataType.VARCHAR);
+
+Table lehrveranstaltungen = addTable("lehrveranstaltung")
+    .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod)
+    .addColumn("professor_id", DataType.BIGINT, professoren.ref("id"))
+    .addColumn("name", DataType.VARCHAR)
+    .addColumn("sws", DataType.INTEGER)
+    .addColumn("ects", DataType.DOUBLE);
+  \end{lstlisting}
+  
+  In diesem Beispiel -- inkl. der nicht dargestellten Tabellen-Definitionen -- werden lediglich drei der
+  insgesamt neun \texttt{addColumn}-Methoden verwendet.
+  
+  Die Codes zur Modellierung mit der alten und der neuen API ähnelt sich, die Unterschiede liegen abgesehen
+  von den Flags und Relationen eher im Detail. Listing \ref{listing:model:builder:new} zeigt die Modellierung
+  der selben Tabellen mit dem neuen API. Die kürzeren Parameterlisten und die zusätzlichen Funktionen führen
+  dazu, dass die selben Modelle in \textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke
+  macht diesen Nachteil allerdings mehr als wett.
+  
+  \begin{lstlisting}[caption=Beispiel \textit{STU}-Builder, label=listing:model:builder:new]
+database("Hochschule");
+packageName("com.seitenbau.stu.dbunit.hochschule");
+
+Table professoren = table("professor")
+    .description("Die Tabelle mit den Professoren der Hochschule")
+    .column("id", DataType.BIGINT) 
+      .identifierColumn() 
+      .autoInvokeNext()
+    .column("name", DataType.VARCHAR)
+    .column("vorname", DataType.VARCHAR)
+    .column("titel", DataType.VARCHAR)
+    .column("fakultaet", DataType.VARCHAR)
+  .build();
+
+Table lehrveranstaltungen = table("lehrveranstaltung")
+    .description("Die Tabelle mit den Lehrveranstaltungen der Hochschule")
+    .column("id", DataType.BIGINT)
+      .identifierColumn() 
+      .autoInvokeNext()
+    .column("professor_id", DataType.BIGINT)
+      .reference
+        .local
+          .name("geleitetVon")
+          .description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
+        .foreign(professoren)
+          .name("leitet")
+          .description("Gibt an, welche Lehrveranstaltungen ein Professor leitet.")
+    .column("name", DataType.VARCHAR)
+    .column("sws", DataType.INTEGER)
+    .column("ects", DataType.DOUBLE)
+  .build();  
+  \end{lstlisting}
+
+  \subsection{Modellierungskonzepte für Beziehungen}
+  \label{sec:modellierung:generatormodell:modellierungskonzepte}
+  
+  Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
+  Dabei können Beziehungen selbst auch Attribute haben.
+  Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
+  
+    \subsubsection{1:1-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
+    
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
+    anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
+    Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
+    Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
+    
+    Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
+    kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
+
+    \subsubsection{1:n-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
+
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
+    Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
+    stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
+    
+    Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
+    und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
+    der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
+    
+    \subsubsection{n:m-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
+    
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
+    des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
+    die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
+    werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
+    aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
+    
+    Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
+    nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
+    
+    Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
+    die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
+    sorgen.
+    
+    Bei der Modellierung von n:m-Beziehungen kann auf den \texttt{local}-Teil der Beziehung verzichtet werden.
+    \textit{STU} verwendet automatisch den \texttt{foreign}-Teil der assoziierten Spalte. Anstelle der Methode
+    \texttt{table} wird eine assoziative Tabelle mit der Methode \texttt{associativeTable} beschrieben. Listing
+    \ref{listing:model:builder:assoc} zeigt ein Beispiel für die Modellierung einer assoziativen Tabelle:
+
+    \begin{lstlisting}[caption=Beispiel für assoziative Tabelle, label=listing:model:builder:assoc]
+associativeTable("besucht")
+  .column("student_id", DataType.BIGINT)
+    .reference
+      .foreign(studenten)
+        .name("besucht")
+        .description("Die Lehrveranstaltungen, die ein Student besucht.")
+  .column("lehrveranstaltung_id", DataType.BIGINT)
+    .reference
+      .foreign(lehrveranstaltungen)
+        .name("besuchtVon")
+        .description("Die Studenten, die eine Lehrveranstaltung besuchen.")
+ .build();
+    \end{lstlisting}
+
+    \subsubsection{Andere Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
+    
+    In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
+    auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
+    
+
+
+
+  \section{Neue DataSet-Builder-Klassen}
+  \label{sec:realisierung:neuebuilder}
+  
+  Für die tabellarisch definierten DataSets wird eine neue Builder-Klasse generiert, die über Komposition und Delegation die
+  bisherige, auf dem Fluent-Builder-API-basierende DataSet-Klasse nutzt.
+
+  Der Großteil des IDE-Supports wird über Adapter-Klassen für die bisherigen Tabellen realisiert. Zu jeder Tabellen-Klasse wird
+  eine zusätzliche Adapter-Klasse generiert. Dort sind die Tabellen-spezifischen Spaltenbezeichner für die tabellarische DSL
+  definiert. Die Methode \texttt{rows} startet das Parsen der Tabellenzeilen, die wie im Entwurf als Closure übergeben werden.
+  Innerhalb dieses Closures sind die in der Tabelle definierten Bezeichner nutzbar. Neben den Spaltenbezeichnern wird auch ein
+  Spaltenbezeichner \texttt{REF} und auch der Platzhalter (Unterstrich) generiert. Die Adapter nutzen intern eine aggregierte
+  Tabellen-Klasse. Dabei bildet der Adapter die Schnittstelle der Tabellen-Klasse nach und delegiert die Aufrufe.
+  
+  Jeder Spaltenbezeichner stellt eine anonyme Klasse dar, die die abstrakte Klasse \texttt{ColumnBinding} erweitert. Diese 
+  enthält unter anderem Meta-Informationen zu der zugehörigen Spalte auch Methoden, die das Parsen der Tabellen erleichert
+  (siehe Abschnitt \ref{sec:ralisierungdsl:parser}). 
+
+  Für jede Tabelle gibt es in der Builder-Klasse eine öffentliche Instanz der Adapter-Klasse. Auf diese Weise wird der
+  IDE-Support bzgl. der Tabellennamen sichergestellt. Das Klassendiagramm ist Abbildung \ref{img:builderarchitecture} dargestellt.
+
+  \begin{figure}[htbp]
+    \centering
+     \includegraphics[width=0.6\textwidth]{images/realisierung/builderarchitecture.pdf}
+    \caption{Klassendiagramm der DataSet-Builder}\label{img:builderarchitecture}
+  \end{figure}
+  
+  
+  
+
+
+
+% http://martinfowler.com/eaaCatalog/gateway.html
+% http://martinfowler.com/eaaCatalog/repository.html
+% http://martinfowler.com/eaaCatalog/registry.html
+
+    
+  \section{Tabellenparser}
+  \label{sec:ralisierungdsl:parser}
+  
+  Der Code zum Parsen der Tabellen-Closures basiert auf dem dem in Abschnitt \ref{sec:modellierung:implementierung:varianten:laufzeit}
+  gezeigten Entwurf. Die Logik an sich ist relativ generisch, je nach konkreter Tabelle muss allerdings mit unterschiedliche Datentypen
+  gearbeitet werden. 
+  
+  Folgende zwei Möglichkeiten bieten sich an, den Parser zu realisieren:
+  \begin{enumerate}
+    \item Für jede Tabellen-Adapter-Klasse wird individueller Parser-Code generiert.
+    \item Die Tabellen-Adapter nutzen eine generische Parser-Klasse.
+  \end{enumerate}
+
+  Der Nachteil, redundanten Code zu generieren, mag gering erscheinen. Gerade bei generiertem Code wird redundanter Code weniger
+  kritisch gesehen. Allerdings erreicht der Code zum Parsen einer Tabelle eine gewisse Komplexität, die die Pflege des Codes
+  auf Template-Ebene erschwert. Die generische Klasse muss zwar einige Hürden überwinden, hat aber einige Vorteile: Die Wartung
+  erfolgt IDE-unterstützt und Änderungen erfordern in der Regel keine Neu-Generierung der Tabellen-Klassen. Aus Architektur-Sicht
+  ist der größte Vorteil jedoch, dass keine der zu generierenden Klassen spezielle Groovy-Features nutzen muss und es damit 
+  ausreicht, Java-Klassen zu verwenden.
+  
+  Die Schwierigkeiten, die mit der Entscheidung zugunsten des generischen Parsers gelöst werden müssen, betreffen Operationen,
+  die der Parser auf der Tabelle durchführen muss: Anlegen neuer Zeilen, Suchen nach Zeilen und Setzen von Werten auf den Zeilen.
+  Dies wird unter anderem mit einem weiteren Adapter zwischen den bereits bekannten Table-Adapter-Klassen und dem generischen
+  Table-Parser erreicht. Dieser Adapter implementiert das generische Interface \texttt{TableParserAdapter}. Die generischen
+  Typ-Parameter enthalten Informationen zu den konkret verwendeten Klassen wie dem RowBuilder. Darüber hinaus bietet es
+  die benötigten Methoden zum Erstellen und Suchen von Tabellen-Zeilen.
+
+  Das Setzen der Werte auf den RowBuildern ist deshalb ein Problem, weil die Bezeichner der Set-Methoden die Spaltennamen enthalten.
+  Eine Lösung sind die bereits im letzten Abschnitt angesprochenen \texttt{ColumnBinding}-Klasse. Sie definiert die abstrakte
+  generische Methode \texttt{set(R row, Object value)}, wobei \texttt{R} der Typ-Parameter für den RowBuilder ist.
+  In die Implementierungen der \texttt{set}-Methoden kann der korrekte Bezeichner für den jeweiligen Setter auf dem RowBuilder
+  generiert werden.
+  
+  Außerdem kann der Parser auch Informationen zu der Spalte abfragen, z.B. ob es sich um ein Feld mit einmaligen Werten
+  handelt, die zur Identifizierung genutzt werden können. Sofern das Flag aktiviert ist, ist eine Such-Methode auf dem
+  \texttt{ColumnBinding} implementiert, die es erlaubt den zu einem Wert gehörenden RowBuilder zu finden.
+  
+  
+  \section{Referenzen und Scopes}
+  \label{sec:ralisierungdsl:refs_and_scopes}
+  
+  Neben der Möglichkeit, Daten tabellarisch zu modellieren, gehören die neuen Referenz-Datentypen zu der wichtigsten Erweiterung.
+  In \textit{STU} ist eine Referenz eine Art Stellvertreter für eine Entität (Tabellenzeile). Die Referenz kann bei der Modellierung 
+  oder auch bei Such-Anfragen anstelle konkreter Werte (wie Primärschlüssel) verwendet werden. Die Such-Anfrage-Möglichkeiten
+  werden in Abschnitt \ref{sec:ralisierungdsl:apierweiterungen} erläutert.
+  
+  Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \texttt{REF} vorgesehen,
+  die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
+  Die Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung der selben Zeile 
+  einmal mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
+  
+  \begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:ref:bindingtable]
+professorTable.rows {
+  REF    | name    | vorname  | titel            | fakultaet
+  WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik"
+  ...
+}
+  \end{lstlisting}
+  
+  \begin{lstlisting}[caption=Binden von Referenzen (Fluent Builder API), label=listing:ref:bindingfluent]
+table_Professor.insertRow()
+  .bind(WAESCH)
+  .setName("Wäsch")
+  .setVorname("Jürgen")
+  .setTitle("Prof. Dr.-Ing.")
+  .setFakultaet("Informatik")
+...
+  \end{lstlisting}
+  
+  Da Referenzen die zugehörigen RowBuilder kennen, können ihre Werte auch direkt auf der Referenz abgefragt werden 
+  (\reflst{listing:ref:valueaccess}).
+  
+  \begin{lstlisting}[caption=Zugriff auf Werte über Referenzen, label=listing:ref:valueaccess]
+WAESCH.getName()    // Java style
+WAESCH.name         // Groovy style
+  \end{lstlisting}
+  
+  Darüber hinaus können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
+  Die Methodennamen entsprechen den im Generator-Modell angegebenen Relationsnamen. Listing \ref{listing:ref:relations} zeigt
+  ein Beispiel,wie die Relation zwischen einem Professor und einer Prüfung modellieren lässt.
+  \begin{lstlisting}[caption=Definition von Beziehungen über Referenzen, label=listing:ref:relations]
+WAESCH.beaufsichtigt(P_VSYS)
+  \end{lstlisting}
+  
+  Die Referenzen müssen vor ihrer Nutzung definiert (also deklariert und instantiiert) werden. Zwar könnten in Groovy auch nicht
+  explizit definierte Referenzen verwendet werden, allerdings würde Tool-Unterstützung verloren gehen (z.B. beim Umbenennen von
+  Referenzen, Erkennen von Tippfehlern bei Bezeichnern). Außerdem könnten sie auch nicht
+  im normalen Java-Code verwendet werden. Es bietet sich an, sie als globale Variablen zu definieren. Verschiedene DataSets (mit
+  dem selben Datenbank-Modell) können die selben Referenzen nutzen, auch wenn sie unterschiedliche Werte repräsentieren.
+  
+  Damit die selben Referenzen in unterschiedlichen DataSets genutzt werden können, werden die RowBuilder immer im Kontext des
+  gerade aktiven DataSets gebunden. Das aktive DataSet wird über die \texttt{DataSetRegistry} festgelegt (und abgefragt). Pro
+  Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, dass wenn verschiedene Datenbank-Modelle genutzt werden,
+  aus jedem Modell jeweils ein DataSet gleichzeitig aktiv sein kann.
+  
+  \section{Nutzung des DataSets in Unit-Tests}
+  \label{sec:ralisierungdsl:junittest}
+  
+  Wie das Beispiel-DataSet aus Listing \ref{listing:hochschuledataset:table} in einem JUnit-Test verwendet werden kann,
+  zeigt Listing \ref{listing:junittest}. Das System Under Test (siehe Abschnitt \ref{sec:grundlagen:konzepte:tests})
+  ist ein Spring-Service, der von der Variable \texttt{sut} (Zeile 20) repräsentiert wird. \todo{Quelle Spring Service}
+  
+  Das in einem Test verwendete DataSet kann als Klasse über die Annotation \texttt{DatabaseSetup} konfiguriert werden
+  (Zeile 26). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
+  mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 22 und 23). Außerdem wird dieses DataSet auch bei
+  der \texttt{DataSetRegistry} als aktives DataSet registriert und die Daten in die Datenbank eingespielt. Dadurch
+  kommen die Test-Methoden ohne Verwaltungsaufgaben aus. Der Test \texttt{removeStudent} testet, ob das System die
+  richtigen Änderungen in der Datenbank vornimmt, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service
+  die zu löschende Entität übergeben werden muss (Zeile 38), wird in den Zeilen 29 bis 35 eine entsprechende Instanz
+  erstellt und konfiguriert. 
+  
+  Der Test verwendet eine \texttt{DatabaseTesterRule} (Zeile 9), die unter anderem für die Vergleiche der Datenbank
+  mit den DataSets verantwortlich ist. Dazu muss ihr die Datenbank bekannt sein, die in Form einer \texttt{DataSource}
+  vorliegt (Zeile 6). Da dieses Feld durch \textit{Depenency Injection} (\cite[4]{PRO_SPRING}) erst
+  nach der Instantiierung der Klasse belegt wird, kann bei der Erzeugung von \texttt{dbTester} der Wert noch nicht
+  verwendet werden. Dies wird durch die Verwendung eines Future-Objekts gelöst, das die \texttt{DataSource} erst dann
+  zurückliefert, wenn sie gebraucht wird (Zeilen 10 bis 15). 
+  
+  \begin{lstlisting}[caption=JUnit-Tests (reiner Java-Code), label=listing:junittest]
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes=HochschuleContext.class)
+public class HochschuleDataSetDatabaseTest {
+
+  @Autowired
+  DataSource dataSource;
+
+  @Rule
+  public DatabaseTesterRule dbTester =
+     new DatabaseTesterRule(new Future<DataSource>(){
+       @Override
+       public DataSource getFuture()
+       {
+         return dataSource;
+       }
+     }).addCleanAction(new ApacheDerbySequenceReset()
+       .autoDerivateFromTablename("_SEQ"));
+
+  @Autowired
+  HochschuleService sut;
+
+  @InjectDataSet
+  HochschuleBuilder dataSet;
+
+  @Test
+  @DatabaseSetup(prepare = HochschuleDataSet.class)
+  public void removeStudent() throws Exception {
+    // prepare
+    Student student = new Student();
+    student.setMatrikelnummer(MUSTERMANN.getMatrikelnummer());
+    student.setVorname(MUSTERMANN.getVorname());
+    student.setName(MUSTERMANN.getName());
+    student.setStudiengang(MUSTERMANN.getStudiengang());
+    student.setSemester(MUSTERMANN.getSemester());
+    student.setImmatrikuliertSeit(MUSTERMANN.getImmatrikuliertSeit());
+
+    // execute
+    sut.removeStudent(student);
+
+    // verify
+    dataSet.studentTable.deleteRow(MUSTERMANN);
+    dataSet.besuchtTable.deleteAllAssociations(MUSTERMANN);
+
+    dbTester.assertDataBase(dataSet);
+  }
+  
+  ...
+
+}  
+  \end{lstlisting}
+  
+  In den Zeilen 41 und 42 werden die erwarteten Änderungen im DataSet ebenfalls durchgeführt, um in Zeile 44 die
+  Datenbank gegen das DataSet zu vergleichen.
+  
+  Die neue DSL kann in Groovy-basierten Tests verwendet werden. Listing \ref{listing:junittest:groovy} zeigt
+  beispielhaft eine entsprechende Test-Methode. In diesem Test wird eine neue Lehrveranstaltung erstellt und
+  einem Professor zugeordnet.
+  
+  \begin{lstlisting}[caption=Test-Methode in Groovy, label=listing:junittest:groovy]
+  @Test
+  @DatabaseSetup(prepare = HochschuleDataSet)
+  def addLehrveranstaltung() {
+    // prepare
+    Lehrveranstaltung lv = new Lehrveranstaltung()
+    lv.setName("Programmieren")
+    lv.setProfessor(HAASE.id)
+    lv.setSws(4)
+    lv.setEcts(6.0)
+
+    // execute
+    def addedLv = sut.addLehrveranstaltung(lv)
+
+    // verify
+    dataSet.lehrveranstaltungTable.rows {
+      id         | professor | name            | sws | ects
+      addedLv.id | HAASE     | "Programmieren" | 4   | 6.0
+    }
+
+    dbTester.assertDataBase(dataSet)
+  }
+  \end{lstlisting}
+  
+  Sicherheitshalber wird die vom Spring-Service erzeugte ID verwendet, um die Änderungen am Test-DataSet
+  durchzuführen. Auf diese Weise bleibt der Test stabil, auch wenn sich das Verhalten des Services
+  bezüglich der ID-Generierung ändern sollte.
+    
+  \section{Komposition von DataSets}
+  \label{sec:ralisierungdsl:kompositiondatasets}
+  
+  DataSets lassen sich für Tests auch aus anderen zusammensetzen. Dieses Feature setzt nicht auf Konzepte
+  der Objektorientierung wie Vererbung. Vererbung würde zu mehr syntaktischem Ballast führen, da die Methoden
+  \texttt{tables} und \texttt{relations} explizit die Methoden aus der Super-Klasse aufrufen müssten. 
+  
+  Der realisierte Mechanismus sieht vor, dass DataSets andere DataSet-Klassen als Basis verwenden können.
+  Gibt es ein Basis-Datenset, kann die Methode \texttt{extendsDataSet} so überschrieben werden, dass sie
+  die Klasse des Basis-DataSets zurückliefert. Analog dazu gibt es die Methode \texttt{extendsDataSets}, 
+  falls es mehrere Basis-DataSets gibt. Diese muss eine Liste von DataSet-Klassen zurückliefern. Listing
+  \ref{listing:extendeddataset} zeigt, wie ein DataSet ein anderes als Basis verwendet. 
+  
+  \begin{lstlisting}[caption=Erweitertes DataSet, label=listing:extendeddataset]
+class ExtendedHochschuleDataSet extends HochschuleBuilder {
+
+  def extendsDataSet() { HochschuleDataSet }
+
+  def tables() {
+
+   lehrveranstaltungTable.rows {
+      REF       | id  | name                | sws | ects
+      PROGR     | 3   | "Programmieren"     | 4   | 6.0
+    }
+  
+  }
+
+  def relations() {
+    HAASE.leitet(PROGR)
+  }
+
+}  
+  \end{lstlisting}
+  
+  Die Syntax für die Komposition aus den drei DataSet-Klassen \texttt{DataSet1}, \texttt{DataSet2} und
+  \texttt{DataSet3} ist in Listing \ref{listing:multiextendeddataset} dargestellt:
+  \begin{lstlisting}[caption=Erweitertes DataSet, label=listing:multiextendeddataset]
+  def extendsDataSets() { [ DataSet1, DataSet2, DataSet3 ] }
+  \end{lstlisting}
+  
+  Das erweiterte DataSet kann in denselben Unit-Tests verwendet werden. Dabei reicht es aus,
+  die Annotation \texttt{DatabaseSetup} entsprechend anzupassen (siehe Listing 
+  \ref{listing:junittest:extendeddataset}).
+  
+  \begin{lstlisting}[caption=Test auf erweiterem DataSet, label=listing:junittest:extendeddataset]
+  @Test
+  @DatabaseSetup(prepare = ExtendedHochschuleDataSet)
+  public void assignedLehrveranstaltungen() throws Exception {
+    // prepare
+    Professor haase = new Professor();
+    haase.setId(HAASE.id);
+
+    // execute
+    List<Lehrveranstaltung> items = sut.findLehrveranstaltungen(haase);
+
+    // verify
+    def findWhere = dataSet.lehrveranstaltungTable.findWhere
+    int count = findWhere.professorId(HAASE).rowCount
+    assertThat(items).hasSize(count);
+  }
+  \end{lstlisting}
+
+  \section{Erweiterungen in generierter API}
+  \label{sec:ralisierungdsl:apierweiterungen}
+  
+  Die meisten Erweiterungen an der Fluent-Builder-API-Schicht betreffen die Möglichkeit, Ref-Typen statt konkreter Werte
+  zu verwenden. Dazu gehören unter anderem:
+  
+  \begin{itemize}
+    \item \textbf{RowBuilder}: Die Erweiterungen der RowBuilder betreffen vor allem die verbesserten Möglichkeiten
+      Relationen auszudrücken. So gibt es für Spalten, die eine Relation zu einer anderen Spalte enthalten, nun neben
+      einem Setter für den konkreten Wert (z.B. des Fremdschlüssels) einen Setter zum Setzen des entsprechenden
+      Ref-Typs. 
+      
+      Anstelle des von der Ref repräsentierten Wertes wird die Ref selbst im RowBuilder abgespeichert. Das hat zwei
+      Vorteile:
+       \begin{enumerate}
+        \item \textbf{Reihenfolge}: Die Modellierung der Daten ist in diesem Fall keiner strengen Reihenfolge unterworfen.
+          Es ist egal, ob die Zeile, auf die Bezug genommen wird, überhaupt schon initialisiert wurde.
+
+        \item \textbf{Konsistenz}: Die Werte werden nicht redundant gespeichert. Wird der Wert an einer Stelle geändert,
+          ist dieser Wert unmittelbar im gesamten DataSet so sichtbar.
+      \end{enumerate}
+      
+    \item \textbf{Future Values}: Eine der wenigen Erweiterungen, die nicht auf die Einführung der Ref-Typen zurückzuführen
+      sind, sind Future Values. Dabei handelt es sich um Werte, die erst beim Abfragen ausgewertet werden. Dies kann nützlich
+      sein, wenn sich Werte abhängig von anderen Daten ändern. Listing \ref{listing:futurevalues} zeigt ein Beispiel, in der
+      die Lehrveranstaltungstabelle um eine Spalte erweitert wurde. Diese Spalte soll die Anzahl der Tutoren aufnehmen, die
+      die Lehrveranstaltung betreuen.
+    
+      \begin{lstlisting}[caption=Beispiel Lazy Valunes, label=listing:futurevalues]
+class HochschuleDataSet extends HochschuleBuilder
+{
+
+  def tables() {
+        
+    lehrveranstaltungTable.rows {
+      REF       | name                | sws | ects | tutoren
+      VSYS      | "Verteilte Systeme" | 4   | 5    | tutors(VSYS)
+      DPATTERNS | "Design Patterns"   | 4   | 3    | tutors(DPATTERNS)
+    }
+    
+    ...
+  }
+    
+  ...
+
+  // returns a Closure which is threated as future value
+  def tutors(LehrveranstaltungRef ref) {
+    return {
+      def rows = isttutorTable.quietFindWhere.lehrveranstaltungId(ref)
+      return rows.rowCount
+    }
+  }
+}
+      \end{lstlisting}
+      
+      Durch die Nutzung von Future Values enthält die Tabelle immer die korrekte Anzahl, ohne dass beim Modellieren
+      der Tutoren-Beziehungen Anpassungen notwendig wurden. Da die Verwendung von Future Values den Code etwas aufbläht,
+      interpretiert \texttt{STU} Groovy Closures in Tabellen automatisch als Future Values. Die Methode \texttt{tutors()}
+      liefert ein solches Closure zurück.
+
+
+    \item \textbf{findWhere}: Das bisherige API sah Suchen von Zeilen in einer Tabelle ausschließlich über konkrete Werte
+      vor. Die Erweiterung ermöglicht es, dass Ref-Typen statt konkreter Werte verwendet werden können. Werden beispielsweise 
+      in der Professor-Tabelle alle Professoren mit einem bestimmten Vornamen gesucht und als Such-Wert eine 
+      Professor-Referenz übergeben, werden alle Professoren mit diesem Vornamen gesucht. Listing
+      \ref{listing:apierweiterung:findexample} zeigt zwei Such-Anfragen, die beide auf den Beispieldaten das selbe Ergebnis
+      liefern.
+  
+      \begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
+dataSet.table_Professor.findWhere.vorname("Oliver");
+dataSet.table_Professor.findWhere.vorname(HAASE);
+      \end{lstlisting}
+
+    \item \textbf{quietFindWhere}: In manchen Fällen kann es sinnvoll sein, bei einer Suche ohne Treffer keine Ausnahme
+      auszulösen. Ein Beispiel dafür ist das Closure in Listing \ref{listing:futurevalues}. Eine Lehrveranstaltung ohne
+      Tutoren kann in diesem Beispiel normal sein.
+      
+    \item \textbf{getWhere}: Wenn davon auszugehen ist, dass eine Such-Anfrage genau eine Zeile als Ergebnis liefert,
+      kann \texttt{getWhere} verwendet werden. Im Gegensatz zu \texttt{findWhere} liefert es das Ergebnis nicht in Form
+      einer Liste, sondern als \texttt{Optional}-Wert zurück \cite{GUAVA_OPTIONAL}. Gibt es auf eine Suchanfrage mehr
+      als einen Treffer, wird eine Exception ausgelöst.
+  
+    \item \textbf{find}: Sind die einfachen Such-Anfragen über \texttt{findWhere} bzw. \texttt{getWhere} nicht mächtig genug,
+      können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden. In Listing \ref{listing:find} wird
+      ein Filter gezeigt, der alle Professoren findet, deren Vorname die Länge sechs hat.
+      
+      \begin{lstlisting}[caption=Beispiel für find, label=listing:find]
+Filter<RowBuilder_Professor> FILTER = 
+  new Filter<RowBuilder_Professor>() 
+    {
+      @Override
+      public boolean accept(RowBuilder_Professor value)
+      {
+        return value.getVorname().length() == 6;
+      }
+    };
+    
+RowCollection_Professor profs = dataSet.professorTable.find(FILTER);
+      \end{lstlisting}
+      
+      In Groovy können auch direkt Closures übergeben werden, die als Argument einen entsprechenden RowBuilder übergeben
+      bekommen.
+    
+    \item \textbf{foreach}:
+      \begin{lstlisting}[caption=Beispiel für foreach, label=listing:foreach]
+Action<RowBuilder_Professor> ACTION = 
+  new Action<RowBuilder_Professor>() 
+    {
+      @Override
+      public void call(RowBuilder_Professor value)
+      {
+        System.out.println("Professor: " + value.getName());
+      }
+    };
+  
+dataSet.professorTable.foreach(ACTION);
+      \end{lstlisting}
+        
+  \end{itemize}
+  
+  \section{JavaDoc}
+  \label{sec:ralisierungdsl:javadoc}
+  
+  Zum guten IDE-Support gehört auch, dass der Tester beim Erstellen der Tests durch aussagekräftige
+  JavaDoc unterstützt wird. Der Generator erzeugt für das DataSet, für die Tabellen und für die Referenz-Typen
+  JavaDoc, das neben einer reinen Beschreibung auch Beispiele für die Nutzung enthält.
+  
+  Die in der JavaDoc enthaltenen Beispiel-Daten werden auf sehr einfache Art generiert, für jeden Java-Datentyp
+  gibt es einen Beispielwert. Sie sollen mit Hilfe der Erkenntnisse bezüglich der Generierung von Testdaten 
+  verbessert werden.
+  
+  Einige Beispiel-Quellcodes in den Builder-Klassen zur Beschreibung des Datenbank-Modells werden über
+  Unit-Tests überprüft. Auf diese Weise soll sichergestellt werden, dass Änderungen am API auch auf die JavaDoc
+  übertragen werden.
+
+  Entscheiden welche Bilder und neue Screenshots machen
+\begin{figure}[H]
+  \centering
+   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_builder.png}
+  \caption{Tooltip Builder}\label{img:javadoc_tooltip_builder}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_tables.png}
+  \caption{Tooltip tables()}\label{img:javadoc_tooltip_tables}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_relations.png}
+  \caption{Tooltip relations()}\label{img:javadoc_tooltip_relations}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_table.png}
+  \caption{Tooltip Tabelle}\label{img:javadoc_tooltip_table}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_rows.png}
+  \caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
+\end{figure}
+
+  \subsection{Verhalten bei Fehlern in den Tabellendefinitionen}
+  \label{sec:ralisierungdsl:verhaltenfehler}
+  
+  Selbst eine übersichtliche Darstellung von Tabellendaten schützt nicht vor Fehleingaben. Viele Fehler lassen sich mit
+  Hilfe statischer Analysen erkennen. So werden ungültige Tabellen- und Spaltennamen vom Compiler entdeckt.
+
+  Fehler in der eigentlichen Tabellenstruktur, z.B. eine abweichende Anzahl von Spalten, kann der Standard-Compiler
+  nicht erkennen, genauso wie ungültige Werte bzw. ungültige Typen. Solche Fehler werden in der gegenwärtigen
+  Implementierung zur Laufzeit erkannt und führen zum Scheitern der Tests. Dazu wirft der Tabellen-Parser eine
+  Exception der Klasse \texttt{TableParserException}. Wenn ein falscher Typ verwendet wird, könnte die Meldung
+  der Exception so aussehen: \textit{Cannot set value <5> of type java.lang.Integer, expected class java.lang.String
+  in [TableRowModel: <JobsRef> | 5 | "Creating software"]}
+  
+  Um die Lokalisation der fehlerhaften Stelle zu erleichtern, wird der Stack-Trace der geworfenen Exception angepasst.
+  Die Ursache dafür liegt in der Arbeitsweise des Tabellen-Parsers: Der Parser arbeitet zeilenweise,
+  d.h. er liest immer eine Zeile vollständig ein und interpretiert die Daten erst im Anschluss - wenn die
+  Ausführung der Zeile abgeschlossen ist. Kommt es zu einem Fehler, befindet sich das Programm aber nicht mehr
+  in der Fehler-verursachenden Zeile. Deshalb wird beim Parsen bei jedem Tabellen-Element der Stack-Trace
+  analysiert und das Stack-Trace-Element bestimmt, das zu der Tabellenzeile gehört. Sollte es beim Setzen
+  der Werte einen Fehler geben, wird dieses Element als erstes Element des Stack-Traces hinzugefügt.
+
+  \section{Nicht umgesetzt}
+  \label{sec:ralisierungdsl:nichtumgesetzt}
+  
+  Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
+  warum diese Funktion nicht in \textit{STU} implementiert ist.
+
+    \subsubsection{Zusammengesetzte Schlüssel}
+    Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen -- wie auch in 
+    \textit{SB Testing DB} -- komplett manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
+    Spalte im Datenbank-Modell angelegt werden. So lange zum Zugriff auf Tabellenzeilen die Referenz-Typen
+    verwendet werden, stellt dies kein spürbarer Nachteil dar. Sollte die Zeile in Abhängigkeit ihres
+    Schlüssels dynamisch gesucht werden, kann auf die neue \texttt{find}-Methode zurückgegriffen werden.
+
+    \subsubsection{Unterstützung für weitere Beziehungstypen}
+    Folgende Beziehungstypen müssen manuell umgesetzt werden.
+    
+    \begin{itemize}
+      \item \textbf{Reflexive Beziehungen}
+        Eine reflexive Beziehung kann in \textit{STU} nur manuell ausgedrückt werden. Die Definition einer
+        einfachen Tabelle für einen Baum, der aus einzelnen Konten besteht, könnte wie folgt aussehen
+        (siehe Listing \ref{listing:reflexiv:manuell}). Ein Knoten-Element kennt den zugehörigen Eltern-Knoten
+        (Zeile 5). Eine Referenz auf die Tabelle ist an dieser Stelle nicht möglich, die Relation muss
+        manuell ohne besondere Tool-Unterstützung durch \textit{STU} realisiert werden.
+      
+        \begin{lstlisting}[caption=Reflexive Beziehungen manuell, label=listing:reflexiv:manuell]
+Table knoten = table("knoten")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+    .column("parent", DataType.BIGINT)
+  .build();
+        \end{lstlisting} 
+        
+        Die Konsequenz ist, dass die Beziehungen nicht typsicher über die Referenz-Klasse modelliert werden
+        können, sondern die Primär- und Fremdschlüssel manuell im DataSet gepflegt werden müssen.
+        
+        Ein anderer Ansatz stellt das Refaktorisieren der Datenbank und der beteiligten Systeme dar. Dies ist
+        leider nicht immer möglich. Die Refaktorisierung sieht eine assoziative Tabelle für die Modellierung
+        der Beziehung vor (siehe Listing \ref{listing:reflexiv:assoc}).
+        
+        
+        \begin{lstlisting}[caption=Reflexive Beziehungen mit Hilfe assoziativer Tabelle, label=listing:reflexiv:assoc]
+Table knoten = table("knoten")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+  .build();
+
+associativeTable("parents")
+    .column("parent", DataType.BIGINT)
+      .reference
+        .foreign(knoten)
+    .column("child", DataType.BIGINT)
+      .reference
+        .foreign(knoten)
+  .build();
+        \end{lstlisting} 
+
+      \item \textbf{Zirkuläre Beziehungen}
+
+        \begin{lstlisting}[caption=Zirkuläre Beziehungen manuell, label=listing:zirkulaer:manuell]
+Table event = table("event")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+    .column("organizer", DataType.BIGINT)
+  .build();
+
+Table person = table("person")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+    .column("participates", DataType.BIGINT)
+      .reference
+        .foreign(event)
+  .build();
+        \end{lstlisting} 
+      
+      
+        \begin{lstlisting}[caption=Zirkuläre Beziehungen mit assoziativer Tabelle, label=listing:zirkulaer:assoc]
+Table person = table("person")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+  .build();
+
+Table event = table("event")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+    .column("organizer", DataType.BIGINT)
+  .build();
+
+associativeTable("parcipations")
+    .column("event", DataType.BIGINT)
+      .reference
+        .foreign(event)
+    .column("participant", DataType.BIGINT)
+      .reference
+        .foreign(person)
+  .build();
+        \end{lstlisting} 
+      
+      \item \textbf{Ternäre Beziehungen}
+    \end{itemize}
+  
+    \subsubsection{Komfortfunktionen}
+    
+    Die Realisierung könnte an manchen Stellen dem Test-Ingenieur mehr manuelle Arbeit abnehmen. So wird darauf verzichtet,
+    beim Löschen einer Zeile aus einer Tabelle auch alle beteiligten Beziehungen zu entfernen. Listing \ref{listing:deleteexample}
+    zeigt, wie ein Professor aus der Professoren-Tabelle entfernt wird. Die erste Zeile entfernt keine Einträge in 
+    anderen Tabellen wie z.B. der Beaufsichtigt-Tabelle. Folglich müssen die Relationen (mehr oder weniger) manuell
+    aus anderen Tabellen entfernt werden.
+
+    \begin{lstlisting}[caption=Löschen von Zeilen, label=listing:deleteexample]
+dataSet.professorTable.deleteRow(HAASE);
+dataSet.beaufsichtigtTable.deleteAllAssociations(HAASE);
+    \end{lstlisting} 
+  
+    Diese Entscheidung hat unterschiedliche Gründe:
+    \begin{itemize}
+      \item \textbf{Einsatzgebiet}: Die Bibliothek soll Unit-Tests in Verbindung mit Datenbanken vereinfachen. Es handelt sich
+        hier nicht um ein API, das in einer Anwendung ausgeliefert wird. Während es in einem API für produktive Anwendungen
+        durchaus wünschenswert sein kann, dass das System beim Löschen von Entitäten gewisse Aufgaben automatisch erledigt,
+        ist so ein Verhalten innerhalb einer Test-Bibliothek zweifelhaft. Explizites Löschen von Zeilen auf allen beteiligten
+        Tabellen verbessert die Ausdrucksstärke des Tests.
+        
+      \item \textbf{Code-Qualität}: Eine Funktion (bzw. Methode) sollte genau eine Aufgabe erledigen. Wenn
+        \texttt{deleteRow} zusätzlich beteiligte Relationen auflöst, erledigt diese Funktion mehr als nur eine Aufgabe 
+        \cite[65f]{CLEAN_CODE}. Außerdem würde es sich um einen unerwarteten Nebeneffekt handeln \cite[75f]{CLEAN_CODE}.
+      
+      \item \textbf{Klarheit}: Es ist nicht eindeutig, wie beim Entfernen von Zeilen vorgegangen werden soll, wenn sie
+        Teil einer Relation sind. Bei einer n:m-Relation könnte sich die Regel ableiten lassen, dass beim Löschen einer
+        Zeile auch alle assoziierten n:m-Relationen entfernt werden können. Aber was ist bei einer 1:n-Relation? Wenn
+        ein Professor entfernt wird, was soll mit Lehrveranstaltungen passieren, die ihm zugeordnet sind?
+    \end{itemize}
