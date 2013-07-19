@@ -32,12 +32,11 @@ Dabei gelten diese allgemeinen Anforderungen:
 	\item \textbf{Typ-Sicherheit}: Beim Test müssen falsche Typen (z.B. bei Beziehungen) erkannt werden und den Test
 		scheitern lassen. Idealerweise sollten die Typen allerdings schon zur Compilier-Zeit überprüft werden können.
 		
-	\item \textbf{Funktionen als Werte}:\\
-	- Datumswerte\\
-	- Berechnungen\\
-	- Einlesen von BLOBs\\
+	\item \textbf{Funktionen als Werte}: Es soll möglich sein, Funktionen als Werte anzugeben, z.B. für Berechnungen,
+	  zum Einlesen von BLOBs (Binary Large Object) aus Dateien oder für Datumswerte.
 		
-	\item \textbf{Gültigkeitsbereiche}: 
+	\item \textbf{Komposition und Gültigkeitsbereiche}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
+	  \todo{Gültigkeitsbereiche erklären}
 	
 	\item \textbf{Zielgruppe}: Die Zielgruppe für die DSL sind Software-Entwickler und Tester. Der Code zur Modellierung
 	  der Daten sollte auch für andere Projekt-Mitglieder lesbar und verständlich sein.
@@ -129,7 +128,7 @@ Modellierungsvarianten.
 	
 	Das Attribut "`fakultaet"' in der Tabelle Professor soll als Aufzählungstyp (enumeration) realisiert werden.
 	Mögliche Werte sind: Architektur, Bauingenieurwesen, Elektrotechnik, Informatik, Maschinenbau und Wirtschaftswesen.
-	Das Foto des Professors wird als \textit{Binary Large Object} (BLOB) dargestellt.
+	Das Foto des Professors wird als BLOB dargestellt.
 	\nomenclature{BLOB}{Binary Large Object)}
 	
 

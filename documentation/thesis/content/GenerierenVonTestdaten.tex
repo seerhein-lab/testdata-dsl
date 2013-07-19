@@ -4,3 +4,31 @@
 Fragen: 
 - Wie muss dass Modell "`angereichert"' werden? 
 - Wie können Daten sinnvoll generiert werden?
+
+
+- Viele Generatoren für reine Daten, mit Beziehungen schon weniger
+
+
+Red Gate SQL Data Generator:
+- Fragt Datenbank-Schema aus SQL-Server ab
+- Modelliert Beziehungen(!), allerdings zufällig und bedeutungslos
+- Anzahl generierter Zeilen pro Tabelle steuerbar
+- Zufall pro Spalte über Seed steuerbar
+- Eher für große Datenmengen gedacht
+
+
+DTM Data Generator
+- Weniger bequem als Red Gate, z.B. keine Erkennung der Spaltentypen
+- 
+
+
+
+
+Je nach Anwendungsfall unterschiedliche Data-Sets sinnvoll
+- Unit-Tests eher klein
+- Performance-Tests, Regressionstests eher groß
+
+
+Möglichkeiten:
+- Generierung
+- Real-Daten, Extraktion, Anonymisierung (bei Unit-Tests wenig praktikabel, da Tests vor Inbetriebnahme laufen sollen)

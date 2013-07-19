@@ -15,7 +15,7 @@ einer Bibliothek oder einem Framework sind.
 Um Probleme bezüglich Abwärtskompatiblität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
 Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
 \url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz 
-\textit{Apache License 2.0} [Quelle/Beschreibung, http://www.apache.org/licenses/LICENSE-2.0.html]
+\textit{Apache License 2.0}. \cite{APACHE_LICENSE_2}
 
 Die Auswirkungen auf die Architektur von Tests zeigt Abbildung \ref{img:entwurf_architektur}. Der Test basiert auf 
 einem Test-Framework wie \textit{JUnit}, der Testbibliothek \textit{STU}) und der Bibliothek \textit{DbUnit}.
@@ -286,18 +286,20 @@ class TableParser {
 		\texttt{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
 		Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt,
 		z.B. bei zwei \texttt{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
-		die Datentypen passende Kategoriemethoden definiert werden.
-
-		Der Parser in der Form kann noch nicht mit selbst definierten Spaltennamen und Bezeichner für die einzelnen
-		Entitäten umgehen. Der Compiler versucht, diese Ausdrücke aufzulösen und sucht nach entsprechenden Properties.
-		Properties können normale Variablen sein oder parameterlose Get-Methoden, die beim Aufruf in Groovy ohne das
-		Präfix \texttt{get} und den runden Klammern verwendet werden können. Kann Groovy eine Property nicht auflösen
-		ruft es in der aktuellen Klasse (bzw. dem Ausführungskotext) die Methode \texttt{propertyMissing} auf. Durch
-		Überschreiben dieser Methode kann auf nicht auflösbare Bezeichner reagiert werden. Damit Groovy die
-		gewünschte Methode bei der Ausführung eines Closures aufruft, kann der Ausführungskontext von Closures
-		gesetzt werden. Auf diese Weise werden Properties und Methoden von der als Ausführungskontext festgelegten
-		Instanz verwendet. In diesem Prototyp wird der Kontext auf den Tabellenparser selbst gesetzt.
-	  Die Änderungen sind in Listing \ref{listing:opoverloading.tableparser.extended} dargestellt.
+		die Datentypen passende Kategoriemethoden definiert werden. Diese und weitere Anpassungen sind in Listing 
+		\ref{listing:opoverloading.tableparser.extended} dargestellt.
+		
+		Im zu parsenden Closure sollen Variablen genutzt werden, die nicht im Closure selbst sondern in einer anderen Klasse
+		definiert werden. Zu diesen Variablen gehören die Bezeichner der Spalten und die der Zeilen. Groovy erlaubt es Closures im
+		Kontext eines Delegaten auszuführen. In diesem Beispiel wird die aktuelle Instanz der Klasse \texttt{TableParser} verwendet 
+		(Zeile 22). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichern verwendet. In Zeile 23 wird 
+		festgelegt, dass bei der Auflösung zuerst im Delegaten gesucht wird.
+		
+		In diesem Prototyp sind keine Variablen für Spalten oder Zeilen definiert. Folglich schlägt das Auflösen fehl.
+		Groovy ruft Groovy dann die Methode \texttt{propertyMissing} in der jeweiligen Klasse auf. Eine Property ist 
+		eine Variable oder eine parameterlose Get-Methode. Eine solche Get-Methode
+		kann in Groovy wie eine Variable genutzt werden, wenn auf das Präfix \texttt{get} und die Klammern verzichtet wird.
+		Durch Überschreiben dieser Methode kann auf nicht auflösbare Bezeichner reagiert werden.
 
 		\begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.extended]
 class TableParser {
@@ -330,12 +332,10 @@ class TableParser {
 }
 		\end{lstlisting}
 		
-		\todo{delegate this und resolve strategy erläutern :-) }
-		
 		Die statischen Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. Ihre Ergebnisse
 		können sie demnach auch nur in statische Elementen aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das
-		gleichzeitige Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale
-		Liste verwendet. \todo{thread local erklären mit quelle} \cite{JAVA_CONCURRENCY_IN_PRACTICE}
+		Erlauben von gleichzeitigem Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine 
+		threadlokale Liste verwendet. \cite[45]{JAVA_CONCURRENCY_IN_PRACTICE}
 
 		Die Laufzeit-Meta-Programmierung kann die Syntax der Sprache nicht beliebig erweitern. Groovy kennt keinen
 		Double-Pipe-Operator. Deshalb kann dieser weder überladen noch über Laufzeit-Meta-Programmierung eingeführt
@@ -483,12 +483,12 @@ Listing \ref{listing:ebnf:table} definiert.
 \begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
 Table       = TableName, "Table.rows ", TableData;
 TableName   = ? Name einer Tabelle im Modell ?;
-TableData   = {", NewLine, { HeadRow, { DataRow } }, NewLine, "}"
+TableData   = {", NewLine, { HeadRow, { DataRow } }, NewLine, "}";
 HeadRow     = ColumnName, { Separator, ColumnName }, NewLine;
 DataRow     = ColumnData, { Separator, ColumnData }, NewLine;
 ColumnName  = ? vorgegeben durch Tabelle ?;
 ColumnData  = ? numerische Literale, symbolische Konstanten, 
-              Methodenaufrufe ?
+              Methodenaufrufe ?;
 Separator   = "|";
 NewLine     = "\n";
 \end{lstlisting}
@@ -496,14 +496,14 @@ NewLine     = "\n";
 
 \lstSetEBNF
 \begin{lstlisting}[caption=EBNF der Relationen, label=listing:ebnf:relations]
-Relations   = { Relation, NewLine }
-Relation    = Ref, ".", RelationName, "(", RefList, ")", [ Attributes ]
-RefList     = Ref, [ { ", ", Ref } ]
-Ref         = ? ... ?
-Attributes  = { ".", Attribute, "(", Value, ")" } ]
-Attribute   = ? ... ?
+Relations   = { Relation, NewLine };
+Relation    = Ref, ".", RelationName, "(", RefList, ")", [ Attributes ];
+RefList     = Ref, [ { ", ", Ref } ];
+Ref         = ? Bezeichner einer Ref-Variable ?;
+Attributes  = { ".", Attribute, "(", Value, ")" };
+Attribute   = ? Von Beziehung abhängiger Attribut-Bezeichner ?;
 Value       = ? numerische Literale, symbolische Konstanten, 
-              Methodenaufrufe ?
+              Methodenaufrufe ?;
 NewLine     = "\n";
 \end{lstlisting}
 \lstSetJava
@@ -657,7 +657,7 @@ einfachen Type-Cast hinaus.
 			Anweisungen, in Zeile 4 und 5 wird die Studententabelle erweitert, z.B. innerhalb eines Unit-Tests. Zeile 5
 			definiert Daten mit der ID 2 und der vorherigen Matrikelnummer. Beziehen sich beide Zeilen auf den
 			selben Studenten und die ID soll verändert werden? Oder wurde die Matrikelnummer irrtümlich falsch angegeben?
-			Die ID des Studenten Mustermann auf 2 zu ändern könnte zu Problemen führen, da nicht klar ist, an welchen Stellen
+			Die ID des Studenten Mustermann auf 2 zu ändern könnte zu Problemen führen, da nicht bekannt ist, an welchen Stellen
 			bereits auf ID 1 Bezug genommen wird.
 			
       \begin{lstlisting}[caption=Beispiel für unveränderliche Identifikatoren, label=listing:beispielimmutable]
@@ -1255,16 +1255,15 @@ dataSet.table_Professor.findWhere.vorname("Oliver");
 dataSet.table_Professor.findWhere.vorname(HAASE);
 	    \end{lstlisting}
 
-    \item \textbf{quietFindWhere}: In wenigen Fällen kann es sinnvoll sein, bei einer Suche ohne Treffer keine Ausnahme
+    \item \textbf{quietFindWhere}: In manchen Fällen kann es sinnvoll sein, bei einer Suche ohne Treffer keine Ausnahme
 		  auszulösen. Ein Beispiel dafür ist das Closure in Listing \ref{listing:futurevalues}. Eine Lehrveranstaltung ohne
 			Tutoren kann in diesem Beispiel normal sein.
 		  
-	  \item \textbf{getWhere}: Analog zu \texttt{findWhere} gibt es die Möglichkeit, einzelne Zeilen über \texttt{getWhere}
-		  abzufragen. Der einzige Unterschied zwischen beiden ist, dass \texttt{getWhere} das Ergebnis in Form eines 
-			\texttt{Optional}-Wertes zurückliefert. Für den Fall, dass nur ein Ergebnis oder unter Umständen gar kein Ergebnis
-			erwartet wird, kann \texttt{getWhere} anstelle von \texttt{findWhere} genutzt werden. Gibt es mehrere Treffer,
-			wird eine Exception ausgelöst.
-	  
+	  \item \textbf{getWhere}: Wenn davon auszugehen ist, dass eine Such-Anfrage genau eine Zeile als Ergebnis liefert,
+		  kann \texttt{getWhere} verwendet werden. Im Gegensatz zu \texttt{findWhere} liefert es das Ergebnis nicht in Form
+			einer Liste, sondern als \texttt{Optional}-Wert zurück \cite{GUAVA_OPTIONAL}. Gibt es auf eine Suchanfrage mehr
+			als einen Treffer, wird eine Exception ausgelöst.
+  
 		\item \textbf{find}: Sind die einfachen Such-Anfragen über \texttt{findWhere} bzw. \texttt{getWhere} nicht mächtig genug,
 		  können mit Hilfe von \texttt{find} Filter-basierte Suchen durchgeführt werden. In Listing \ref{listing:find} wird
 			ein Filter gezeigt, der alle Professoren findet, deren Vorname die Länge sechs hat.
