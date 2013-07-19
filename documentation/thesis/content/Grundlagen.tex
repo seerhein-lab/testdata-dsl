@@ -166,22 +166,26 @@ entsprechen die Klassennamen, bis auf die Klasse \texttt{FindWhere}, nicht den t
 
 	\subsection{Datenbank ER-Diagramme}
 	\label{sec:grundlagen:konventionen:datenbankdiagramme}
-	Für die Darstellung von Datenbank-Diagrammen wird ein einheitlicher Stil verwendet. Dieser orientiert sich an
-	Ambler aus \cite{REFACTORING_DATABASES}. Auf die Angabe von Stereotypen wird sowohl bei den Tabellen, als auch
-	bei den Beziehungen zwischen Tabellen verzichtet.
+	Für die Darstellung von Datenbank-Diagrammen wird ein einheitlicher Modellierungsstil verwendet. Dieser basiert auf
+	dem UML-Klassendiagramm.
 	
-	Erklären:
-	- Spalten/PK/FK
-	- Kardinalitäten
+	Tabellen werden durch Boxen repräsentiert. Diese Boxen sind unterteilt in zwei Bereiche: den Tabellenbezeichner (oben)
+	und die Attribute der Tabelle (unten). Attribute werden in der Form \textit{Bezeichner : typ} beschrieben. Es gibt die
+	beiden Stereotypen \textit{PK} für \textit{Primary Key} und \textit{FK} für \textit{Foreign Key}, um die Attribute
+	entsprechend zu klassifizieren.
 	
-	- basiert auf UML, Stereotypen bei Tabelle und Beziehungen weggelassen, 
-	
-	Abbildung \ref{img:ambler_table} zeigt ein Diagramm mit zwei Tabellen. Tabelle 2 enthält einen Fremdschlüssel,
-	der einem Primärschlüssel aus Tabelle 1 
+	Beziehungen zwischen Tabellen werden durch Verbindungslinien dargestellt. Die Kardinalitäten beschreiben die Art der 
+	Verbindung. Die Bedeutung der Kardinalitäten lassen sich am besten über ein Beispiel erklären (Abbildung \ref{img:ambler_table}).
+	Eine Entität aus \texttt{TABELLE 1} ist mit mindestens einer und beliebig vielen Entitäten aus \texttt{TABELLE 2}
+	in einer Beziehung, jede Entität aus \texttt{TABELLE 2} ist mit genau einer Entität aus \texttt{TABELLE 1} in Beziehung.
+	Beziehungen können zusätzlich mit einem Bezeichner versehen werden. 
 
+	Auf die Angabe der Stereotypen für die Tabellen und Beziehungen wird verzichtet.
+	
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[width=0.75\textwidth]{images/grundlagen/ambler_table.pdf}
 		\caption{Datenbank-Diagramm-Stil nach Ambler}\label{img:ambler_table}
 	\end{figure}
-
+	
+	Diese Konvention wird auch von Ambler in \cite{REFACTORING_DATABASES} verwendet.
