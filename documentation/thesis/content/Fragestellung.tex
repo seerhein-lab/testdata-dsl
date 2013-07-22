@@ -13,31 +13,35 @@ Betrachtung der Vor- und Nachteile verschiedener Modellierungsvarianten in Zusam
 wird in Abschnitt \ref{sec:fragestellung:modellierung} dargelegt. Die Betrachtung der verschiedenen
 Modellierungsvarianten soll als Grundlage für die Lösung dienen.
 
-Die Hauptziele dieser Arbeit sind, die Modellierung von Beziehungen zu vereinfachen und die Modellierung
-der Test-Daten übersichtlicher zu gestalten. Außerdem sollen Test-Daten automatisch generiert werden.
-Dabei gelten diese allgemeinen Anforderungen:
+Die drei Hauptziele dieser Arbeit sind, die Modellierung von Beziehungen zu vereinfachen, die Modellierung
+der Test-Daten übersichtlicher zu gestalten und die automatische Generierung von Test-Daten.
+Für die Modellierung gelten diese allgemeinen Anforderungen:
 
 
 \begin{itemize}
-	\item \textbf{Integration in bestehende Werkzeugkette}: Eine der wichtigsten Anforderungen ist, dass sich
-	  die Lösung in die bestehende Werkzeugkette von SEITENBAU integrieren lassen muss. Daraus folgt die Anforderung,
-		dass sie sich in Java nutzen lassen soll. 
+	\item \textbf{Integration in bestehende Werkzeugkette}: Die Lösung sollte sich nach Möglichkeit in die bestehende
+	  Werkzeugkette von SEITENBAU integrieren lassen. Daraus folgt die Anforderung, dass sie sich in Java nutzen lassen soll. 
 		
-  \item \textbf{Komfort}: Eine der wichtigsten Anforderungen ist Komfort. Daten sollen komfortabel modelliert werden
-	  können. Dazu gehört auch die Integration in Entwicklungsumgebungen wie Eclipse oder IntelliJ IDEA. Ähnlich wie
-		bei \textit{SB Testing DB} sollen DataSets auch nachträglich veränderbar sein. 
+  \item \textbf{IDE-Integration}: Komfort für den Tester stellt eine der wichtigsten Anforderungen dar. Daten sollen
+	  komfortabel modelliert werden können. Die Integration in Entwicklungsumgebungen wie Eclipse oder IntelliJ IDEA hat
+		dabei einen maßgeblichen Anteil. 
 	
-	\item \textbf{Beziehungen}: Beziehungen sollen sich einfach modellieren lassen. 
+	\item \textbf{Beziehungen}: Beziehungen sollen einfach modellieren werden können. 
 
-	\item \textbf{Typ-Sicherheit}: Beim Test müssen falsche Typen (z.B. bei Beziehungen) erkannt werden und den Test
-		scheitern lassen. Idealerweise sollten die Typen allerdings schon zur Compilier-Zeit überprüft werden können.
-		
-	\item \textbf{Funktionen als Werte}: Es soll möglich sein, Funktionen als Werte anzugeben, z.B. für Berechnungen,
-	  zum Einlesen von BLOBs (Binary Large Object) aus Dateien oder für Datumswerte.
-		
-	\item \textbf{Komposition und Gültigkeitsbereiche}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
+	\item \textbf{Veränderbarkeit von DataSets}: Ähnlich wie bei \textit{SB Testing DB} sollen DataSets auch nachträglich
+	  veränderbar sein. 
+	
+	\item \textbf{Komposition}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
+	
+	\item \textbf{Gültigkeitsbereiche}: 
 	  \todo{Gültigkeitsbereiche erklären}
 	
+	\item \textbf{Typ-Sicherheit}: Die Beschreibung der Daten sollte typsicher erfolgen. Idealerweise sollten falsche
+	  Typen schon während des Compilierns erkannt werden..
+		
+	\item \textbf{Funktionen als Werte}: Es soll möglich sein, Hilfsfunktionen zur Berechnung von Werten zu verwenden,
+	  z.b: zum Einlesen von Binary Large Objects (BLOBs) aus Dateien.
+		
 	\item \textbf{Zielgruppe}: Die Zielgruppe für die DSL sind Software-Entwickler und Tester. Der Code zur Modellierung
 	  der Daten sollte auch für andere Projekt-Mitglieder lesbar und verständlich sein.
 
@@ -59,7 +63,7 @@ Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen z
 
 % Beispiel einleiten
 Ein einheitliches und fortlaufendes Beispiel soll der Arbeit als Grundlage dienen. Die Problemstellung besteht aus
-einem Modell und einem Satz von Testdaten. Diese Testdaten dienen als Grundlage für die Diskussion der unterschiedlichen
+einem Modell und einer Menge von Testdaten. Diese Testdaten dienen als Grundlage für die Diskussion der unterschiedlichen
 Modellierungsvarianten.
 
 	\subsection{Anforderungen an das Beispiel}
@@ -155,7 +159,7 @@ Modellierungsvarianten.
 	DataSets benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. DataSets aus DbUnit bieten
 	allerdings nicht die Möglichkeit, aus einem bestehenden DataSet ein zweites zu erzeugen, das die Änderungen an der
 	Datenbank beinhaltet. 
-	
+
 	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-DataSets diskutiert. Die Ergebnisse stellen die Grundlage
 	für die konkretere Zielsetzung dar.
 	
@@ -163,18 +167,11 @@ Modellierungsvarianten.
 	\subsection{XML-DataSet}
 	\label{sec:fragestellung:modellierung:xml}
 	
-	Eine Variante, ein DataSet für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu zwei Klassen an.
+	Eine Variante, ein DataSet für DbUnit zu modellieren, stellt XML dar. DbUnit bietet dazu zwei Varianten ein an.
 	
-	Die erste Klasse ist \textit{XmlDataSet}. Sie liest XML-Datei nach einem von DbUnit vorgegebenen Dokumententyp ein.
-	Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei, in dem die beiden Tabellen
-	\textit{Professor} und \textit{Lehrveranstaltung} definiert werden.
-	
-	BLOBs lassen sich bei den meisten Modellierungsvarianten nur mit zusätzlichem Aufwand realisieren. Eine direkte Darstellung
-	ist in den meisten Sprachen nicht möglich, allerdings in Bezug auf die Übersicht auch nicht unbedingt erwünscht. Egal ob
-	sie in die XML-Datei eingebettet werden mit Hilfe einer XML-kompatiblen Codierung, oder ob ein Bezug auf externe
-	Ressourcen genommen werden soll, solche Funktionen müssen für DbUnit-DataSets manuell implementiert werden. Hier bietet
-	die Modellierung über eine Programmiersprache wie Java die meisten Freiheiten: Das Datenobjekt kann auf beliebige Art und
-	Weise zur Laufzeit erzeugt werden (Einlesen aus Datei, Generierung, etc.).
+	Die erste Variante stellt das \textit{XmlDataSet} dar. Diese Klasse liest eine XML-Datei nach einem von DbUnit
+	vorgegebenen Dokumententyp ein. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei,
+	in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung} definiert werden.
 	
 	\lstSetXML
 	\begin{lstlisting}[caption=XML-DataSet, label=listing:xmldataset]
@@ -229,12 +226,11 @@ Modellierungsvarianten.
 	Die positiven Eigenschaften bei der Modellierung mit XML sind unter anderem, dass für XML ein breites Angebot an
 	Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
 	
-	Leider können die Werkzeuge kaum erkennen, ob in den einzelnen Zellen die richtigen Typen verwendet werden. Die in
-	der  XML-Datei enthaltenen Meta-Informationen (Beschreibung der Spalten, Zeilen 4-8 und 25-29) reichen dafür nicht
-	aus. Die Meta-Informationen sind redundant und erschweren die Pflege.
+	Der Aufbau dieser DbUnit-XML-Dateien erlaubt keine explizite Typ-Überprüfung durch XML-Editoren, da die
+	Meta-Informationen zu den Spalten keine Angaben zu den Typen enthalten (Zeilen 4-8 und 25-29).
 	
-	Das Modellieren von Referenzen findet auf einer niedrigen Abstraktionsebene statt und ist damit unübersichtlich und
-	fehleranfällig. Primär- und Fremdschlüssel müssen von Hand gepflegt werden. In umfangreicheren DataSets sind 
+	Foreign-Key-Beziehungen in werden über hier über numerische Konstanten beschrieben. Die manuelle Pflege der Primär-
+	und Fremdschlüssel ist unübersichtlich und damit fehleranfällig. In umfangreicheren DataSets sind 
 	unkommentierte Beziehungen für Betrachter nur schwer nach zu vollziehen, da ein Schlüsselwert üblicherweise keinen
 	unmittelbaren Rückschluss auf den referenzierten Datensatz erlaubt.
 	
@@ -251,7 +247,7 @@ Modellierungsvarianten.
 	
 	% Modellieren Assoziativer Tabellen ansprechen?
 
-  Die zweite Klasse von DbUnit bereitgestellte Klasse ist \texttt{FlatXmlDataSet}. Hierbei gibt es keine
+  Die zweite Variante ist die Klasse ist \texttt{FlatXmlDataSet}. Hierbei gibt es keine
 	von DbUnit vorgegebene DTD, da die Tags den Tabellen-Namen entsprechen\footnote{Es ist möglich, eine eigene DTD zu
 	definieren.}. Eine solche XML-Datei kommt ohne explizite Meta-Informationen zu den Tabellen aus. Stattdessen stellen sie
 	eine Art Sprachelement dar und werden für die Zuweisung der Werte verwendet. In diesem Punkt ist das \texttt{FlatXmlDataSet}
@@ -287,16 +283,21 @@ Modellierungsvarianten.
 	
 	Wie auch beim \texttt{XmlDataSet} sollte der Übersicht wegen für jeden Wert eine Zeile verwendet werden. Durch die fehlende
 	Hierarchie wirkt das \texttt{FlatXmlDataSet} etwas unübersichtlich.
+	
+  DbUnit bietet keine explizite Unterstützung für BLOBs in XML, um z.B. Daten aus einer anderen Datei einzulesen. Solche
+	Funktionen müssen in DbUnit-DataSets grundsätzlich manuell implementiert werden.
 
 
 	\subsection{Default-DataSet}
 	\label{sec:fragestellung:modellierung:java}
-
-	Um einige der Probleme zu vermeiden, die in Verbindung mit XML-DataSets bestehen, kann das Default-Dataset verwendet
-	werden. Ein Default-DataSet lässt sich programmatisch erstellen. Durch die Nutzung von symbolischen
-	Konstanten als Schlüsselwerte können Beziehungen ausdrucksstärker modelliert werden. Das Erzeugen des DataSets, das
-	den nach einem Test erwarteten Datenbankzustand repräsentiert, bleibt umständlich, ist aber auf Java-Ebene mit
-	weniger Redundanz lösbar.
+	
+	DbUnit erlaubt auch die programmatische Modellierung von DataSets. Dazu stellt es die Klasse \texttt{DefaultDataSet}
+	bereit. Mit den Mitteln, die eine Programmiersprache wie Java bietet, lassen sich einige der Nachteile in Verbindung
+  mit den XML-basierten DataSets direkt umgehen.
+	
+	So können Beziehungen mit Hilfe symbolischer Konstanten ausdrucksstärker modelliert werden. Auch wenn die Beziehungen
+	immer noch etwas umständlich modelliert werden müssen, können symbolische Konstanten dabei helfen, Redundanz zu vermeiden
+	und damit das Risiko für Fehler zu senken.
 
 	\lstSetJava
 	\begin{lstlisting}[caption=Default-DataSet, label=listing:javadataset]
@@ -355,9 +356,9 @@ dataSet.addTable(lehrveranstaltung);
 	
 	Diese Umsetzung löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen über die Tabellen
 	modelliert werden (Zeilen 3-9 und 29-36). Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst
-	zur Laufzeit erkannt. Der Einsatz von symbolischen Konstanten erleichtert zwar die Pflege des DataSets,
-	dennoch lassen sich Konstanten doppelt belegen oder auch Primärschlüssel einer falschen Datenbank als
-	Fremdschlüssel angegeben werden.
+	zur Laufzeit erkannt \todo{Werden Typ-Fehler evtl erst beim Einspielen erkannt}. Der Einsatz von symbolischen 
+	Konstanten erleichtert zwar die Pflege des DataSets, dennoch lassen sich Konstanten doppelt belegen oder auch
+	Primärschlüssel einer falschen Datenbank als Fremdschlüssel angegeben werden.
 	
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
 	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-DataSets in dieser
@@ -411,10 +412,10 @@ table_Lehrveranstaltung
 		.setEcts(3);
 	\end{lstlisting}
 
-	Die Modellierung von Referenzen stellt sich als ähnlich problematisch wie bei den bisherigen Java-DataSets dar
+	Die Modellierung von Beziehungen stellt sich als ähnlich problematisch wie bei den bisherigen Java-DataSets dar
 	(\refsec{sec:fragestellung:modellierung:java}). Nach wie vor wächst das DataSet vertikal in der Datei. 
 	
-	Zumindest das Problem mit den Referenzen kann durch eine Erweiterung auf höherer Abstraktionsebene (M2) etwas
+	Zumindest das Problem mit den Beziehungen kann durch geringfügige Anpassungen am Generator und dem Datenbank-Modell
 	entschärft werden. Ein um Beziehungen erweitertes Modell ermöglicht typsichere Referenzen auf andere Entitäten 
 	(\reflst{listing:sbtestingdataset}, Zeilen 20 und 27). Bei dieser Variante kann unter Umständen darauf
 	verzichtet werden, Primärschlüssel manuell zu vergeben.

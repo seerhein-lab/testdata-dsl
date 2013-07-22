@@ -125,22 +125,25 @@ auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schle
 Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
 \begin{itemize}
 
-	\item \textbf{DataSet}: Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
+	\item \textbf{DataSet}: Ein DataSet repräsentiert eine Menge von Testdaten dar. Es umfasst alle Tabellen eines
+	  Datenbankmodells. 
+  	Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
 	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
 		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
 		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
 		Tabellen.
 
-	\item \textbf{Table}: Für jede Tabelle wird eine entsprechende Klasse generiert. Der Klassenname setzt sich aus dem Namen
+	\item \textbf{Table}: Eine \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
+	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
 	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum Modellieren der Daten und für den Zugriff
 		auf Tabellenzeilen bereit. 
-		Einzelne Tabellenzeilen werden von einer passenden RowBuilder-Klasse repräsentiert.
 		Damit die Klasse direkt zur Erstellung von DbUnit-DataSets verwendet werden kann, implementiert sie das DbUnit-Interface
 		\texttt{ITable}.
 	
-	\item \textbf{RowBuilder}: Zu jeder Tabelle wird eine Klasse zur Repräsentation einer Tabellenzeile generiert. Die Klasse
-	  beinhaltet für jede Spalte mehrere Methoden zum Setzen und Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich
-		zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und dem Spaltennamen. \todo{Raw-Setter erklären?}
+	\item \textbf{RowBuilder}: Eine Zeile einer Tabelle wird von einem \texttt{RowBuilder} repräsentiert. Zu jeder Tabelle wird
+	  eine angepasste Klasse \texttt{RowBuilder}-Klasse erzeugt. Sie beinhaltet für jede Spalte mehrere Methoden zum Setzen und
+		Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und
+		dem Spaltennamen.
 	
 	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es für jede Tabelle die innere Klasse \texttt{FindWhere}. Sie ermöglicht
 	  die Suche nach  einem Wert in einer Spalte und liefert eine Liste von Tabellenzeilen. Die Methode ist zur Suche nach Zeilen
@@ -149,9 +152,10 @@ Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Kla
 	
 \end{itemize}
 
-Ein vereinfachtes Klassendiagramm der DataSet-Klassen ist in Abbildung \ref{img:sb_testing_classes} dargestellt. Die Vereinfachung
-besteht darin, dass im Diagramm alle \texttt{Table}-Klassen zusammengefasst werden, obwohl diese unterschiedlichen Typs sind. Außerdem
-entsprechen die Klassennamen, bis auf die Klasse \texttt{FindWhere}, nicht den tatsächlichen Bezeichnern.
+Abbildung \ref{img:sb_testing_classes} stellt das logische Klassendiagramm der DataSet-Klassen dar. Der Unterschied zum
+tatsächlichen Klassendiagramm besteht darin, dass im logischen Diagramm alle \texttt{Table}-Klassen zusammengefasst werden,
+obwohl  diese unterschiedlichen Typs sind. Außerdem entsprechen die Klassennamen, bis auf die Klasse \texttt{FindWhere}, nicht
+den tatsächlichen Bezeichnern.
 
 \begin{figure}[H]
   \centering

@@ -12,7 +12,8 @@ Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem A
 erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
 Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
 
-\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Aus einem domänenspezifischen
+\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar, da es die Modellierung und vor allem
+auch die Änderung von DbUnit-DataSets vereinfacht. Aus einem domänenspezifischen
 Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
 zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
 Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
@@ -108,6 +109,60 @@ einfachen Type-Cast hinaus.
   für die Erstellung von JavaDoc-Kommentaren verwendet (\refsec{sec:ralisierungdsl:javadoc}).
   
   \todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
+
+  \subsection{Modellierungskonzepte für Beziehungen}
+  \label{sec:modellierung:generatormodell:modellierungskonzepte}
+	
+  \todo{Einleiten, dass vor Allem Erweiterungen im Bereich der Beziehungen notwendig sind}
+	
+  Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
+  Dabei können Beziehungen selbst auch Attribute haben.
+  Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
+  
+    \subsubsection{1:1-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
+    
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
+    anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
+    Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
+    Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
+    
+    Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
+    kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
+
+    \subsubsection{1:n-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
+
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
+    Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
+    stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
+    
+    Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
+    und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
+    der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
+    
+    \subsubsection{n:m-Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
+    
+    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
+    des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
+    die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
+    werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
+    aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
+    
+    Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
+    nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
+    
+    Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
+    die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
+    sorgen.  
+
+    \subsubsection{Andere Beziehungen}
+    \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
+    
+    In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
+    auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
+
   
   \subsection{Spalten-Eigenschaften}
   \label{sec:modellierung:generatormodell:flags}
@@ -167,7 +222,8 @@ id | matrikelnummer | vorname
     %\item \textbf{Auto Increment}: ... DBUNIT-Flag ... implizit addNextMethod
       
   \end{itemize}
-  
+
+
   
   \subsection{Modellierung von Relationen über Builder-Klassen}
   \label{sec:modellierung:generatormodell:relationen}
@@ -268,57 +324,13 @@ Table lehrveranstaltungen = table("lehrveranstaltung")
   .build();  
   \end{lstlisting}
 
-  \subsection{Modellierungskonzepte für Beziehungen}
-  \label{sec:modellierung:generatormodell:modellierungskonzepte}
-  
-  Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
-  Dabei können Beziehungen selbst auch Attribute haben.
-  Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
-  
-    \subsubsection{1:1-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
     
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
-    anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
-    Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
-    Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
-    
-    Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
-    kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
+	Bei der Modellierung von n:m-Beziehungen kann auf den \texttt{local}-Teil der Beziehung verzichtet werden.
+	\textit{STU} verwendet automatisch den \texttt{foreign}-Teil der assoziierten Spalte. Anstelle der Methode
+	\texttt{table} wird eine assoziative Tabelle mit der Methode \texttt{associativeTable} beschrieben. Listing
+	\ref{listing:model:builder:assoc} zeigt ein Beispiel für die Modellierung einer assoziativen Tabelle:
 
-    \subsubsection{1:n-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
-
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
-    Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
-    stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
-    
-    Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
-    und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
-    der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
-    
-    \subsubsection{n:m-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
-    
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
-    des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
-    die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
-    werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
-    aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
-    
-    Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
-    nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
-    
-    Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
-    die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
-    sorgen.
-    
-    Bei der Modellierung von n:m-Beziehungen kann auf den \texttt{local}-Teil der Beziehung verzichtet werden.
-    \textit{STU} verwendet automatisch den \texttt{foreign}-Teil der assoziierten Spalte. Anstelle der Methode
-    \texttt{table} wird eine assoziative Tabelle mit der Methode \texttt{associativeTable} beschrieben. Listing
-    \ref{listing:model:builder:assoc} zeigt ein Beispiel für die Modellierung einer assoziativen Tabelle:
-
-    \begin{lstlisting}[caption=Beispiel für assoziative Tabelle, label=listing:model:builder:assoc]
+  \begin{lstlisting}[caption=Beispiel für assoziative Tabelle, label=listing:model:builder:assoc]
 associativeTable("besucht")
   .column("student_id", DataType.BIGINT)
     .reference
@@ -331,14 +343,7 @@ associativeTable("besucht")
         .name("besuchtVon")
         .description("Die Studenten, die eine Lehrveranstaltung besuchen.")
  .build();
-    \end{lstlisting}
-
-    \subsubsection{Andere Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
-    
-    In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
-    auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
-    
+  \end{lstlisting}
 
 
 
@@ -811,7 +816,7 @@ dataSet.professorTable.foreach(ACTION);
   \caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
 \end{figure}
 
-  \subsection{Verhalten bei Fehlern in den Tabellendefinitionen}
+  \section{Verhalten bei Fehlern in den Tabellendefinitionen}
   \label{sec:ralisierungdsl:verhaltenfehler}
   
   Selbst eine übersichtliche Darstellung von Tabellendaten schützt nicht vor Fehleingaben. Viele Fehler lassen sich mit
@@ -838,14 +843,14 @@ dataSet.professorTable.foreach(ACTION);
   Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
   warum diese Funktion nicht in \textit{STU} implementiert ist.
 
-    \subsubsection{Zusammengesetzte Schlüssel}
+    \subsection{Zusammengesetzte Schlüssel}
     Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen -- wie auch in 
     \textit{SB Testing DB} -- komplett manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
     Spalte im Datenbank-Modell angelegt werden. So lange zum Zugriff auf Tabellenzeilen die Referenz-Typen
     verwendet werden, stellt dies kein spürbarer Nachteil dar. Sollte die Zeile in Abhängigkeit ihres
     Schlüssels dynamisch gesucht werden, kann auf die neue \texttt{find}-Methode zurückgegriffen werden.
 
-    \subsubsection{Unterstützung für weitere Beziehungstypen}
+    \subsection{Unterstützung für weitere Beziehungstypen}
     Folgende Beziehungstypen müssen manuell umgesetzt werden.
     
     \begin{itemize}
@@ -938,7 +943,7 @@ associativeTable("parcipations")
       \item \textbf{Ternäre Beziehungen}
     \end{itemize}
   
-    \subsubsection{Komfortfunktionen}
+    \subsection{Komfortfunktionen}
     
     Die Realisierung könnte an manchen Stellen dem Test-Ingenieur mehr manuelle Arbeit abnehmen. So wird darauf verzichtet,
     beim Löschen einer Zeile aus einer Tabelle auch alle beteiligten Beziehungen zu entfernen. Listing \ref{listing:deleteexample}
