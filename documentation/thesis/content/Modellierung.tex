@@ -12,6 +12,8 @@
 Als Grundlage für den Entwurf der DSL sollen mehrere Beispiel-Entwürfe dienen. Deren Vor- und Nachteile sollen in den
 finalen Entwurf einfließen. 
 
+Anforderungsanalyse zur Modellierung von Testdaten für eine Datenbank anhand von konkreten Beispielen.
+
 
   \subsection{Entwurf 1}
   \label{sec:implementierung:entwurf:1}
@@ -107,7 +109,7 @@ DPATTERNS = lehrveranstaltung {
   \label{sec:implementierung:entwurf:3}
     
   Listing \ref{listing:dslentwurf3} zeigt den dritten Entwurf einer DSL. Es wird versucht die Daten durch eine
-  tabellarische Struktur übersichtlich zu gestalten. Die Sprache kommt mit wenig syntaktischem Ballast aus. Ein Label
+  tabellarische Struktur übersichtlich zu gestalten. Die Syntax der Sprache ist sehr schlicht und ausdrucksstark. Ein Label
   vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die Tabelle selbst beginnt mit einer Kopfzeile,
   die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten werden vom Oder-Operator (|) getrennt. Die
   erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
@@ -498,20 +500,19 @@ class HochschuleDataSet extends HochschuleBuilder
 }
 \end{lstlisting}
 
-Insgesamt ist die Darstellung sehr übersichtlich und kommt ohne syntaktischen Ballast aus. Die DataSet-Klasse
-erweitert die generierte Klasse \texttt{HochschuleBuilder} und überschreibt die beiden Methoden \texttt{tables}
-und \texttt{relations}. In diesen Methoden sollen die Tabellendaten bzw. die Beziehungen der Entitäten
-modelliert werden.
 
-Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht angepasst und die Tabelle mit den Studenten in zwei
-Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist diese Darstellung eher unüblich, aber der Parser
-unterstützt auch die Definition von Teiltabellen mit unterschiedlichen Spalten innerhalb eines Closures.
 
-Auffällig ist, dass keine der assoziativen Tabellen explizit auftaucht, diese werden implizit durch die
-Beziehungen modelliert. Assoziative Beziehungen lassen sich genauso wie 1:1- und 1:n-Beziehungen mit Hilfe der DSL
-nicht nur auf Datenbank-Ebene, sondern auch auf der abstrakteren ER-Ebene ausgedrückt werden. Es wäre allerdings
-auch möglich, diese Beziehungsarten innerhalb der Methode \texttt{tables} zu definieren (siehe Listing 
-\ref{listing:hochschuledataset:tablerelations}).
+Insgesamt ist die Darstellung sehr übersichtlich. Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht
+angepasst und die Tabelle mit den Studenten in zwei Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist
+diese Darstellung eher unüblich, aber der Parser unterstützt auch die Definition von Teiltabellen mit
+unterschiedlichen Spalten innerhalb eines Closures.
+
+Innerhalb der Methode \texttt{tables} werden die Daten der einzelnen Tabellen auf Datenbank-Ebene modelliert.
+Die Methode \texttt{relations} erlaubt die Modellierung von Beziehungen auf der höheren ER-Ebene. Sogar Beziehungen,
+die über assoziative Tabellen realisiert werden, können so modelliert werden.
+
+Alternativ könnten Beziehungen auch auf der Datenbank-Ebene modelliert werden. Listing 
+\ref{listing:hochschuledataset:tablerelations} veranschaulicht diese Variante.
 
 \begin{lstlisting}[caption=Beziehungen innerhalb von Tabellen, label=listing:hochschuledataset:tablerelations]
 class HochschuleDataSet extends HochschuleBuilder
@@ -520,7 +521,7 @@ class HochschuleDataSet extends HochschuleBuilder
   def tables() {
     
     ...
-
+		
     lehrveranstaltungTable.rows {
       REF       | professor
       VSYS      | HAASE

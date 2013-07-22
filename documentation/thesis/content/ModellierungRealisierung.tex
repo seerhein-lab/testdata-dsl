@@ -29,11 +29,6 @@ Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue 
 \url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz 
 \textit{Apache License 2.0}. \cite{APACHE_LICENSE_2}
 
-Die Auswirkungen auf die Architektur von Tests zeigt Abbildung \ref{img:architektur}. Der Test basiert auf 
-einem Test-Framework wie \textit{JUnit}, der Testbibliothek \textit{STU}) und der Bibliothek \textit{DbUnit}.
-\textit{STU} setzt sich aus zwei Schichten zusammen: Der zusätzlichen Schicht \textit{DSL} und der bisherigen
-Schicht, die als \textit{Fluent Builder API} bezeichnet wird.
-
 Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
 \begin{itemize}
   \item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Der Name spiegelt wieder, dass es ein Java
@@ -45,7 +40,9 @@ Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von D
       
 \end{itemize}
 
-Abbildung \ref{img:architektur} stellt die Architektur grafisch dar. 
+Abbildung \ref{img:architektur} stellt die Architektur eines Tests grafisch dar. Der Test basiert auf 
+einem Test-Framework wie \textit{JUnit}, der Testbibliothek \textit{STU} und der Bibliothek \textit{DbUnit}.
+\textit{STU} setzt sich aus den beiden oben genannten Schichten zusammen.
 
 \begin{figure}[htbp]
   \centering
