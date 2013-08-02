@@ -29,7 +29,7 @@ public class HochschuleModel extends DatabaseModel {
           .identifierColumn()
           .autoInvokeNext()
         .column("professor_id", DataType.BIGINT)
-          .references
+          .reference
             .local
               .name("geleitetVon")
               .description("Gibt an, von welchem Professor eine Lehrveranstaltung geleitet wird.")
@@ -47,7 +47,7 @@ public class HochschuleModel extends DatabaseModel {
           .identifierColumn()
           .autoInvokeNext()
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .references
+          .reference
             .local
               .name("stoffVon")
               .multiplicities("0..*")
@@ -74,13 +74,13 @@ public class HochschuleModel extends DatabaseModel {
 
     associativeTable("beaufsichtigt")
         .column("professor_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(professoren)
               .name("beaufsichtigt")
               .description("Gibt an, welche Prüfungen ein Professor beaufsichtigt.")
               .multiplicities("1..*")
         .column("pruefung_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(pruefungen)
               .name("beaufsichtigtVon")
               .description("Gibt an, welche Professoren eine Prüfung beaufsichtigen.")
@@ -89,13 +89,13 @@ public class HochschuleModel extends DatabaseModel {
 
     associativeTable("besucht")
         .column("student_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(studenten)
               .name("besucht")
               .description("Gibt an, welche Lehrveranstaltungen ein Student besucht.")
               .multiplicities("1")
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(lehrveranstaltungen)
               .name("besuchtVon")
               .description("Gibt an, welche Studenten eine Lehrveranstaltung besuchen.")
@@ -104,12 +104,12 @@ public class HochschuleModel extends DatabaseModel {
 
     associativeTable("isttutor")
         .column("student_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(studenten)
               .name("istTutor")
               .description("Gibt an, bei welchen Lehrveranstaltungen ein Student Tutor ist.")
         .column("lehrveranstaltung_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(lehrveranstaltungen)
               .name("hatTutor")
               .description("Gibt an, welche Tutoren eine Lehrveranstaltung hat.")
@@ -117,12 +117,12 @@ public class HochschuleModel extends DatabaseModel {
 
     associativeTable("schreibt")
         .column("student_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(studenten)
               .name("schreibt")
               .description("Gibt an, welche Prüfungen ein Student schreibt.")
         .column("pruefung_id", DataType.BIGINT)
-          .references
+          .reference
             .foreign(pruefungen)
               .name("geschriebenVon")
               .description("Gibt an, welche Studenten eine Prüfung schreiben.")

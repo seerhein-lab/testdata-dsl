@@ -1,9 +1,6 @@
 \chapter{Realisierung der Sprache}
 \label{chap:realiserungdsl}
 
-\todo{Erklären, warum SB Testing DB eine gute Grundlage ist: Kompatibilität, Verbesserungen gegenüber DBUnit, ähnliche Ziele...}
-
-
 Im Folgenden wir die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
 gezeigt, wie die DSL praktisch genutzt werden kann. 
 Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
@@ -12,8 +9,10 @@ Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem A
 erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
 Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
 
-\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar, da es die Modellierung und vor allem
-auch die Änderung von DbUnit-DataSets vereinfacht. Aus einem domänenspezifischen
+\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Es verfolgt ein ähnliches
+Ziel und versucht ebenfalls, die Modellierung von Test-Daten zu vereinfachen und bietet bereits einige Verbesserungen
+gegenüber DbUnit. Außerdem stellt dies eine gewisse Kompatiblität sicher, so dass bestehende Tests zumindest nach
+geringfügigen Anpassungen mit den Erweiterungen funktionieren sollten. Aus einem domänenspezifischen
 Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
 zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
 Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
@@ -71,21 +70,6 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 
 
 
-
-
-
-
---------------- gehört nicht in den abschnitt ---------
-
-
-Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
-So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
-ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
-Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
-Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwaldung über einen
-einfachen Type-Cast hinaus.
-
-
 \section{Änderungen am Generator-Modell}
 \label{sec:modellierung:generatormodell}
 
@@ -106,14 +90,15 @@ einfachen Type-Cast hinaus.
   für die Erstellung von JavaDoc-Kommentaren verwendet (\refsec{sec:ralisierungdsl:javadoc}).
   
   \todo{Abhängigkeitsdiagramm der neuen Builder-Klassen?}
+	
+	Erweiterungen am Generator-Modell betreffen vor allem die Modellierung von Beziehungen zwischen Tabellen. Der folgende Abschnitt
+	beschreibt die Modellierungskonzepte für Beziehungen in Datenbanken.
 
   \subsection{Modellierungskonzepte für Beziehungen}
   \label{sec:modellierung:generatormodell:modellierungskonzepte}
 	
-  \todo{Einleiten, dass vor Allem Erweiterungen im Bereich der Beziehungen notwendig sind}
-	
   Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
-  Dabei können Beziehungen selbst auch Attribute haben.
+  Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
   Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
   
     \subsubsection{1:1-Beziehungen}
@@ -413,10 +398,12 @@ associativeTable("besucht")
   In die Implementierungen der \texttt{set}-Methoden kann der korrekte Bezeichner für den jeweiligen Setter auf dem RowBuilder
   generiert werden.
   
-  Außerdem kann der Parser auch Informationen zu der Spalte abfragen, z.B. ob es sich um ein Feld mit einmaligen Werten
-  handelt, die zur Identifizierung genutzt werden können. Sofern das Flag aktiviert ist, ist eine Such-Methode auf dem
-  \texttt{ColumnBinding} implementiert, die es erlaubt den zu einem Wert gehörenden RowBuilder zu finden.
-  
+	Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
+	So versucht \texttt{STU}, Werte dynamisch beim Parsen in den vom Modell erwarteten Datentyp zu bringen. Im Beispiel
+	ist der Spalte \texttt{ects} in der Lehrveranstaltungstabelle der Datentyp \texttt{Double} zugeordnet.
+	Die in der Spalte auftauchenden \texttt{Integer}-Werte werden automatisch in \texttt{Double}-Werte umgewandelt.
+	Da der Parser nicht mit primitiven Datentypen sondern nur auf Objekten arbeitet, geht die Umwandlung über einen
+	einfachen Type-Cast hinaus.
   
   \section{Referenzen und Scopes}
   \label{sec:ralisierungdsl:refs_and_scopes}
@@ -692,7 +679,7 @@ class HochschuleDataSet extends HochschuleBuilder
     
   ...
 
-  // returns a Closure which is threated as future value
+  // returns a Closure which is treated as future value
   def tutors(LehrveranstaltungRef ref) {
     return {
       def rows = isttutorTable.quietFindWhere.lehrveranstaltungId(ref)
@@ -751,6 +738,11 @@ RowCollection_Professor profs = dataSet.professorTable.find(FILTER);
       bekommen.
     
     \item \textbf{foreach}:
+		  Ein Zugriff auf die einzelnen Zeilen in einer Tabelle kann innerhalb eines Tests sinnvoll bzw. notwendig sein.
+			Neben dem Zugriff auf eine Liste von RowBuildern ist es auch möglich, mit Hilfe der Methode \texttt{foreach} 
+			über die Zeilen zu iterieren. Listing \ref{listing:foreach} zeigt ein kurzes Java-Beispiel. In Groovy kann
+			der Methode auch ein Closure übergeben werden, das den entsprechenden RowBuilder als Parameter übergeben bekommt.
+			
       \begin{lstlisting}[caption=Beispiel für foreach, label=listing:foreach]
 Action<RowBuilder_Professor> ACTION = 
   new Action<RowBuilder_Professor>() 
@@ -772,45 +764,20 @@ dataSet.professorTable.foreach(ACTION);
   
   Zum guten IDE-Support gehört auch, dass der Tester beim Erstellen der Tests durch aussagekräftige
   JavaDoc unterstützt wird. Der Generator erzeugt für das DataSet, für die Tabellen und für die Referenz-Typen
-  JavaDoc, das neben einer reinen Beschreibung auch Beispiele für die Nutzung enthält.
+  JavaDoc, das neben einer reinen Beschreibung auch Beispiel-Quellcodes für die Nutzung enthält.
   
   Die in der JavaDoc enthaltenen Beispiel-Daten werden auf sehr einfache Art generiert, für jeden Java-Datentyp
   gibt es einen Beispielwert. Sie sollen mit Hilfe der Erkenntnisse bezüglich der Generierung von Testdaten 
   verbessert werden.
   
-  Einige Beispiel-Quellcodes in den Builder-Klassen zur Beschreibung des Datenbank-Modells werden über
-  Unit-Tests überprüft. Auf diese Weise soll sichergestellt werden, dass Änderungen am API auch auf die JavaDoc
-  übertragen werden.
-
-  Entscheiden welche Bilder und neue Screenshots machen
-\begin{figure}[H]
-  \centering
-   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_builder.png}
-  \caption{Tooltip Builder}\label{img:javadoc_tooltip_builder}
-\end{figure}
+	Einige der Beispiel-Quellcodes werden über Unit-Tests überprüft. Dazu gehören die Builder-Klassen zur
+	Beschreibung des Datenbank-Modells. Auf diese Weise soll sichergestellt werden, dass Änderungen am API
+	auch auf die JavaDoc übertragen werden.
 
 \begin{figure}[H]
   \centering
-   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_tables.png}
-  \caption{Tooltip tables()}\label{img:javadoc_tooltip_tables}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_relations.png}
-  \caption{Tooltip relations()}\label{img:javadoc_tooltip_relations}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_table.png}
-  \caption{Tooltip Tabelle}\label{img:javadoc_tooltip_table}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-   \includegraphics[scale=0.1]{images/realisierung/javadoc_tooltip_rows.png}
-  \caption{Tooltip Zeilen}\label{img:javadoc_tooltip_rows}
+   \includegraphics[width=0.9\textwidth]{images/realisierung/javadoc_tooltip.png}
+  \caption{Beispiel JavaDoc-Tooltip}\label{img:javadoc_tooltip}
 \end{figure}
 
   \section{Verhalten bei Fehlern in den Tabellendefinitionen}
@@ -893,6 +860,8 @@ associativeTable("parents")
         \end{lstlisting} 
 
       \item \textbf{Zirkuläre Beziehungen}
+			Reflexive Beziehungen stellen eine besondere Form von zirkulären Beziehungen dar. Die Probleme sind
+			relativ ähnlich. 
 
         \begin{lstlisting}[caption=Zirkuläre Beziehungen manuell, label=listing:zirkulaer:manuell]
 Table event = table("event")

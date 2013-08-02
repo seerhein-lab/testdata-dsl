@@ -1,21 +1,35 @@
 \chapter{Entwurf einer Modellierungssprache für Test-Daten}
 \label{chap:modellierung}
 
-\todo{Hinführen über Analyse}
+Ein Hauptziel dieser Arbeit ist es, die Modellierung von DbUnit-DataSets zu vereinfachen. Ein üblicher Weg,
+bestehende Schnittstellen zu vereinfachen, stellen Fassaden dar. Eine solche Fassade kann auf unterschiedliche
+Arten realisiert werden.
 
+Eine Möglichkeit stellt die Definition einer speziellen Sprache dar. Eine solche, für einen Anwendungszeck
+definierte Sprache wird als \textit{Domänenspezifische Sprache} (engl. Domain-Specific Language, abgekürzt DSL)
+bezeichnet.
 
+Das von \textit{SB Testing DB} bereitgestellte Fluent Interface stellt bereits eine Form einer DSL dar. Eine
+solche DSL, die vollständig in eine andere Sprache eingebettet ist und im Wesentlichen die Sprachelemente dieser
+Sprache nutzt, wird als \textit{interne DSL} bezeichnet \cite[68]{DOMAIN_SPECIFIC_LANGUAGES}. 
 
+In diesem Abschnitt soll eine Modellierungssprache für Test-Daten entwickelt werden. Die Vor- und Nachteile
+der in Kapitel \ref{chap:anforderungen} diskutierten Modellierungsvarianten sollen in die Sprache einfließen.
+Die Syntax dieser Sprache darf unabhängig von Java sein, so dass sie auch als \textit{externe DSL} realisiert
+werden kann. Der Vorteil von externen gegenüber internen DSLs besteht in der größeren Freiheit in Bezug auf
+die Syntax \cite[89]{DOMAIN_SPECIFIC_LANGUAGES}. 
 
 \section{Entwurf der DSL}
 \label{sec:implementierung:entwurf}
 
-Als Grundlage für den Entwurf der DSL sollen mehrere Beispiel-Entwürfe dienen. Deren Vor- und Nachteile sollen in den
-finalen Entwurf einfließen. 
+Als Grundlage für die Defintion der Modellierungsprache sollen verschiedene Beispiel-Entwürfe dienen. Dabei wird
+das fortlaufende Beispiel aus Kapitel \ref{chap:anforderungen} mit unterschiedlichen Entwürfen modelliert und
+die Vor- und Nachteile analysiert.
 
-Anforderungsanalyse zur Modellierung von Testdaten für eine Datenbank anhand von konkreten Beispielen.
+Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert.
 
 
-  \subsection{Entwurf 1}
+  \subsection{Beispiel-Entwurf 1}
   \label{sec:implementierung:entwurf:1}
   
   Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
@@ -63,7 +77,7 @@ WAESCH beaufsichtigt P_VSYS
   erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 
 
-  \subsection{Entwurf 2}
+  \subsection{Beispiel-Entwurf 2}
   \label{sec:implementierung:entwurf:2}
   
   Ein leicht abgewandelter Entwurf (siehe Listing \ref{listing:dslentwurf2}) zeigt, wie sich die Beziehungen näher an
@@ -105,7 +119,7 @@ DPATTERNS = lehrveranstaltung {
   \end{lstlisting}
   
 
-  \subsection{Entwurf 3}
+  \subsection{Beispiel-Entwurf 3}
   \label{sec:implementierung:entwurf:3}
     
   Listing \ref{listing:dslentwurf3} zeigt den dritten Entwurf einer DSL. Es wird versucht die Daten durch eine

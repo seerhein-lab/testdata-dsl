@@ -15,7 +15,7 @@ class HochschuleDataSet extends HochschuleBuilder
     HAASE.beaufsichtigt(P_DPATTERNS)
     P_VSYS.stoffVon(VSYS)
     DPATTERNS.hatPruefung(P_DPATTERNS)
-    MOLL.schreibt(P_VSYS).version(1)
+    MOLL.schreibt(P_VSYS)
     MOLL.besucht(VSYS)
     VSYS.hatTutor(MOLL)
     MUSTERMANN.besucht(DPATTERNS)
@@ -48,8 +48,8 @@ class HochschuleDataSet extends HochschuleBuilder
     }
 
     besuchtTable.rows {
-      student_id    | lehrveranstaltung_id | version
-      MOLL          | VSYS                 | 1
+      student_id    | lehrveranstaltung_id
+      MOLL          | VSYS
 
     }
 

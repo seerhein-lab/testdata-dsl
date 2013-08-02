@@ -7,13 +7,11 @@
       <x>560</x>
       <y>230</y>
       <w>210</w>
-      <h>80</h>
+      <h>50</h>
     </coordinates>
-    <panel_attributes>*TABELLE 2*
+    <panel_attributes>Tabelle 2
 --
-id &lt;&lt;PK&gt;&gt;
-f_id &lt;&lt;FK&gt;&gt;
-anderes_feld : typ</panel_attributes>
+anderes_feld</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -22,12 +20,11 @@ anderes_feld : typ</panel_attributes>
       <x>130</x>
       <y>230</y>
       <w>210</w>
-      <h>60</h>
+      <h>50</h>
     </coordinates>
-    <panel_attributes>*TABELLE 1*
+    <panel_attributes>Tabelle 1
 --
-id &lt;&lt;PK&gt;&gt;
-feld : typ</panel_attributes>
+feld</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>16</x>
-      <y>152</y>
+      <x>104</x>
+      <y>224</y>
       <w>144</w>
       <h>136</h>
     </coordinates>
@@ -25,8 +25,8 @@ raum_id &lt;&lt;FK&gt;&gt;</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>16</x>
-      <y>416</y>
+      <x>104</x>
+      <y>488</y>
       <w>144</w>
       <h>88</h>
     </coordinates>
@@ -43,8 +43,8 @@ ects : decimal</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>64</x>
-      <y>264</y>
+      <x>152</x>
+      <y>336</y>
       <w>40</w>
       <h>168</h>
     </coordinates>
@@ -57,8 +57,8 @@ m2=    1
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>464</x>
-      <y>152</y>
+      <x>552</x>
+      <y>224</y>
       <w>144</w>
       <h>80</h>
     </coordinates>
@@ -75,8 +75,8 @@ zeitpunkt : date
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>232</x>
-      <y>488</y>
+      <x>320</x>
+      <y>560</y>
       <w>160</w>
       <h>48</h>
     </coordinates>
@@ -91,8 +91,8 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>240</x>
-      <y>152</y>
+      <x>328</x>
+      <y>224</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
@@ -107,8 +107,8 @@ pruefung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>464</x>
-      <y>416</y>
+      <x>552</x>
+      <y>488</y>
       <w>144</w>
       <h>104</h>
     </coordinates>
@@ -126,8 +126,8 @@ immatrukuliert_seit : date</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>464</x>
-      <y>296</y>
+      <x>552</x>
+      <y>368</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
@@ -142,8 +142,8 @@ pruefung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>232</x>
-      <y>416</y>
+      <x>320</x>
+      <y>488</y>
       <w>160</w>
       <h>48</h>
     </coordinates>
@@ -158,8 +158,8 @@ lehrveranstaltung_id &lt;&lt;FK&gt;&gt;
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>136</x>
-      <y>208</y>
+      <x>224</x>
+      <y>280</y>
       <w>344</w>
       <h>224</h>
     </coordinates>
@@ -171,8 +171,8 @@ m2=  1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>136</x>
-      <y>136</y>
+      <x>224</x>
+      <y>208</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -184,8 +184,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>360</x>
-      <y>136</y>
+      <x>448</x>
+      <y>208</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -197,8 +197,8 @@ m2=1..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>512</x>
-      <y>208</y>
+      <x>600</x>
+      <y>280</y>
       <w>40</w>
       <h>104</h>
     </coordinates>
@@ -211,8 +211,8 @@ m2=    0..*
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>512</x>
-      <y>320</y>
+      <x>600</x>
+      <y>392</y>
       <w>40</w>
       <h>112</h>
     </coordinates>
@@ -225,8 +225,8 @@ m2=   1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>136</x>
-      <y>400</y>
+      <x>224</x>
+      <y>472</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -238,8 +238,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>136</x>
-      <y>472</y>
+      <x>224</x>
+      <y>544</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -251,8 +251,8 @@ m2=1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>368</x>
-      <y>472</y>
+      <x>456</x>
+      <y>544</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -264,8 +264,8 @@ m2=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>368</x>
-      <y>400</y>
+      <x>456</x>
+      <y>472</y>
       <w>112</w>
       <h>40</h>
     </coordinates>
@@ -277,8 +277,8 @@ m2=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>16</x>
-      <y>32</y>
+      <x>104</x>
+      <y>104</y>
       <w>144</w>
       <h>64</h>
     </coordinates>
@@ -294,8 +294,8 @@ nummer : int
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>64</x>
-      <y>72</y>
+      <x>152</x>
+      <y>144</y>
       <w>40</w>
       <h>96</h>
     </coordinates>

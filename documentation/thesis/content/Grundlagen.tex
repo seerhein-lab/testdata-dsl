@@ -52,13 +52,20 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 
 
 
-Eine übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}.
-Dabei wird die Datenbank über direkten Zugriff, vorbei am zu testenden System, in den Anfangszustand gebracht.
-Anschließend können die zu testenden Operationen am System durchgeführt werden. Um zu überprüfen, ob sich das System richtig
-verhalten hat, wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen - ebenfalls am zu testenden System vorbei.
+Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Dieses Muster
+besteht aus vier Schritten. Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff, vorbei am
+zu testenden System, in den Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
+Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
+als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
+ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch Aufräumarbeiten
+durchführen. Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
 \cite[327ff]{XUNIT_TEST_PATTERNS}
 
-\todo{Grafik Back Door Manipulation}
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
+	\caption{Back Door Manipulation}\label{img:backdoormanipulation}
+\end{figure}
 
 Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
 semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
@@ -75,8 +82,10 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
 \section{DbUnit}
 
-\todo{DataSets erklären}
-
+DbUnit stellt eine Erweiterung für JUnit dar. Es soll Unit-Tests von Datenbank-Anwendungen vereinfachen. \cite[748]{XUNIT_TEST_PATTERNS}
+Mit Hilfe von DbUnit kann eine Datenbank zu Beginn eines Tests in einen definierten Zustand gebracht werden. Dazu kann DbUnit
+DataSets in die Datenbank einspielen. Außerdem kann DbUnit den Inhalt einer Datenbank mit einem DataSet vergleichen. So kann nach
+dem Test überprüft werden, ob das SUT die richtigen Modifikationen an den Daten vorgenommen hat.
 
 
 
@@ -169,10 +178,19 @@ den tatsächlichen Bezeichnern.
 \section{Konventionen}
 \label{sec:grundlagen:konventionen}
 
-	\subsection{Datenbank ER-Diagramme}
-	\label{sec:grundlagen:konventionen:datenbankdiagramme}
-	Für die Darstellung von Datenbank-Diagrammen wird ein einheitlicher Modellierungsstil verwendet. Dieser basiert auf
-	dem UML-Klassendiagramm.
+  \subsection{ER-Diagramme}
+	\label{sec:grundlagen:konventionen:erdiagramme}
+	
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[scale=0.5]{images/grundlagen/er_diagramm.pdf}
+		\caption{Stil von ER-Diagrammen}\label{img:er_diagramme}
+	\end{figure}
+
+	\subsection{Relationale Datenbank-Diagramme}
+	\label{sec:grundlagen:konventionen:relationalediagramme}
+	Alle in dieser Arbeit abgebildeten relationalen Datenbank-Diagramme verwenden einen einheitlichen Stil.
+	Dieser basiert auf dem UML-Klassendiagramm.
 	
 	Tabellen werden durch Boxen repräsentiert. Diese Boxen sind unterteilt in zwei Bereiche: den Tabellenbezeichner (oben)
 	und die Attribute der Tabelle (unten). Attribute werden in der Form \textit{Bezeichner : typ} beschrieben. Es gibt die
@@ -189,8 +207,8 @@ den tatsächlichen Bezeichnern.
 	
 	\begin{figure}[H]
 		\centering
-		 \includegraphics[width=0.75\textwidth]{images/grundlagen/ambler_table.pdf}
-		\caption{Datenbank-Diagramm-Stil nach Ambler}\label{img:ambler_table}
+		 \includegraphics[scale=0.5]{images/grundlagen/ambler_table.pdf}
+		\caption{Stil relatianaler Datenbank-Diagramme nach Ambler}\label{img:ambler_table}
 	\end{figure}
 	
 	Diese Konvention wird auch von Ambler in \cite{REFACTORING_DATABASES} verwendet.
