@@ -94,56 +94,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 	Erweiterungen am Generator-Modell betreffen vor allem die Modellierung von Beziehungen zwischen Tabellen. Der folgende Abschnitt
 	beschreibt die Modellierungskonzepte für Beziehungen in Datenbanken.
 
-  \subsection{Modellierungskonzepte für Beziehungen}
-  \label{sec:modellierung:generatormodell:modellierungskonzepte}
-	
-  Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
-  Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
-  Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
-  
-    \subsubsection{1:1-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
-    
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
-    anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
-    Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
-    Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
-    
-    Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
-    kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
 
-    \subsubsection{1:n-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
-
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
-    Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
-    stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
-    
-    Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
-    und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
-    der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
-    
-    \subsubsection{n:m-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
-    
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
-    des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
-    die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
-    werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
-    aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
-    
-    Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
-    nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
-    
-    Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
-    die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
-    sorgen.  
-
-    \subsubsection{Andere Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
-    
-    In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
-    auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
 
   
   \subsection{Spalten-Eigenschaften}
