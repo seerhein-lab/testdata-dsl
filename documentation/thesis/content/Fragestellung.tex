@@ -6,16 +6,15 @@ Einleiten: Zwei Fragestellungen, DSL und Generierung
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
 
-Um den Umgang mit DbUnit-DataSets zu vereinfachen, hat SEITENBAU die Bibliothek \textit{SB Testing DB}
-entwickelt. \textit{SB Testing DB} erweitert DbUnit um zusätzliche Funktionen, löst aber nicht alle
-Schwierigkeiten bei der Modellierung von Test-Daten. Eine genauere
-Betrachtung der Vor- und Nachteile verschiedener Modellierungsvarianten in Zusammenhang mit DbUnit
-wird in Abschnitt \ref{sec:fragestellung:modellierung} durchgeführt. 
+Die Hauptziele dieser Arbeit stellen sich wie folgt dar:
+\begin{enumerate}
+	\item Vereinfachen der Modellierung von Beziehungen
+	\item Modellierung von Test-Daten übersichtlicher machen
+	\item Automatisches Generieren von Test-Daten
+\end{enumerate}
 
-Die drei Hauptziele dieser Arbeit sind, die Modellierung von Beziehungen zu vereinfachen, die Modellierung
-der Test-Daten übersichtlicher zu gestalten und die automatische Generierung von Test-Daten.
+
 Für die Modellierung gelten diese allgemeinen Anforderungen:
-
 
 \begin{itemize}
 	\item \textbf{Integration in bestehende Werkzeugkette}: Die Lösung sollte sich nach Möglichkeit in die bestehende
@@ -30,8 +29,7 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 	\item \textbf{Gültigkeitsbereiche}:
 	  \todo{Gültigkeitsbereiche erklären}
 
-	\item \textbf{Veränderbarkeit von DataSets}: Ähnlich wie bei \textit{SB Testing DB} sollen DataSets auch nachträglich
-	  veränderbar sein. 
+	\item \textbf{Veränderbarkeit von DataSets}: DataSets sollen sich bei der Modellierung beliebig verändern lassen.
 	
 	\item \textbf{Komposition}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
 	
@@ -52,63 +50,71 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
-	\item \textbf{Kompatiblität}: Die Generierung der Testdaten soll nicht nur bei Nutzung der neuen Modellierungssprache
-	  verwendet werden können. Der Testdaten-Generator soll auch DataSets auf Basis der bisherigen SB-Testing-DB-Builder
+	\item \textbf{Kompatibilität}: Die Generierung der Testdaten soll nicht nur bei Nutzung der neuen Modellierungssprache
+	  verwendet werden können. Der Testdaten-Generator soll auch DataSets auf Basis der bisherigen STU-Builder
 		erstellen können.
 \end{itemize}
 
 
-  \section{Modellierungskonzepte für Beziehungen}
-  \label{sec:modellierung:generatormodell:modellierungskonzepte}
+\section{Modellierungskonzepte für Beziehungen}
+\label{sec:fragestellung:modellierungskonzepte}
 	
-  Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
-  Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
-  Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
-  
-    \subsection{1:1-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetoone}
-    
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
-    anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
-    Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
-    Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
-    
-    Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
-    kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
+Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
+Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
+Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 
-    \subsection{1:n-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:onetomany}
+	\subsection{1:1-Beziehungen}
+	\label{sec:fragestellung:onetoone}
+	
+	Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
+	anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
+	Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
+	Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
+	
+	Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
+	kann es auch sinnvoll sein, eine 1:1-Beziehung wie eine n:m-Beziehung zu modellieren.
 
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
-    Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
-    stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
-    
-    Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
-    und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
-    der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
-    
-    \subsection{n:m-Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:manytomany}
-    
-    Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
-    des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
-    die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
-    werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
-    aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
-    
-    Das \textit{Java Persistance API} (\textit{JPA}) unterstützt assoziative Tabellen im Gegensatz zu \textit{STU}
-    nicht direkt. Diese müssen in \textit{JPA} manuell umgesetzt werden.
-    
-    Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
-    die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
-    sorgen.  
+	\subsection{1:n-Beziehungen}
+	\label{sec:fragestellung:onetomany}
 
-    \subsection{Andere Beziehungen}
-    \label{sec:modellierung:generatormodell:modellierungskonzepte:anderebeziehungen}
-    
-    In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
-    auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
+	Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs in Beziehung mit mehreren
+	Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
+	stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
+	
+	Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
+	und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
+	der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
+	
+	\subsection{n:m-Beziehungen}
+	\label{sec:fragestellung:manytomany}
+	
+	Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
+	des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
+	die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
+	werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
+	aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
+	
+	Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
+	die Beziehung viele Attribute enthält, kann eine assoziative Tabelle für übersichtlichere Tabellenstrukturen
+	sorgen.  
 
+	\subsection{Andere Beziehungen}
+	\label{sec:fragestellung:anderebeziehungen}
+	
+	In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
+	auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
+
+
+\section{Kriterien für Sprachbewertung}
+\label{sec:fragestellung:sprachkriterien}
+
+\begin{itemize}
+
+	\item Zeilen
+
+	\item Zeichenverhältnis
+
+\end{itemize}
 
 
 \section{Fortlaufendes Beispiel}
@@ -418,18 +424,19 @@ dataSet.addTable(lehrveranstaltung);
 	und umfangreiche Datensets werden schnell unübersichtlich. Insgesamt bietet die Nutzung der Java-DataSets in dieser
   Art nur wenig Vorteile gegenüber den XML-DataSets.
 
-	\subsection{SB-Testing-DB-DataSet}
+	\subsection{STU-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
 	
-	Die Bibliothek \textit{SB Testing DB} der Firma SEITENBAU versucht Nachteile der XML- und
-	Default-DataSets aufzufangen. In Abschnitt \ref{sec:grundlagen:sbtestingdb} wird diese Bibliothek beschrieben.
-	Ein Generator erzeugt aus einem Datenbank-Modell ein Java Fluent Builder API, das die Modellierung von
-	Daten für genau dieses Datenbank-Modell erlaubt. \textit{SB Testing DB} führt eine eigene DataSet-Klasse ein,
+	Die Bibliothek \textit{STU} ermöglicht die Modellierung von DbUnit-DataSets mit Hilfe eines
+	Datenbank-Modell-spezifischen API. Ein Generator erzeugt aus dem Datenbank-Modell ein Java Fluent Builder
+	API, das die Modellierung von Daten für genau dieses Datenbank-Modell erlaubt (siehe auch \ref{sec:grundlagen:stu}). 
+	
+	\textit{STU} führt eine eigene DataSet-Klasse ein,
 	über die die Daten modelliert werden. Diese DataSet-Klasse kann bei Bedarf von den aktuellen Daten ein
-	DbUnit-DataSet erzeugen. Auf diese Weise können DataSets aus \textit{SB Testing DB} einfacher und umfangreicher
+	DbUnit-DataSet erzeugen. Auf diese Weise können DataSets aus \textit{STU} einfacher und umfangreicher
 	als DbUnit-DataSets modifiziert werden, wie z.B. das Löschen von Zeilen.
 	
-	Auf diese Weise können mit \textit{SB Testing DB} verhältnismäßig einfach Varianten eines DbUnit-DataSets
+	Auf diese Weise können mit \textit{STU} verhältnismäßig einfach Varianten eines DbUnit-DataSets
 	erzeugt werden, z.B. ein DataSet mit dem Ausgangszustand und ein DataSet mit dem erwarten Zustand am Ende des Tests.
 	
 	Die Java-DSL sorgt für statische Typsicherheit, so dass IDEs wie Eclipse fehlerhafte Typen bereits während der
@@ -438,7 +445,7 @@ dataSet.addTable(lehrveranstaltung);
 	über die Datei verteilt.
 
 	\lstSetJava
-	\begin{lstlisting}[caption=SB Testing DataSet (1), label=listing:sbtestingdataset_old]
+	\begin{lstlisting}[caption=STU DataSet (1), label=listing:sbtestingdataset_old]
 table_Professor
 	.insertRow()
 		.setId(Parameters.Professor.HAASE_ID)
@@ -477,7 +484,7 @@ table_Lehrveranstaltung
 	verzichtet werden, Primärschlüssel manuell zu vergeben.
 	
 	\lstSetJava
-	\begin{lstlisting}[caption=SB Testing DataSet (2), label=listing:sbtestingdataset]
+	\begin{lstlisting}[caption=STU DataSet (2), label=listing:sbtestingdataset]
 RowBuilder_Professor haase = 
 	table_Professor
 		.insertRow()

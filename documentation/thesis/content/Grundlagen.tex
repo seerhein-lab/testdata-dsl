@@ -80,99 +80,6 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 \todo{Layer test erklären}
 
 
-\section{DbUnit}
-
-DbUnit stellt eine Erweiterung für JUnit dar. Es soll Unit-Tests von Datenbank-Anwendungen vereinfachen. \cite[748]{XUNIT_TEST_PATTERNS}
-Mit Hilfe von DbUnit kann eine Datenbank zu Beginn eines Tests in einen definierten Zustand gebracht werden. Dazu kann DbUnit
-DataSets in die Datenbank einspielen. Außerdem kann DbUnit den Inhalt einer Datenbank mit einem DataSet vergleichen. So kann nach
-dem Test überprüft werden, ob das SUT die richtigen Modifikationen an den Daten vorgenommen hat.
-
-
-
-\section{SB Testing DB}
-\label{sec:grundlagen:sbtestingdb}
-
-Die Firma SEITENBAU verwendet für die Java-basierten Datenbankanwendungen das Framework JUnit mit der Erweiterung DbUnit. Da
-die Modellierung der Testdaten mit DbUnit-eigenen Mitteln einige Nachteile hat (siehe Abschnitt \ref{sec:fragestellung:modellierung}), hat SEITENBAU die Bibliothek \textit{SB Testing DB} entwickelt.  \textit{SB Testing DB} generiert anhand eines Domänen-spezifischen
-Datenbank-Modells ein individuelle Klassen zur Modellierung von Testdaten.
-
-Die generierten Klassen setzen das Builder-Pattern (\cite[11ff]{EFFECTIVEJAVA2ND}) mit einem Fluent API
-(\cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES}) um. In Java werden Fluant APIs mit Hilfe von Method Chaining verwirklicht. Dabei
-liefern Modifikator-Methoden wie Setter das Host-Objekt selbst zurück. Das erlaubt es, mehrere Modifikationen auf dem selben
-Objekt  mit nur einem Ausdruck durchzuführen \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte so aussehen:
-\texttt{student.name("Moll").vorname("Nikolaus")}.
-
-Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell das Fluent API erzeugt wird. Ausgangspunkt ist
-ein relationales Datenbankmodell. Dieses Modell muss in ein für den Generator interpretierbares Modell, das das SB-Testing-DB-Modell,
-transformiert werden. Dies kann automatisch (z.B. wenn das Modell in Form eines \textit{Apache-Torque}-Modell vorliegt) oder manuell
-geschehen. Das SB-Testing-DB-Modell enthält Informationen zu Tabellennamen und Angaben zu den Spalten, z.B. Namen und Datentypen. 
-
-\begin{figure}[H]
-	\centering
-	 \includegraphics[width=0.95\textwidth]{images/grundlagen/sb_testing_model.png}
-	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
-\end{figure}
-
-Das SB-Testing-DB-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentliche Vorteile bringen. Das API
-bzw. die erzeugten DataSets sind ausschließlich für den Einsatz im Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
-die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Fehlermeldung
-wird ausgelöst.
-Aus Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
-dass ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist gering im Vergleich zu dem Aufwand, 
-Constraint-Mechanismen verschiedener Datenbanksysteme nachzubauen.
-
-Der Generator nutzt für die Code-Generierung \textit{Apache Velocity}. Velocity ist eine Template-Engine, die Dokumente mit Hilfe von
-Templates erzeugt. Diese Templates bestehen aus Text und besonderen Velocity-Anweisungen. Zu den Anweisungen gehören unter anderem
-Platzhalter, die während der Generierung durch konkrete Werte ausgetauscht werden. Velocity bietet mit Verzweigungen und Schleifen
-auch Anweisungen zur Steuerung der Generierung.
-
-Templates Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
-auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
-
-
-
-Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
-\begin{itemize}
-
-	\item \textbf{DataSet}: Ein DataSet repräsentiert eine Menge von Testdaten dar. Es umfasst alle Tabellen eines
-	  Datenbankmodells. 
-  	Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
-	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
-		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
-		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
-		Tabellen.
-
-	\item \textbf{Table}: Eine \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
-	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
-	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum Modellieren der Daten und für den Zugriff
-		auf Tabellenzeilen bereit. 
-		Damit die Klasse direkt zur Erstellung von DbUnit-DataSets verwendet werden kann, implementiert sie das DbUnit-Interface
-		\texttt{ITable}.
-	
-	\item \textbf{RowBuilder}: Eine Zeile einer Tabelle wird von einem \texttt{RowBuilder} repräsentiert. Zu jeder Tabelle wird
-	  eine angepasste Klasse \texttt{RowBuilder}-Klasse erzeugt. Sie beinhaltet für jede Spalte mehrere Methoden zum Setzen und
-		Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und
-		dem Spaltennamen.
-	
-	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es für jede Tabelle die innere Klasse \texttt{FindWhere}. Sie ermöglicht
-	  die Suche nach  einem Wert in einer Spalte und liefert eine Liste von Tabellenzeilen. Die Methode ist zur Suche nach Zeilen
-		vorgesehen, von denen erwartet wird, dass es sie gibt. Passt keine Zeile zum Suchkriterium gefunden, wird eine
-		Exception ausgelöst.
-	
-\end{itemize}
-
-Abbildung \ref{img:sb_testing_classes} stellt das logische Klassendiagramm der DataSet-Klassen dar. Der Unterschied zum
-tatsächlichen Klassendiagramm besteht darin, dass im logischen Diagramm alle \texttt{Table}-Klassen zusammengefasst werden,
-obwohl  diese unterschiedlichen Typs sind. Außerdem entsprechen die Klassennamen, bis auf die Klasse \texttt{FindWhere}, nicht
-den tatsächlichen Bezeichnern.
-
-\begin{figure}[H]
-  \centering
-	 \includegraphics[width=0.4\textwidth]{images/grundlagen/sb_testing_classes.pdf}
-	\caption{UML-Klassendiagramm der SB Testing DataSet-Klassen}\label{img:sb_testing_classes}
-\end{figure}
-
-
 
 
 \section{Konventionen}
@@ -212,3 +119,104 @@ den tatsächlichen Bezeichnern.
 	\end{figure}
 	
 	Diese Konvention wird auch von Ambler in \cite{REFACTORING_DATABASES} verwendet.
+
+
+\section{STU (Simple Test Utils)}
+\label{sec:grundlagen:stu}
+
+\textit{STU} ist eine Bibliothek zur Vereinfachung von Unit-Tests für Java-basierte Anwendungen. \textit{STU} steht unter der 
+\textit{Apache License 2.0} \cite{APACHE_LICENSE_2} und wird maßgeblich von der Firma SEITENBAU entwickelt. Diese Arbeit
+thematisiert nur den Teil von \textit{STU}, der Tests von Datenbank-Anwendungen vereinfachen soll.
+
+Für Unit-Tests von Datenbank-Anwendungen nutzt \textit{STU} die Bibliothek \textit{DbUnit}. \textit{DbUnit} stellt eine
+Erweiterung für JUnit dar und stellt Funktionen speziell für den Test von Datenbank-Anwendung zur Verfügung
+ \cite[748]{XUNIT_TEST_PATTERNS}.
+Mit Hilfe von \textit{DbUnit} kann eine Datenbank zu Beginn eines Tests in einen definierten Zustand gebracht werden. Dazu kann 
+\textit{DbUnit} DataSets in die Datenbank einspielen. \todo{Kurz erklären, was ein DataSet ist} Außerdem kann DbUnit den Inhalt 
+einer Datenbank mit einem DataSet vergleichen. So kann nach dem Test überprüft werden, ob das SUT die richtigen Modifikationen 
+an den Daten vorgenommen hat.
+
+--- Nachteile von DbUnit-DataSets - vorwegnehmen ? ---
+
+Ein Ziel von \textit{STU} ist, Datenbank-Tests weiter zu vereinfachen und bietet die Möglichkeit, DataSets über ein eigenes API
+zu modellieren. \textit{STU} enthält einen Generator, der mit Hilfe eines Datenbank-Modells individuelles API erzeugen kann.
+Die generierten Klassen setzen das Builder-Pattern \cite[11ff]{EFFECTIVEJAVA2ND} mit einem Fluent API
+\cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES} um. In Java werden Fluent APIs mit Hilfe von Method Chaining verwirklicht. Dabei
+liefern Methoden zum Konfigurieren des Objekts das Objekt selbst zurück. Auf diese Weise können mehrere Modifikationen 
+an einem Objekt mit nur einem Ausdruck durchgeführt werden \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte
+so aussehen: \texttt{student.name("Moll").vorname("Nikolaus")}.
+
+Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell das Fluent API erzeugt wird.
+Ausgangspunkt ist ein relationales Datenbankmodell. Dieses Modell muss in ein für den Generator interpretierbares
+Modell, das STU-Modell, transformiert werden. Dies kann automatisch (z.B. wenn das Modell in Form eines
+\textit{Apache-Torque}-Modell vorliegt) oder manuell geschehen. Das STU-Modell enthält Informationen zu Tabellennamen
+und Angaben zu den Spalten, z.B. Namen und Datentypen. 
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=0.95\textwidth]{images/grundlagen/sb_testing_model.png}
+	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
+\end{figure}
+
+Das STU-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentliche Vorteile bringen. Das API
+bzw. die erzeugten DataSets sind ausschließlich für den Einsatz im Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
+die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Fehlermeldung
+wird ausgelöst.
+Aus Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
+dass ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist gering im Vergleich zu dem Aufwand, 
+Constraint-Mechanismen verschiedener Datenbanksysteme nachzubauen.
+
+Der Generator nutzt für die Code-Generierung \textit{Apache Velocity}. Velocity ist eine Template-Engine, die Dokumente mit Hilfe von
+Templates erzeugt. Diese Templates bestehen aus Text und besonderen Velocity-Anweisungen. Zu den Anweisungen gehören unter anderem
+Platzhalter, die während der Generierung durch konkrete Werte ausgetauscht werden. Velocity bietet mit Verzweigungen und Schleifen
+auch Anweisungen zur Steuerung der Generierung.
+
+Templates Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
+auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
+
+
+
+Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
+\begin{itemize}
+
+	\item \textbf{DataSet}: Ein DataSet repräsentiert eine Menge von Testdaten. Es umfasst alle Tabellen eines
+	  Datenbankmodells. 
+  	Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
+	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
+		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
+		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
+		Tabellen.
+
+	\item \textbf{Table}: Eine \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
+	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
+	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum Modellieren der Daten und für den Zugriff
+		auf Tabellenzeilen bereit. 
+		Damit die Klasse direkt zur Erstellung von DbUnit-DataSets verwendet werden kann, implementiert sie das DbUnit-Interface
+		\texttt{ITable}.
+	
+	\item \textbf{RowBuilder}: Eine Zeile einer Tabelle wird von einem \texttt{RowBuilder} repräsentiert. Zu jeder Tabelle wird
+	  eine angepasste Klasse \texttt{RowBuilder}-Klasse erzeugt. Sie beinhaltet für jede Spalte mehrere Methoden zum Setzen und
+		Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und
+		dem Spaltennamen.
+	
+	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es für jede Tabelle die innere Klasse \texttt{FindWhere}. Sie ermöglicht
+	  die Suche nach  einem Wert in einer Spalte und liefert eine Liste von Tabellenzeilen. Die Methode ist zur Suche nach Zeilen
+		vorgesehen, von denen erwartet wird, dass es sie gibt. Passt keine Zeile zum Suchkriterium gefunden, wird eine
+		Exception ausgelöst.
+	
+\end{itemize}
+
+Abbildung \ref{img:sb_testing_classes} stellt das logische Klassendiagramm der DataSet-Klassen dar. Der Unterschied zum
+tatsächlichen Klassendiagramm besteht darin, dass im logischen Diagramm alle \texttt{Table}-Klassen zusammengefasst werden,
+obwohl  diese unterschiedlichen Typs sind. Außerdem entsprechen die Klassennamen, bis auf die Klasse \texttt{FindWhere}, nicht
+den tatsächlichen Bezeichnern.
+
+\begin{figure}[H]
+  \centering
+	 \includegraphics[width=0.4\textwidth]{images/grundlagen/sb_testing_classes.pdf}
+	\caption{UML-Klassendiagramm der STU-DataSet-Klassen}\label{img:sb_testing_classes}
+\end{figure}
+
+
+
+

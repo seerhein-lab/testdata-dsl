@@ -1,7 +1,7 @@
 \chapter{Realisierung der Sprache}
 \label{chap:realiserungdsl}
 
-Im Folgenden wir die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
+Im Folgenden wird die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
 gezeigt, wie die DSL praktisch genutzt werden kann. 
 Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
 dass Bezeichner wie Tabellen- und Spaltennamen nicht nur erkannt werden, sondern auch automatisch vervollständigt werden können.
@@ -11,7 +11,7 @@ Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen re
 
 \textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Es verfolgt ein ähnliches
 Ziel und versucht ebenfalls, die Modellierung von Test-Daten zu vereinfachen und bietet bereits einige Verbesserungen
-gegenüber DbUnit. Außerdem stellt dies eine gewisse Kompatiblität sicher, so dass bestehende Tests zumindest nach
+gegenüber DbUnit. Außerdem stellt dies eine gewisse Kompatibilität sicher, so dass bestehende Tests zumindest nach
 geringfügigen Anpassungen mit den Erweiterungen funktionieren sollten. Aus einem domänenspezifischen
 Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
 zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
@@ -23,15 +23,14 @@ Sprache zeichnet sich dadurch aus, dass sie für ein spezielles Problemfeld entwo
 \cite[xix]{DOMAIN_SPECIFIC_LANGUAGES}, dass die meisten domänenspezifischen Sprachen lediglich eine dünne Fassade über
 einer Bibliothek oder einem Framework sind.
 
-Um Probleme bezüglich Abwärtskompatiblität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
+Um Probleme bezüglich Abwärtskompatibilität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
 Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
-\url{https://github.com/Seitenbau/stu}) verwendet. \textit{STU} steht unter der Open-Source-Lizenz 
-\textit{Apache License 2.0}. \cite{APACHE_LICENSE_2}
+\url{https://github.com/Seitenbau/stu}) verwendet. 
 
 Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
 \begin{itemize}
   \item Das \textbf{Fluent Builder API} ist ein \textbf{Java}-basiertes API. Der Name spiegelt wieder, dass es ein Java
-    Fluent API bereit stellt (siehe auch Abschnitt \ref{sec:grundlagen:sbtestingdb}). Ein solches API wird auch als
+    Fluent API bereit stellt (siehe auch Abschnitt \ref{sec:grundlagen:stu}). Ein solches API wird auch als
     interne DSL bezeichnet.
       
   \item Das \textbf{Table Builder API} ist das \textbf{Groovy}-basierte API bzw. die neue DSL. Über diese DSL können
