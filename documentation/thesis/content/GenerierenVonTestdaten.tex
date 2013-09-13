@@ -5,7 +5,6 @@ Fragen:
 - Wie muss dass Modell "`angereichert"' werden? 
 - Wie können Daten sinnvoll generiert werden?
 
-
 - Viele Generatoren für reine Daten, mit Beziehungen schon weniger
 
 
@@ -23,17 +22,38 @@ DTM Data Generator
 
 
 
+- Beziehungstypen, wie werden sie generiert
+- Assoziative Tabellen
+
+
+\section{Warum Generierung}
+Möglichkeiten:
+- Generierung
+- Real-Daten, Extraktion, Anonymisierung (bei Unit-Tests wenig praktikabel, da Tests vor Inbetriebnahme laufen sollen)
 
 Je nach Anwendungsfall unterschiedliche Data-Sets sinnvoll
 - Unit-Tests eher klein
 - Performance-Tests, Regressionstests eher groß
 
+\section{Generieren von Foreign-Key-Beziehungen}
 
-Möglichkeiten:
-- Generierung
-- Real-Daten, Extraktion, Anonymisierung (bei Unit-Tests wenig praktikabel, da Tests vor Inbetriebnahme laufen sollen)
+\subsection{1:1}
+
+\subsection{1:n}
+
+\subsection{n:m}
+
+\section{Erweiterungen am Modell}
+
+\section{Der Algorithmus}
+1. Start-Tabelle festlegen
+2. wenn Tabelle noch nicht behandelt, dann
+3. Kanten bestimmen und behandeln (ausgehende bevorzugt)
+4. Schritte 2-4 rekursiv für die verbundene Tabelle wiederholen
+5. Prüfen ob alle Entitäten gültige Beziehungen haben, ggf. Entitäten erstellen
+
+Assoziative Tabellen werden separat behandelt
+Jede Kante und jede Tabelle wird nur ein mal in den Schritten 2-4 besucht
 
 
-- Beziehungstypen, wie werden sie generiert
-- Assoziative Tabellen
-
+\section{Probleme}

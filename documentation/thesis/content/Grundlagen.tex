@@ -31,7 +31,7 @@ Die vier Schichten werden als M0 bis M3 bezeichnet \cite{MOF_141}:
 
 \nomenclature{SUT}{System Under Test (\refsec{sec:grundlagen:konzepte:tests})}
 Eine zu prüfende Anwendung wird im Kontext von Software-Tests als \textit{System Under Test} (abgekürzt SUT) bezeichnet.
-Dabei bezeichnet SUT je nach Test Klassen, Objekte, Methoden oder vollständige Anwendungen. 
+Dabei bezeichnet SUT Klassen, Objekte, Methoden oder vollständige Anwendungen. 
 \cite[810f]{XUNIT_TEST_PATTERNS}
 
 Alle Voraussetzungen und Vorbedingungen für einen Test werden unter der Bezeichnung \textit{Test Fixture} zusammengefasst.
@@ -45,39 +45,41 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 		in unterschiedliche Test-Daten hineinversetzen muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene 
 		Testdaten verwenden. \cite[305]{XUNIT_TEST_PATTERNS}
 	
-	\item \textbf{Minimal Fixture}: Minimal Fixtures stellen Test Fixtures dar, deren Umfang auf ein Minimum reduziert wurde. 
-	  Dadurch lassen sich Minimal Fixture im Allgemeinen leichter verstehen. Das Reduzieren der Daten kann auch zu
-		Leistungsvorteilen bei der Ausführung der Tests führen. \cite[302]{XUNIT_TEST_PATTERNS}
+	\item \textbf{Minimal Fixture}: Ein Fixture, das speziell für einen Test erstellt wurde und dessen Umfang auf
+	  die für diesen Test notwendigen Daten reduziert ist, wird als Minimal Fixture bezeichnet. Aufgrund ihres
+		Umfangs lassen sich Minimal Fixtures von Testern im Allgemeinen leichter verstehen. Außerdem kann der Einsatz
+		von Minimal Fixtures zu Leistungsvorteilen bei der Ausführung von Tests führen. \cite[302]{XUNIT_TEST_PATTERNS}
 \end{itemize}
 
 
+	\subsection{Datenbank-Tests}
 
-Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Dieses Muster
-besteht aus vier Schritten. Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff, vorbei am
-zu testenden System, in den Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
-Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
-als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
-ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch Aufräumarbeiten
-durchführen. Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
-\cite[327ff]{XUNIT_TEST_PATTERNS}
+	Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Dieses Muster
+	besteht aus vier Schritten. Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff, vorbei am
+	zu testenden System, in den Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
+	Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
+	als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
+	ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch Aufräumarbeiten
+	durchführen. Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
+	\cite[327ff]{XUNIT_TEST_PATTERNS}
 
-\begin{figure}[H]
-	\centering
-	 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
-	\caption{Back Door Manipulation}\label{img:backdoormanipulation}
-\end{figure}
+	\begin{figure}[H]
+		\centering
+		 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
+		\caption{Back Door Manipulation}\label{img:backdoormanipulation}
+	\end{figure}
 
-Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
-semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
-schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
-in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
-nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
-verwendeten Datenbank-System. Wird die Datenbank von SQL auf NoSQL umgestellt, müssen die Tests angepasst werden. 
-Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
-zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
-Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
+	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
+	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
+	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
+	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
+	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
+	verwendeten Datenbank-System. Wird die Datenbank von SQL auf NoSQL umgestellt, müssen die Tests angepasst werden. 
+	Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
+	zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
+	Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
-\todo{Layer test erklären}
+	\todo{Layer test erklären}
 
 
 
@@ -96,8 +98,9 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
 	\subsection{Relationale Datenbank-Diagramme}
 	\label{sec:grundlagen:konventionen:relationalediagramme}
-	Alle in dieser Arbeit abgebildeten relationalen Datenbank-Diagramme verwenden einen einheitlichen Stil.
-	Dieser basiert auf dem UML-Klassendiagramm.
+	Alle in dieser Arbeit abgebildeten relationalen Datenbank-Diagramme verwenden einen einheitlichen Modellierungsstil,
+	der auch von Ambler in Ambler in \cite{REFACTORING_DATABASES} verwendet wird. Dieser Stil erweitert das dem UML-konform
+	das Klassendiagramm.
 	
 	Tabellen werden durch Boxen repräsentiert. Diese Boxen sind unterteilt in zwei Bereiche: den Tabellenbezeichner (oben)
 	und die Attribute der Tabelle (unten). Attribute werden in der Form \textit{Bezeichner : typ} beschrieben. Es gibt die
@@ -118,8 +121,7 @@ Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 		\caption{Stil relatianaler Datenbank-Diagramme nach Ambler}\label{img:ambler_table}
 	\end{figure}
 	
-	Diese Konvention wird auch von Ambler in \cite{REFACTORING_DATABASES} verwendet.
-
+	
 
 \section{STU (Simple Test Utils)}
 \label{sec:grundlagen:stu}
@@ -171,38 +173,36 @@ Templates erzeugt. Diese Templates bestehen aus Text und besonderen Velocity-Anw
 Platzhalter, die während der Generierung durch konkrete Werte ausgetauscht werden. Velocity bietet mit Verzweigungen und Schleifen
 auch Anweisungen zur Steuerung der Generierung.
 
-Templates Dokumente erzeugt. Die Vorlagen können Platzhalter enthalten, die von Velocity durch konkrete Werte ausgetauscht werden, und
-auch von Velocity interpretierte Steueranweisungen, z.B. Verzweigungen und Schleifen.
 
 
 
-Die Namen der generierten Klassen hängen vom Modell ab. Unter anderem werden Klassen der folgenden Kategorien erzeugt:
+
+Die Namen der generierten Klassen ergeben sich aus den im Modell enthaltenen Informationen. Es werden Klassen der
+folgenden Kategorien erzeugt:
 \begin{itemize}
 
 	\item \textbf{DataSet}: Ein DataSet repräsentiert eine Menge von Testdaten. Es umfasst alle Tabellen eines
 	  Datenbankmodells. 
   	Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
 	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
-		erzeugen. Dabei werden Template-Methoden definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
+		erzeugen. Dabei werden Template-Methoden \todo{REF GOF} definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
 		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
 		Tabellen.
 
 	\item \textbf{Table}: Eine \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
 	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
-	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zum Modellieren der Daten und für den Zugriff
-		auf Tabellenzeilen bereit. 
-		Damit die Klasse direkt zur Erstellung von DbUnit-DataSets verwendet werden kann, implementiert sie das DbUnit-Interface
-		\texttt{ITable}.
+	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zur Modellierung und für den Zugriff
+		auf die Tabellendaten bereit.
+		Zur Integration in DbUnit implementiert sie das DbUnit-Interface \texttt{ITable}.
 	
 	\item \textbf{RowBuilder}: Eine Zeile einer Tabelle wird von einem \texttt{RowBuilder} repräsentiert. Zu jeder Tabelle wird
-	  eine angepasste Klasse \texttt{RowBuilder}-Klasse erzeugt. Sie beinhaltet für jede Spalte mehrere Methoden zum Setzen und
+	  eine individuelle \texttt{RowBuilder}-Klasse erzeugt. Sie beinhaltet für jede Spalte mehrere Methoden zum Setzen und
 		Abfragen des jeweiligen Wertes. Die Methodennamen setzen sich zusammen aus der Aufgabe (\texttt{get} bzw. \texttt{set}) und
 		dem Spaltennamen.
 	
 	\item \textbf{FindWhere}: Für einfache Suchanfragen gibt es für jede Tabelle die innere Klasse \texttt{FindWhere}. Sie ermöglicht
 	  die Suche nach  einem Wert in einer Spalte und liefert eine Liste von Tabellenzeilen. Die Methode ist zur Suche nach Zeilen
-		vorgesehen, von denen erwartet wird, dass es sie gibt. Passt keine Zeile zum Suchkriterium gefunden, wird eine
-		Exception ausgelöst.
+		vorgesehen, von denen erwartet wird, dass es sie gibt. 
 	
 \end{itemize}
 
@@ -214,7 +214,7 @@ den tatsächlichen Bezeichnern.
 \begin{figure}[H]
   \centering
 	 \includegraphics[width=0.4\textwidth]{images/grundlagen/sb_testing_classes.pdf}
-	\caption{UML-Klassendiagramm der STU-DataSet-Klassen}\label{img:sb_testing_classes}
+	\caption{Logisches Klassendiagramm der STU-DataSet-Klassen}\label{img:sb_testing_classes}
 \end{figure}
 
 
