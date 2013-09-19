@@ -1,11 +1,93 @@
 \chapter{Generieren von Testdaten}
 \label{chap:generieren}
 
-Fragen: 
-- Wie muss dass Modell "`angereichert"' werden? 
-- Wie können Daten sinnvoll generiert werden?
+Das Generieren von Test-Daten ist kein neues Thema. Es gibt verschiedene Ansätze dafür. Einige Programme genieren
+Massendaten. Die Erwartung ist, dass durch die Vielzahl zufälliger Daten auch alle Arten von Beziehungen ausreichend
+generiert werden. Ein solcher Massendaten-Generator lässt sich vergleichsweise leicht realisieren. 
+Für Unit-Tests mit überschaubaren Test-Daten ist dieser Ansatz eher nicht geeignet.
 
-- Viele Generatoren für reine Daten, mit Beziehungen schon weniger
+Ein anderer Ansatz ist für Unit-Tests entgegenkommender. Dort werden Test-Daten anhand von konkreten Abfragen 
+generiert. Allerdings ist es nicht Ziel der Arbeit, für jeden Test individuelle Daten zu generieren. Außerdem können
+Anfragen vom SUT auch abstrahiert werden, beispielsweise wenn ein Spring-Service verwendet wird.
+
+Für die Generierung von Test-Daten aus einem Datenbank-Modell bietet sich die erste Variante an. Da die Menge
+der generierten Test-Daten gering gehalten werden soll, soll ein Algorithmus entwickelt werden, der Beziehungen
+nicht rein zufällig modelliert. Stattdessen soll versucht werden, möglichst alle Grenzfälle zu berücksichtigen.
+Äquivalenzklassenbildung und Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu
+reduzieren.
+
+Im Folgenden wird beschrieben, welche Fälle für verschiedene binäre Beziehungen auf jeden Fall generiert werden
+müssen.
+
+\section{Generieren von Beziehungen}
+
+
+	\subsection{1:1}
+	
+		\subsubsection{1..1:1..1}
+		
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-1.png}
+			\caption{Beziehungen nach dem Schema 1..1:1..1}\label{img:generierung:11to11}
+		\end{figure}
+
+		
+		\subsubsection{0..1:1..1}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-1.png}
+			\caption{Beziehungen nach dem Schema 0..1:1..1}\label{img:generierung:01to11}
+		\end{figure}
+
+		\subsubsection{0..1:0..1}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-1.png}
+			\caption{Beziehungen nach dem Schema 0..1:0..1}\label{img:generierung:01to01}
+		\end{figure}
+
+	\subsection{1:n}
+
+		\subsubsection{1..1:1..n}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-n.png}
+			\caption{Beziehungen nach dem Schema 1..1:1..n}\label{img:generierung:11to1n}
+		\end{figure}
+
+		\subsubsection{0..1:1..n}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-n.png}
+			\caption{Beziehungen nach dem Schema 0..1:1..n}\label{img:generierung:01to1n}
+		\end{figure}
+		
+		\subsubsection{1..1:0..n}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-0-n.png}
+			\caption{Beziehungen nach dem Schema 1..1:0..n}\label{img:generierung:11to0n}
+		\end{figure}
+
+		\subsubsection{0..1:0..n}
+
+		\begin{figure}[htbp]
+			\centering
+			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-n.png}
+			\caption{Beziehungen nach dem Schema 0..1:0..n}\label{img:generierung:01to0n}
+		\end{figure}
+
+	\subsection{n:m}
+
+
+
+
 
 
 Red Gate SQL Data Generator:
@@ -25,7 +107,6 @@ DTM Data Generator
 - Beziehungstypen, wie werden sie generiert
 - Assoziative Tabellen
 
-
 \section{Warum Generierung}
 Möglichkeiten:
 - Generierung
@@ -35,13 +116,6 @@ Je nach Anwendungsfall unterschiedliche Data-Sets sinnvoll
 - Unit-Tests eher klein
 - Performance-Tests, Regressionstests eher groß
 
-\section{Generieren von Foreign-Key-Beziehungen}
-
-\subsection{1:1}
-
-\subsection{1:n}
-
-\subsection{n:m}
 
 \section{Erweiterungen am Modell}
 

@@ -50,6 +50,11 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
+  
+	\item \textbf{Deterministische Generierung}: Auch wenn die Test-Daten aus Zufallsdaten bestehen, sollen sie deterministisch
+	  generiert werden können. Das heißt, dass die Generierung des Modells mit den selben Einstellungen auch zum selben Ergebnis
+		führt.
+		
 	\item \textbf{Kompatibilität}: Die Generierung der Testdaten soll nicht nur bei Nutzung der neuen Modellierungssprache
 	  verwendet werden können. Der Testdaten-Generator soll auch DataSets auf Basis der bisherigen STU-Builder
 		erstellen können.
