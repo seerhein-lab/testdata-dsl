@@ -21,10 +21,23 @@ müssen.
 
 \section{Generieren von Beziehungen}
 
+Unterschiedliche Beziehungstypen stellen unterschiedliche Anforderungen an den Daten-Generator. Binäre Beziehungen
+lassen sich in die drei Hauptkategorien 1:1, 1:n und n:m einordnen. Die folgenden Abbildungen die zu generierenden
+Entitäten der beiden Entitätstypen A und B dar. Eine Entität wird von einem kleinen Kreis repräsentiert, ihr Typ
+über die Spalte bestimmt. Eine Beziehung zwischen zwei Entitäten wird über eine Verbindungsgerade beschrieben.
+Grundsätzlich können die beiden Typen A und B auch den selben Typen darstellen.
 
-	\subsection{1:1}
+Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werden sollten.
+
+	\subsection{Klasse der 1:1-Beziehungen}
+	
+	Unter die Kategorie 1:1-Beziehung fallen alle Beziehungen, bei denen eine oder keine Entität mit genau einer oder
+	keiner Entität in Beziehung stehen kann.
 	
 		\subsubsection{1..1:1..1}
+		
+		Eine Entität des Typs A steht mit genau einer Entität des Typs B in Beziehung. Die Anzahl der generierten Entitäten
+		muss übereinstimmen, es muss mindestens eine Entität pro Typ erzeugt werden (siehe Abbildung \ref{img:generierung:11to11}).
 		
 		\begin{figure}[htbp]
 			\centering
@@ -34,6 +47,11 @@ müssen.
 
 		
 		\subsubsection{0..1:1..1}
+		
+		Im Gegensatz zu der vorherigen Beziehung muss bei dieser eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
+		Abbildung \ref{img:generierung:01to11} zeigt die zu generierenden Entitäten der Typen A und B, wobei jede Entität von A
+		mit einer Entität von B in Beziehung stehen muss, eine Entität von B jedoch nicht zwingend mit einer Entität von A.
+		Daraus folgt, dass es von B mindestens eine Entität mehr geben muss als von A.
 
 		\begin{figure}[htbp]
 			\centering
@@ -41,7 +59,14 @@ müssen.
 			\caption{Beziehungen nach dem Schema 0..1:1..1}\label{img:generierung:01to11}
 		\end{figure}
 
+		Der Generator muss mindestens zwei Entitäten des Typs B erzeugen, und eine des Typs A, um sicherzustellen, dass alle
+		Fälle für diese Beziehung abgedeckt sind. Die Beziehung 1..1:0..1 ist symmetrisch zu dieser.
+		
+
 		\subsubsection{0..1:0..1}
+		
+		Wenn für beide Entitätstypen die Beziehung optional ist, muss der Generator jeweils mindestens 2 Entitäten erzeugen. Jeweils
+		eine Entität ohne Beziehung und jeweils eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
 
 		\begin{figure}[htbp]
 			\centering
@@ -49,9 +74,18 @@ müssen.
 			\caption{Beziehungen nach dem Schema 0..1:0..1}\label{img:generierung:01to01}
 		\end{figure}
 
-	\subsection{1:n}
+	\subsection{Klasse der 1:n-Beziehungen}
+	
+	  Eine Entität steht in Beziehung mit keiner oder mehreren anderen Entitäten. Dabei kann die Anzahl begrenzt sein (konkreter
+		Wert für n) oder unbegrenzt. Der Generator kann nur eine begrenzte Anzahl von Entitäten erzeugen, die Grenze sollte
+		konfigurierbar sein.
+		
+		In den Abbildungen wird als Grenze n der Wert 3 verwendet.
 
 		\subsubsection{1..1:1..n}
+		
+		Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
+		des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung.
 
 		\begin{figure}[htbp]
 			\centering
@@ -83,8 +117,30 @@ müssen.
 			\caption{Beziehungen nach dem Schema 0..1:0..n}\label{img:generierung:01to0n}
 		\end{figure}
 
-	\subsection{n:m}
+	\subsection{Klasse der n:m-Beziehungen (assoziative Beziehungen)}
 
+
+
+
+
+
+
+
+
+\section{Der Algorithmus}
+1. Start-Tabelle festlegen
+2. wenn Tabelle noch nicht behandelt, dann
+3. Kanten bestimmen und behandeln (ausgehende bevorzugt)
+4. Schritte 2-4 rekursiv für die verbundene Tabelle wiederholen
+5. Prüfen ob alle Entitäten gültige Beziehungen haben, ggf. Entitäten erstellen
+
+Assoziative Tabellen werden separat behandelt
+Jede Kante und jede Tabelle wird nur ein mal in den Schritten 2-4 besucht
+
+
+\section{Grenzen des Algorithmus}
+
+\section{Erweiterungen am Modell}
 
 
 
@@ -107,7 +163,7 @@ DTM Data Generator
 - Beziehungstypen, wie werden sie generiert
 - Assoziative Tabellen
 
-\section{Warum Generierung}
+\section{-Warum Generierung}
 Möglichkeiten:
 - Generierung
 - Real-Daten, Extraktion, Anonymisierung (bei Unit-Tests wenig praktikabel, da Tests vor Inbetriebnahme laufen sollen)
@@ -115,19 +171,3 @@ Möglichkeiten:
 Je nach Anwendungsfall unterschiedliche Data-Sets sinnvoll
 - Unit-Tests eher klein
 - Performance-Tests, Regressionstests eher groß
-
-
-\section{Erweiterungen am Modell}
-
-\section{Der Algorithmus}
-1. Start-Tabelle festlegen
-2. wenn Tabelle noch nicht behandelt, dann
-3. Kanten bestimmen und behandeln (ausgehende bevorzugt)
-4. Schritte 2-4 rekursiv für die verbundene Tabelle wiederholen
-5. Prüfen ob alle Entitäten gültige Beziehungen haben, ggf. Entitäten erstellen
-
-Assoziative Tabellen werden separat behandelt
-Jede Kante und jede Tabelle wird nur ein mal in den Schritten 2-4 besucht
-
-
-\section{Probleme}
