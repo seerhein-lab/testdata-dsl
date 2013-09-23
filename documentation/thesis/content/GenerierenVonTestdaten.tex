@@ -1,16 +1,272 @@
 \chapter{Generieren von Testdaten}
 \label{chap:generieren}
 
+Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basierte Anwendungen:
+\begin{enumerate}
+  \item \textbf{Modell-basierte Generierung}:
+  	Anhand eines Datenbank-Modells werden Entitäten mit Zufallswerten für die Attribute (Spalten) erzeugt. Es gibt
+  	einige kommerzielle Werkzeuge aber auch frei nutzbare Internet-Seiten für die Generierung. 
+  
+  \item \textbf{Abfrage-basierte Generierung}:
+  	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. 
+  	RQL Quelle
+  
+  \item \textbf{Anonymisierung realer Daten}:
+  	Bei diesem Ansatz findet keine echte Generierung statt. Stattdessen werden Daten einer realen Anwendung 
+  	anonymisiert und für Tests verwendet.
+  
+\end{enumerate}
+
+Für diese Arbeit scheint nur die erste Variante sinnvoll zu sein: Für die Generierung der DSL liegt bereits
+ein Datenbank-Modell vor. Konkrete Anfragen als Grundlage für die Generierung sind nicht sinnvoll, da sie
+vom SUT verborgen werden können. Die Anonymisierung realer Daten stellt keine Daten-Generierung
+im eigentliche Sinn dar und setzt bestehende Daten voraus.
+
+Eine Auswahl exisitierender Modell-basierter Datengeneratoren wird im folgenden Abschnitt analysiert.
+
 
 \section{Analyse existierender Werkzeuge}
+\label{chap:generieren:analyse}
+
+Die Analyse der Werkzeuge beschränkt sich auf folgende kommerzielle Anwendungen:
+\begin{itemize}
+  \item Datanamic Data Generator MultiDB
+  \item DTM Data Generator
+  \item forSQL Data Generator
+  \item Red Gate SQL Data Generator
+\end{itemize}
+
+Insgesamt sind die Möglichkeiten der Anwendungen relativ ähnlich. Die größten Unterschiede aus Nutzer-Sicht liegen in der
+Bedienung. Die Werkzeuge arbeiten zufallsbasiert aber deterministisch, d.h. sie erzeugen bei gleichem Modell die gleichen
+Daten. Das sogenannte \textit{Seed}, mit dem der Zufallszahlengenerator für eine einzelne Spalte initialisiert wird, lässt
+sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
+
+Die Werkzeuge sind vor allem für die Generierung von Massen-Daten vorgesehen. Dies zeigt sich auch darin, dass 
+sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten sollte dann auch jeder
+notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
+
+Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
+in Widerspruch mit einer Massendatengenerierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
+Beziehungen nicht nur zufällig modelliert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
+Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
+
 
 \section{Generierung von Beziehungen}
+
+Der zu entwickelnde Algorithmus übernimmt das Konzept der Äquivalenzklassenbildung und Grenzwertanalyse, um möglichst
+alle notwendigen Beziehungskombinationen zwischen zwei Entitätstypen zu modellieren. Die Menge der zu generierenden
+Entitäten soll dabei möglichst gering gehalten werden.
+
+Unterschiedliche Beziehungstypen stellen unterschiedliche Anforderungen an den Daten-Generator. Binäre Beziehungen
+lassen sich in die drei Hauptkategorien 1:1, 1:n und n:m einordnen. Die folgenden Abbildungen die zu generierenden
+Entitäten der beiden Entitätstypen A und B dar. Eine Entität wird von einem kleinen Kreis repräsentiert, ihr 
+Entitätstyp über die Spalte festgelegt. Eine Beziehung zwischen zwei Entitäten wird über eine Verbindungsgerade
+beschrieben. Grundsätzlich können die beiden Typen A und B auch den selben Typen darstellen.
+
+Die allgemeine Generierungsstrategie sieht die Generierung der folgenden vier Fälle vor:
+\begin{itemize}
+  \item minA - minB
+  \item minA - maxB
+  \item maxA - minB
+  \item maxA - maxB
+\end{itemize}
+
+Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werden sollten.
+
+  \subsection{Kategorie der 1:1-Beziehungen}
+  
+  Unter die Kategorie 1:1-Beziehung fallen alle Beziehungen, bei denen eine oder keine Entität mit genau einer oder
+  keiner Entität in Beziehung stehen kann.
+  
+  	\subsubsection{1..1:1..1}
+  	
+  	Eine Entität des Typs A steht mit genau einer Entität des Typs B in Beziehung. Die Anzahl der generierten Entitäten
+  	muss übereinstimmen, es muss mindestens eine Entität pro Typ erzeugt werden (siehe Abbildung \ref{img:generierung:11to11}).
+  	
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-1.png}
+  	  \caption{Beziehungen nach dem Schema 1..1:1..1}\label{img:generierung:11to11}
+  	\end{figure}
+
+  	
+  	\subsubsection{0..1:1..1}
+  	
+  	Im Gegensatz zu der vorherigen Beziehung muss bei dieser eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
+  	Abbildung \ref{img:generierung:01to11} zeigt die zu generierenden Entitäten der Typen A und B, wobei jede Entität von A
+  	mit einer Entität von B in Beziehung stehen muss, eine Entität von B jedoch nicht zwingend mit einer Entität von A.
+  	Daraus folgt, dass es von B mindestens eine Entität mehr geben muss als von A.
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-1.png}
+  	  \caption{Beziehungen nach dem Schema 0..1:1..1}\label{img:generierung:01to11}
+  	\end{figure}
+
+  	Der Generator muss mindestens zwei Entitäten des Typs B erzeugen, und eine des Typs A, um sicherzustellen, dass alle
+  	Fälle für diese Beziehung abgedeckt sind. Die Beziehung 1..1:0..1 ist symmetrisch zu dieser.
+  	
+
+  	\subsubsection{0..1:0..1}
+  	
+  	Wenn für beide Entitätstypen die Beziehung optional ist, muss der Generator jeweils mindestens 2 Entitäten erzeugen. Jeweils
+  	eine Entität ohne Beziehung und jeweils eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-1.png}
+  	  \caption{Beziehungen nach dem Schema 0..1:0..1}\label{img:generierung:01to01}
+  	\end{figure}
+
+  \subsection{Kategorie der 1:n-Beziehungen}
+  
+  Eine Entität steht in Beziehung mit keiner oder mehreren anderen Entitäten. Dabei kann die Anzahl begrenzt sein (konkreter
+  Wert für n) oder unbegrenzt. Der Generator kann nur eine begrenzte Anzahl von Entitäten erzeugen, die Grenze sollte
+  konfigurierbar sein.
+  
+  In den Abbildungen wird als Grenze n der Wert 3 verwendet.
+
+  	\subsubsection{1..1:1..n}
+  	
+  	Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
+  	des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung.
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-n.png}
+  	  \caption{Beziehungen nach dem Schema 1..1:1..n}\label{img:generierung:11to1n}
+  	\end{figure}
+
+  	\subsubsection{0..1:1..n}
+  	
+  	Eine Entität des Typs A steht in Beziehung mit einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B steht
+  	entweder mit genau einer oder mit keiner Entität des Typs A in Beziehung. 
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-n.png}
+  	  \caption{Beziehungen nach dem Schema 0..1:1..n}\label{img:generierung:01to1n}
+  	\end{figure}
+  	
+  	\subsubsection{1..1:0..n}
+  	
+  	Eine Entität des Typs A steht in Beziehung mit keiner, einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B
+  	muss mit genau einer Entität des Typs A in Beziehung stehen.
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-0-n.png}
+  	  \caption{Beziehungen nach dem Schema 1..1:0..n}\label{img:generierung:11to0n}
+  	\end{figure}
+
+
+  	\subsubsection{0..1:0..n}
+  	
+
+  	\begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-n.png}
+  	  \caption{Beziehungen nach dem Schema 0..1:0..n}\label{img:generierung:01to0n}
+  	\end{figure}
+
+  \subsection{Kategorie der n:m-Beziehungen}
+
+
 
 \section{Algorithmus zur Generierung von Beziehungen}
 \label{sec:generieren:algorithmus}
 
-	\subsection{Pseudocode}
-	\label{sec:generieren:algorithmus:pseudocode}
+1. Start-Tabelle festlegen
+
+2. wenn Tabelle noch nicht behandelt, dann
+
+3. Kanten bestimmen und behandeln (ausgehende bevorzugt)
+
+4. Schritte 2-4 rekursiv für die verbundene Tabelle wiederholen
+
+5. Prüfen ob alle Entitäten gültige Beziehungen haben, ggf. Entitäten erstellen
+
+Assoziative Tabellen werden separat behandelt
+Jede Kante und jede Tabelle wird nur ein mal in den Schritten 2-4 besucht
+
+
+  \subsection{Pseudocode}
+  \label{sec:generieren:algorithmus:pseudocode}
+  
+\begin{verbatim}
+procedure generate()
+  tables := getTableOrder()
+  for each table in tables
+  	do visitTable(table)
+  return
+
+procedure visitTable(table)
+  if (tableHasBeenVisited(table)) then
+  	return
+  markTableVisited(table)
+  
+  if (isAssocativeTable(table)) then
+  	handleAssociativeTable(table)
+  else
+  	handleTable(table)
+  return
+
+procedure handleTable(table)
+  for each edge in getOutgoingTableEdges(table)
+  	do handleEdge(edge)
+  	  handleEdge(edge, edge.getDestinationTable());
+
+  for each edge in getIncomingTableEdges(table)
+  	do handleEdge(edge)
+  	  handleEdge(edge, edge.getSourceTable());
+  return
+
+procedure handleEdge(edge, nextTable)
+  if (edgeHasBeenVisited(edge)) then
+  	return
+
+  if (isAssociativeTable(nextTable)) then
+  	handleAssociativeTable(nextTable)
+  	return
+
+  markEdgeVisited(edge)
+
+  generate(edge, edge.getDestination().getMin(), edge.getSource().getMin())
+  generate(edge, edge.getDestination().getMin(), edge.getSource().getMax())
+  generate(edge, edge.getDestination().getMax(), edge.getSource().getMin())
+  generate(edge, edge.getDestination().getMax(), edge.getSource().getMax())
+  
+  visitTable(nextTable)
+  return
+  
+procedure generate(edge, destBorder, sourceBorder)
+  if (hasAlreadyBeenGenerated(edge, destBorder, sourceBorder)) then
+  	return
+  markAsGenerated(edge, destBorder, sourceBorder)
+  
+  if (destBorder = 0) then
+  	fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.noRelation())
+  else if (sourceBorder = 0) then
+  	fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.noRelation())
+  else 
+  	EntityBlueprint entity = fab.getEntity(edge.getDestination().getTable(), edge, EntityCreationMode.fixed(sourceBorder))
+  	for (int i = 0; i < sourceBorder; i++) {
+  	  EntityBlueprint result = fab.getEntity(edge.getSource().getTable(), edge, EntityCreationMode.fixed(1))
+  	  result.setReference(edge, entity);
+  	}
+
+  if (destBorder = 0) then
+  	generate(1, sourceBorder)
+  if (sourceBorder = 0) then
+  	generate(destBorder, 1)
+
+  return
+
+procedure handleAssociativeTable(table)
+  return
+
+\end{verbatim}
+  
 
 \section{Praktischer Einsatz / Evaluation}
 
@@ -19,191 +275,3 @@
 \section{Offene Punkte}
 
 
-\sectio{ALTES KAPITEL}
-
-Das Generieren von Test-Daten ist kein neues Thema. Es gibt verschiedene Ansätze dafür. Einige Programme genieren
-Massendaten. Die Erwartung ist, dass durch die Vielzahl zufälliger Daten auch alle Arten von Beziehungen ausreichend
-generiert werden. Ein solcher Massendaten-Generator lässt sich vergleichsweise leicht realisieren. 
-Für Unit-Tests mit überschaubaren Test-Daten ist dieser Ansatz eher nicht geeignet.
-
-Ein anderer Ansatz ist für Unit-Tests entgegenkommender. Dort werden Test-Daten anhand von konkreten Abfragen 
-generiert. Allerdings ist es nicht Ziel der Arbeit, für jeden Test individuelle Daten zu generieren. Außerdem können
-Anfragen vom SUT auch abstrahiert werden, beispielsweise wenn ein Spring-Service verwendet wird.
-
-Für die Generierung von Test-Daten aus einem Datenbank-Modell bietet sich die erste Variante an. Da die Menge
-der generierten Test-Daten gering gehalten werden soll, soll ein Algorithmus entwickelt werden, der Beziehungen
-nicht rein zufällig modelliert. Stattdessen soll versucht werden, möglichst alle Grenzfälle zu berücksichtigen.
-Äquivalenzklassenbildung und Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu
-reduzieren.
-
-Im Folgenden wird beschrieben, welche Fälle für verschiedene binäre Beziehungen auf jeden Fall generiert werden
-müssen.
-
-\section{Generieren von Beziehungen}
-
-Unterschiedliche Beziehungstypen stellen unterschiedliche Anforderungen an den Daten-Generator. Binäre Beziehungen
-lassen sich in die drei Hauptkategorien 1:1, 1:n und n:m einordnen. Die folgenden Abbildungen die zu generierenden
-Entitäten der beiden Entitätstypen A und B dar. Eine Entität wird von einem kleinen Kreis repräsentiert, ihr Typ
-über die Spalte bestimmt. Eine Beziehung zwischen zwei Entitäten wird über eine Verbindungsgerade beschrieben.
-Grundsätzlich können die beiden Typen A und B auch den selben Typen darstellen.
-
-Die allgemeine Generierungsstrategie sieht die Generierung der folgenden vier Fälle vor:
-\begin{itemize}
-	\item minA - minB
-	\item minA - maxB
-	\item maxA - minB
-	\item maxA - maxB
-\end{itemize}
-
-Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werden sollten.
-
-	\subsection{Klasse der 1:1-Beziehungen}
-	
-	Unter die Kategorie 1:1-Beziehung fallen alle Beziehungen, bei denen eine oder keine Entität mit genau einer oder
-	keiner Entität in Beziehung stehen kann.
-	
-		\subsubsection{1..1:1..1}
-		
-		Eine Entität des Typs A steht mit genau einer Entität des Typs B in Beziehung. Die Anzahl der generierten Entitäten
-		muss übereinstimmen, es muss mindestens eine Entität pro Typ erzeugt werden (siehe Abbildung \ref{img:generierung:11to11}).
-		
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-1.png}
-			\caption{Beziehungen nach dem Schema 1..1:1..1}\label{img:generierung:11to11}
-		\end{figure}
-
-		
-		\subsubsection{0..1:1..1}
-		
-		Im Gegensatz zu der vorherigen Beziehung muss bei dieser eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
-		Abbildung \ref{img:generierung:01to11} zeigt die zu generierenden Entitäten der Typen A und B, wobei jede Entität von A
-		mit einer Entität von B in Beziehung stehen muss, eine Entität von B jedoch nicht zwingend mit einer Entität von A.
-		Daraus folgt, dass es von B mindestens eine Entität mehr geben muss als von A.
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-1.png}
-			\caption{Beziehungen nach dem Schema 0..1:1..1}\label{img:generierung:01to11}
-		\end{figure}
-
-		Der Generator muss mindestens zwei Entitäten des Typs B erzeugen, und eine des Typs A, um sicherzustellen, dass alle
-		Fälle für diese Beziehung abgedeckt sind. Die Beziehung 1..1:0..1 ist symmetrisch zu dieser.
-		
-
-		\subsubsection{0..1:0..1}
-		
-		Wenn für beide Entitätstypen die Beziehung optional ist, muss der Generator jeweils mindestens 2 Entitäten erzeugen. Jeweils
-		eine Entität ohne Beziehung und jeweils eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-1.png}
-			\caption{Beziehungen nach dem Schema 0..1:0..1}\label{img:generierung:01to01}
-		\end{figure}
-
-	\subsection{Klasse der 1:n-Beziehungen}
-	
-	Eine Entität steht in Beziehung mit keiner oder mehreren anderen Entitäten. Dabei kann die Anzahl begrenzt sein (konkreter
-	Wert für n) oder unbegrenzt. Der Generator kann nur eine begrenzte Anzahl von Entitäten erzeugen, die Grenze sollte
-	konfigurierbar sein.
-	
-	In den Abbildungen wird als Grenze n der Wert 3 verwendet.
-
-		\subsubsection{1..1:1..n}
-		
-		Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
-		des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung.
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-1-n.png}
-			\caption{Beziehungen nach dem Schema 1..1:1..n}\label{img:generierung:11to1n}
-		\end{figure}
-
-		\subsubsection{0..1:1..n}
-		
-		Eine Entität des Typs A steht in Beziehung mit einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B steht
-		entweder mit genau einer oder mit keiner Entität des Typs A in Beziehung.  
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-1-n.png}
-			\caption{Beziehungen nach dem Schema 0..1:1..n}\label{img:generierung:01to1n}
-		\end{figure}
-		
-		\subsubsection{1..1:0..n}
-		
-		Eine Entität des Typs A steht in Beziehung mit keiner, einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B
-		muss mit genau einer Entität des Typs A in Beziehung stehen.
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/1-1-to-0-n.png}
-			\caption{Beziehungen nach dem Schema 1..1:0..n}\label{img:generierung:11to0n}
-		\end{figure}
-
-
-		\subsubsection{0..1:0..n}
-		
-
-		\begin{figure}[htbp]
-			\centering
-			 \includegraphics[width=0.55\textwidth]{images/generierung/0-1-to-0-n.png}
-			\caption{Beziehungen nach dem Schema 0..1:0..n}\label{img:generierung:01to0n}
-		\end{figure}
-
-	\subsection{Klasse der n:m-Beziehungen}
-
-
-
-
-
-
-
-
-
-\section{Der Algorithmus}
-1. Start-Tabelle festlegen
-2. wenn Tabelle noch nicht behandelt, dann
-3. Kanten bestimmen und behandeln (ausgehende bevorzugt)
-4. Schritte 2-4 rekursiv für die verbundene Tabelle wiederholen
-5. Prüfen ob alle Entitäten gültige Beziehungen haben, ggf. Entitäten erstellen
-
-Assoziative Tabellen werden separat behandelt
-Jede Kante und jede Tabelle wird nur ein mal in den Schritten 2-4 besucht
-
-
-\section{Grenzen des Algorithmus}
-
-\section{Erweiterungen am Modell}
-
-
-
-
-
-Red Gate SQL Data Generator:
-- Fragt Datenbank-Schema aus SQL-Server ab
-- Modelliert Beziehungen(!), allerdings zufällig und bedeutungslos
-- Anzahl generierter Zeilen pro Tabelle steuerbar
-- Zufall pro Spalte über Seed steuerbar
-- Eher für große Datenmengen gedacht
-
-
-DTM Data Generator
-- Weniger bequem als Red Gate, z.B. keine Erkennung der Spaltentypen
-- 
-
-
-
-- Beziehungstypen, wie werden sie generiert
-- Assoziative Tabellen
-
-\section{-Warum Generierung}
-Möglichkeiten:
-- Generierung
-- Real-Daten, Extraktion, Anonymisierung (bei Unit-Tests wenig praktikabel, da Tests vor Inbetriebnahme laufen sollen)
-
-Je nach Anwendungsfall unterschiedliche Data-Sets sinnvoll
-- Unit-Tests eher klein
-- Performance-Tests, Regressionstests eher groß
