@@ -63,13 +63,17 @@ Entitäten der beiden Entitätstypen A und B dar. Eine Entität wird von einem klei
 Entitätstyp über die Spalte festgelegt. Eine Beziehung zwischen zwei Entitäten wird über eine Verbindungsgerade
 beschrieben. Grundsätzlich können die beiden Typen A und B auch den selben Typen darstellen.
 
-Die allgemeine Generierungsstrategie sieht die Generierung der folgenden vier Fälle vor:
+Ganz allgemein lassen sich alle binären Beziehungen als n..N:m..M-Beziehung ansehen. n und m stellen jeweils
+untere Grenzen darf, N und M die oberen. Die grundlegende Generierungsstrategie sieht die Generierung der folgenden
+vier Kombinationen vor:
 \begin{itemize}
-  \item minA - minB
-  \item minA - maxB
-  \item maxA - minB
-  \item maxA - maxB
+  \item n:m
+  \item n:M
+  \item N:m
+  \item N:M
 \end{itemize}
+Verschiedene Fälle können redundant sein, falls untere und obere Grenze identisch sind. Auf die Generierung dieser
+redundanten Beziehungen kann verzichtet werden.
 
 Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werden sollten.
 
@@ -160,8 +164,11 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\end{figure}
 
 
+
   	\subsubsection{0..1:0..n}
-  	
+		
+		Eine Entität des Typs A steht mit keiner, einer oder mehreren Entitäten des Typs B in Beziehung. Eine Entität des Typs B
+		kann mit keiner oder genau einer Entität des Typs A in Beziehung stehen.
 
   	\begin{figure}[htbp]
   	  \centering
@@ -171,7 +178,31 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 
   \subsection{Kategorie der n:m-Beziehungen}
 
+  üblicherweise als assoziative Tabelle realisiert
 
+\section{Komplexität bei der Generierung von Beziehungen}
+\label{sec:generieren:komplexitaet}
+
+Im vorausgegangenen Abschnitt wurden nur Beziehungen zwischen zwei Entitätstypen betrachtet. In realen Anwendungen können
+Entitätstypen mit mehr als nur einem anderen Entitätstyp in Beziehung stehen und auch mit dem selben Entitätstyp mehr als
+nur ein Mal.
+
+Bezüglich der Datengenerierung lassen sich hierbei zwei generelle Vorgehensweisen lassen sich hier unterscheiden:
+\begin{itemize}
+	\item \textbf{Beziehungen unabhängig betrachten}: Es wird angenommen, dass unterschiedliche Beziehungen voneinander
+	  unabhängig sind. Die Frage, ob ein Professor eine Lehrveranstaltung leitet, lässt keine Rückschlüsse zu, ob und welche
+		Prüfungen er beaufsichtigt.
+	
+	\item \textbf{Beziehungen abhängig voneinander betrachten}: In der Praxis beeinflussen sich Beziehungen. Ein Student,
+	  der die Prüfung einer Lehrveranstaltung schreibt, darf wohl nicht gleichzeitig Tutor dieser Veranstaltung sein.
+	
+\end{itemize}
+
+Alle Beziehungen abhängig voneinander zu betrachten kann schnell zu exponentiell zunehmenden Testdaten führen. 
+Einen riesigen Bestand an Daten um für Tests unnötige Beziehungen und schließlich auch Entitäten zu verringern
+scheint aufwändiger, als einen kleinen Datenbestand um fehlende Beziehungen punktuell zu erweitern. Aus diesem Grund
+berücksichtigt der Algorithmus keine Beziehungen in Abhängigkeit von anderen -- mit Ausnahme von assoziativen
+Beziehungen.
 
 \section{Algorithmus zur Generierung von Beziehungen}
 \label{sec:generieren:algorithmus}
@@ -266,7 +297,9 @@ procedure handleAssociativeTable(table)
   return
 
 \end{verbatim}
-  
+
+  \subsection{Beispiel}
+	
 
 \section{Praktischer Einsatz / Evaluation}
 
