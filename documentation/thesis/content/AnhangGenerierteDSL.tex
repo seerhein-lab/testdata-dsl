@@ -1,0 +1,315 @@
+\chapter{Generierte DSL}
+
+\lstSetTiny
+\begin{lstlisting}[caption=Generierte DSL, label=listing:generiertedsl]
+package dataset
+
+import com.seitenbau.testing.hochschule.model.*
+
+class DataSet extends HochschuleBuilder
+{
+
+  def tables() {
+
+    raumTable.rows() {
+      REF     | gebaude | nummer
+      RAUM_1  | "Delta" | "dolor"
+      RAUM_2  | "Maus"  | "Lorem"
+      RAUM_3  | "amet"  | "amet"
+      RAUM_4  | "Delta" | "Lorem"
+      RAUM_5  | "ipsum" | "Beta"
+      RAUM_6  | "Katze" | "dolor"
+      RAUM_7  | "Beta"  | "Alpha"
+      RAUM_8  | "Hund"  | "Alpha"
+      RAUM_9  | "Gamma" | "Lorem"
+      RAUM_10 | "ipsum" | "Hund"
+      RAUM_11 | "Maus"  | "amet"
+      RAUM_12 | "amet"  | "Alpha"
+      RAUM_13 | "amet"  | "amet"
+    }
+
+    professorTable.rows() {
+      REF          | name         | vorname    | titel   | fakultaet | raum_id
+      PROFESSOR_1  | "Fischer"    | "Thomas"   | "Katze" | "Maus"    | RAUM_2
+      PROFESSOR_2  | "Fischer"    | "Stefan"   | "Delta" | "Beta"    | RAUM_3
+      PROFESSOR_3  | "Fischer"    | "Claudia"  | "ipsum" | "amet"    | RAUM_4
+      PROFESSOR_4  | "Schneider"  | "Angelika" | "sit"   | "Lorem"   | RAUM_5
+      PROFESSOR_5  | "Schmidt"    | "Simone"   | "Lorem" | "Gamma"   | RAUM_6
+      PROFESSOR_6  | "Meyer"      | "Brigitte" | "sit"   | "Maus"    | RAUM_7
+      PROFESSOR_7  | "Fischer"    | "Bettina"  | "Gamma" | "amet"    | RAUM_8
+      PROFESSOR_8  | "Schneider"  | "Thorsten" | "Lorem" | "ipsum"   | RAUM_9
+      PROFESSOR_9  | "Mustermann" | "Markus"   | "ipsum" | "sit"     | RAUM_10
+      PROFESSOR_10 | "Müller"     | "Elke"     | "Lorem" | "Lorem"   | RAUM_11
+      PROFESSOR_11 | "Mustermann" | "Heike"    | "ipsum" | "dolor"   | RAUM_12
+      PROFESSOR_12 | "Müller"     | "Markus"   | "sit"   | "amet"    | RAUM_13
+    }
+
+    raum2Table.rows() {
+      REF      | professor_id
+      RAUM2_1  | _
+      RAUM2_2  | PROFESSOR_1
+      RAUM2_3  | PROFESSOR_2
+      RAUM2_4  | PROFESSOR_3
+      RAUM2_5  | PROFESSOR_4
+      RAUM2_6  | PROFESSOR_5
+      RAUM2_7  | PROFESSOR_6
+      RAUM2_8  | PROFESSOR_7
+      RAUM2_9  | PROFESSOR_8
+      RAUM2_10 | PROFESSOR_9
+      RAUM2_11 | PROFESSOR_10
+      RAUM2_12 | PROFESSOR_11
+      RAUM2_13 | PROFESSOR_12
+    }
+
+    lehrveranstaltungTable.rows() {
+      REF                  | professor_id | name    | sws | ects
+      LEHRVERANSTALTUNG_1  | PROFESSOR_2  | "Alpha" | 6   | "amet"
+      LEHRVERANSTALTUNG_2  | PROFESSOR_3  | "Hund"  | 2   | "Gamma"
+      LEHRVERANSTALTUNG_3  | PROFESSOR_3  | "Katze" | 4   | "ipsum"
+      LEHRVERANSTALTUNG_4  | PROFESSOR_3  | "dolor" | 6   | "Delta"
+      LEHRVERANSTALTUNG_5  | PROFESSOR_3  | "Lorem" | 3   | "Beta"
+      LEHRVERANSTALTUNG_6  | PROFESSOR_3  | "Gamma" | 6   | "Gamma"
+      LEHRVERANSTALTUNG_7  | PROFESSOR_4  | "Gamma" | 5   | "Gamma"
+      LEHRVERANSTALTUNG_8  | PROFESSOR_4  | "Alpha" | 5   | "dolor"
+      LEHRVERANSTALTUNG_9  | PROFESSOR_4  | "sit"   | 4   | "sit"
+      LEHRVERANSTALTUNG_10 | PROFESSOR_4  | "Delta" | 4   | "Katze"
+      LEHRVERANSTALTUNG_11 | PROFESSOR_4  | "amet"  | 5   | "ipsum"
+      LEHRVERANSTALTUNG_12 | PROFESSOR_4  | "sit"   | 4   | "Delta"
+    }
+
+    pruefungTable.rows() {
+      REF         | lehrveranstaltung_id | typ     | zeitpunkt
+      PRUEFUNG_1  | LEHRVERANSTALTUNG_2  | "sit"   | "12.01.1964"
+      PRUEFUNG_2  | LEHRVERANSTALTUNG_3  | "Hund"  | "16.05.1911"
+      PRUEFUNG_3  | LEHRVERANSTALTUNG_3  | "Delta" | "24.01.1971"
+      PRUEFUNG_4  | LEHRVERANSTALTUNG_3  | "Lorem" | "29.06.1969"
+      PRUEFUNG_5  | LEHRVERANSTALTUNG_3  | "Lorem" | "09.01.1958"
+      PRUEFUNG_6  | LEHRVERANSTALTUNG_3  | "Alpha" | "12.01.1946"
+      PRUEFUNG_7  | LEHRVERANSTALTUNG_4  | "Alpha" | "17.10.1944"
+      PRUEFUNG_8  | LEHRVERANSTALTUNG_4  | "Alpha" | "02.06.2005"
+      PRUEFUNG_9  | LEHRVERANSTALTUNG_4  | "Lorem" | "02.04.1986"
+      PRUEFUNG_10 | LEHRVERANSTALTUNG_4  | "dolor" | "13.11.1921"
+      PRUEFUNG_11 | LEHRVERANSTALTUNG_4  | "Alpha" | "15.12.2010"
+      PRUEFUNG_12 | LEHRVERANSTALTUNG_4  | "ipsum" | "22.05.1939"
+    }
+
+    studentTable.rows() {
+      REF        | name         | vorname    | studiengang | semester | immatrikuliert_seit
+      STUDENT_1  | "Meyer"      | "Manuela"  | "Katze"     | 8        | "11.04.1952"
+      STUDENT_2  | "Mustermann" | "Manuela"  | "Alpha"     | 3        | "09.09.1954"
+      STUDENT_3  | "Fischer"    | "Brigitte" | "Lorem"     | 4        | "21.01.1901"
+      STUDENT_4  | "Meyer"      | "Silke"    | "ipsum"     | 8        | "21.05.1945"
+      STUDENT_5  | "Müller"     | "Elke"     | "Alpha"     | 2        | "28.06.1939"
+      STUDENT_6  | "Fischer"    | "Angelika" | "ipsum"     | 2        | "13.07.1955"
+      STUDENT_7  | "Meyer"      | "Claudia"  | "Lorem"     | 1        | "01.04.1972"
+      STUDENT_8  | "Müller"     | "Stefan"   | "Beta"      | 3        | "06.06.1925"
+      STUDENT_9  | "Meyer"      | "Angelika" | "ipsum"     | 2        | "20.03.2008"
+      STUDENT_10 | "Meyer"      | "Silke"    | "Lorem"     | 3        | "25.05.1907"
+      STUDENT_11 | "Fischer"    | "Stefan"   | "sit"       | 7        | "02.12.1984"
+      STUDENT_12 | "Schneider"  | "Simone"   | "ipsum"     | 6        | "13.11.1972"
+      STUDENT_13 | "Schneider"  | "Thomas"   | "Beta"      | 5        | "10.05.1945"
+      STUDENT_14 | "Mustermann" | "Stefan"   | "Lorem"     | 4        | "19.02.1983"
+      STUDENT_15 | "Fischer"    | "Brigitte" | "Alpha"     | 3        | "19.04.1953"
+      STUDENT_16 | "Schneider"  | "Thorsten" | "Delta"     | 4        | "28.05.1989"
+      STUDENT_17 | "Mustermann" | "Claudia"  | "Katze"     | 6        | "19.05.1915"
+      STUDENT_18 | "Mustermann" | "Stefan"   | "Beta"      | 2        | "30.06.1934"
+      STUDENT_19 | "Schneider"  | "Angelika" | "Delta"     | 4        | "09.08.1948"
+      STUDENT_20 | "Müller"     | "Bettina"  | "Hund"      | 4        | "16.11.1929"
+      STUDENT_21 | "Schmidt"    | "Simone"   | "dolor"     | 8        | "03.08.1962"
+      STUDENT_22 | "Fischer"    | "Thomas"   | "Lorem"     | 6        | "13.04.1939"
+      STUDENT_23 | "Meyer"      | "Andreas"  | "Alpha"     | 7        | "17.02.1966"
+      STUDENT_24 | "Fischer"    | "Brigitte" | "dolor"     | 2        | "06.12.1924"
+      STUDENT_25 | "Schneider"  | "Markus"   | "sit"       | 8        | "28.09.1977"
+      STUDENT_26 | "Schneider"  | "Claudia"  | "Lorem"     | 4        | "13.10.1927"
+      STUDENT_27 | "Mustermann" | "Simone"   | "Maus"      | 8        | "27.02.1959"
+      STUDENT_28 | "Müller"     | "Bettina"  | "Alpha"     | 8        | "27.09.1952"
+      STUDENT_29 | "Mustermann" | "Stefan"   | "Beta"      | 6        | "03.10.1987"
+      STUDENT_30 | "Schmidt"    | "Thomas"   | "Katze"     | 2        | "19.05.1915"
+      STUDENT_31 | "Meyer"      | "Stefan"   | "amet"      | 8        | "02.10.1937"
+      STUDENT_32 | "Schmidt"    | "Claudia"  | "Delta"     | 7        | "25.10.1998"
+      STUDENT_33 | "Schneider"  | "Heike"    | "amet"      | 7        | "22.12.1901"
+      STUDENT_34 | "Mustermann" | "Elke"     | "Hund"      | 2        | "02.12.1984"
+      STUDENT_35 | "Mustermann" | "Thomas"   | "Hund"      | 8        | "27.07.1950"
+      STUDENT_36 | "Meyer"      | "Stefan"   | "amet"      | 7        | "19.03.1949"
+      STUDENT_37 | "Meyer"      | "Heike"    | "Gamma"     | 1        | "18.09.1905"
+      STUDENT_38 | "Müller"     | "Heike"    | "sit"       | 6        | "23.08.1941"
+      STUDENT_39 | "Mustermann" | "Brigitte" | "Delta"     | 2        | "08.09.1981"
+      STUDENT_40 | "Meyer"      | "Bettina"  | "ipsum"     | 1        | "23.10.1915"
+      STUDENT_41 | "Meyer"      | "Simone"   | "Hund"      | 6        | "07.03.1929"
+      STUDENT_42 | "Meyer"      | "Thomas"   | "ipsum"     | 6        | "23.03.1973"
+      STUDENT_43 | "Mustermann" | "Brigitte" | "Gamma"     | 4        | "15.10.1988"
+      STUDENT_44 | "Schmidt"    | "Silke"    | "Katze"     | 2        | "22.11.1975"
+      STUDENT_45 | "Schmidt"    | "Thomas"   | "Gamma"     | 4        | "17.07.1971"
+      STUDENT_46 | "Fischer"    | "Manuela"  | "dolor"     | 4        | "15.06.1956"
+      STUDENT_47 | "Schmidt"    | "Markus"   | "Beta"      | 6        | "27.05.1919"
+      STUDENT_48 | "Schmidt"    | "Elke"     | "Alpha"     | 7        | "25.10.1952"
+      STUDENT_49 | "Müller"     | "Heike"    | "Beta"      | 6        | "07.01.1956"
+      STUDENT_50 | "Schneider"  | "Thorsten" | "Lorem"     | 5        | "11.04.2002"
+      STUDENT_51 | "Meyer"      | "Simone"   | "Beta"      | 2        | "31.12.1965"
+      STUDENT_52 | "Mustermann" | "Bettina"  | "Hund"      | 4        | "15.06.1981"
+    }
+
+    beaufsichtigtTable.rows() {
+      professor_id | pruefung_id
+      PROFESSOR_1  | PRUEFUNG_1
+      PROFESSOR_2  | PRUEFUNG_2
+      PROFESSOR_2  | PRUEFUNG_3
+      PROFESSOR_3  | PRUEFUNG_4
+      PROFESSOR_4  | PRUEFUNG_4
+      PROFESSOR_5  | PRUEFUNG_5
+      PROFESSOR_5  | PRUEFUNG_6
+      PROFESSOR_6  | PRUEFUNG_5
+      PROFESSOR_6  | PRUEFUNG_6
+      PROFESSOR_7  | PRUEFUNG_7
+      PROFESSOR_8  | PRUEFUNG_8
+      PROFESSOR_8  | PRUEFUNG_9
+      PROFESSOR_9  | PRUEFUNG_10
+      PROFESSOR_10 | PRUEFUNG_10
+      PROFESSOR_11 | PRUEFUNG_11
+      PROFESSOR_11 | PRUEFUNG_12
+      PROFESSOR_12 | PRUEFUNG_11
+      PROFESSOR_12 | PRUEFUNG_12
+    }
+
+    besuchtTable.rows() {
+      student_id | lehrveranstaltung_id
+      STUDENT_1  | LEHRVERANSTALTUNG_1
+      STUDENT_2  | LEHRVERANSTALTUNG_1
+      STUDENT_3  | LEHRVERANSTALTUNG_1
+      STUDENT_4  | LEHRVERANSTALTUNG_2
+      STUDENT_4  | LEHRVERANSTALTUNG_3
+      STUDENT_5  | LEHRVERANSTALTUNG_2
+      STUDENT_5  | LEHRVERANSTALTUNG_3
+      STUDENT_6  | LEHRVERANSTALTUNG_2
+      STUDENT_6  | LEHRVERANSTALTUNG_3
+      STUDENT_7  | LEHRVERANSTALTUNG_4
+      STUDENT_8  | LEHRVERANSTALTUNG_4
+      STUDENT_9  | LEHRVERANSTALTUNG_4
+      STUDENT_10 | LEHRVERANSTALTUNG_4
+      STUDENT_11 | LEHRVERANSTALTUNG_4
+      STUDENT_12 | LEHRVERANSTALTUNG_4
+      STUDENT_13 | LEHRVERANSTALTUNG_4
+      STUDENT_14 | LEHRVERANSTALTUNG_4
+      STUDENT_15 | LEHRVERANSTALTUNG_4
+      STUDENT_16 | LEHRVERANSTALTUNG_4
+      STUDENT_17 | LEHRVERANSTALTUNG_5
+      STUDENT_17 | LEHRVERANSTALTUNG_6
+      STUDENT_18 | LEHRVERANSTALTUNG_5
+      STUDENT_18 | LEHRVERANSTALTUNG_6
+      STUDENT_19 | LEHRVERANSTALTUNG_5
+      STUDENT_19 | LEHRVERANSTALTUNG_6
+      STUDENT_20 | LEHRVERANSTALTUNG_5
+      STUDENT_20 | LEHRVERANSTALTUNG_6
+      STUDENT_21 | LEHRVERANSTALTUNG_5
+      STUDENT_21 | LEHRVERANSTALTUNG_6
+      STUDENT_22 | LEHRVERANSTALTUNG_5
+      STUDENT_22 | LEHRVERANSTALTUNG_6
+      STUDENT_23 | LEHRVERANSTALTUNG_5
+      STUDENT_23 | LEHRVERANSTALTUNG_6
+      STUDENT_24 | LEHRVERANSTALTUNG_5
+      STUDENT_24 | LEHRVERANSTALTUNG_6
+      STUDENT_25 | LEHRVERANSTALTUNG_5
+      STUDENT_25 | LEHRVERANSTALTUNG_6
+      STUDENT_26 | LEHRVERANSTALTUNG_5
+      STUDENT_26 | LEHRVERANSTALTUNG_6
+      STUDENT_27 | LEHRVERANSTALTUNG_7
+      STUDENT_28 | LEHRVERANSTALTUNG_7
+      STUDENT_29 | LEHRVERANSTALTUNG_7
+      STUDENT_30 | LEHRVERANSTALTUNG_8
+      STUDENT_30 | LEHRVERANSTALTUNG_9
+      STUDENT_31 | LEHRVERANSTALTUNG_8
+      STUDENT_31 | LEHRVERANSTALTUNG_9
+      STUDENT_32 | LEHRVERANSTALTUNG_8
+      STUDENT_32 | LEHRVERANSTALTUNG_9
+      STUDENT_33 | LEHRVERANSTALTUNG_10
+      STUDENT_34 | LEHRVERANSTALTUNG_10
+      STUDENT_35 | LEHRVERANSTALTUNG_10
+      STUDENT_36 | LEHRVERANSTALTUNG_10
+      STUDENT_37 | LEHRVERANSTALTUNG_10
+      STUDENT_38 | LEHRVERANSTALTUNG_10
+      STUDENT_39 | LEHRVERANSTALTUNG_10
+      STUDENT_40 | LEHRVERANSTALTUNG_10
+      STUDENT_41 | LEHRVERANSTALTUNG_10
+      STUDENT_42 | LEHRVERANSTALTUNG_10
+      STUDENT_43 | LEHRVERANSTALTUNG_11
+      STUDENT_43 | LEHRVERANSTALTUNG_12
+      STUDENT_44 | LEHRVERANSTALTUNG_11
+      STUDENT_44 | LEHRVERANSTALTUNG_12
+      STUDENT_45 | LEHRVERANSTALTUNG_11
+      STUDENT_45 | LEHRVERANSTALTUNG_12
+      STUDENT_46 | LEHRVERANSTALTUNG_11
+      STUDENT_46 | LEHRVERANSTALTUNG_12
+      STUDENT_47 | LEHRVERANSTALTUNG_11
+      STUDENT_47 | LEHRVERANSTALTUNG_12
+      STUDENT_48 | LEHRVERANSTALTUNG_11
+      STUDENT_48 | LEHRVERANSTALTUNG_12
+      STUDENT_49 | LEHRVERANSTALTUNG_11
+      STUDENT_49 | LEHRVERANSTALTUNG_12
+      STUDENT_50 | LEHRVERANSTALTUNG_11
+      STUDENT_50 | LEHRVERANSTALTUNG_12
+      STUDENT_51 | LEHRVERANSTALTUNG_11
+      STUDENT_51 | LEHRVERANSTALTUNG_12
+      STUDENT_52 | LEHRVERANSTALTUNG_11
+      STUDENT_52 | LEHRVERANSTALTUNG_12
+    }
+
+    isttutorTable.rows() {
+      student_id | lehrveranstaltung_id
+      STUDENT_1  | LEHRVERANSTALTUNG_1
+      STUDENT_2  | LEHRVERANSTALTUNG_2
+      STUDENT_2  | LEHRVERANSTALTUNG_3
+      STUDENT_3  | LEHRVERANSTALTUNG_4
+      STUDENT_4  | LEHRVERANSTALTUNG_4
+      STUDENT_5  | LEHRVERANSTALTUNG_5
+      STUDENT_5  | LEHRVERANSTALTUNG_6
+      STUDENT_6  | LEHRVERANSTALTUNG_5
+      STUDENT_6  | LEHRVERANSTALTUNG_6
+      STUDENT_7  | LEHRVERANSTALTUNG_7
+      STUDENT_8  | LEHRVERANSTALTUNG_8
+      STUDENT_8  | LEHRVERANSTALTUNG_9
+      STUDENT_9  | LEHRVERANSTALTUNG_10
+      STUDENT_10 | LEHRVERANSTALTUNG_10
+      STUDENT_11 | LEHRVERANSTALTUNG_11
+      STUDENT_11 | LEHRVERANSTALTUNG_12
+      STUDENT_12 | LEHRVERANSTALTUNG_11
+      STUDENT_12 | LEHRVERANSTALTUNG_12
+    }
+
+    schreibtTable.rows() {
+      student_id | pruefung_id | versuch
+      STUDENT_1  | PRUEFUNG_1  | 2
+      STUDENT_2  | PRUEFUNG_2  | 2
+      STUDENT_2  | PRUEFUNG_3  | 1
+      STUDENT_3  | PRUEFUNG_4  | 2
+      STUDENT_4  | PRUEFUNG_4  | 3
+      STUDENT_5  | PRUEFUNG_5  | 1
+      STUDENT_5  | PRUEFUNG_6  | 2
+      STUDENT_6  | PRUEFUNG_5  | 3
+      STUDENT_6  | PRUEFUNG_6  | 2
+      STUDENT_7  | PRUEFUNG_7  | 3
+      STUDENT_8  | PRUEFUNG_8  | 3
+      STUDENT_8  | PRUEFUNG_9  | 1
+      STUDENT_9  | PRUEFUNG_10 | 2
+      STUDENT_10 | PRUEFUNG_10 | 3
+      STUDENT_11 | PRUEFUNG_11 | 3
+      STUDENT_11 | PRUEFUNG_12 | 2
+      STUDENT_12 | PRUEFUNG_11 | 2
+      STUDENT_12 | PRUEFUNG_12 | 3
+    }
+
+  }
+
+}
+\end{lstlisting}
+\lstSetNormal
+
+beaufsichtigt:	18
+besucht:	78
+isttutor:	18
+lehrveranstaltung:	12
+professor:	12
+pruefung:	12
+raum:	13
+raum2:	13
+schreibt:	18
+student:	52

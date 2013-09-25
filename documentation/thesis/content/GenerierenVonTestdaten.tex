@@ -177,6 +177,13 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\end{figure}
 
   \subsection{Kategorie der n:m-Beziehungen}
+	
+	Die allgemeinste Form einer Beziehung zwischen zwei Eintitätstypen stellt eine n..N:m..M-Beziehung dar. Dabei handelt es
+	sich bei n und m jeweils um untere und bei N und M jeweils um obere Schranken. Untere und obere Schranken können
+	identisch sein.
+	
+	Sofern beide obere Grenzen größer sind als 1, wird eine solche Beziehung in einem Datenbank-Modell üblicherweise über
+	assoziative Tabellen realisiert.
 
   üblicherweise als assoziative Tabelle realisiert
 
@@ -186,7 +193,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 Im vorausgegangenen Abschnitt wurden nur Beziehungen zwischen zwei Entitätstypen betrachtet. In realen Anwendungen können
 Entitätstypen mit mehr als nur einem anderen Entitätstyp in Beziehung stehen und auch mit dem selben Entitätstyp mehr als
 nur ein Mal.
-
+al
 Bezüglich der Datengenerierung lassen sich hierbei zwei generelle Vorgehensweisen lassen sich hier unterscheiden:
 \begin{itemize}
 	\item \textbf{Beziehungen unabhängig betrachten}: Es wird angenommen, dass unterschiedliche Beziehungen voneinander
@@ -305,6 +312,22 @@ procedure handleAssociativeTable(table)
 
 \section{Konkrete Implementierung und Integration in Toolset}
 
+- Seeds, Default-Seed
+
+- minEntities
+
+- Generatoren, Standard-Generatoren
+
+edd
+
 \section{Offene Punkte}
 
+- Abhängigkeiten von Beziehungen
 
+- Abhängigkeiten von Spaltendaten (und Beziehungen?)
+
+    \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/infinite.png}
+  	  \caption{Unerfüllbar}\label{img:generierung:offen:infinite}
+  	\end{figure}
