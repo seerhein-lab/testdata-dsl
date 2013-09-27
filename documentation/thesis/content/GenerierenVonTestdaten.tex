@@ -194,7 +194,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 Im vorausgegangenen Abschnitt wurden nur Beziehungen zwischen zwei Entitätstypen betrachtet. In realen Anwendungen können
 Entitätstypen mit mehr als nur einem anderen Entitätstyp in Beziehung stehen und auch mit dem selben Entitätstyp mehr als
 nur ein Mal.
-al
+
 Bezüglich der Datengenerierung lassen sich hierbei zwei generelle Vorgehensweisen lassen sich hier unterscheiden:
 \begin{itemize}
 	\item \textbf{Beziehungen unabhängig betrachten}: Es wird angenommen, dass unterschiedliche Beziehungen voneinander
@@ -376,6 +376,10 @@ END IF;
 \end{lstlisting}
 
 		\subsubsection{GeneriereDatenFuerAssoziativeTabelle}
+		
+		- n..N:m..M-Beziehung
+		
+		- auch min/max-Kombinationen
 
 \begin{lstlisting}[caption=GeneriereDatenFuerAssoziativeTabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
 GeneriereDatenFuerAssoziativeTabelle(Tabelle T)
@@ -389,8 +393,8 @@ CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, min(LM), min(RM));
 CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, min(LM), max(RM));
 CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, max(LM), min(RM));
 CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, max(LM), max(RM));
-LT := Ziel von Kante LK
-RT := Ziel von Kante RK
+LT := Zieltabelle von Kante LK;
+RT := Zieltabelle von Kante RK;
 IF (LT wurde noch nicht besucht)
 THEN Markiere Tabelle LT als besucht;
      IF (Tabelle LT ist keine assoziative Tabelle)
@@ -415,8 +419,8 @@ GeneriereAssoziativeEntitätenUndBeziehungen(T, l, r)
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
 // Grenzen "tauschen" und Mindestanzahl auf 1
-LA := Max(r, 1)  // r als Grenze, mindestens 1
-RA := Max(l, 1)  // l als Grenze, mindestens 1
+LA := Max(r, 1);  // r als Grenze, mindestens 1
+RA := Max(l, 1);  // l als Grenze, mindestens 1
 IF (Für die Kombination (T, LA, RA) wurden bereits Entitäten erzeugt) 
 THEN RETURN;
 END IF
