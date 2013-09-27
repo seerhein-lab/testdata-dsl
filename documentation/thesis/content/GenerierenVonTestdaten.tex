@@ -177,7 +177,8 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\end{figure}
 
   \subsection{Kategorie der n:m-Beziehungen}
-	
+	\label{sec:generieren:beziehungen:nm}
+		
 	Die allgemeinste Form einer Beziehung zwischen zwei Eintitätstypen stellt eine n..N:m..M-Beziehung dar. Dabei handelt es
 	sich bei n und m jeweils um untere und bei N und M jeweils um obere Schranken. Untere und obere Schranken können
 	identisch sein.
@@ -238,6 +239,23 @@ Beziehungen.
   \label{sec:generieren:algorithmus:pseudocode}
 	
 		\subsubsection{GeneriereTestDaten}
+		
+		Die Funktion GeneriereTestDaten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
+		Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
+		stellt sicher, dass auch Datenbank-Modelle, die aus mehreren unabhängigen Graphen bestehen, vollständig
+		generiert werden. In einem Datenbank-Modell, in dem alle Tabellen direkt oder indirekt in Beziehung stehen,
+		würde die Festlegung einer Starttabelle ausreichen.
+		
+		Zur Sortierung der Tabellen wird die Anzahl eingehender Kanten verwendet. Dieser Ansatz stammt aus dem 
+		Paper ... .
+		
+		Anschließend wird über die Tabellenliste iteriert. Wurde eine Tabelle noch nicht behandelt, wird die
+		entsprechende Methode zur Generierung der Daten aufgerufen. Dabei werden nicht-assoziative und
+		assoziative Tabellen unterschiedlich generiert. Der Grund dafür ist, dass assoziative Tabellen ein
+		Hilfskonstrukt darstellen, das selbst eine Beziehung auf ER-Ebene darstellt.
+		
+		Am Ende stellt der Algorithmus sicher, dass jede Entität gültig generiert wurde, also dass die Beziehungen
+		die Constraints erfüllen. Gegebenenfalls werden hier Entitäten nach generiert.
   
 \begin{lstlisting}[caption=GeneriereTestDaten, label=listing:GeneriereTestDaten]
 GeneriereTestDaten
@@ -255,6 +273,16 @@ CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 \end{lstlisting}
 
 		\subsubsection{GeneriereDatenFürNichtassoziativeTabelle}
+		
+		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Deshalb erzeugt die
+		Funktion zur Generierung von Daten für nicht-assoziative Tabellen selbst keine Daten. Stattdessen werden
+		die (noch unbehandelten) Beziehungen/Kanten der Tabelle betrachtet. 
+		
+		Handelt es sich bei der an der Beziehung beteiligten Tabelle um eine assoziative Tabelle, wird mit der
+		Generierung der assoziativen Beziehungen fortgesetzt. Ansonsten wird die Funktion zur Generierung der
+		Daten für eine Kante aufgerufen.
+		
+	  Der Algorithmus bevorzugt ausgehende Kanten.
 
 \begin{lstlisting}[caption=GeneriereDatenFürNichtassoziativeTabelle, label=listing:GeneriereDatenFürNichtassoziativeTabelle]
 GeneriereDatenFürNichtassoziativeTabelle(Tabelle T)
@@ -286,7 +314,12 @@ END FOR;
 \end{lstlisting}
 
 		\subsubsection{GeneriereDatenFürKante}
-	
+		
+		Die Funktion zum Generieren von Daten für eine Kante setzt die führt die 
+		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um. Es werden alle vier Kombinationen aus
+		Minimum und Maximum behandelt. Die eigentliche Generierung findet ist in eine Hilfsfunktion ausgelagert,
+		die mit allen Min-Max-Kombinationen aufgerufen wird.
+
 \begin{lstlisting}[caption=GeneriereDatenFürKante, label=listing:GeneriereDatenFürKante]
 GeneriereDatenFürKante(Kante K)   
 ------------------------------
@@ -300,20 +333,38 @@ CALL GeneriereEntitätenUndBeziehungen(K, max(S), max(Z));
 \end{lstlisting}
 
 		\subsubsection{GeneriereEntitätenUndBeziehungen}
-
+		
+		Es soll vermieden werden, unnötige Entitäten und Beziehungen zu generieren. Unnötig sind vor allem
+		redundante Beziehungen. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
+		der Starttabelle und Anzahl der beteiligten Entitäten der Zieltabelle die Generierung nur ein einziges
+		Mal durchgeführt. Eine solche Redundanz tritt beispielsweise ein, wenn untere und obere Grenze
+		einer Multiplizität identisch sind.
+		
+		Der Algorithmus prüft, ob es sich um eine optionale Beziehung handelt. Eine der Grenzen s bzw. z
+		ist in einem solchen Fall gleich 0. Handelt es sich um eine optionale Beziehung, wird eine entsprechende
+		Entität berechnet, die in Bezug auf die Kante in keiner Beziehung ist. Anschließend wird die Funktion
+		rekursiv aufgerufen, diesmal mit dem Wert 1 als Grenze anstelle der 0.
+		
+		Sofern s und z beide ungleich 0 sind, wird eine Entität in der Zieltabelle berechnet und s Entitäten 
+		in der Starttabelle. Zwischen diesen Entitäten wird die von der Kante K repräsentierte Beziehung
+		hergestellt.
+		
+		Der Eingangswert z kann aufgrund der Tatsache, dass es sich um eine nicht-assoziative Tabelle handelt,
+		nur 0 oder 1 sein.
+		
 \begin{lstlisting}[caption=GeneriereEntitätenUndBeziehungen, label=listing:GeneriereEntitätenUndBeziehungen]
 GeneriereEntitätenUndBeziehungen(K, s, z)
-----------------------------------------------------
+-----------------------------------------
 // Sicherstellen, dass nicht mehr Entitäten als notwendig erzeugt werden
 IF (Für die Kombination (K, s, z) wurden bereits Entitäten erzeugt) 
 THEN RETURN;
 END IF
 IF (Wert der Grenze s ist 0)
 THEN Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
-     CALL(k, 1, z);
+     CALL GeneriereEntitätenUndBeziehungen(k, 1, z);
 ELSE IF (Wert der Grenze z ist 0)
 THEN Berechne Entität e in Starttabelle, die in keiner Beziehung zur Zieltabelle stehen darf;
-     CALL(k, s, 1);
+     CALL GeneriereEntitätenUndBeziehungen(k, s, 1);
 ELSE // z ist hier immer 1
      Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
 		 FOR i = 1 TO s
@@ -402,6 +453,15 @@ END FOR;
 	
 
 \section{Praktischer Einsatz / Evaluation}
+
+  \subsection{Einfluss der Tabellenreihenfolge}
+	
+	- unterschiedliche Reihenfolge führt zu unterschiedlichen Ergebnissen
+	
+	- Gesamtzahl der generierten Entitäten sollte von Reihenfolge unabhängig sein, wird aber nicht bewiesen und ist 
+	  auch nicht notwendig zu beweisen
+		
+  - wichtig ist, dass gültige Datasets erzeugt werden
 
 \section{Konkrete Implementierung und Integration in Toolset}
 
