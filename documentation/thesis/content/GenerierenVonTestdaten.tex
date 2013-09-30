@@ -249,7 +249,7 @@ Beziehungen.
 		Zur Sortierung der Tabellen wird die Anzahl eingehender Kanten verwendet. Dieser Ansatz stammt aus dem 
 		Paper ... .
 		
-		Anschließend wird über die Tabellenliste iteriert. Wurde eine Tabelle noch nicht behandelt, wird die
+		Anschließend wird über diese Tabellenliste iteriert. Wurde eine Tabelle noch nicht behandelt, wird die
 		entsprechende Methode zur Generierung der Daten aufgerufen. Dabei werden nicht-assoziative und
 		assoziative Tabellen unterschiedlich generiert. Der Grund dafür ist, dass assoziative Tabellen ein
 		Hilfskonstrukt darstellen, das selbst eine Beziehung auf ER-Ebene darstellt.
@@ -266,13 +266,13 @@ DO
   Markiere Tabelle T als besucht;
   IF (Tabelle T ist keine assoziative Tabelle)
   THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(T);
-  ELSE CALL GeneriereDatenFürsAssoziativeTabelle(T);
+  ELSE CALL GeneriereDatenFuerAssoziativeTabelle(T);
   END IF;
 END FOR;
 CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 \end{lstlisting}
 
-		\subsubsection{GeneriereDatenFürNichtassoziativeTabelle}
+		\subsubsection{GeneriereDatenFuerNichtassoziativeTabelle}
 		
 		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Deshalb erzeugt die
 		Funktion zur Generierung von Daten für nicht-assoziative Tabellen selbst keine Daten. Stattdessen werden
@@ -284,14 +284,14 @@ CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 		
 	  Der Algorithmus bevorzugt ausgehende Kanten.
 
-\begin{lstlisting}[caption=GeneriereDatenFürNichtassoziativeTabelle, label=listing:GeneriereDatenFürNichtassoziativeTabelle]
-GeneriereDatenFürNichtassoziativeTabelle(Tabelle T)
+\begin{lstlisting}[caption=GeneriereDatenFuerNichtassoziativeTabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
+GeneriereDatenFuerNichtassoziativeTabelle(Tabelle T)
 ---------------------------------------------------
 FOR EACH (ausgehende Kante K, die noch nicht besucht wurde)
 DO
   IF (Zieltabelle Z von Kante K ist keine assoziative Tabelle)
   THEN Markiere Kante K als besucht;
-       CALL GeneriereDatenFürKante(K);
+       CALL GeneriereDatenFuerKante(K);
 			 IF (Zieltabelle Z noch nicht besucht) 
 			 THEN Markiere Tabelle Z als besucht;
             CALL GeneriereDatenFuerNichtAssoziativeTabelle(Z);
@@ -303,7 +303,7 @@ FOR EACH (eingehende Kante K, die noch nicht besucht wurde)
 DO
   IF (Starttabelle S von Kante K ist keine assoziative Tabelle)
   THEN Markiere Kante K als besucht;
-       CALL GeneriereDatenFürKante(K);
+       CALL GeneriereDatenFuerKante(K);
 			 IF (Starttabelle S noch nicht besucht) 
 			 THEN Markiere Tabelle S als besucht;
             CALL GeneriereDatenFuerNichtAssoziativeTabelle(S);
@@ -313,15 +313,15 @@ DO
 END FOR;
 \end{lstlisting}
 
-		\subsubsection{GeneriereDatenFürKante}
+		\subsubsection{GeneriereDatenFuerKante}
 		
 		Die Funktion zum Generieren von Daten für eine Kante setzt die führt die 
 		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um. Es werden alle vier Kombinationen aus
 		Minimum und Maximum behandelt. Die eigentliche Generierung findet ist in eine Hilfsfunktion ausgelagert,
 		die mit allen Min-Max-Kombinationen aufgerufen wird.
 
-\begin{lstlisting}[caption=GeneriereDatenFürKante, label=listing:GeneriereDatenFürKante]
-GeneriereDatenFürKante(Kante K)   
+\begin{lstlisting}[caption=GeneriereDatenFuerKante, label=listing:GeneriereDatenFuerKante]
+GeneriereDatenFuerKante(Kante K)   
 ------------------------------
 S := Starttabelle von Kante K;
 Z := Zieltabelle von Kante K;
@@ -332,7 +332,7 @@ CALL GeneriereEntitätenUndBeziehungen(K, max(S), min(Z));
 CALL GeneriereEntitätenUndBeziehungen(K, max(S), max(Z));
 \end{lstlisting}
 
-		\subsubsection{GeneriereEntitätenUndBeziehungen}
+		\subsubsection{GeneriereEntitaetenUndBeziehungen}
 		
 		Es soll vermieden werden, unnötige Entitäten und Beziehungen zu generieren. Unnötig sind vor allem
 		redundante Beziehungen. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
@@ -352,8 +352,8 @@ CALL GeneriereEntitätenUndBeziehungen(K, max(S), max(Z));
 		Der Eingangswert z kann aufgrund der Tatsache, dass es sich um eine nicht-assoziative Tabelle handelt,
 		nur 0 oder 1 sein.
 		
-\begin{lstlisting}[caption=GeneriereEntitätenUndBeziehungen, label=listing:GeneriereEntitätenUndBeziehungen]
-GeneriereEntitätenUndBeziehungen(K, s, z)
+\begin{lstlisting}[caption=GeneriereEntitaetenUndBeziehungen, label=listing:GeneriereEntitaetenUndBeziehungen]
+GeneriereEntitaetenUndBeziehungen(K, s, z)
 -----------------------------------------
 // Sicherstellen, dass nicht mehr Entitäten als notwendig erzeugt werden
 IF (Für die Kombination (K, s, z) wurden bereits Entitäten erzeugt) 
@@ -361,10 +361,10 @@ THEN RETURN;
 END IF
 IF (Wert der Grenze s ist 0)
 THEN Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
-     CALL GeneriereEntitätenUndBeziehungen(k, 1, z);
+     CALL GeneriereEntitaetenUndBeziehungen(k, 1, z);
 ELSE IF (Wert der Grenze z ist 0)
 THEN Berechne Entität e in Starttabelle, die in keiner Beziehung zur Zieltabelle stehen darf;
-     CALL GeneriereEntitätenUndBeziehungen(k, s, 1);
+     CALL GeneriereEntitaetenUndBeziehungen(k, s, 1);
 ELSE // z ist hier immer 1
      Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
 		 FOR i = 1 TO s
@@ -377,9 +377,12 @@ END IF;
 
 		\subsubsection{GeneriereDatenFuerAssoziativeTabelle}
 		
-		- n..N:m..M-Beziehung
+		Assoziative Tabellen werden typischerweise zur Modellierung von n..N:m..M-Beziehungen verwendet. Diese Beziehungen
+		werden entsprechend der in Abschnitt \ref{sec:generieren:beziehungen:nm} beschriebenen Strategie generiert. D.h. es
+		werden alle vier Kombinationen aus den jeweiligen Minimal- und Maximalwerten betrachtet.
 		
-		- auch min/max-Kombinationen
+		Nach der Erzeugung der Daten für die assoziative Tabelle versucht der Algorithmus, die Generierung bei den beiden
+		assoziierten Tabellen fortzusetzen -- falls diese noch nicht behandelt wurden.
 
 \begin{lstlisting}[caption=GeneriereDatenFuerAssoziativeTabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
 GeneriereDatenFuerAssoziativeTabelle(Tabelle T)
@@ -389,32 +392,32 @@ RK := rechte Kante der assoziativen Tabelle T;
 markiere Kanten LK und RK als besucht;
 LM := Multiplizität der linken Beziehung, ausgehende Seite
 RM := Multiplizität der rechten Beziehung, ausgehende Seite
-CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, min(LM), min(RM));
-CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, min(LM), max(RM));
-CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, max(LM), min(RM));
-CALL GeneriereAssoziativeEntitätenUndBeziehungen(T, max(LM), max(RM));
+CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, min(LM), min(RM));
+CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, min(LM), max(RM));
+CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, max(LM), min(RM));
+CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, max(LM), max(RM));
 LT := Zieltabelle von Kante LK;
 RT := Zieltabelle von Kante RK;
 IF (LT wurde noch nicht besucht)
 THEN Markiere Tabelle LT als besucht;
      IF (Tabelle LT ist keine assoziative Tabelle)
      THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(LT);
-     ELSE CALL GeneriereDatenFürsAssoziativeTabelle(LT);
+     ELSE CALL GeneriereDatenFuerAssoziativeTabelle(LT);
      END IF;
 END IF;
 IF (RT wurde noch nicht besucht)
 THEN Markiere Tabelle RT als besucht;
      IF (Tabelle RT ist keine assoziative Tabelle)
      THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(RT);
-     ELSE CALL GeneriereDatenFürsAssoziativeTabelle(RT);
+     ELSE CALL GeneriereDatenFuerAssoziativeTabelle(RT);
      END IF;
 END IF;
 \end{lstlisting}
 
-		\subsubsection{GeneriereAssoziativeEntitätenUndBeziehungen}
+		\subsubsection{GeneriereAssoziativeEntitaetenUndBeziehungen}
 
-\begin{lstlisting}[caption=GeneriereAssoziativeEntitätenUndBeziehungen, label=listing:GeneriereAssoziativeEntitätenUndBeziehungen]
-GeneriereAssoziativeEntitätenUndBeziehungen(T, l, r)
+\begin{lstlisting}[caption=GeneriereAssoziativeEntitaetenUndBeziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
+GeneriereAssoziativeEntitaetenUndBeziehungen(T, l, r)
 ----------------------------------------------------
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
