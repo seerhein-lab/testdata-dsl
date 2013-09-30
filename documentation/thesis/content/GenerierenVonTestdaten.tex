@@ -238,9 +238,9 @@ Beziehungen.
   \subsection{Pseudocode}
   \label{sec:generieren:algorithmus:pseudocode}
 	
-		\subsubsection{GeneriereTestDaten}
+		\subsubsection{Generiere Test Daten}
 		
-		Die Funktion GeneriereTestDaten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
+		Die Funktion Generiere_Test_Daten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
 		Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
 		stellt sicher, dass auch Datenbank-Modelle, die aus mehreren unabhängigen Graphen bestehen, vollständig
 		generiert werden. In einem Datenbank-Modell, in dem alle Tabellen direkt oder indirekt in Beziehung stehen,
@@ -265,14 +265,14 @@ FOR EACH (noch nicht besuchte Tabelle T IN der geordneten Tabellenliste L)
 DO
   Markiere Tabelle T als besucht;
   IF (Tabelle T ist keine assoziative Tabelle)
-  THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(T);
-  ELSE CALL GeneriereDatenFuerAssoziativeTabelle(T);
+  THEN CALL Generiere_Daten_Fuer_Nichtassoziative_Tabelle(T);
+  ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(T);
   END IF;
 END FOR;
 CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 \end{lstlisting}
 
-		\subsubsection{GeneriereDatenFuerNichtassoziativeTabelle}
+		\subsubsection{Generiere Daten Fuer Nichtassoziative Tabelle}
 		
 		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Deshalb erzeugt die
 		Funktion zur Generierung von Daten für nicht-assoziative Tabellen selbst keine Daten. Stattdessen werden
@@ -291,29 +291,29 @@ FOR EACH (ausgehende Kante K, die noch nicht besucht wurde)
 DO
   IF (Zieltabelle Z von Kante K ist keine assoziative Tabelle)
   THEN Markiere Kante K als besucht;
-       CALL GeneriereDatenFuerKante(K);
+       CALL Generiere_Daten_Fuer_Kante(K);
 			 IF (Zieltabelle Z noch nicht besucht) 
 			 THEN Markiere Tabelle Z als besucht;
-            CALL GeneriereDatenFuerNichtAssoziativeTabelle(Z);
+            CALL Generiere_Daten_Fuer_Nicht_Assoziative_Tabelle(Z);
 			 END IF;
-  ELSE CALL generiereDatenFuerAssoziativeTabelle(Z);
+  ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(Z);
   END IF;
 END FOR;
 FOR EACH (eingehende Kante K, die noch nicht besucht wurde)
 DO
   IF (Starttabelle S von Kante K ist keine assoziative Tabelle)
   THEN Markiere Kante K als besucht;
-       CALL GeneriereDatenFuerKante(K);
+       CALL Generiere_Daten_Fuer_Kante(K);
 			 IF (Starttabelle S noch nicht besucht) 
 			 THEN Markiere Tabelle S als besucht;
-            CALL GeneriereDatenFuerNichtAssoziativeTabelle(S);
+            CALL Generiere_Daten_Fuer_Nicht_Assoziative_Tabelle(S);
 			 END IF;
-  ELSE CALL generiereDatenFuerAssoziativeTabelle(S);
+  ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(S);
   END IF;
 END FOR;
 \end{lstlisting}
 
-		\subsubsection{GeneriereDatenFuerKante}
+		\subsubsection{Generiere Daten Fuer Kante}
 		
 		Die Funktion zum Generieren von Daten für eine Kante setzt die führt die 
 		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um. Es werden alle vier Kombinationen aus
@@ -326,10 +326,10 @@ GeneriereDatenFuerKante(Kante K)
 S := Starttabelle von Kante K;
 Z := Zieltabelle von Kante K;
 // Generierung der Daten entsprechend Abschnitt 6.2.3 bzw. 6.2.4
-CALL GeneriereEntitätenUndBeziehungen(K, min(S), min(Z));
-CALL GeneriereEntitätenUndBeziehungen(K, min(S), max(Z));
-CALL GeneriereEntitätenUndBeziehungen(K, max(S), min(Z));
-CALL GeneriereEntitätenUndBeziehungen(K, max(S), max(Z));
+CALL Generiere_Entitaeten_Und_Beziehungen(K, min(S), min(Z));
+CALL Generiere_Entitaeten_Und_Beziehungen(K, min(S), max(Z));
+CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), min(Z));
+CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
 \end{lstlisting}
 
 		\subsubsection{GeneriereEntitaetenUndBeziehungen}
@@ -361,10 +361,10 @@ THEN RETURN;
 END IF
 IF (Wert der Grenze s ist 0)
 THEN Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
-     CALL GeneriereEntitaetenUndBeziehungen(k, 1, z);
+     CALL Generiere_Entitaeten_Und_Beziehungen(k, 1, z);
 ELSE IF (Wert der Grenze z ist 0)
 THEN Berechne Entität e in Starttabelle, die in keiner Beziehung zur Zieltabelle stehen darf;
-     CALL GeneriereEntitaetenUndBeziehungen(k, s, 1);
+     CALL Generiere_Entitaeten_Und_Beziehungen(k, s, 1);
 ELSE // z ist hier immer 1
      Berechne Entität e in Zieltabelle, die in keiner Beziehung zur Starttabelle stehen darf;
 		 FOR i = 1 TO s
@@ -392,24 +392,24 @@ RK := rechte Kante der assoziativen Tabelle T;
 markiere Kanten LK und RK als besucht;
 LM := Multiplizität der linken Beziehung, ausgehende Seite
 RM := Multiplizität der rechten Beziehung, ausgehende Seite
-CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, min(LM), min(RM));
-CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, min(LM), max(RM));
-CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, max(LM), min(RM));
-CALL GeneriereAssoziativeEntitaetenUndBeziehungen(T, max(LM), max(RM));
+CALL Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, min(LM), min(RM));
+CALL Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, min(LM), max(RM));
+CALL Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, max(LM), min(RM));
+CALL Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, max(LM), max(RM));
 LT := Zieltabelle von Kante LK;
 RT := Zieltabelle von Kante RK;
 IF (LT wurde noch nicht besucht)
 THEN Markiere Tabelle LT als besucht;
      IF (Tabelle LT ist keine assoziative Tabelle)
-     THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(LT);
-     ELSE CALL GeneriereDatenFuerAssoziativeTabelle(LT);
+     THEN CALL Generiere_Daten_Fuer_Nichtassoziative_Tabelle(LT);
+     ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(LT);
      END IF;
 END IF;
 IF (RT wurde noch nicht besucht)
 THEN Markiere Tabelle RT als besucht;
      IF (Tabelle RT ist keine assoziative Tabelle)
-     THEN CALL GeneriereDatenFuerNichtassoziativeTabelle(RT);
-     ELSE CALL GeneriereDatenFuerAssoziativeTabelle(RT);
+     THEN CALL Generiere_Daten_Fuer_Nichtassoziative_Tabelle(RT);
+     ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(RT);
      END IF;
 END IF;
 \end{lstlisting}
