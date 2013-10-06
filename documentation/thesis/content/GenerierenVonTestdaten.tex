@@ -8,8 +8,8 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
   	einige kommerzielle Werkzeuge aber auch frei nutzbare Internet-Seiten für die Generierung. 
   
   \item \textbf{Abfrage-basierte Generierung}:
-  	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. 
-  	RQL Quelle
+  	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. ...
+  	\cite{DBLP:conf:icde:BinnigKL07}
   
   \item \textbf{Anonymisierung realer Daten}:
   	Bei diesem Ansatz findet keine echte Generierung statt. Stattdessen werden Daten einer realen Anwendung 
@@ -25,7 +25,7 @@ im eigentliche Sinn dar und setzt bestehende Daten voraus.
 Eine Auswahl existierender Modell-basierter Datengeneratoren wird im folgenden Abschnitt analysiert.
 
 
-\section{Analyse existierender Werkzeuge}
+\section{Betrachtung existierender Werkzeuge}
 \label{chap:generieren:analyse}
 
 Die Analyse der Werkzeuge beschränkt sich auf folgende kommerzielle Anwendungen:
@@ -44,11 +44,16 @@ sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
 Die Werkzeuge sind vor allem für die Generierung von Massen-Daten vorgesehen. Dies zeigt sich auch darin, dass 
 sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten sollte dann auch jeder
 notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
+Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
 
-Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
-in Widerspruch mit einer Massendatengenerierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
-Beziehungen nicht nur zufällig modelliert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
-Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
+	\subsection{Fazit}
+	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
+	in Widerspruch mit einer Massendatengenerierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
+	Beziehungen nicht nur zufällig modelliert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
+	Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
+	
+	
+	
 
 
 \section{Generierung von Beziehungen}
@@ -183,10 +188,11 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 	sich bei n und m jeweils um untere und bei N und M jeweils um obere Schranken. Untere und obere Schranken können
 	identisch sein.
 	
-	Sofern beide obere Grenzen größer sind als 1, wird eine solche Beziehung in einem Datenbank-Modell üblicherweise über
-	assoziative Tabellen realisiert.
+	Jede der in diesem Abschnitt beschriebenen Beziehungsformen stellen Spezialfälle von n:m-Beziehungen dar, bei denen
+	eine oder beide oberen Schranken 1 sind. Sind beide obere Schranken größer als 1, dann wird eine solche Beziehung
+	üblicherweise über assoziative Tabellen realisiert.
+	
 
-  üblicherweise als assoziative Tabelle realisiert
 
 \section{Komplexität bei der Generierung von Beziehungen}
 \label{sec:generieren:komplexitaet}
@@ -215,24 +221,34 @@ Beziehungen.
 \section{Algorithmus zur Generierung von Beziehungen}
 \label{sec:generieren:algorithmus}
 
+Im Paper \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
+das Datenbank-Modell als Graphen betrachtet. Auch dieser Algorithmus ist eher für die Erzeugung von Massen-Daten geeignet.
+Der entwickelte Algorithmus übernimmt die Idee, das Modell als Graphen zu betrachten.
+
+Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
+
+
 	\subsection{Begriffserklärungen}
+	
+  	
 	
 		\subsubsection{Kanten}
 		
-		- Idee, Diagramm als Graph aus Paper
-	
-		- repräsentiert Beziehung zwischen zwei Entitätstypen
+		Die Idee, das Datenbank-Modell als Graphen zu betrachten, stammt aus \cite{Houkjaer:2006:SRD:1182635.1164254}. 
+		Tabellen stellen die Knoten des Graphs dar. Die Foreign-Key-Beziehungen zwischen zwei Tabellen stellen die Kanten
+		des Graphs dar. Eine Kante ist gerichtet, von der Tabelle mit der Foreign-Key-Spalte zur referenzierten Tabelle hin.
+		Aufgrund der Richtung hat jede Kante eine Start- und eine Zieltabelle.
 		
-		- gerichtet
+		Auch wenn es gerichtete Kanten sind, ist eine Traversierung in beide Richtungen möglich.
 		
-		- hat Start und Ziel
-		
-		- Traversierung in beide Richtungen möglich
 	
 		\subsubsection{Assoziative Tabellen}
 		
-		- Einteilung in linke und rechte Kante
-	
+		Assoziative Tabellen verbinden zwei Tabellen. Die beiden verbundenen Tabellen werden schlicht als linke und rechte
+		Tabelle bezeichnet, analog wird von linker und rechter Kante gesprochen.
+		
+		Die Reihenfolge, in der die Spalten der Tabelle definiert sind, bestimmt die Einteilung in links und rechts. Der erste
+		Fremdschlüssel referenziert die linke Tabelle. Das Ergebnis der Generierung hängt nicht von dieser Einteilung ab.
 	
 
   \subsection{Pseudocode}
@@ -240,14 +256,14 @@ Beziehungen.
 	
 		\subsubsection{Generiere Test Daten}
 		
-		Die Funktion Generiere_Test_Daten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
+		Die Funktion Generiere\_Test\_Daten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
 		Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
 		stellt sicher, dass auch Datenbank-Modelle, die aus mehreren unabhängigen Graphen bestehen, vollständig
 		generiert werden. In einem Datenbank-Modell, in dem alle Tabellen direkt oder indirekt in Beziehung stehen,
 		würde die Festlegung einer Starttabelle ausreichen.
 		
 		Zur Sortierung der Tabellen wird die Anzahl eingehender Kanten verwendet. Dieser Ansatz stammt aus dem 
-		Paper ... .
+		Paper \cite{Houkjaer:2006:SRD:1182635.1164254}.
 		
 		Anschließend wird über diese Tabellenliste iteriert. Wurde eine Tabelle noch nicht behandelt, wird die
 		entsprechende Methode zur Generierung der Daten aufgerufen. Dabei werden nicht-assoziative und
@@ -260,7 +276,7 @@ Beziehungen.
 \begin{lstlisting}[caption=GeneriereTestDaten, label=listing:GeneriereTestDaten]
 GeneriereTestDaten
 ------------------
-L := nach Anzahl eingehender Kanten aufsteigend geordnete Tabellenliste;
+L := Tabellenliste, nach Anzahl eingehender Kanten aufsteigend geordnet
 FOR EACH (noch nicht besuchte Tabelle T IN der geordneten Tabellenliste L)
 DO
   Markiere Tabelle T als besucht;
@@ -463,20 +479,32 @@ END FOR;
 
   \subsection{Einfluss der Tabellenreihenfolge}
 	
-	- unterschiedliche Reihenfolge führt zu unterschiedlichen Ergebnissen
+	Die Art und Weise, wie Beziehungen modelliert werden, hängen von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
+	werden. Die gewählte Reihenfolge basiert auf den Kriterien aus dem Paper \cite{Houkjaer:2006:SRD:1182635.1164254}. Die Sortierung
+	wird nicht aus Qualitätsgründen, sondern für ein deterministisches Verhalten des Algorithmus beibehalten.
 	
-	- Gesamtzahl der generierten Entitäten sollte von Reihenfolge unabhängig sein, wird aber nicht bewiesen und ist 
-	  auch nicht notwendig zu beweisen
-		
-  - wichtig ist, dass gültige Datasets erzeugt werden
+	Empirische Versuche führten zu der Vermutung, dass die Reihenfolge keinen Einfluss auf die Anzahl der generierten Entitäten hat.
+	Auf einen Beweis dafür wird an dieser Stelle verzichtet, da es weniger wichtig ist, die tatsächlich minimale Anzahl an Entitäten
+	zu generieren. Viel wichtiger ist, dass gültige DataSets generiert werden.
 
 \section{Konkrete Implementierung und Integration in Toolset}
 
-- Seeds, Default-Seed
+Die Integration des Daten-Generators führt zu generierungsspezifischen Erweiterungen im Datenbank-Modell. So kann für jede Spalte
+individuell ein Werte-Generator festgelegt werden -- ansonsten wird ein Standard-Werte-Generator für den jeweiligen Datentyp verwendet.
 
-- minEntities
+Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds festgelegt. Damit der selbe Werte-Generator für verschiedene
+Spalten standardmäßig unterschiedliche Werte erzeugt, wird der Standard-Spalten-Seed mit Hilfe des Tabellen- und des Spaltennamen
+berechnet. Es ist außerdem möglich, tabellenspezifische Seeds und ein modellspezifisches Seed festzulegen, die jeweils den Standardwert
+0 haben. Das tatsächliche Seed, mit dem die Zufallsgeneratoren initialisiert werden, stellt somit die Summe aus dem Spalten-Seed,
+dem Tabellen-Seed und dem Modell-Seed dar.
 
-- Generatoren, Standard-Generatoren
+Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallszahlen initialisiert wird, 
+alle Spalten einer Tabelle oder alle Spalte aller Tabellen. Es ist darüber hinaus auch möglich, zwei Spalten mit selben Zufallswerten
+zu erzwingen.
+
+Da der Daten-Generator die Anzahl zu erzeugender Entitäten über die Beziehungen bestimmt, würde eine Tabelle ohne eine Beziehung zu anderen
+Tabellen leer bleiben. Das Modell wird deshalb für jede Tabelle um einen Wert erweitert, der Mindestanzahl der zu generierenden Entitäten
+enthält. Der Standardwert dafür ist 1.
 
 
 
