@@ -17,10 +17,12 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
   
 \end{enumerate}
 
-Für diese Arbeit scheint nur die erste Variante sinnvoll zu sein: Für die Generierung der DSL liegt bereits
-ein Datenbank-Modell vor. Konkrete Anfragen als Grundlage für die Generierung sind nicht sinnvoll, da sie
-vom SUT verborgen werden können. Die Anonymisierung realer Daten stellt keine Daten-Generierung
-im eigentliche Sinn dar und setzt bestehende Daten voraus.
+Für die Generierung eines Standard Fixtures scheint nur die erste Variante sinnvoll zu sein: Es liegt bereits
+ein Modell vor und die generierten Daten sollen idealerweise für alle Tests verwendet werden können.
+Konkrete Anfragen als Grundlage für die Generierung sind nicht sinnvoll. Einerseits können sie
+vom SUT verborgen werden können, andererseits eigenen sie eher für Fixtures, die für einen einzelnen Unit-Test
+geeignet sind. Die Anonymisierung realer Daten stellt keine Daten-Generierung im eigentlichen Sinn dar und
+setzt bestehende Daten voraus.
 
 Eine Auswahl existierender Modell-basierter Datengeneratoren wird im folgenden Abschnitt analysiert.
 
@@ -254,7 +256,7 @@ Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die
   \subsection{Pseudocode}
   \label{sec:generieren:algorithmus:pseudocode}
 	
-		\subsubsection{Generiere Test Daten}
+		\subsubsection{Generiere Test-Daten}
 		
 		Die Funktion Generiere\_Test\_Daten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
 		Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
@@ -273,7 +275,7 @@ Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die
 		Am Ende stellt der Algorithmus sicher, dass jede Entität gültig generiert wurde, also dass die Beziehungen
 		die Constraints erfüllen. Gegebenenfalls werden hier Entitäten nach generiert.
   
-\begin{lstlisting}[caption=GeneriereTestDaten, label=listing:GeneriereTestDaten]
+\begin{lstlisting}[caption=Generiere Test-Daten, label=listing:GeneriereTestDaten]
 GeneriereTestDaten
 ------------------
 L := Tabellenliste, nach Anzahl eingehender Kanten aufsteigend geordnet
@@ -288,7 +290,7 @@ END FOR;
 CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 \end{lstlisting}
 
-		\subsubsection{Generiere Daten Fuer Nichtassoziative Tabelle}
+		\subsubsection{Generiere Daten für nichtassoziative Tabelle}
 		
 		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Deshalb erzeugt die
 		Funktion zur Generierung von Daten für nicht-assoziative Tabellen selbst keine Daten. Stattdessen werden
@@ -301,7 +303,7 @@ CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 	  Der Algorithmus bevorzugt ausgehende Kanten.
 
 \begin{lstlisting}[caption=GeneriereDatenFuerNichtassoziativeTabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
-GeneriereDatenFuerNichtassoziativeTabelle(Tabelle T)
+Generiere_Daten_Fuer_Nichtassoziative_Tabelle(Tabelle T)
 ---------------------------------------------------
 FOR EACH (ausgehende Kante K, die noch nicht besucht wurde)
 DO
@@ -329,15 +331,15 @@ DO
 END FOR;
 \end{lstlisting}
 
-		\subsubsection{Generiere Daten Fuer Kante}
+		\subsubsection{Generiere Daten für Kante}
 		
 		Die Funktion zum Generieren von Daten für eine Kante setzt die führt die 
 		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um. Es werden alle vier Kombinationen aus
 		Minimum und Maximum behandelt. Die eigentliche Generierung findet ist in eine Hilfsfunktion ausgelagert,
 		die mit allen Min-Max-Kombinationen aufgerufen wird.
 
-\begin{lstlisting}[caption=GeneriereDatenFuerKante, label=listing:GeneriereDatenFuerKante]
-GeneriereDatenFuerKante(Kante K)   
+\begin{lstlisting}[caption=Generiere Daten Fuer Kante, label=listing:GeneriereDatenFuerKante]
+Generiere_Daten_Fuer_Kante(Kante K)   
 ------------------------------
 S := Starttabelle von Kante K;
 Z := Zieltabelle von Kante K;
@@ -348,7 +350,7 @@ CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), min(Z));
 CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
 \end{lstlisting}
 
-		\subsubsection{GeneriereEntitaetenUndBeziehungen}
+		\subsubsection{Generiere Entitäten und Beziehungen}
 		
 		Es soll vermieden werden, unnötige Entitäten und Beziehungen zu generieren. Unnötig sind vor allem
 		redundante Beziehungen. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
@@ -368,8 +370,8 @@ CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
 		Der Eingangswert z kann aufgrund der Tatsache, dass es sich um eine nicht-assoziative Tabelle handelt,
 		nur 0 oder 1 sein.
 		
-\begin{lstlisting}[caption=GeneriereEntitaetenUndBeziehungen, label=listing:GeneriereEntitaetenUndBeziehungen]
-GeneriereEntitaetenUndBeziehungen(K, s, z)
+\begin{lstlisting}[caption=Generiere Entitäten Und Beziehungen, label=listing:GeneriereEntitaetenUndBeziehungen]
+Generiere_Entitaeten_Und_Beziehungen(K, s, z)
 -----------------------------------------
 // Sicherstellen, dass nicht mehr Entitäten als notwendig erzeugt werden
 IF (Für die Kombination (K, s, z) wurden bereits Entitäten erzeugt) 
@@ -391,7 +393,7 @@ ELSE // z ist hier immer 1
 END IF;
 \end{lstlisting}
 
-		\subsubsection{GeneriereDatenFuerAssoziativeTabelle}
+		\subsubsection{Generiere Daten für assoziative Tabelle}
 		
 		Assoziative Tabellen werden typischerweise zur Modellierung von n..N:m..M-Beziehungen verwendet. Diese Beziehungen
 		werden entsprechend der in Abschnitt \ref{sec:generieren:beziehungen:nm} beschriebenen Strategie generiert. D.h. es
@@ -400,8 +402,8 @@ END IF;
 		Nach der Erzeugung der Daten für die assoziative Tabelle versucht der Algorithmus, die Generierung bei den beiden
 		assoziierten Tabellen fortzusetzen -- falls diese noch nicht behandelt wurden.
 
-\begin{lstlisting}[caption=GeneriereDatenFuerAssoziativeTabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
-GeneriereDatenFuerAssoziativeTabelle(Tabelle T)
+\begin{lstlisting}[caption=Generiere Daten für assoziative Tabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
+Generiere_Daten_Fuer_Assoziative_Tabelle(Tabelle T)
 -----------------------------------------------
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
@@ -430,10 +432,14 @@ THEN Markiere Tabelle RT als besucht;
 END IF;
 \end{lstlisting}
 
-		\subsubsection{GeneriereAssoziativeEntitaetenUndBeziehungen}
+		\subsubsection{Generiere assoziative Entitäten und Beziehungen}
+		
+		- Unbedingt Parameter l und r beschreiben
+		
+		- Kombination (T, LA, RA) erklären
 
-\begin{lstlisting}[caption=GeneriereAssoziativeEntitaetenUndBeziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
-GeneriereAssoziativeEntitaetenUndBeziehungen(T, l, r)
+\begin{lstlisting}[caption=Generiere Assoziative Entitaeten Und Beziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
+Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, l, r)
 ----------------------------------------------------
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
@@ -455,7 +461,7 @@ FOR i = 1 TO RA
 DO 
   FOR j = 1 TO LA
   DO 
-    Berechne neue Entität e in assoziativer Tabelle;
+    Erzeuge Entität e in assoziativer Tabelle;
     Stelle Beziehung zwischen Entität e und Entität le[i] her;
 	  Stelle Beziehung zwischen Entität e und Entität re[j] her;
   END FOR;
@@ -492,14 +498,14 @@ END FOR;
 Die Integration des Daten-Generators führt zu generierungsspezifischen Erweiterungen im Datenbank-Modell. So kann für jede Spalte
 individuell ein Werte-Generator festgelegt werden -- ansonsten wird ein Standard-Werte-Generator für den jeweiligen Datentyp verwendet.
 
-Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds festgelegt. Damit der selbe Werte-Generator für verschiedene
+Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds initialisiert. Damit der selbe Werte-Generator für verschiedene
 Spalten standardmäßig unterschiedliche Werte erzeugt, wird der Standard-Spalten-Seed mit Hilfe des Tabellen- und des Spaltennamen
 berechnet. Es ist außerdem möglich, tabellenspezifische Seeds und ein modellspezifisches Seed festzulegen, die jeweils den Standardwert
-0 haben. Das tatsächliche Seed, mit dem die Zufallsgeneratoren initialisiert werden, stellt somit die Summe aus dem Spalten-Seed,
+0 haben. Das tatsächliche Seed, mit dem die Zufallsgeneratoren initialisiert werden, stellt die Summe aus dem Spalten-Seed,
 dem Tabellen-Seed und dem Modell-Seed dar.
 
-Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallszahlen initialisiert wird, 
-alle Spalten einer Tabelle oder alle Spalte aller Tabellen. Es ist darüber hinaus auch möglich, zwei Spalten mit selben Zufallswerten
+Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallswerten generiert wird, 
+alle Spalten einer Tabelle oder alle Spalten aller Tabellen. Es ist darüber hinaus auch möglich, zwei Spalten mit selben Zufallswerten
 zu erzwingen.
 
 Da der Daten-Generator die Anzahl zu erzeugender Entitäten über die Beziehungen bestimmt, würde eine Tabelle ohne eine Beziehung zu anderen
