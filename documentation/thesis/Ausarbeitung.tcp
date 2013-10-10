@@ -7,6 +7,6 @@ MainFile=Ausarbeitung.tex
 UseBibTeX=1
 UseMakeIndex=1
 ActiveProfile=LaTeX ⇨ PDF (Sumatra)
-ProjectLanguage=en
-ProjectDialect=US
+ProjectLanguage=de
+ProjectDialect=DE
 

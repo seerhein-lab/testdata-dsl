@@ -51,7 +51,7 @@ Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeug
 	\subsection{Fazit}
 	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
 	in Widerspruch mit einer Massendatengenerierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
-	Beziehungen nicht nur zufällig modelliert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
+	Beziehungen nicht nur zufällig generiert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
 	Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
 	
 	
@@ -135,8 +135,6 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   Wert für n) oder unbegrenzt. Der Generator kann nur eine begrenzte Anzahl von Entitäten erzeugen, die Grenze sollte
   konfigurierbar sein.
   
-  In den Abbildungen wird als Grenze n der Wert 3 verwendet.
-
   	\subsubsection{1..1:1..n}
   	
   	Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
@@ -218,23 +216,22 @@ Alle Beziehungen abhängig voneinander zu betrachten kann schnell zu exponentiell
 Einen riesigen Bestand an Daten um für Tests unnötige Beziehungen und schließlich auch Entitäten zu verringern
 scheint aufwändiger, als einen kleinen Datenbestand um fehlende Beziehungen punktuell zu erweitern. Aus diesem Grund
 berücksichtigt der Algorithmus keine Beziehungen in Abhängigkeit von anderen -- mit Ausnahme von assoziativen
-Beziehungen.
+Tabellen.
 
 \section{Algorithmus zur Generierung von Beziehungen}
 \label{sec:generieren:algorithmus}
 
-Im Paper \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
+In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
 das Datenbank-Modell als Graphen betrachtet. Auch dieser Algorithmus ist eher für die Erzeugung von Massen-Daten geeignet.
 Der entwickelte Algorithmus übernimmt die Idee, das Modell als Graphen zu betrachten.
 
 Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
 
-
 	\subsection{Begriffserklärungen}
 	
   	
 	
-		\subsubsection{Kanten}
+		\subsubsection{Knoten und Kanten}
 		
 		Die Idee, das Datenbank-Modell als Graphen zu betrachten, stammt aus \cite{Houkjaer:2006:SRD:1182635.1164254}. 
 		Tabellen stellen die Knoten des Graphs dar. Die Foreign-Key-Beziehungen zwischen zwei Tabellen stellen die Kanten
@@ -258,18 +255,19 @@ Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die
 	
 		\subsubsection{Generiere Test-Daten}
 		
-		Die Funktion Generiere\_Test\_Daten ist der Einstiegspunkt für den Algorithmus zur Generierung von Test-Daten.
+		Die Funktion \texttt{Generiere\_Test\_Daten} (siehe Listing \ref{listing:GeneriereTestDaten}) ist der Einstiegspunkt
+		für den Algorithmus zur Generierung von Test-Daten.
 		Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
 		stellt sicher, dass auch Datenbank-Modelle, die aus mehreren unabhängigen Graphen bestehen, vollständig
 		generiert werden. In einem Datenbank-Modell, in dem alle Tabellen direkt oder indirekt in Beziehung stehen,
 		würde die Festlegung einer Starttabelle ausreichen.
 		
-		Zur Sortierung der Tabellen wird die Anzahl eingehender Kanten verwendet. Dieser Ansatz stammt aus dem 
-		Paper \cite{Houkjaer:2006:SRD:1182635.1164254}.
+		Zur Sortierung der Tabellen wird die Anzahl eingehender Kanten verwendet. Der Grund dafür und die Bedeutung der
+		Reihenfolge der Tabellen wird in Abschnitt \ref{sec:generieren:evaluation:tabellenreihenfolge} beschrieben.
 		
 		Anschließend wird über diese Tabellenliste iteriert. Wurde eine Tabelle noch nicht behandelt, wird die
-		entsprechende Methode zur Generierung der Daten aufgerufen. Dabei werden nicht-assoziative und
-		assoziative Tabellen unterschiedlich generiert. Der Grund dafür ist, dass assoziative Tabellen ein
+		entsprechende Funktion zur Generierung der Daten aufgerufen. Dabei werden nicht-assoziative und
+		assoziative Tabellen unterschiedlich behandelt. Der Grund dafür ist, dass assoziative Tabellen ein
 		Hilfskonstrukt darstellen, das selbst eine Beziehung auf ER-Ebene darstellt.
 		
 		Am Ende stellt der Algorithmus sicher, dass jede Entität gültig generiert wurde, also dass die Beziehungen
@@ -292,15 +290,19 @@ CALL "ErweitereGenerierteDatenzuKonsistenenDaten"()
 
 		\subsubsection{Generiere Daten für nichtassoziative Tabelle}
 		
-		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Deshalb erzeugt die
-		Funktion zur Generierung von Daten für nicht-assoziative Tabellen selbst keine Daten. Stattdessen werden
-		die (noch unbehandelten) Beziehungen/Kanten der Tabelle betrachtet. 
+		Der Generator betrachtet zur Generierung von Entitäten die Beziehungen der Tabellen. Aus diesem Grund
+		erzeugt die Funktion \texttt{Generiere\_Daten\_Fuer\_Nichtassoziative\_Tabelle}
+		(siehe Listing \ref{listing:GeneriereDatenFuerNichtassoziativeTabelle})
+		selbst keine Daten. Stattdessen werden die (noch unbehandelten) Kanten der Tabelle betrachtet. 
 		
 		Handelt es sich bei der an der Beziehung beteiligten Tabelle um eine assoziative Tabelle, wird mit der
 		Generierung der assoziativen Beziehungen fortgesetzt. Ansonsten wird die Funktion zur Generierung der
 		Daten für eine Kante aufgerufen.
 		
-	  Der Algorithmus bevorzugt ausgehende Kanten.
+	  Der Algorithmus aus \cite{Houkjaer:2006:SRD:1182635.1164254} bevorzugt ausgehende Kanten bei der Erzeugung
+		von Daten, da sich diese mit weniger Aufwand abarbeiten lassen. Diese Bevorzugung wird für den hier
+		entwickelten Algorithmus übernommen, auch wenn sich der Aufwand für ein- und ausgehende Kanten nicht
+		unterscheidet.
 
 \begin{lstlisting}[caption=GeneriereDatenFuerNichtassoziativeTabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
 Generiere_Daten_Fuer_Nichtassoziative_Tabelle(Tabelle T)
@@ -353,10 +355,10 @@ CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
 		\subsubsection{Generiere Entitäten und Beziehungen}
 		
 		Es soll vermieden werden, unnötige Entitäten und Beziehungen zu generieren. Unnötig sind vor allem
-		redundante Beziehungen. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
+		redundante Beziehungen, die beispielsweise entstehen, wenn die untere und obere Grenze einer
+		Multiplizität identisch sind. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
 		der Starttabelle und Anzahl der beteiligten Entitäten der Zieltabelle die Generierung nur ein einziges
-		Mal durchgeführt. Eine solche Redundanz tritt beispielsweise ein, wenn untere und obere Grenze
-		einer Multiplizität identisch sind.
+		Mal durchgeführt.
 		
 		Der Algorithmus prüft, ob es sich um eine optionale Beziehung handelt. Eine der Grenzen s bzw. z
 		ist in einem solchen Fall gleich 0. Handelt es sich um eine optionale Beziehung, wird eine entsprechende
@@ -468,10 +470,10 @@ DO
 END FOR;
 \end{lstlisting}
 
-		\subsubsection{}
+		\subsubsection{Erweitere Generierte Daten zu konstistenten Daten}
 
-\begin{lstlisting}[caption=ErweitereGenerierteDatenzuKonsistenenDaten, label=listing:ErweitereGenerierteDatenzuKonsistenenDaten]
-"ErweitereGenerierteDatenzuKonsistenenDaten"()
+\begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistenenDaten, label=listing:ErweitereGenerierteDatenZuKonsistenenDaten]
+"ErweitereGenerierteDatenZuKonsistenenDaten"()
 -----------------------------------------------
 \end{lstlisting}
 
@@ -484,9 +486,10 @@ END FOR;
 \section{Praktischer Einsatz / Evaluation}
 
   \subsection{Einfluss der Tabellenreihenfolge}
-	
-	Die Art und Weise, wie Beziehungen modelliert werden, hängen von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
-	werden. Die gewählte Reihenfolge basiert auf den Kriterien aus dem Paper \cite{Houkjaer:2006:SRD:1182635.1164254}. Die Sortierung
+	\label{sec:generieren:evaluation:tabellenreihenfolge}
+		
+	Die Art und Weise, wie Beziehungen generiert werden, hängen von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
+	werden. Die gewählte Reihenfolge basiert auf den Kriterien aus \cite{Houkjaer:2006:SRD:1182635.1164254}. Die Sortierung
 	wird nicht aus Qualitätsgründen, sondern für ein deterministisches Verhalten des Algorithmus beibehalten.
 	
 	Empirische Versuche führten zu der Vermutung, dass die Reihenfolge keinen Einfluss auf die Anzahl der generierten Entitäten hat.
@@ -512,7 +515,31 @@ Da der Daten-Generator die Anzahl zu erzeugender Entitäten über die Beziehungen 
 Tabellen leer bleiben. Das Modell wird deshalb für jede Tabelle um einen Wert erweitert, der Mindestanzahl der zu generierenden Entitäten
 enthält. Der Standardwert dafür ist 1.
 
+\todo{Code Listing verknüpfen, infinite beschreiben}
 
+\begin{lstlisting}[caption=Ausschnitt des für die Daten-Generierung erweiterten Modells, label=listing:modell:ausschnittfuergenerierung]
+public HochschuleModel()
+{
+  database("Hochschule");
+  packageName("com.seitenbau.testing.hochschule.model");
+  enableTableModelClassesGeneration();
+  seed(0);
+  infinite(2);
+
+  Table raum = table("raum")
+      .description("Die Tabelle mit den Räumen der Hochschule")
+      .seed(0)
+      .minEntities(20)
+      .column("id", DataType.BIGINT)
+        .defaultIdentifier()
+        .autoInvokeNext()
+      .column("gebaude", DataType.VARCHAR)
+      .column("nummer", DataType.VARCHAR)
+    .build();
+  
+	...
+}
+\end{lstlisting}
 
 \section{Offene Punkte}
 
