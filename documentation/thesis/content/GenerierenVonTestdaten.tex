@@ -195,13 +195,14 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 	eine oder beide oberen Grenzen 1 sind. Sind beide obere Grenzen größer als 1, dann wird eine solche Beziehung
 	üblicherweise über assoziative Tabellen realisiert.
 	
-	Sollte eine der unteren Grenzen 0 sein, muss eine entsprechende Entität ohne Beziehung erzeugt werden. Danach wird
-	so verfahren, als wäre die Grenze 1 (siehe dazu Abbildungen \ref{img:generierung:1to0} und \ref{img:generierung:3to0}).
+	Sollte eine der unteren Grenzen 0 sein, wird sie als 0..1 interpretiert. D.h es wird eine entsprechende Entität ohne
+	Beziehung erzeugt, aber auch eine einzelne Entität, die in Beziehung mit anderen Entitäten steht 
+	(siehe dazu Abbildungen \ref{img:generierung:1to0} und \ref{img:generierung:3to0}).
 	
 	Um die unterschiedlichen Kombinationen aus n, N, m und M in den Grafiken zu verdeutlichen, wird als Beziehung eine
 	1..3:0..4-Beziehung verwendet.
 	
-		\subsubsection{1:0..1 (n:m)}
+		\subsubsection{1. Fall (n:m): 1:0..1}
 		
 		Im ersten Fall werden beide unteren Grenzen betrachtet. Da eine der Grenzen 0 ist, wird eine Entität ohne Beziehung
 		generiert. Abbildung \ref{img:generierung:1to0} visualisiert die zu erzeugenden Entitäten für die Kombination n:m.
@@ -213,7 +214,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\end{figure}		
 		
 		
-		\subsubsection{1:4 (n:M)}
+		\subsubsection{2. Fall (n:M): 1:4)}
 		
 		Der zweite Fall betrachtet eine untere mit einer oberen Grenze. Die in diesem Beispiel erzeugten Entitäten zeigt
 		Abbildung \ref{img:generierung:1to4}.
@@ -224,7 +225,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	  \caption{Beziehungen nach dem Schema 1:4 (n:M)}\label{img:generierung:1to4}
   	\end{figure}		
 
-		\subsubsection{3:0..1 (N:m)}
+		\subsubsection{3. Fall (N:m): 3:0..1}
 		
 		Wie im ersten Fall ist hier eine der beiden Grenzen 0. Die in der Abbildung \ref{img:generierung:3to0} dargestellte 
 		Entität ohne Beziehung ist der Vollständigkeit halber aufgezeigt, muss aber nicht generiert werden, da sie bereits 
@@ -236,8 +237,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	  \caption{Beziehungen nach dem Schema 3:0..1 (N:m)}\label{img:generierung:3to0}
   	\end{figure}		
 
-
-		\subsubsection{3:4 (N:M)}
+		\subsubsection{4. Fall (N:M): 3:4}
 		
 		Der vierte Fall behandelt schließlich die beiden oberen Grenzen. Abbildung \ref{img:generierung:3to4} zeigt die
 		Vollvermaschung der zu erzeugenden Entitäten.
@@ -246,8 +246,10 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	  \centering
   	   \includegraphics[width=0.55\textwidth]{images/generierung/nm-3-to-4.png}
   	  \caption{Beziehungen nach dem Schema 3:4 (N:M)}\label{img:generierung:3to4}
-  	\end{figure}		
+  	\end{figure}
 
+		\subsubsection{Gesamtergebnis}
+		
 
 \section{Komplexität bei der Generierung von Beziehungen}
 \label{sec:generieren:komplexitaet}
@@ -500,15 +502,22 @@ END IF;
 		D.h. sie erzeugt Entitäten in der assoziativen Tabelle und bei Bedarf in den beiden an der Assoziation beteiligten
 		Tabellen (linke und rechte Tabelle der assoziativen Tabelle).
 		
-		Fie Funktion erwartet drei Parameter:
+		Die Funktion erwartet drei Parameter:
 		\begin{itemize}
 			\item \textbf{Tabelle \texttt{T}}: Die assoziative Tabelle, die behandelt wird.
 
-			\item \textbf{Grenze \texttt{l}}:
+			\item \textbf{Grenze \texttt{l}}: Der momentane Grenzwert der linksseitigen Multiplizität.
 
-			\item \textbf{Grenze \texttt{r}}:
+			\item \textbf{Grenze \texttt{r}}: Der momentane Grenzwert der rechtsseitigen Multiplizität.
 		\end{itemize}
 		
+		- Grafik zur Verdeutlichung des Tauschs
+		
+	  \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/tausch-at.png}
+  	  \caption{Tausch}\label{img:generierung:tauschat}
+  	\end{figure}
 		
 		
 		- Kombination (T, LA, RA) erklären
@@ -602,18 +611,19 @@ public HochschuleModel()
   database("Hochschule");
   packageName("com.seitenbau.testing.hochschule.model");
   enableTableModelClassesGeneration();
-  seed(0);
+  seed(1);
   infinite(2);
 
   Table raum = table("raum")
       .description("Die Tabelle mit den Räumen der Hochschule")
-      .seed(0)
+      .seed(3)
       .minEntities(20)
       .column("id", DataType.BIGINT)
         .defaultIdentifier()
         .autoInvokeNext()
       .column("gebaude", DataType.VARCHAR)
       .column("nummer", DataType.VARCHAR)
+			  .seed(5)
     .build();
   
 	...
