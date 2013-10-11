@@ -139,7 +139,8 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\subsubsection{1..1:1..n}
   	
   	Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
-  	des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung.
+  	des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung. Die zu generierenden Entitäten 
+		sind in Abbildung \ref{img:generierung:11to1n} dargestellt.
 
   	\begin{figure}[htbp]
   	  \centering
@@ -150,7 +151,8 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\subsubsection{0..1:1..n}
   	
   	Eine Entität des Typs A steht in Beziehung mit einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B steht
-  	entweder mit genau einer oder mit keiner Entität des Typs A in Beziehung. 
+  	entweder mit genau einer oder mit keiner Entität des Typs A in Beziehung. Abbildung \ref{img:generierung:01to1n} stellt
+		die zu generierenden Entitäten dar. 
 
   	\begin{figure}[htbp]
   	  \centering
@@ -161,7 +163,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	\subsubsection{1..1:0..n}
   	
   	Eine Entität des Typs A steht in Beziehung mit keiner, einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B
-  	muss mit genau einer Entität des Typs A in Beziehung stehen.
+  	muss mit genau einer Entität des Typs A in Beziehung stehen. 
 
   	\begin{figure}[htbp]
   	  \centering
@@ -202,7 +204,7 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 		\subsubsection{1:0..1 (n:m)}
 		
 		Im ersten Fall werden beide unteren Grenzen betrachtet. Da eine der Grenzen 0 ist, wird eine Entität ohne Beziehung
-		generiert.
+		generiert. Abbildung \ref{img:generierung:1to0} visualisiert die zu erzeugenden Entitäten für die Kombination n:m.
 		
 	  \begin{figure}[htbp]
   	  \centering
@@ -210,7 +212,11 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	  \caption{Beziehungen nach dem Schema 1:0..1 (n:m)}\label{img:generierung:1to0}
   	\end{figure}		
 		
+		
 		\subsubsection{1:4 (n:M)}
+		
+		Der zweite Fall betrachtet eine untere mit einer oberen Grenze. Die in diesem Beispiel erzeugten Entitäten zeigt
+		Abbildung \ref{img:generierung:1to4}.
 		
 	  \begin{figure}[htbp]
   	  \centering
@@ -230,7 +236,11 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
   	  \caption{Beziehungen nach dem Schema 3:0..1 (N:m)}\label{img:generierung:3to0}
   	\end{figure}		
 
+
 		\subsubsection{3:4 (N:M)}
+		
+		Der vierte Fall behandelt schließlich die beiden oberen Grenzen. Abbildung \ref{img:generierung:3to4} zeigt die
+		Vollvermaschung der zu erzeugenden Entitäten.
 	
 	  \begin{figure}[htbp]
   	  \centering
@@ -270,11 +280,12 @@ In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung
 das Datenbank-Modell als Graphen betrachtet. Auch dieser Algorithmus ist eher für die Erzeugung von Massen-Daten geeignet.
 Der entwickelte Algorithmus übernimmt die Idee, das Modell als Graphen zu betrachten.
 
-Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
+Bevor der Pseudocode des Algorithmus beschrieben wird, werden einige verwendete Begriffe beschrieben und das Klassen-Diagramm
+des Modells vorgestellt, das der Daten-Generator verwendet.
 
 	\subsection{Begriffserklärungen}
 	
-  	
+    Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
 	
 		\subsubsection{Knoten und Kanten}
 		
@@ -288,12 +299,13 @@ Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die
 	
 		\subsubsection{Assoziative Tabellen}
 		
-		Assoziative Tabellen verbinden zwei Tabellen. Die beiden verbundenen Tabellen werden schlicht als linke und rechte
+		Assoziative Tabellen verbinden zwei Tabellen. Die beiden verbundenen Tabellen werden im Folgenden als linke und rechte
 		Tabelle bezeichnet, analog wird von linker und rechter Kante gesprochen.
 		
 		Die Reihenfolge, in der die Spalten der Tabelle definiert sind, bestimmt die Einteilung in links und rechts. Der erste
-		Fremdschlüssel referenziert die linke Tabelle. Das Ergebnis der Generierung hängt nicht von dieser Einteilung ab.
+		Fremdschlüssel referenziert die linke Tabelle. Das Ergebnis der Generierung hängt jedoch nicht von dieser Einteilung ab.
 	
+  \subsection{Klassendiagramm}
 
   \subsection{Pseudocode}
   \label{sec:generieren:algorithmus:pseudocode}
@@ -381,16 +393,16 @@ END FOR;
 		\subsubsection{Generiere Daten für Kante}
 		
 		Die Funktion zum Generieren von Daten für eine Kante setzt die führt die 
-		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um. Es werden alle vier Kombinationen aus
-		Minimum und Maximum behandelt. Die eigentliche Generierung findet ist in eine Hilfsfunktion ausgelagert,
-		die mit allen Min-Max-Kombinationen aufgerufen wird.
+		\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um (siehe Listing \ref{listing:GeneriereDatenFuerKante}). 
+		Es werden alle vier Kombinationen aus Minimum und Maximum behandelt (Zeilen 6-9). Die eigentliche Generierung findet
+		ist in eine Hilfsfunktion ausgelagert, die mit allen Min-Max-Kombinationen aufgerufen wird.
 
 \begin{lstlisting}[caption=Generiere Daten Fuer Kante, label=listing:GeneriereDatenFuerKante]
 Generiere_Daten_Fuer_Kante(Kante K)   
 ------------------------------
 S := Starttabelle von Kante K;
 Z := Zieltabelle von Kante K;
-// Generierung der Daten entsprechend Abschnitt 6.2.3 bzw. 6.2.4
+// Generierung der Daten entsprechend Abschnitt 6.2.3
 CALL Generiere_Entitaeten_Und_Beziehungen(K, min(S), min(Z));
 CALL Generiere_Entitaeten_Und_Beziehungen(K, min(S), max(Z));
 CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), min(Z));
@@ -400,19 +412,20 @@ CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
 		\subsubsection{Generiere Entitäten und Beziehungen}
 		
 		Es soll vermieden werden, unnötige Entitäten und Beziehungen zu generieren. Unnötig sind vor allem
-		redundante Beziehungen, die beispielsweise entstehen, wenn die untere und obere Grenze einer
+		redundante Beziehungen. Diese können beispielsweise entstehen, wenn die untere und die obere Grenze einer
 		Multiplizität identisch sind. Deshalb wird für jede Kombination aus Kante, Anzahl der beteiligten Entitäten
 		der Starttabelle und Anzahl der beteiligten Entitäten der Zieltabelle die Generierung nur ein einziges
 		Mal durchgeführt.
 		
-		Der Algorithmus prüft, ob es sich um eine optionale Beziehung handelt. Eine der Grenzen s bzw. z
+		Der Algorithmus (siehe Listing \ref{listing:GeneriereEntitaetenUndBeziehungen}) prüft, ob es sich um eine
+		optionale Beziehung handelt (Zeile 7 und Zeile 10). Eine der Grenzen s bzw. z
 		ist in einem solchen Fall gleich 0. Handelt es sich um eine optionale Beziehung, wird eine entsprechende
 		Entität berechnet, die in Bezug auf die Kante in keiner Beziehung ist. Anschließend wird die Funktion
-		rekursiv aufgerufen, diesmal mit dem Wert 1 als Grenze anstelle der 0.
+		rekursiv aufgerufen, diesmal mit dem Wert 1 als Grenze anstelle der 0 (Zeile 9 und Zeile 12).
 		
 		Sofern s und z beide ungleich 0 sind, wird eine Entität in der Zieltabelle berechnet und s Entitäten 
 		in der Starttabelle. Zwischen diesen Entitäten wird die von der Kante K repräsentierte Beziehung
-		hergestellt.
+		hergestellt (Zeilen 14 bis 19).
 		
 		Der Eingangswert z kann aufgrund der Tatsache, dass es sich um eine nicht-assoziative Tabelle handelt,
 		nur 0 oder 1 sein.
@@ -446,7 +459,8 @@ END IF;
 		werden entsprechend der in Abschnitt \ref{sec:generieren:beziehungen:nm} beschriebenen Strategie generiert. D.h. es
 		werden alle vier Kombinationen aus den jeweiligen Minimal- und Maximalwerten betrachtet.
 		
-		Nach der Erzeugung der Daten für die assoziative Tabelle versucht der Algorithmus, die Generierung bei den beiden
+		Nach der Erzeugung der Daten für die assoziative Tabelle versucht der Algorithmus (siehe 
+		Listing \ref{listing:GeneriereDatenFuerAssoziativeTabelle}), die Generierung bei den beiden
 		assoziierten Tabellen fortzusetzen -- falls diese noch nicht behandelt wurden.
 
 \begin{lstlisting}[caption=Generiere Daten für assoziative Tabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
@@ -481,7 +495,21 @@ END IF;
 
 		\subsubsection{Generiere assoziative Entitäten und Beziehungen}
 		
-		- Unbedingt Parameter l und r beschreiben
+		Die Funktion \texttt{Generiere\_Assoziative\_Entitaeten\_Und\_Beziehungen} erzeugt Entitäten und Beziehungen
+		in Verbindung mit assoziativen Tabellen (siehe Listing \ref{listing:GeneriereAssoziativeEntitaetenUndBeziehungen}).
+		D.h. sie erzeugt Entitäten in der assoziativen Tabelle und bei Bedarf in den beiden an der Assoziation beteiligten
+		Tabellen (linke und rechte Tabelle der assoziativen Tabelle).
+		
+		Fie Funktion erwartet drei Parameter:
+		\begin{itemize}
+			\item \textbf{Tabelle \texttt{T}}: Die assoziative Tabelle, die behandelt wird.
+
+			\item \textbf{Grenze \texttt{l}}:
+
+			\item \textbf{Grenze \texttt{r}}:
+		\end{itemize}
+		
+		
 		
 		- Kombination (T, LA, RA) erklären
 
