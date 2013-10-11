@@ -8,8 +8,9 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
   	einige kommerzielle Werkzeuge aber auch frei nutzbare Internet-Seiten für die Generierung. 
   
   \item \textbf{Abfrage-basierte Generierung}:
-  	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. ...
-  	\cite{DBLP:conf:icde:BinnigKL07}
+  	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. Binnig beschreibt in
+  	\cite{DBLP:conf:icde:BinnigKL07} einen Ansatz, in dem SQL-Abfragen als Grundlage für die Daten-Generierung verwendet
+		werden.
   
   \item \textbf{Anonymisierung realer Daten}:
   	Bei diesem Ansatz findet keine echte Generierung statt. Stattdessen werden Daten einer realen Anwendung 
@@ -43,14 +44,14 @@ Bedienung. Die Werkzeuge arbeiten zufallsbasiert aber deterministisch, d.h. sie 
 Daten. Das sogenannte \textit{Seed}, mit dem der Zufallszahlengenerator für eine einzelne Spalte initialisiert wird, lässt
 sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
 
-Die Werkzeuge sind vor allem für die Generierung von Massen-Daten vorgesehen. Dies zeigt sich auch darin, dass 
-sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten sollte dann auch jeder
+Die Werkzeuge sind vor allem für die Generierung von großen Datenmengen (Massen-Daten) vorgesehen. Dies zeigt sich auch darin,
+dass sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten sollte dann auch jeder
 notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
 Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
 
 	\subsection{Fazit}
 	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
-	in Widerspruch mit einer Massendatengenerierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
+	in Widerspruch mit einer Massen-Daten-Generierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
 	Beziehungen nicht nur zufällig generiert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
 	Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
 	
@@ -189,9 +190,53 @@ Die Abbildungen stellen dar, welche Entitäten \textit{mindestens} generiert werd
 	identisch sein.
 	
 	Jede der in diesem Abschnitt beschriebenen Beziehungsformen stellen Spezialfälle von n:m-Beziehungen dar, bei denen
-	eine oder beide oberen Schranken 1 sind. Sind beide obere Schranken größer als 1, dann wird eine solche Beziehung
+	eine oder beide oberen Grenzen 1 sind. Sind beide obere Grenzen größer als 1, dann wird eine solche Beziehung
 	üblicherweise über assoziative Tabellen realisiert.
 	
+	Sollte eine der unteren Grenzen 0 sein, muss eine entsprechende Entität ohne Beziehung erzeugt werden. Danach wird
+	so verfahren, als wäre die Grenze 1 (siehe dazu Abbildungen \ref{img:generierung:1to0} und \ref{img:generierung:3to0}).
+	
+	Um die unterschiedlichen Kombinationen aus n, N, m und M in den Grafiken zu verdeutlichen, wird als Beziehung eine
+	1..3:0..4-Beziehung verwendet.
+	
+		\subsubsection{1:0..1 (n:m)}
+		
+		Im ersten Fall werden beide unteren Grenzen betrachtet. Da eine der Grenzen 0 ist, wird eine Entität ohne Beziehung
+		generiert.
+		
+	  \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/nm-1-to-0.png}
+  	  \caption{Beziehungen nach dem Schema 1:0..1 (n:m)}\label{img:generierung:1to0}
+  	\end{figure}		
+		
+		\subsubsection{1:4 (n:M)}
+		
+	  \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/nm-1-to-4.png}
+  	  \caption{Beziehungen nach dem Schema 1:4 (n:M)}\label{img:generierung:1to4}
+  	\end{figure}		
+
+		\subsubsection{3:0..1 (N:m)}
+		
+		Wie im ersten Fall ist hier eine der beiden Grenzen 0. Die in der Abbildung \ref{img:generierung:3to0} dargestellte 
+		Entität ohne Beziehung ist der Vollständigkeit halber aufgezeigt, muss aber nicht generiert werden, da sie bereits 
+		generiert wurde (siehe Abbildung \ref{img:generierung:1to0}).
+		
+	  \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/nm-3-to-0.png}
+  	  \caption{Beziehungen nach dem Schema 3:0..1 (N:m)}\label{img:generierung:3to0}
+  	\end{figure}		
+
+		\subsubsection{3:4 (N:M)}
+	
+	  \begin{figure}[htbp]
+  	  \centering
+  	   \includegraphics[width=0.55\textwidth]{images/generierung/nm-3-to-4.png}
+  	  \caption{Beziehungen nach dem Schema 3:4 (N:M)}\label{img:generierung:3to4}
+  	\end{figure}		
 
 
 \section{Komplexität bei der Generierung von Beziehungen}
@@ -446,18 +491,24 @@ Generiere_Assoziative_Entitaeten_Und_Beziehungen(T, l, r)
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
 // Grenzen "tauschen" und Mindestanzahl auf 1
-LA := Max(r, 1);  // r als Grenze, mindestens 1
-RA := Max(l, 1);  // l als Grenze, mindestens 1
+LA := Max(r, 1);  // r als Grenze für linke Tabelle, mindestens 1
+IF (r ist gleich 0) 
+THEN Berechne Entität in linker Tabelle, die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
+ENDIF;
+RA := Max(l, 1);  // l als Grenze für rechte Tabelle, mindestens 1
+IF (l ist gleich 0) 
+THEN Berechne Entität in rechter Tabelle, die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
+ENDIF;
 IF (Für die Kombination (T, LA, RA) wurden bereits Entitäten erzeugt) 
 THEN RETURN;
 END IF
 FOR i = 1 TO RA
 DO 
-  Berechne Entität le[i] in linker Tabelle die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
+  Berechne Entität le[i] in linker Tabelle, die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
 END FOR;
 FOR j = 1 TO LA
 DO 
-  Berechne Entität re[j] in rechter Tabelle die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
+  Berechne Entität re[j] in rechter Tabelle, die in keiner Beziehung zur assoziativen Tabelle T stehen darf;
 END FOR;
 FOR i = 1 TO RA
 DO 
