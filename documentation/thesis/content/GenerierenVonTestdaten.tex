@@ -902,6 +902,9 @@ END FOR;
 
 Die Integration des Daten-Generators führt zu generierungsspezifischen Erweiterungen im Datenbank-Modell. So kann für jede Spalte
 individuell ein Werte-Generator festgelegt werden -- ansonsten wird ein Standard-Werte-Generator für den jeweiligen Datentyp verwendet.
+Listing~\ref{listing:modell:ausschnittfuergenerierung} zeigt den Ausschnitt der Modell-Definition des fortlaufenden Beispiels,
+ergänzt um Daten-generierungsspezifische Anweisungen. Ein vollständiges Modell ist in Anhang~\ref{chap:anhang:modell} aufgelistet.
+Im Listing wird lediglich für eine Spalte ein individueller Werte-Generator festgelegt (Zeile 17).
 
 Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds initialisiert. Damit der selbe Werte-Generator für verschiedene
 Spalten standardmäßig unterschiedliche Werte erzeugt, wird der Standard-Spalten-Seed mit Hilfe des Tabellen- und des Spaltennamen
@@ -909,15 +912,15 @@ berechnet. Es ist außerdem möglich, tabellenspezifische Seeds und ein modellspez
 0 haben. Das tatsächliche Seed, mit dem die Zufallsgeneratoren initialisiert werden, stellt die Summe aus dem Spalten-Seed,
 dem Tabellen-Seed und dem Modell-Seed dar.
 
-Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallswerten generiert wird, 
-alle Spalten einer Tabelle oder alle Spalten aller Tabellen. Es ist darüber hinaus auch möglich, zwei Spalten mit selben Zufallswerten
-zu erzwingen.
+Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallswerten generiert wird
+(Zeile 19), alle Spalten einer Tabelle (Zeile 11) oder alle Spalten aller Tabellen (Zeile 6). Es ist darüber hinaus auch möglich,
+zwei Spalten mit selben Zufallswerten zu erzwingen.
 
 Da der Daten-Generator die Anzahl zu erzeugender Entitäten über die Beziehungen bestimmt, würde eine Tabelle ohne eine Beziehung zu anderen
 Tabellen leer bleiben. Das Modell wird deshalb für jede Tabelle um einen Wert erweitert, der Mindestanzahl der zu generierenden Entitäten
-enthält. Der Standardwert dafür ist 1.
+enthält (Zeile 12). Der Standardwert dafür ist 1.
 
-\todo{Code Listing verknüpfen, infinite beschreiben}
+Außerdem lässt sich für das Modell festlegen, welcher konkrete Wert anstelle der offenen Grenze \texttt{*} verwendet werden soll (Zeile 7).
 
 \begin{lstlisting}[caption=Ausschnitt des für die Daten-Generierung erweiterten Modells, label=listing:modell:ausschnittfuergenerierung]
 public HochschuleModel()
