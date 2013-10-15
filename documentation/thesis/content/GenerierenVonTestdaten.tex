@@ -26,12 +26,15 @@ vom SUT verborgen werden können, andererseits eigenen sie eher für Fixtures, die
 geeignet sind. Die Anonymisierung realer Daten stellt keine Daten-Generierung im eigentlichen Sinn dar und
 setzt bestehende Daten voraus.
 
-Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengeneratoren wird im folgenden Abschnitt analysiert.
+Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengeneratoren wird im folgenden Abschnitt
+auf die Anwendbarkeit hin untersucht.
 
 
 \section{Betrachtung existierender Werkzeuge}
 \label{sec:generieren:analyse}
 
+Es gibt bereits eine Reihe von Werkzeugen zur Generierung von Zufallsdaten für Datenbanken. In wie weit sich diese
+für die Aufgabenstellung nutzen lassen, soll im folgenden kurz analysiert werden.
 
   \subsection{Kommerzielle Werkzeuge}
 	\label{sec:generieren:analyse:kommerziellewerkzeuge}
@@ -63,15 +66,14 @@ Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengenerator
 	
 	In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
 	das Datenbank-Modell als Graphen betrachtet. Tabellen stellen Knoten und ihre Beziehungen stellen gerichtete
-	Kanten dar. Die Anzahl der generierten Entitäten wird über Faktoren vom Tester konfiguriert. Auch dieser Algorithmus
+	Kanten dar. Die Anzahl der generierten Entitäten wird über Verhältnisse vom Tester konfiguriert. Auch dieser Algorithmus
 	ist eher für die Erzeugung von Massen-Daten geeignet.
 
 
 	\subsection{Fazit}
 	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
-	in Widerspruch mit einer Massen-Daten-Generierung, wie sie die kommerziellen Werkzeuge bieten. 
-	
-	- Massen-Daten für Regressions- und Stabilitätstests usw, andere Thesis verweisen
+	in Widerspruch mit einer Massen-Daten-Generierung, wie sie die kommerziellen Werkzeuge bieten. Zum selben Schluss kommt
+	Raza in \cite[126]{CREATINGDATASETS}. Massen-Daten eignen sich eher für Stabilitäts-, Performance- und Regressionstests.
 		
   Keines der kommerziellen Werkzeuge ist in der Lage, die Anzahl der zu generierenden Entitäten selbst zu bestimmen. Auch
 	der Algorithmus aus \cite{Houkjaer:2006:SRD:1182635.1164254} ist dazu nicht in der Lage.
@@ -808,7 +810,8 @@ END FOR;
 		Entitäten aus TABLE2 schließlich mit fünf Entitäten aus TABLE3 (4. Fall) in Beziehung.
 		
 		Insgesamt werden für die generierten Beziehungen 17~Entitäten aus TABLE2, 12~Entitäten aus
-		TABLE3 und 48~Entitäten in der assoziativen Tabelle AT benötigt.
+		TABLE3 und 48~Entitäten in der assoziativen Tabelle AT benötigt. 7~Entitäten aus TABLE2
+		wurden bereits in Schritt 3 erzeugt, die anderen 10~Entitäten werden nachgeneriert.
 		
 		\begin{table}[ht!]
 			\caption{Zuordnung der Entitäten von AT, TABLE2 und TABLE3}
@@ -872,6 +875,11 @@ END FOR;
 		Schritt folgt: Die Erweiterung der Daten sofern notwendig.
 
 		\subsubsection{7. Schritt: Erweitern der Daten sofern notwendig}
+		
+		In diesem Beispiel wurden einige Entitäten für TABLE2 in Schritt 5 nachgeneriert. Da
+		diese Entitäten nur eine optionale Beziehung zu einer Entität aus TABLE1 hat, sind die
+		nachgenerierten Entitäten gültig. Eine Erweiterung der Daten ist somit nicht notwendig
+		und die Generierung abgeschlossen.
 
 \section{Praktischer Einsatz / Evaluation}
 
