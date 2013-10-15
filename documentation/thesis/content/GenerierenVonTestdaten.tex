@@ -108,8 +108,8 @@ vier Kombinationen vor:
 Verschiedene Fälle können redundant sein, falls untere und obere Grenze identisch sind. Auf die Generierung dieser
 redundanten Beziehungen kann verzichtet werden.
 
-Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens} generiert werden sollten.
-\todo{Kurz Äquivalenzklassen/Grenzwertanalyse anmerken}
+Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens} generiert werden sollten, um
+die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
 
   \subsection{Kategorie der 1:1-Beziehungen}
   
@@ -690,7 +690,7 @@ END FOR;
 		\caption{Einfaches Beispiel-Modell für den Algorithmus}\label{img:generierung:examplemodel}
 	\end{figure}
 	
-	Als Ersatz für die offene Grenze \texttt{*} wird der Wert 5 verwendet.
+	Als konkreter Wert für die offene Grenze \texttt{*} wird der Wert 5 verwendet.
 	
   Die generierten Daten für das fortlaufende Beispiel befinden sich in Anhang \ref{chap:anhang:generiertedsl}.
 	
@@ -953,9 +953,29 @@ public HochschuleModel()
 
   \subsection{Unerfüllbare Datenbankschemata}
  	\label{sec:generieren:offenepunkte:unerfuellbar}
+	
+	Nicht für jedes formal gültige Datenbankschema lassen sich alle Beziehungsfälle generieren. 
+	Abbildung~\ref{img:generierung:offen:infinite} zeigt ein zyklisches Datenbankschema mit den drei
+	Tabellen A, B und C. Jedes Entität aus A steht genau mit einer Entität aus B und einer Entität
+	aus C in Beziehung. Jede Entität aus B steht mit genau einer Entität aus A und einer Entität
+	aus C in Beziehung. Jede Entität aus C steht mit genau einer Entität aus A in Beziehung und
+	mit einer oder keiner Entität aus B.
+	
+	\begin{figure}[htbp]
+		\centering
+		 \includegraphics[width=0.55\textwidth]{images/generierung/infinite.png}
+		\caption{Formal korrektes aber "`unerfüllbares"' Datenbankschema}\label{img:generierung:offen:infinite}
+	\end{figure}
 
-    \begin{figure}[htbp]
-  	  \centering
-  	   \includegraphics[width=0.55\textwidth]{images/generierung/infinite.png}
-  	  \caption{Unerfüllbar}\label{img:generierung:offen:infinite}
-  	\end{figure}
+	Aus der Beschreibung geht schon hervor, dass es kein C geben kann, das nicht in Beziehung mit
+	einer Entität aus B steht. Denn eine Entität in C muss mit einer Entität in A in Beziehung
+	stehen, und eine Entität in A schließlich mit einer Entität in B. Und diese Entität in B
+	benötigt eine Entität C für eine Beziehung. Es kommt entweder die Entität aus C in Frage,
+	die nicht mit einer Entität aus B in Beziehung steht, oder es muss eine neue Entität in C
+	generiert werden -- dann beginnt der Zyklus allerdings von vorne.
+	
+	Der Algorithmus würde sich hierbei immer für die zusätzliche Generierung einer weiteren
+	Entität in C entscheiden und schließlich nicht terminieren. Die momentane Implementierung bricht
+	die Generierung allerdings nach Überschreiten eines Grenzwerts für nachträglich generierte
+	Entitäten ab.
+
