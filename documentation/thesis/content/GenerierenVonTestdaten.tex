@@ -239,6 +239,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
 	
 		\subsubsection{1. Fall (n:m): 1:0..1}
 		
+		
 		Im ersten Fall werden beide unteren Grenzen betrachtet. Da eine der Grenzen 0 ist, wird eine Entität ohne Beziehung
 		generiert. Abbildung \ref{img:generierung:1to01} visualisiert die zu erzeugenden Entitäten für die Kombination n:m.
 		
@@ -249,7 +250,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
   	\end{figure}		
 		
 		
-		\subsubsection{2. Fall (n:M): 1:4)}
+		\subsubsection{2. Fall (n:M): 1:4}
 		
 		Der zweite Fall betrachtet eine untere mit einer oberen Grenze. Die in diesem Beispiel erzeugten Entitäten zeigt
 		Abbildung \ref{img:generierung:1to4}.
@@ -307,7 +308,7 @@ Bezüglich der Datengenerierung lassen sich hierbei zwei generelle Vorgehensweise
 	  unabhängig sind. Die Frage, ob ein Professor eine Lehrveranstaltung leitet, lässt keine Rückschlüsse zu, ob und welche
 		Prüfungen er beaufsichtigt.
 	
-	\item \textbf{Beziehungen abhängig voneinander betrachten}: In der Praxis beeinflussen sich Beziehungen. Ein Student,
+	\item \textbf{Beziehungen abhängig voneinander betrachten}: In der Praxis beeinflussen sich viele Beziehungen. Ein Student,
 	  der die Prüfung einer Lehrveranstaltung schreibt, darf wohl nicht gleichzeitig Tutor dieser Veranstaltung sein.
 	
 \end{itemize}
@@ -947,9 +948,35 @@ public HochschuleModel()
 \section{Offene Punkte}
 \label{sec:generieren:offenepunkte}
 
-  \subsection{Abhängigkeiten von Beziehungen}
+Auch wenn der Algorithmus seine Tauglichkeit gezeigt hat, bietet er einige Möglichkeiten zur Verbesserung.
+Ein paar Probleme und Herausforderungen werden im Folgenden aufgezeigt.
 
-  \subsection{Abhängigkeiten von Spaltendaten (und Beziehungen?)}
+  \subsection{Abhängigkeiten von Beziehungen}
+	
+  Bereits in Abschnitt \ref{sec:generieren:komplexitaet} wurde das Problem angesprochen, dass Beziehungen
+	nicht immer unabhängig voneinander sind. Der Algorithmus in dieser Form trägt diesem Problem nur bei assoziativen
+	Tabellen Sorge.
+	
+
+  \subsection{Abhängigkeiten von Spaltendaten}
+	
+	Die Datengeneratoren für die Spalten arbeiten unabhängig voneinander. Allerdings können Werte in verschiedenen
+	Spalten voneinander abhängen:
+	
+	\begin{itemize}
+		\item \textbf{Vorname} und \textbf{Geschlecht}
+		\item \textbf{Start-} und \textbf{Endwerte}, z.B. bei Datumsbereichen, Zeitspannen, Grenzwerten, ...
+		\item Werte, die sich aus Werten anderen Spalten \textbf{zusammensetzen}
+	\end{itemize}
+	
+	Außerdem können Spaltenwerte sich auch auf Beziehungen zu anderen Entitäten auswirken:
+	
+	\begin{itemize}
+		\item \textbf{Geschlecht} und \textbf{Eltern-Eigenschaft}: männlich/weiblich muss zur Rolle Vater/Mutter passen
+		\item \textbf{Fakultät} und \textbf{Raum-Nummer}: Das Büro eines Professors hängt von seiner Fakultät ab.
+		\item \textbf{Überschneidungen von Lehrveranstaltungen} eines Professors
+	\end{itemize}
+	
 
   \subsection{Unerfüllbare Datenbankschemata}
  	\label{sec:generieren:offenepunkte:unerfuellbar}
