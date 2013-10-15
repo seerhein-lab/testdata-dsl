@@ -10,7 +10,8 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
   \item \textbf{Modell-basierte, Abfrage-basierte Generierung}:
   	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. Binnig beschreibt in
   	\cite{DBLP:conf:icde:BinnigKL07} einen Ansatz, bei dem SQL-Abfragen als Grundlage für die Daten-Generierung verwendet
-		werden.
+		werden. Mit AGENDA wird in \cite{Chays04anagenda} ein Toolset vorgestellt, das neben dem Datenbank-Schema den
+		Anwendungsquellcode betrachtet.
   
   \item \textbf{Anonymisierung realer Daten}:
   	Bei diesem Ansatz findet keine echte Generierung statt. Stattdessen werden Daten einer realen Anwendung 
@@ -29,9 +30,11 @@ Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengenerator
 
 
 \section{Betrachtung existierender Werkzeuge}
-\label{chap:generieren:analyse}
+\label{sec:generieren:analyse}
+
 
   \subsection{Kommerzielle Werkzeuge}
+	\label{sec:generieren:analyse:kommerziellewerkzeuge}
 	Zu den betrachteten kommerziellen Anwendungen zählen:
 
 	\begin{itemize}
@@ -56,10 +59,13 @@ Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengenerator
 	Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
 
   \subsection{Andere Ansätze}
+	\label{sec:generieren:analyse:andereansaetze}
 	
-	- Paper 
-	
-	- AGENDA
+	In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
+	das Datenbank-Modell als Graphen betrachtet. Tabellen stellen Knoten und ihre Beziehungen stellen gerichtete
+	Kanten dar. Die Anzahl der generierten Entitäten wird über Faktoren vom Tester konfiguriert. Auch dieser Algorithmus
+	ist eher für die Erzeugung von Massen-Daten geeignet.
+
 
 	\subsection{Fazit}
 	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
@@ -67,6 +73,8 @@ Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengenerator
 	
 	- Massen-Daten für Regressions- und Stabilitätstests usw, andere Thesis verweisen
 		
+  Keines der kommerziellen Werkzeuge ist in der Lage, die Anzahl der zu generierenden Entitäten selbst zu bestimmen. Auch
+	der Algorithmus aus \cite{Houkjaer:2006:SRD:1182635.1164254} ist dazu nicht in der Lage.
 	
 	Aus diesem Grund soll ein Algorithmus entwickelt werden, der Beziehungen nicht nur zufällig generiert, sondern möglichst
 	alle Grenzfälle erzeugt.  Äquivalenzklassenbildung und Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von
@@ -311,16 +319,12 @@ Tabellen.
 \section{Algorithmus zur Generierung von Beziehungen}
 \label{sec:generieren:algorithmus}
 
-In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
-das Datenbank-Modell als Graphen betrachtet. Auch dieser Algorithmus ist eher für die Erzeugung von Massen-Daten geeignet.
-Der entwickelte Algorithmus übernimmt die Idee, das Modell als Graphen zu betrachten.
-
-Bevor der Pseudocode des Algorithmus beschrieben wird, werden einige verwendete Begriffe beschrieben und das Klassen-Diagramm
-des Modells vorgestellt, das der Daten-Generator verwendet.
+Der entwickelte Algorithmus übernimmt aus \cite{Houkjaer:2006:SRD:1182635.1164254} die Idee, das Modell als Graphen
+zu betrachten und zu traversieren. Bevor der Pseudocode des Algorithmus beschrieben wird, werden einige verwendete
+Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der Daten-Generator verwendet.
 
 	\subsection{Begriffserklärungen}
-	
-    Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
+  Die Beschreibung des Algorithmus verwendet einige Begriffe und Konventionen, die im Folgenden beschrieben werden.
 	
 		\subsubsection{Knoten und Kanten}
 		
@@ -341,6 +345,12 @@ des Modells vorgestellt, das der Daten-Generator verwendet.
 		Fremdschlüssel referenziert die linke Tabelle. Das Ergebnis der Generierung hängt jedoch nicht von dieser Einteilung ab.
 	
   \subsection{Klassendiagramm}
+	
+	
+	
+	
+	
+	
 
   \subsection{Pseudocode}
   \label{sec:generieren:algorithmus:pseudocode}
@@ -550,7 +560,7 @@ END IF;
 		
 		Abbildung \ref{img:generierung:tauschat} veranschaulicht die Parameter und zeigt, dass die angegebenen Grenzen
 		bestimmen, wie viele Entitäten der \textit{anderen} Tabelle benötigt werden. D.h. \texttt{l} bestimmt, wie viele
-		Entitäten der rechten Tabelle , und \texttt{r} bestimmt, wie viele Entitäten der linken Tabelle generiert werden
+		Entitäten der rechten Tabelle, und \texttt{r} bestimmt, wie viele Entitäten der linken Tabelle generiert werden
 		müssen.
 		
 	  \begin{figure}[htbp]
@@ -612,7 +622,25 @@ END FOR;
 \end{lstlisting}
 
 		\subsubsection{Erweitere Generierte Daten zu konsistenten Daten}
-
+		
+		Es kann passieren, dass am Ende der Traversierung des Graphs ungültige Entitäten vorhanden sind.
+		Ungültig bedeutet, dass sie bei eine oder mehrere Kanten nicht in ausreichend vielen Beziehungen steht.
+		Dies kann passieren, wenn für eine bereits besuchte Tabelle zusätzliche Entitäten erzeugt werden
+		müssen -- beispielsweise wenn das Datenbank-Modell zirkuläre Abhängigkeiten enthält.
+		
+		Der Algorithmus sieht nicht vor, bei zusätzlicher Erzeugung von Entitäten den Graphen rückwärts zu
+		traversieren. Stattdessen werden am Ende alle Entitäten validiert und gegebenenfalls wird nachgeneriert.
+		
+		Die Funktion zur Validierung iteriert über die Entitäten aller Tabellen. Es wird überprüft, ob die
+		jeweilige Entität gültig generiert wurde auf Hinblick der aus- und eingehenden Kanten. Sollte dies für
+		eine Entität nicht der Fall sein, wird eine entsprechende Beziehung hergestellt und die Validierung
+		erneut von Anfang an durchgeführt.
+		
+		Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten} zeigt den Pseudo-Code dieser Funktion.
+		
+		Es kann passieren, dass diese Funktion niemals beendet wird. Dieses Problem wird in
+		Abschnitt~\ref{sec:generieren:offenepunkte:unerfuellbar} thematisiert.
+		
 \begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistentenDaten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
 Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
 -------------------------------------------------
@@ -646,10 +674,9 @@ END FOR;
   \subsection{Beispiel}
 	
 	Der Algorithmus soll an einem kleinen Beispiel veranschaulicht werden. Dazu wird ein kleines Datenbank-Modell definiert,
-	das vier Tabellen definiert (siehe Abbildung \ref{img:generierung:examplemodel}). Eine der Tabellen ist assoziativ
-	(Tabelle AT).
+	das vier Tabellen enthält (siehe Abbildung \ref{img:generierung:examplemodel}). Die Tabelle AT ist assoziativ.
 	
-	Das Modell lässt sich auf ER-Ebene so beschreiben:
+	Das Modell lässt sich auf ER-Ebene folgendermaßen beschreiben:
 	Eine Entität der Tabelle TABLE1 kann beliebig vielen Entitäten aus TABLE2 zugeordnet sein. Umgekehrt kann eine Entität
 	aus TABLE2 entweder einer oder keiner Entität aus TABLE1 zugeordnet sein.
 	Eine Entität aus Tabelle TABLE2 kann mit beliebig vielen Entitäten aus TABLE3 verbunden sein. Eine Entität aus TABLE3
@@ -717,6 +744,7 @@ END FOR;
 		
 		\begin{table}[ht]
 			\caption{Zuordnung der Entitäten von TABLE1 und TABLE2}
+			\centering
 			\begin{tabular}{l|l}
 				TABLE1     & TABLE2     \\
 				\hline
@@ -782,8 +810,9 @@ END FOR;
 		Insgesamt werden für die generierten Beziehungen 17~Entitäten aus TABLE2, 12~Entitäten aus
 		TABLE3 und 48~Entitäten in der assoziativen Tabelle AT benötigt.
 		
-		\begin{table}[h!]
+		\begin{table}[ht!]
 			\caption{Zuordnung der Entitäten von AT, TABLE2 und TABLE3}
+			\centering
 			\begin{tabular}{l|l|l||l|l|l}
 				AT     & TABLE2     & TABLE3     & AT     & TABLE2     & TABLE3\\
 				\hline
@@ -821,15 +850,26 @@ END FOR;
 			\label{tab:generierung:table2_table3}
 		\end{table}
 				
+		Der Algorithmus hat die Generierung für AT abgeschlossen und setzt die Generierung bei
+		TABLE3 fort, da TABLE2 bereits besucht wurde.
+		
 		\subsubsection{6. Schritt: Generierung für TABLE3}
-			
-		Abbildung \ref{img:generierung:example:step_table3}
+		
+		Abbildung \ref{img:generierung:example:step_table3} stellt die Ausgangssituation für
+		den Algorithmus für die Generierung von Daten für TABLE3 dar. Die Tabellen TABLE1,
+		TABLE2 und AT wurden bereits besucht, ebenso die Kanten von TABLE2 nach TABLE1,
+		AT nach TABLE2 und AT nach TABLE3.
 
 		\begin{figure}[htbp]
 			\centering
 			 \includegraphics[width=0.55\textwidth]{images/generierung/example_step_table3.pdf}
 			\caption{Schritt: Tabelle 3}\label{img:generierung:example:step_table3}
 		\end{figure}
+		
+		Es gibt keine unbesuchten Kanten in TABLE3. Der Algorithmus kehrt zu TABLE2 und
+		von dort zu TABLE1 zurück, wo ebenfalls keine unbesuchten Kanten mehr sind. In der Liste
+		der Tabellen befindet sich auch keine unbesuchten Tabellen mehr, so dass nun der letzte
+		Schritt folgt: Die Erweiterung der Daten sofern notwendig.
 
 		\subsubsection{7. Schritt: Erweitern der Daten sofern notwendig}
 
@@ -837,7 +877,7 @@ END FOR;
 
   \subsection{Einfluss der Tabellenreihenfolge}
 	\label{sec:generieren:evaluation:tabellenreihenfolge}
-		
+
 	Die Art und Weise, wie Beziehungen generiert werden, hängen von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
 	werden. Die gewählte Reihenfolge basiert auf den Kriterien aus \cite{Houkjaer:2006:SRD:1182635.1164254}. Die Sortierung
 	wird nicht aus Qualitätsgründen, sondern für ein deterministisches Verhalten des Algorithmus beibehalten. Da verschiedene
@@ -897,10 +937,14 @@ public HochschuleModel()
 \end{lstlisting}
 
 \section{Offene Punkte}
+\label{sec:generieren:offenepunkte}
 
-- Abhängigkeiten von Beziehungen
+  \subsection{Abhängigkeiten von Beziehungen}
 
-- Abhängigkeiten von Spaltendaten (und Beziehungen?)
+  \subsection{Abhängigkeiten von Spaltendaten (und Beziehungen?)}
+
+  \subsection{Unerfüllbare Datenbankschemata}
+ 	\label{sec:generieren:offenepunkte:unerfuellbar}
 
     \begin{figure}[htbp]
   	  \centering
