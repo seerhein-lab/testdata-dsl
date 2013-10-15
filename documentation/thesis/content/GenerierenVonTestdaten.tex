@@ -3,13 +3,13 @@
 
 Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basierte Anwendungen:
 \begin{enumerate}
-  \item \textbf{Modell-basierte Generierung}:
+  \item \textbf{Modell-basierte, Abfrage-unabhängige Generierung}:
   	Anhand eines Datenbank-Modells werden Entitäten mit Zufallswerten für die Attribute (Spalten) erzeugt. Es gibt
   	einige kommerzielle Werkzeuge aber auch frei nutzbare Internet-Seiten für die Generierung. 
   
-  \item \textbf{Abfrage-basierte Generierung}:
+  \item \textbf{Modell-basierte, Abfrage-basierte Generierung}:
   	Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. Binnig beschreibt in
-  	\cite{DBLP:conf:icde:BinnigKL07} einen Ansatz, in dem SQL-Abfragen als Grundlage für die Daten-Generierung verwendet
+  	\cite{DBLP:conf:icde:BinnigKL07} einen Ansatz, bei dem SQL-Abfragen als Grundlage für die Daten-Generierung verwendet
 		werden.
   
   \item \textbf{Anonymisierung realer Daten}:
@@ -25,37 +25,52 @@ vom SUT verborgen werden können, andererseits eigenen sie eher für Fixtures, die
 geeignet sind. Die Anonymisierung realer Daten stellt keine Daten-Generierung im eigentlichen Sinn dar und
 setzt bestehende Daten voraus.
 
-Eine Auswahl existierender Modell-basierter Datengeneratoren wird im folgenden Abschnitt analysiert.
+Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengeneratoren wird im folgenden Abschnitt analysiert.
 
 
 \section{Betrachtung existierender Werkzeuge}
 \label{chap:generieren:analyse}
 
-Die Analyse der Werkzeuge beschränkt sich auf folgende kommerzielle Anwendungen:
-\begin{itemize}
-  \item Datanamic Data Generator MultiDB
-  \item DTM Data Generator
-  \item forSQL Data Generator
-  \item Red Gate SQL Data Generator
-\end{itemize}
+  \subsection{Kommerzielle Werkzeuge}
+	Zu den betrachteten kommerziellen Anwendungen zählen:
 
-Insgesamt sind die Möglichkeiten der Anwendungen relativ ähnlich. Die größten Unterschiede aus Nutzer-Sicht liegen in der
-Bedienung. Die Werkzeuge arbeiten zufallsbasiert aber deterministisch, d.h. sie erzeugen bei gleichem Modell die gleichen
-Daten. Das sogenannte \textit{Seed}, mit dem der Zufallszahlengenerator für eine einzelne Spalte initialisiert wird, lässt
-sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
+	\begin{itemize}
+		\item \textbf{Datanamic Data Generator MultiDB}: \\
+			\url{http://www.datanamic.com/datagenerator/}
+		\item \textbf{DTM Data Generator}: \\
+			\url{http://www.sqledit.com/dg/}
+		\item \textbf{forSQL Data Generator}: \\
+			\url{http://www.forsql.com/}
+		\item \textbf{Red Gate SQL Data Generator}: \\
+			\url{http://www.red-gate.com/products/sql-development/sql-data-generator/}
+	\end{itemize}
 
-Die Werkzeuge sind vor allem für die Generierung von großen Datenmengen (Massen-Daten) vorgesehen. Dies zeigt sich auch darin,
-dass sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten soll dann auch jeder
-notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
-Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
+	Insgesamt sind die Möglichkeiten der Anwendungen relativ ähnlich. Die größten Unterschiede aus Nutzer-Sicht liegen in der
+	Bedienung. Die Werkzeuge arbeiten zufallsbasiert aber deterministisch, d.h. sie erzeugen bei gleichem Modell die gleichen
+	Daten. Das sogenannte \textit{Seed}, mit dem der Zufallszahlengenerator für eine einzelne Spalte initialisiert wird, lässt
+	sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
+
+	Die Werkzeuge sind vor allem für die Generierung von großen Datenmengen (Massen-Daten) vorgesehen. Dies zeigt sich auch darin,
+	dass sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten soll dann auch jeder
+	notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
+	Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
+
+  \subsection{Andere Ansätze}
+	
+	- Paper 
+	
+	- AGENDA
 
 	\subsection{Fazit}
 	Die von dem zu entwickelnden Generator erzeugten Testdaten sollen allerdings überschaubar und wartbar sein. Dies steht
-	in Widerspruch mit einer Massen-Daten-Generierung. Aus diesem Grund soll ein Algorithmus entwickelt werden, der
-	Beziehungen nicht nur zufällig generiert, sondern möglichst alle Grenzfälle erzeugt. Äquivalenzklassenbildung und
-	Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von Test-Daten zu reduzieren. 
+	in Widerspruch mit einer Massen-Daten-Generierung, wie sie die kommerziellen Werkzeuge bieten. 
 	
+	- Massen-Daten für Regressions- und Stabilitätstests usw, andere Thesis verweisen
+		
 	
+	Aus diesem Grund soll ein Algorithmus entwickelt werden, der Beziehungen nicht nur zufällig generiert, sondern möglichst
+	alle Grenzfälle erzeugt.  Äquivalenzklassenbildung und Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von
+	Test-Daten zu reduzieren. 
 	
 
 
@@ -92,6 +107,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
   keiner Entität in Beziehung stehen kann.
   
   	\subsubsection{1..1:1..1}
+		\label{sec:generieren:categories:11to11}
   	
   	Eine Entität des Typs A steht mit genau einer Entität des Typs B in Beziehung. Die Anzahl der generierten Entitäten
   	muss übereinstimmen, es muss mindestens eine Entität pro Typ erzeugt werden (siehe Abbildung \ref{img:generierung:11to11}).
@@ -104,6 +120,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
 
   	
   	\subsubsection{0..1:1..1}
+		\label{sec:generieren:categories:01to11}
   	
   	Im Gegensatz zu demr vorherigen Beziehungstyp muss bei dieser eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
   	Abbildung \ref{img:generierung:01to11} zeigt die zu generierenden Entitäten der Typen A und B, wobei jede Entität von A
@@ -123,6 +140,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
   	
 
   	\subsubsection{0..1:0..1}
+		\label{sec:generieren:categories:01to01}
   	
   	Wenn für beide Entitätstypen die Beziehung optional ist, muss der Generator jeweils mindestens 2 Entitäten erzeugen. Jeweils
   	eine Entität ohne Beziehung und jeweils eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
@@ -140,6 +158,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
   konfigurierbar sein.
   
   	\subsubsection{1..1:1..n}
+		\label{sec:generieren:categories:11to1n}
   	
   	Die einfachste Form der 1:n-Beziehungen. Eine Entität des Typs A ist in einer Beziehung mit einer oder mehreren Entitäten
   	des Typs B. Eine Entität des Typs B ist mit genau einer Entität des Typs A in Beziehung. Die zu generierenden Entitäten 
@@ -152,6 +171,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
   	\end{figure}
 
   	\subsubsection{0..1:1..n}
+		\label{sec:generieren:categories:01to1n}
   	
   	Eine Entität des Typs A steht in Beziehung mit einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B steht
   	entweder mit genau einer oder mit keiner Entität des Typs A in Beziehung. Abbildung \ref{img:generierung:01to1n} stellt
@@ -164,6 +184,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
   	\end{figure}
   	
   	\subsubsection{1..1:0..n}
+		\label{sec:generieren:categories:11to0n}
   	
   	Eine Entität des Typs A steht in Beziehung mit keiner, einer oder mehreren Entitäten des Typs B. Eine Entität des Typs B
   	muss mit genau einer Entität des Typs A in Beziehung stehen. 
@@ -177,6 +198,7 @@ Die Abbildungen stellen dar, welche Entitäten und Beziehungen \textit{mindestens
 
 
   	\subsubsection{0..1:0..n}
+		\label{sec:generieren:categories:01to0n}
 		
 		Eine Entität des Typs A steht mit keiner, einer oder mehreren Entitäten des Typs B in Beziehung. Eine Entität des Typs B
 		kann mit keiner oder genau einer Entität des Typs A in Beziehung stehen.
@@ -359,7 +381,7 @@ DO
   ELSE CALL Generiere_Daten_Fuer_Assoziative_Tabelle(T);
   END IF;
 END FOR;
-CALL Erweitere_Generierte_Daten_Zu_Konsistenen_Daten()
+CALL Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
 \end{lstlisting}
 
 		\subsubsection{Generiere Daten für nichtassoziative Tabelle}
@@ -589,26 +611,60 @@ DO
 END FOR;
 \end{lstlisting}
 
-		\subsubsection{Erweitere Generierte Daten zu konstistenten Daten}
+		\subsubsection{Erweitere Generierte Daten zu konsistenten Daten}
 
-\begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistenenDaten, label=listing:ErweitereGenerierteDatenZuKonsistenenDaten]
-Erweitere_Generierte_Daten_Zu_Konsistenen_Daten()
+\begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistentenDaten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
+Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
 -------------------------------------------------
+FOR EACH (Tabelle T in Tabellenliste)
+DO
+  FOR EACH (Entität e aus generierten Entitäten der Tabelle T)
+	DO
+	  FOR EACH (Kante K aus ausgehenden Kanten der Tabelle T)
+	  DO
+	    IF (e erfüllt Constraints für Kante K nicht)
+		  THEN Berechne Entität f in Zieltabelle der Kante K, die in keiner Beziehung zur Tabelle T stehen darf;
+			     Stelle Beziehung zwischen Entität e und Entität f her;
+					 Funktion Erweitere_Generierte_Daten_Zu_Konsistenten_Daten neu starten;
+		  END IF;
+		END FOR;
+	  FOR EACH (Kante K aus eingehenden Kanten der Tabelle T)
+	  DO
+	    IF (e erfüllt Constraints für Kante K nicht)
+		  THEN Berechne Entität f in Starttabelle der Kante K, die in keiner Beziehung zur Tabelle T stehen darf;
+			     Stelle Beziehung zwischen Entität e und Entität f her;
+					 Funktion Erweitere_Generierte_Daten_Zu_Konsistenten_Daten neu starten;
+		  END IF;
+		END FOR;
+	END FOR;
+END FOR;
 \end{lstlisting}
 
 
 
 
   \subsection{Beispiel}
-	  
+	
 	Der Algorithmus soll an einem kleinen Beispiel veranschaulicht werden. Dazu wird ein kleines Datenbank-Modell definiert,
-	das vier Tabellen definiert (siehe Abbildung \ref{img:generierung:examplemodel}).
+	das vier Tabellen definiert (siehe Abbildung \ref{img:generierung:examplemodel}). Eine der Tabellen ist assoziativ
+	(Tabelle AT).
+	
+	Das Modell lässt sich auf ER-Ebene so beschreiben:
+	Eine Entität der Tabelle TABLE1 kann beliebig vielen Entitäten aus TABLE2 zugeordnet sein. Umgekehrt kann eine Entität
+	aus TABLE2 entweder einer oder keiner Entität aus TABLE1 zugeordnet sein.
+	Eine Entität aus Tabelle TABLE2 kann mit beliebig vielen Entitäten aus TABLE3 verbunden sein. Eine Entität aus TABLE3
+	muss mit mindestens drei und höchstens fünf Entitäten aus TABLE2 in Beziehung stehen.
 
 	\begin{figure}[htbp]
 		\centering
 		 \includegraphics[width=0.55\textwidth]{images/generierung/example_model.pdf}
 		\caption{Einfaches Beispiel-Modell für den Algorithmus}\label{img:generierung:examplemodel}
 	\end{figure}
+	
+	Als Ersatz für die offene Grenze \texttt{*} wird der Wert 5 verwendet.
+	
+  Die generierten Daten für das fortlaufende Beispiel befinden sich in Anhang \ref{chap:anhang:generiertedsl}.
+	
 
 		\subsubsection{1. Schritt: Sortieren der Tabellen}
 		
@@ -653,24 +709,39 @@ Erweitere_Generierte_Daten_Zu_Konsistenen_Daten()
 		
 		\subsubsection{3. Schritt: Generierung für Kante zwischen TABLE1 und TABLE2}
 		
-		\begin{tabular}{l|l}
-			TABLE1     & TABLE2     \\
-			\hline
-			TABLE1\_1  &            \\
-								 & TABLE2\_1  \\
-			TABLE1\_2  & TABLE2\_2  \\
-			TABLE1\_3  & TABLE2\_3  \\
-			TABLE1\_3  & TABLE2\_4  \\
-			TABLE1\_3  & TABLE2\_5  \\
-			TABLE1\_3  & TABLE2\_6  \\
-			TABLE1\_3  & TABLE2\_7  \\
-			\hline
-			3 Entitäten  & 7 Entitäten  \\
-		 \end{tabular}
+		Die Kante repräsentiert eine 0..1:0..*-Beziehung, die Generierung für so eine Kante ist in Abschnitt 
+		\ref{sec:generieren:categories:01to0n} beschrieben. Jeweils eine Entität steht in keiner Beziehung, 
+		zwei Entitäten befinden sich in einer 1:1-Beziehung und eine Entität aus TABLE1 steht mit fünf
+		Entitäten aus TABLE2 in Beziehung. In der Summe werden damit 3~Entitäten für TABLE1 und 7~Entitäten
+		für TABLE2 erzeugt (siehe Tabelle \ref{tab:generierung:table1_table2}).
+		
+		\begin{table}[ht]
+			\caption{Zuordnung der Entitäten von TABLE1 und TABLE2}
+			\begin{tabular}{l|l}
+				TABLE1     & TABLE2     \\
+				\hline
+				TABLE1\_1  &            \\
+									 & TABLE2\_1  \\
+				TABLE1\_2  & TABLE2\_2  \\
+				TABLE1\_3  & TABLE2\_3  \\
+				TABLE1\_3  & TABLE2\_4  \\
+				TABLE1\_3  & TABLE2\_5  \\
+				TABLE1\_3  & TABLE2\_6  \\
+				TABLE1\_3  & TABLE2\_7  \\
+				\hline
+				3 Entitäten  & 7 Entitäten  \\
+			\end{tabular}
+			\label{tab:generierung:table1_table2}
+		\end{table}
+		
+		Nachdem die Generierung der Entitäten und Beziehungen für die Kante abgeschlossen ist, setzt der
+		Algorithmus die Arbeit bei der Tabelle fort, die mit dieser Kante verbunden ist: TABLE2.
 
 		\subsubsection{4. Schritt: Generierung für TABLE2}
 
-		Abbildung \ref{img:generierung:example:step_table2}
+		Die Generierung der Daten für die Kante zwischen TABLE1 und TABLE2 ist abgeschlossen, TABLE1 ist
+		als bereits besuchte Tabelle markiert. Abbildung~\ref{img:generierung:example:step_table2} stellt
+		den Generierungsstand grafisch dar.
 
 		\begin{figure}[htbp]
 			\centering
@@ -678,50 +749,77 @@ Erweitere_Generierte_Daten_Zu_Konsistenen_Daten()
 			\caption{Schritt: TABLE2}\label{img:generierung:example:step_table2}
 		\end{figure}
 		
+		
+		Der Algorithmus iteriert über die Kanten von TABLE2. Dabei würden zuerst ausgehende Kanten betrachtet,
+		die Tabelle hat aber nur zwei eingehende. Da die Kante mit TABLE1 bereits besucht wurde, wird die
+		Traversierung des Graphs mit der Kante zu Tabelle AT fortgesetzt. Bei AT handelt es sich um eine
+		assoziative Tabelle, weshalb der nächste Schritt die Generierung von Daten für die assoziative Tabelle
+		AT darstellt.
+		
 		\subsubsection{5. Schritt: Generierung für AT}
 		
-		Abbildung \ref{img:generierung:example:step_tableat}
-		
+		Der Daten-Generator befindet sich bei der assoziativen Tabelle AT, die Tabellen TABLE1 und TABLE2
+		wurden bereits besucht (siehe Abbildung~\ref{img:generierung:example:step_tableat}).
+
 		\begin{figure}[htbp]
 			\centering
 			 \includegraphics[width=0.55\textwidth]{images/generierung/example_step_tableat.pdf}
 			\caption{Schritt: AT}\label{img:generierung:example:step_tableat}
 		\end{figure}
 
-		\begin{tabular}{l|l||l|l}
-			TABLE2     & TABLE3     & TABLE2     & TABLE3\\
-			\hline
-% 0..1:3			                  5:5			
-			TABLE2\_1  &            & TABLE2\_13 & TABLE3\_8  \\
-			TABLE2\_2  & TABLE3\_1  & TABLE2\_13 & TABLE3\_9  \\
-			TABLE2\_3  & TABLE3\_1  & TABLE2\_13 & TABLE3\_10 \\
-			TABLE2\_4  & TABLE3\_1  & TABLE2\_13 & TABLE3\_11 \\
-% 0..1:5			
-			TABLE2\_5  & TABLE3\_2  & TABLE2\_13 & TABLE3\_12 \\
-			TABLE2\_6  & TABLE3\_2  & TABLE2\_14 & TABLE3\_8  \\
-			TABLE2\_7  & TABLE3\_2  & TABLE2\_14 & TABLE3\_9  \\
-			TABLE2\_8  & TABLE3\_2  & TABLE2\_14 & TABLE3\_10 \\
-			TABLE2\_9  & TABLE3\_2  & TABLE2\_14 & TABLE3\_11 \\
-% 5:3
-			TABLE2\_10 & TABLE3\_3  & TABLE2\_14 & TABLE3\_12 \\
-			TABLE2\_10 & TABLE3\_4  & TABLE2\_15 & TABLE3\_8  \\
-			TABLE2\_10 & TABLE3\_5  & TABLE2\_15 & TABLE3\_9  \\
-			TABLE2\_10 & TABLE3\_6  & TABLE2\_15 & TABLE3\_10 \\
-			TABLE2\_10 & TABLE3\_7  & TABLE2\_15 & TABLE3\_11 \\
-			TABLE2\_11 & TABLE3\_3  & TABLE2\_15 & TABLE3\_12 \\
-			TABLE2\_11 & TABLE3\_4  & TABLE2\_16 & TABLE3\_8  \\
-			TABLE2\_11 & TABLE3\_5  & TABLE2\_16 & TABLE3\_9  \\
-			TABLE2\_11 & TABLE3\_6  & TABLE2\_16 & TABLE3\_10 \\
-			TABLE2\_11 & TABLE3\_7  & TABLE2\_16 & TABLE3\_11 \\
-			TABLE2\_12 & TABLE3\_3  & TABLE2\_16 & TABLE3\_12 \\
-			TABLE2\_12 & TABLE3\_4  & TABLE2\_17 & TABLE3\_8  \\
-			TABLE2\_12 & TABLE3\_5  & TABLE2\_17 & TABLE3\_9  \\
-			TABLE2\_12 & TABLE3\_6  & TABLE2\_17 & TABLE3\_10 \\
-			TABLE2\_12 & TABLE3\_7  & TABLE2\_17 & TABLE3\_11 \\
-			           &            & TABLE2\_17 & TABLE3\_12 \\
-			\hline
- 			           &            & 17 Entitäten  & 12 Entitäten  \\
-		 \end{tabular}
+		Die assoziative Tabelle AT dient der Modellierung einer 0..*:3..5-Beziehung zwischen den beiden
+		Tabellen TABLE2 und TABLE3. Das Generierungsschema für assoziative Tabellen ist in 
+		Abschnitt~\ref{sec:generieren:beziehungen:nm} beschrieben.
+		
+    Tabelle~\ref{tab:generierung:table2_table3} zeigt die Zuordnung von Entitäten aus TABLE2
+		und TABLE3. Jedes Paar führt zu einer Entität in der Tabelle AT.
+
+		Eine Entität aus TABLE2 steht in keiner Beziehung mit Entitäten aus TABLE3. Jeweils drei 
+		und fünf Entitäten TABLE2 stehen mit genau einer Entität aus TABLE2 in Beziehung (1. und 2. Fall).
+		Fünf Entitäten aus TABLE2 stehen mit drei Entitäten aus TABLE3 (3. Fall) und weitere fünf
+		Entitäten aus TABLE2 schließlich mit fünf Entitäten aus TABLE3 (4. Fall) in Beziehung.
+		
+		Insgesamt werden für die generierten Beziehungen 17~Entitäten aus TABLE2, 12~Entitäten aus
+		TABLE3 und 48~Entitäten in der assoziativen Tabelle AT benötigt.
+		
+		\begin{table}[h!]
+			\caption{Zuordnung der Entitäten von AT, TABLE2 und TABLE3}
+			\begin{tabular}{l|l|l||l|l|l}
+				AT     & TABLE2     & TABLE3     & AT     & TABLE2     & TABLE3\\
+				\hline
+	% 0..1:3			                  5:5			
+				       & TABLE2\_1  &            & AT\_24 & TABLE2\_13 & TABLE3\_8  \\
+				AT\_1  & TABLE2\_2  & TABLE3\_1  & AT\_25 & TABLE2\_13 & TABLE3\_9  \\
+				AT\_2  & TABLE2\_3  & TABLE3\_1  & AT\_26 & TABLE2\_13 & TABLE3\_10 \\
+				AT\_3  & TABLE2\_4  & TABLE3\_1  & AT\_27 & TABLE2\_13 & TABLE3\_11 \\
+	% 0..1:5			
+				AT\_4  & TABLE2\_5  & TABLE3\_2  & AT\_28 & TABLE2\_13 & TABLE3\_12 \\
+				AT\_5  & TABLE2\_6  & TABLE3\_2  & AT\_29 & TABLE2\_14 & TABLE3\_8  \\
+				AT\_6  & TABLE2\_7  & TABLE3\_2  & AT\_30 & TABLE2\_14 & TABLE3\_9  \\
+				AT\_7  & TABLE2\_8  & TABLE3\_2  & AT\_31 & TABLE2\_14 & TABLE3\_10 \\
+				AT\_8  & TABLE2\_9  & TABLE3\_2  & AT\_32 & TABLE2\_14 & TABLE3\_11 \\
+	% 5:3
+				AT\_9  & TABLE2\_10 & TABLE3\_3  & AT\_33 & TABLE2\_14 & TABLE3\_12 \\
+				AT\_10 & TABLE2\_10 & TABLE3\_4  & AT\_34 & TABLE2\_15 & TABLE3\_8  \\
+				AT\_11 & TABLE2\_10 & TABLE3\_5  & AT\_35 & TABLE2\_15 & TABLE3\_9  \\
+				AT\_12 & TABLE2\_10 & TABLE3\_6  & AT\_36 & TABLE2\_15 & TABLE3\_10 \\
+				AT\_13 & TABLE2\_10 & TABLE3\_7  & AT\_37 & TABLE2\_15 & TABLE3\_11 \\
+				AT\_14 & TABLE2\_11 & TABLE3\_3  & AT\_38 & TABLE2\_15 & TABLE3\_12 \\
+				AT\_15 & TABLE2\_11 & TABLE3\_4  & AT\_39 & TABLE2\_16 & TABLE3\_8  \\
+				AT\_16 & TABLE2\_11 & TABLE3\_5  & AT\_40 & TABLE2\_16 & TABLE3\_9  \\
+				AT\_17 & TABLE2\_11 & TABLE3\_6  & AT\_41 & TABLE2\_16 & TABLE3\_10 \\
+				AT\_18 & TABLE2\_11 & TABLE3\_7  & AT\_42 & TABLE2\_16 & TABLE3\_11 \\
+				AT\_19 & TABLE2\_12 & TABLE3\_3  & AT\_43 & TABLE2\_16 & TABLE3\_12 \\
+				AT\_20 & TABLE2\_12 & TABLE3\_4  & AT\_44 & TABLE2\_17 & TABLE3\_8  \\
+				AT\_21 & TABLE2\_12 & TABLE3\_5  & AT\_45 & TABLE2\_17 & TABLE3\_9  \\
+				AT\_22 & TABLE2\_12 & TABLE3\_6  & AT\_46 & TABLE2\_17 & TABLE3\_10 \\
+				AT\_23 & TABLE2\_12 & TABLE3\_7  & AT\_47 & TABLE2\_17 & TABLE3\_11 \\
+               &            &            & AT\_48 & TABLE2\_17 & TABLE3\_12 \\
+				\hline
+               &            &            & 48 Ent. & 17 Entitäten  & 12 Entitäten  \\
+			 \end{tabular}
+			\label{tab:generierung:table2_table3}
+		\end{table}
 				
 		\subsubsection{6. Schritt: Generierung für TABLE3}
 			
