@@ -21,7 +21,7 @@ Die vier Schichten werden als M0 bis M3 bezeichnet \cite{MOF_141}:
 \end{itemize}
 
 \todo{ergänzen}
-
+- Beispiele ?
 - DSL, intern vs. extern
 
 
@@ -40,7 +40,7 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 
 \begin{itemize}
 	\item \textbf{Standard Fixture}: Ein Test Fixture wird als Standard Fixture bezeichnet, wenn es für alle bzw. fast alle 
-	  Tests verwendet werden kann. Ein Standard Feature reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die
+	  Tests verwendet werden kann. Ein Standard Fixture reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die
 		einzelnen Tests, sondern verhindert darüber hinaus, dass der Tester sich bei verschiedenen Tests immer wieder
 		in unterschiedliche Test-Daten hineinversetzen muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene 
 		Testdaten verwenden. \cite[305]{XUNIT_TEST_PATTERNS}
@@ -48,19 +48,24 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 	\item \textbf{Minimal Fixture}: Ein Fixture, das speziell für einen Test erstellt wurde und dessen Umfang auf
 	  die für diesen Test notwendigen Daten reduziert ist, wird als Minimal Fixture bezeichnet. Aufgrund ihres
 		Umfangs lassen sich Minimal Fixtures von Testern im Allgemeinen leichter verstehen. Außerdem kann der Einsatz
-		von Minimal Fixtures zu Leistungsvorteilen bei der Ausführung von Tests führen. \cite[302]{XUNIT_TEST_PATTERNS}
+		von Minimal Fixtures zu Leistungsvorteilen bei der Ausführung von Tests führen, da z.B. das Einspielen in die
+		Datenbank schneller ablaufen kann als bei umfangreichen Daten. \cite[302]{XUNIT_TEST_PATTERNS}
 \end{itemize}
 
 
 	\subsection{Datenbank-Tests}
 
-	Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Dieses Muster
-	besteht aus vier Schritten. Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff, vorbei am
-	zu testenden System, in den Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
+	Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Die Idee
+	hinter diesem Muster ist es, auf die Datenbank direkt zu zu greifen am zu testenden System vorbei -- quasi in Form
+	einer Hintertür. Auf diese Weise wirken sich Fehler im zu testenden System nicht auf den Zugriff der Datenbank aus.
+	Das Muster besteht aus vier Schritten. 
+	Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff in den 
+	Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
 	Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
 	als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
-	ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch Aufräumarbeiten
-	durchführen. Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
+	ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch 
+	optionale Aufräumarbeiten durchführen.
+	Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
 	\cite[327ff]{XUNIT_TEST_PATTERNS}
 
 	\begin{figure}[H]
@@ -70,7 +75,11 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 	\end{figure}
 
 	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
-	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Andererseits kann der Zustand mitunter
+	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Ein semantischer Fehler stellt z.B. der
+	Zugriff auf die falsche Spalte dar: Das SUT könnte die Zugriffe auf die Spalten Vor- und Nachname vertauschen. Das System
+	würde normal funktionieren, die Datenbank allerdings in einem falschen Zustand.uscht, 
+	
+	Andererseits kann der Zustand mitunter
 	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
 	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
 	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret

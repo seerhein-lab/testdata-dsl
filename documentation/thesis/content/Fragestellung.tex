@@ -51,20 +51,24 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
   
+	\item \textbf{Fokus auf Beziehungen}: 
+	
+	\item \textbf{Datenmenge selbst bestimmen}:
+
 	\item \textbf{Deterministische Generierung}: Auch wenn die Test-Daten aus Zufallsdaten bestehen, sollen sie deterministisch
 	  generiert werden können. Das heißt, dass die Generierung des Modells mit den selben Einstellungen auch zum selben Ergebnis
 		führt.
 		
-	\item \textbf{Kompatibilität}: Die Generierung der Testdaten soll nicht nur bei Nutzung der neuen Modellierungssprache
-	  verwendet werden können. Der Testdaten-Generator soll auch DataSets auf Basis der bisherigen STU-Builder
-		erstellen können.
+	\item \textbf{Kompatibilität}: Die Generierung der Testdaten soll in unterschiedliche Ausgabe-Formen erfolgen können,
+	  z.B. in einer DSL, in XML oder auch in SQL-Statements.
+	
 \end{itemize}
 
 
 \section{Modellierungskonzepte für Beziehungen}
 \label{sec:fragestellung:modellierungskonzepte}
 	
-Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie sie in einem ER-Diagramm umgesetzt werden können.
+Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie diese in einem ER-Diagramm umgesetzt werden können.
 Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
 Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 
@@ -109,25 +113,6 @@ Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 	In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
 	auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
 
-
-\section{Kriterien für Sprachbewertung}
-\label{sec:fragestellung:sprachkriterien}
-
-\begin{itemize}
-
-	\item Zeilen
-	
-	\item Spalten - für Bildschirm angemessen?
-
-	\item Zeichenverhältnis
-	
-	\item Benutzbarkeit: Verständlichkeit, Erlernbarkeit
-	
-	\item Modifizierbarkeit
-	
-	
-
-\end{itemize}
 
 
 \section{Fortlaufendes Beispiel}
@@ -188,7 +173,7 @@ Modellierungsvarianten.
 	
 	\begin{figure}[H]
 		\centering
-		 \includegraphics[width=0.7\textwidth]{images/fragestellung/example_hochschule_er.pdf}
+		 \includegraphics[width=0.65\textwidth]{images/fragestellung/example_hochschule_er.pdf}
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
@@ -232,9 +217,31 @@ Modellierungsvarianten.
 	DbUnit-DataSets nur begrenzte Möglichkeiten, das DataSet mit dem erwarteten Zustand aus dem DataSet mit dem
 	Anfangszustand zu erzeugen.
 
-	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-DataSets diskutiert. Die Ergebnisse stellen die Grundlage
+	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-DataSets diskutiert. Diese soll anhand der im
+	nächsten Abschnitt beschriebenen Kritieren erfolgen. Die Ergebnisse stellen die Grundlage
 	für die konkretere Zielsetzung dar.
-	
+
+	\subsection{Kriterien für Bewertung}
+	\label{sec:fragestellung:modellierung:sprachkriterien}
+
+	\begin{itemize}
+
+		\item \textbf{Zeilen}: Die Anzahl der Zeilen, die für ein DataSet benötigt werden. 
+		
+		\item \textbf{Zeichen pro Zeile}: Ist die Sprache für die Darstellung auf Bildschirmen geeignet?
+		
+		\item \textbf{Typsicherheit}:
+		
+		\item \textbf{Redundanz}: 
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		
+		\item \textbf{Modifizierbarkeit}:
+
+	% http://de.wikipedia.org/wiki/ISO/IEC_9126	
+
+	\end{itemize}
+
 
 	\subsection{XML-DataSet}
 	\label{sec:fragestellung:modellierung:xml}
