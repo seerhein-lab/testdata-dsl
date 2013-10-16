@@ -234,8 +234,8 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
 	Beziehung erzeugt, aber auch eine einzelne Entität, die in Beziehung mit anderen Entitäten steht 
 	(siehe dazu Abbildungen \ref{img:generierung:1to01} und \ref{img:generierung:3to01}).
 	
-	Um die unterschiedlichen Kombinationen aus n, N, m und M in den Grafiken zu verdeutlichen, wird als Beziehung eine
-	1..3:0..4-Beziehung verwendet.
+	Um die unterschiedlichen Kombinationen aus n, N, m und M in den Grafiken zu verdeutlichen, wird die Generierung
+	einer 1..3:0..4-Beziehung dargestellt.
 	
 		\subsubsection{1. Fall (n:m): 1:0..1}
 		
@@ -983,7 +983,8 @@ Ein paar Probleme und Herausforderungen werden im Folgenden aufgezeigt.
 	\begin{itemize}
 		\item \textbf{Geschlecht} und \textbf{Eltern-Eigenschaft}: männlich/weiblich muss zur Rolle Vater/Mutter passen
 		\item \textbf{Fakultät} und \textbf{Raum-Nummer}: Das Büro eines Professors hängt von seiner Fakultät ab.
-		\item \textbf{Überschneidungen von Lehrveranstaltungen} eines Professors
+		\item \textbf{Überschneidungen von Lehrveranstaltungen} eines Professors: Ein Professor kann nicht zwei
+		  Lehrveranstaltungen lehren, die sich zeitlich überschneiden.
 	\end{itemize}
 	
 
