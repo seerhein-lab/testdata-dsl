@@ -349,14 +349,16 @@ Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der D
 	
   \subsection{Klassendiagramm}
 	
+	Für die Datengenerierung wird das bisherig verwendete Klassen-Modell um eine Klasse \texttt{Kante} erweitert
+	(siehe Abbildung~\ref{img:generierung:generatormodel}). Diese Klasse repräsentiert eine Kante des Graphen. 
+	Zu einer Kante gehört eine Start- und eine Zieltabelle. Eine Tabelle selbst kann zu beliebig vielen Kanten gehören.
+	Alle Tabellen eines Datenbankmodells werden zu einer Tabellenliste zusammengefasst.
 	
-	  \begin{figure}[htbp]
-  	  \centering
-  	   \includegraphics[width=0.75\textwidth]{images/generierung/generator_model.pdf}
-  	  \caption{Diagramm der Generator-Modell-Klassen}\label{img:generierung:generatormodel}
-  	\end{figure}
-	
-	
+	\begin{figure}[htbp]
+		\centering
+		 \includegraphics[width=0.75\textwidth]{images/generierung/generator_model.pdf}
+		\caption{Diagramm der Generator-Modell-Klassen}\label{img:generierung:generatormodel}
+	\end{figure}
 	
 	
 
