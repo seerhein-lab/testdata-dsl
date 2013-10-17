@@ -1,7 +1,7 @@
 \chapter{Anforderungsanalyse / Fragestellung}
 \label{chap:anforderungen}
 
-Einleiten: Zwei Fragestellungen, DSL und Generierung
+\todo{Anforderungen Einleiten: Zwei Fragestellungen, DSL und Generierung}
 
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
@@ -51,11 +51,11 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
   
-	\item \textbf{Fokus auf Beziehungen}: 
-	  \todo{Fokus auf Beziehungen ergänzen}
+	\item \textbf{Fokus auf Beziehungen}: Das Generieren von sinnvollen Beziehungen stellt eines der zentralen Ziele für
+	  den Daten-Generator dar.
 	
-	\item \textbf{Datenmenge selbst bestimmen}:
-	  \todo{Datenmenge selbst bestimmen ergänzen}
+	\item \textbf{Datenmenge selbst bestimmen}: Der Generator soll ohne Konfigurationsaufwand eine geeignete Menge an Test-Daten
+	  erzeugen.
 
 	\item \textbf{Deterministische Generierung}: Auch wenn die Test-Daten aus Zufallsdaten bestehen, sollen sie deterministisch
 	  generiert werden können. Das heißt, dass die Generierung des Modells mit den selben Einstellungen auch zum selben Ergebnis
@@ -227,6 +227,10 @@ Modellierungsvarianten.
 
 	\subsection{Kriterien für Bewertung}
 	\label{sec:fragestellung:modellierung:sprachkriterien}
+	
+	Für die Bewertung von Modellierungssprachen werden die folgenden Kriterieren verwendet. Einige Punkte
+	sind messbar, andere wiederum relativ subjektiv. Als Vorbild für die beiden letzten Punkte dient die
+	Norm ISO IEC 9126. 
 
 	\begin{itemize}
 
@@ -236,19 +240,16 @@ Modellierungsvarianten.
 		
 		\item \textbf{Typsicherheit}: Wann und wie werden falsche Datentypen bei der Modellierung erkannt?
 		
-		\item \textbf{Redundanz}:
-		  \todo{Kriterium: Redundanz}
+		\item \textbf{Redundanz}: Müssen Daten oder Sprachelemente redundant verwendet werden?
 
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
-		  \todo{Kriterium: Benutzbarkeit}
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+		  Wie gut drückt die Sprache aus, welche Daten und Beziehungen modelliert werden? Wie leicht
+			ist die Sprache zu lernen?
 		
-		\item \textbf{Modifizierbarkeit}:
-		  \todo{Kriterium: Modifizierbarkeit}
-			- Wie leicht lassen sich Daten ändern
-			- Wie leicht lassen sich Daten an ein neues Schema anpassen?
+		\item \textbf{Modifizierbarkeit}: Wie leicht lassen sich Daten ändern? Wie leicht können
+		  können bestehende Daten an ein neues Datenbankschema angepasst werden?
 
-	% http://de.wikipedia.org/wiki/ISO/IEC_9126	
-
+	
 	\end{itemize}
 
 

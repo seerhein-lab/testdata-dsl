@@ -91,15 +91,26 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 
 
 
-\section{Konventionen}
+\section{Konventionen für Diagramme}
 \label{sec:grundlagen:konventionen}
 
-\todo{Konventionen einleiten}
+Die in dieser Arbeit abgebildeten Diagramme verwenden einen einheitlichen Modellierungsstil. Der Stil ist abhängig
+von der Art des Diagramms.
+
+Als Grundlage für die Beispiel-Diagramme dient ein Modell aus zwei Entitätstypen (Tabellen) mit jeweils einem Attribut.
+Die beiden Entitätstypen heißen \textit{Tabelle 1} und \textit{Tabelle 2}. \textit{Tabelle 1} enthält das Attribut
+\textit{feld}, während \textit{Tabelle 2} das Feld \textit{anderes\_feld} enthält. Eine Entität aus \textit{Tabelle 1}
+kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} in Beziehung stehen. Eine Entität aus
+\textit{Tabelle 2} muss mit genau einer Entität aus \textit{Tabelle 1} in Beziehung stehen.
 
   \subsection{ER-Diagramme}
 	\label{sec:grundlagen:konventionen:erdiagramme}
 	
-	\todo{Konventionen ergänzen: ER-Diagramme}
+	Das entsprechende ER-Diagramm ist in Abbildung \ref{img:er_diagramme} dargestellt. Ein Entitätstyp wird von einer
+	Box repräsentiert, der Name des Typs und seine Attribute sind durch eine horizontale Linie voneinander getrennt.
+	Eine Beziehung zwischen Entitätstypen wird durch eine Verbindungslinie dargestellt. Diese kann bezeichnet sein,
+	der Bezeichner ist dann mittig an der Verbindungslinie platziert. Die Kardinalitäten befinden sich an den Enden
+	der Verbindungsline.
 	
 	\begin{figure}[H]
 		\centering
@@ -109,9 +120,8 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 
 	\subsection{Relationale Datenbank-Diagramme}
 	\label{sec:grundlagen:konventionen:relationalediagramme}
-	Alle in dieser Arbeit abgebildeten relationalen Datenbank-Diagramme verwenden einen einheitlichen Modellierungsstil,
-	der auch von Ambler in Ambler in \cite{REFACTORING_DATABASES} verwendet wird. Dieser Stil erweitert das dem UML-konform
-	das Klassendiagramm.
+	Für relationale Datenbank-Diagramme wird der Modellierungsstil verwendet, der auch von Ambler in \cite{REFACTORING_DATABASES} 
+	genutzt wird wird. Dieser Stil erweitert das dem UML-konform das Klassendiagramm.
 	
 	Tabellen werden durch Boxen repräsentiert. Diese Boxen sind unterteilt in zwei Bereiche: den Tabellenbezeichner (oben)
 	und die Attribute der Tabelle (unten). Attribute werden in der Form \textit{Bezeichner : typ} beschrieben. Es gibt die
@@ -149,7 +159,7 @@ Mit Hilfe von \textit{DbUnit} kann eine Datenbank zu Beginn eines Tests in einen
 einer Datenbank mit einem DataSet vergleichen. So kann nach dem Test überprüft werden, ob das SUT die richtigen Modifikationen 
 an den Daten vorgenommen hat.
 
---- Nachteile von DbUnit-DataSets - vorwegnehmen ? ---
+\todo{Nachteile von DbUnit-DataSets - vorwegnehmen ?}
 
 Ein Ziel von \textit{STU} ist, Datenbank-Tests weiter zu vereinfachen und bietet die Möglichkeit, DataSets über ein eigenes API
 zu modellieren. \textit{STU} enthält einen Generator, der mit Hilfe eines Datenbank-Modells individuelles API erzeugen kann.
