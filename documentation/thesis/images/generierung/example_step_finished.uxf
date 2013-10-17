@@ -9,7 +9,7 @@
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE1*
+    <panel_attributes>*RAUM*
 --
 id &lt;&lt;PK&gt;&gt;
 bg=gray</panel_attributes>
@@ -23,10 +23,10 @@ bg=gray</panel_attributes>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE2*
+    <panel_attributes>*PROFESSOR*
 --
 id &lt;&lt;PK&gt;&gt;
-table1_id &lt;&lt;FK&gt;&gt;
+raum_id &lt;&lt;FK&gt;&gt;
 bg=gray</panel_attributes>
     <additional_attributes/>
   </element>
@@ -38,7 +38,7 @@ bg=gray</panel_attributes>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE3*
+    <panel_attributes>*PRUEFUNG*
 --
 id &lt;&lt;PK&gt;&gt;
 bg=gray</panel_attributes>
@@ -52,10 +52,10 @@ bg=gray</panel_attributes>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*AT*
+    <panel_attributes>*BEAUFSICHTIGT*
 --
-table2_id &lt;&lt;FK&gt;&gt;
-table3_id &lt;&lt;FK&gt;&gt;
+professor_id &lt;&lt;FK&gt;&gt;
+pruefung_id &lt;&lt;FK&gt;&gt;
 bg=gray</panel_attributes>
     <additional_attributes/>
   </element>

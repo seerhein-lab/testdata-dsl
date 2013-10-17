@@ -5,12 +5,12 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>176</x>
-      <y>208</y>
+      <y>216</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE1*
-
+    <panel_attributes>*RAUM*
+--
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -18,11 +18,12 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>400</x>
-      <y>208</y>
+      <y>216</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE2*
+    <panel_attributes>*PROFESSOR*
+--
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -30,24 +31,25 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>176</x>
-      <y>312</y>
+      <y>320</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE3*
-
-</panel_attributes>
+    <panel_attributes>*PRUEFUNG*
+--</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>400</x>
-      <y>312</y>
+      <y>320</y>
       <w>144</w>
       <h>48</h>
     </coordinates>
-    <panel_attributes>*AT*
+    <panel_attributes>*BEAUFSICHTIGT*
+--
+
 
 </panel_attributes>
     <additional_attributes/>
@@ -56,7 +58,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>296</x>
-      <y>192</y>
+      <y>200</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -68,7 +70,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>448</x>
-      <y>232</y>
+      <y>240</y>
       <w>40</w>
       <h>96</h>
     </coordinates>
@@ -81,7 +83,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>296</x>
-      <y>296</y>
+      <y>304</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
@@ -94,7 +96,7 @@
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>176</x>
-      <y>256</y>
+      <y>264</y>
       <w>16</w>
       <h>24</h>
     </coordinates>
@@ -105,7 +107,7 @@
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>400</x>
-      <y>360</y>
+      <y>368</y>
       <w>16</w>
       <h>24</h>
     </coordinates>
@@ -116,7 +118,7 @@
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>400</x>
-      <y>256</y>
+      <y>264</y>
       <w>16</w>
       <h>24</h>
     </coordinates>
@@ -127,7 +129,7 @@
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>176</x>
-      <y>360</y>
+      <y>368</y>
       <w>16</w>
       <h>24</h>
     </coordinates>

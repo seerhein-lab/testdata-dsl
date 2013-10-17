@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.1">
-  <zoom_level>20</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
-      <y>40</y>
-      <w>360</w>
-      <h>120</h>
+      <x>176</x>
+      <y>208</y>
+      <w>144</w>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>
-*TABLE1*
+    <panel_attributes>*RAUM*
 --
 id &lt;&lt;PK&gt;&gt;
 bg=gray</panel_attributes>
@@ -19,90 +18,87 @@ bg=gray</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>560</x>
-      <y>40</y>
-      <w>360</w>
-      <h>120</h>
+      <x>400</x>
+      <y>208</y>
+      <w>144</w>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE2*
+    <panel_attributes>*PROFESSOR*
 --
 id &lt;&lt;PK&gt;&gt;
-table1_id &lt;&lt;FK&gt;&gt;
+raum_id &lt;&lt;FK&gt;&gt;
 bg=gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
-      <y>300</y>
-      <w>360</w>
-      <h>120</h>
+      <x>176</x>
+      <y>312</y>
+      <w>144</w>
+      <h>48</h>
     </coordinates>
-    <panel_attributes>*TABLE3*
+    <panel_attributes>*PRUEFUNG*
 --
 id &lt;&lt;PK&gt;&gt;
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>560</x>
-      <y>300</y>
-      <w>360</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>*AT*
---
-table2_id &lt;&lt;FK&gt;&gt;
-table3_id &lt;&lt;FK&gt;&gt;
 fg=blue
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>400</x>
+      <y>312</y>
+      <w>144</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>*BEAUFSICHTIGT*
+--
+professor_id &lt;&lt;FK&gt;&gt;
+pruefung_id &lt;&lt;FK&gt;&gt;
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>300</x>
-      <y>0</y>
-      <w>300</w>
-      <h>100</h>
+      <x>296</x>
+      <y>192</y>
+      <w>120</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=0..*
 m2=0..1
 </panel_attributes>
-    <additional_attributes>260;60;60;60</additional_attributes>
+    <additional_attributes>104;24;24;24</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>660</x>
-      <y>100</y>
-      <w>152</w>
-      <h>240</h>
+      <x>440</x>
+      <y>232</y>
+      <w>58</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=        1          x
-m2=     0..* x
-fg=blue
-bg=gray</panel_attributes>
-    <additional_attributes>80;60;80;200</additional_attributes>
+m2=     0..* x</panel_attributes>
+    <additional_attributes>32;24;32;80</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>300</x>
-      <y>260</y>
-      <w>300</w>
-      <h>100</h>
+      <x>296</x>
+      <y>296</y>
+      <w>120</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=3..5
 m2=1
-fg=blue
-bg=gray</panel_attributes>
-    <additional_attributes>260;60;60;60</additional_attributes>
+</panel_attributes>
+    <additional_attributes>104;24;24;24</additional_attributes>
   </element>
 </diagram>
