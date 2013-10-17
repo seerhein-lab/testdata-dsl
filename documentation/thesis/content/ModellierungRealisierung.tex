@@ -9,11 +9,11 @@ Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem A
 erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
 Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
 
-\textit{SB Testing DB} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Es verfolgt ein ähnliches
+\textit{STU} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Es verfolgt ein ähnliches
 Ziel und versucht ebenfalls, die Modellierung von Test-Daten zu vereinfachen und bietet bereits einige Verbesserungen
 gegenüber DbUnit. Außerdem stellt dies eine gewisse Kompatibilität sicher, so dass bestehende Tests zumindest nach
 geringfügigen Anpassungen mit den Erweiterungen funktionieren sollten. Aus einem domänenspezifischen
-Datenbank-Modell erzeugt \textit{SB Testing DB} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
+Datenbank-Modell erzeugt \textit{S} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
 zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
 Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
 \cite[185]{DESIGN_PATTERNS}. 
@@ -55,7 +55,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
   \item \textbf{Code-Qualität}: Die neuen Funktionen können direkt in bestehende Klassen integriert werden, anstatt
     neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
       
-  \item \textbf{Mehrwert gegenüber \textit{SB Testing DB}}: Auch wenn auf das neue Table Builder API verzichtet wird,
+  \item \textbf{Mehrwert auch für bisheriges API}: Auch wenn auf das neue Table Builder API verzichtet wird,
     kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
     Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
     und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
@@ -73,16 +73,17 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 \label{sec:modellierung:generatormodell}
 
   Die hinzugekommenen Funktionen erfordern Erweiterungen in den Klassen zur Modellierung der zu Grunde liegenden Datenbank.
-  Da das API in \textit{SB Testing DB} überladene Methoden mit vielen Parametern zur Beschreibung von Spalten nutzt (es gibt
-  dafür zwölf reguläre und eine als \textit{deprecated} eingestufte Methoden), soll in \texttt{STU} das anwenderfreundlichere
-  Builder-Pattern verwendet werden.
+  Das bisherige API in \textit{STU} nutzt überladene Methoden mit vielen optionalen Parametern zur Beschreibung von Spalten.
+	Dies ist weder wartungs- noch anwenderfreundlich. Jeder neue optionale Parameter würde die Anzahl der Methoden unter
+	Umständen verdoppeln. Für Anwender ist es nicht immer einfach, sich die Reihenfolge langer Parameterlisten zu merken,
+	v.a. wenn es mehrere Varianten der selben Methode gibt.
+	
+	Die Klassen zur Beschreibung des Generator-Modells werden deshalb auf das Builder-Pattern umgestellt. Dieses löst beide
+	Probleme. Jeder zusätzliche optionale Parameter führt zu einer neuen Methode. Die Reihenfolge der Methodenaufrufe ist im
+	Gegensatz zu Parameterlisten beliebig. Der Code liest und schreibt sich einfacher, da Parameter durch die Methodenaufrude
+	benannt sind.
   
-  Durch den Einsatz dieses Patterns sollen die Klassen wartbarer und erweiterbarer bleiben. Beim Überladen von Methoden
-  würde sich bei jedem weiteren optionalen Parameter die Anzahl an Methoden unter Umständen verdoppeln. Außerdem sind lange
-  Parameterlisten für Programmierer nicht immer intuitiv: Die Reihenfolge lässt sich oft nur schwer merken.
-  Demgegenüber gibt es beim Builder-Pattern für jeden optionalen Parameter eine einzelne Set-Methode.
-  
-  Die neuen Builder-Klassen decken den Funktionsumfang der alten API ab. Dabei werden Eigenschaften für Spalten nicht mehr über 
+  Die neuen Builder-Klassen decken den Funktionsumfang des alten API ab. Dabei werden Eigenschaften für Spalten nicht mehr über 
   ein \texttt{EnumSet} festgelegt, sondern über Methoden für die vordefinierten Flags. In Abschnitt 
   \ref{sec:modellierung:generatormodell:flags}  wird weiter auf das Thema Flags eingegangen. Darüber hinaus bieten die
   neuen Klassen die Möglichkeit, Beschreibungen zu Tabellen und Spalten hinzu zu fügen. Diese werden bei der Code-Generierung
@@ -92,7 +93,6 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
 	
 	Erweiterungen am Generator-Modell betreffen vor allem die Modellierung von Beziehungen zwischen Tabellen. Der folgende Abschnitt
 	beschreibt die Modellierungskonzepte für Beziehungen in Datenbanken.
-
 
 
   

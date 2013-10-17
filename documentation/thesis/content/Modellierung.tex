@@ -13,7 +13,7 @@ Eine Möglichkeit stellt die Definition einer speziellen Sprache dar. Eine solche
 definierte Sprache wird als \textit{Domänenspezifische Sprache} (engl. Domain-Specific Language, abgekürzt DSL)
 bezeichnet.
 
-Das von \textit{SB Testing DB} bereitgestellte Fluent Interface stellt bereits eine Form einer DSL dar. Eine
+Das von \textit{STU} bereitgestellte Fluent Interface stellt bereits eine Form einer DSL dar. Eine
 solche DSL, die vollständig in eine andere Sprache eingebettet ist und im Wesentlichen die Sprachelemente dieser
 Sprache nutzt, wird als \textit{interne DSL} bezeichnet \cite[68]{DOMAIN_SPECIFIC_LANGUAGES}. 
 
@@ -36,7 +36,7 @@ Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert.
   \subsection{Beispiel-Entwurf 1}
   \label{sec:implementierung:entwurf:1}
   
-  Eine DSL, die sich stark an \textit{SB Testing DB} orientiert, könnte wie folgt aussehen:
+  Eine DSL, die sich stark an \textit{STU} orientiert, könnte wie folgt aussehen:
   
   \begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
 HAASE = professor {
@@ -203,11 +203,12 @@ werden. Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie ein
 aussehen lässt.
 
 Listing \ref{listing:groovyexamples} zeigt die selben Anweisungen einmal in typischer Java-Syntax (Zeile 1)
-und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2):
+und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2). Die Zeile liest sich wie ein natürlich
+sprachiger, englischer Satz:
 
   \begin{lstlisting}[caption=Vereinfachung von Ausdrücken in Groovy, label=listing:groovyexamples]
 take(coffee).with(sugar, milk).and(liquor);
-take coffee  with sugar, milk  and liquor
+take coffee with sugar, milk and liquor
   \end{lstlisting}
 
 Groovy hebt sich ferner durch die Möglichkeit Operatoren zu überladen und durch Closures von Java ab. Ein Closure
