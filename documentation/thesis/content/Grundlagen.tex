@@ -74,8 +74,8 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 
 	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
 	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Ein semantischer Fehler stellt z.B. der
-	Zugriff auf die falsche Spalte dar: Das SUT könnte die Zugriffe auf die Spalten Vor- und Nachname vertauschen. Das System
-	würde normal funktionieren, die Datenbank würde sich allerdings in einem falschen Zustand befinden. 
+	Zugriff auf die falsche Spalte dar: Das SUT könnte die Zugriffe auf die Spalten Vor- und Nachname konsequent vertauschen. Das
+	System würde normal funktionieren, die Datenbank würde sich allerdings in einem falschen Zustand befinden. 
 	
 	Andererseits kann der Zustand mitunter
 	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
@@ -112,6 +112,8 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 	der Bezeichner ist dann mittig an der Verbindungslinie platziert. Die Kardinalitäten befinden sich an den Enden
 	der Verbindungsline.
 	
+	Auf die Angabe der Stereotypen für die Entitäten und Beziehungen wird verzichtet.
+	
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[scale=0.5]{images/grundlagen/er_diagramm.pdf}
@@ -130,10 +132,7 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 	
 	Beziehungen zwischen Tabellen werden durch Verbindungslinien dargestellt. Die Kardinalitäten beschreiben die Art der 
 	Verbindung. Die Bedeutung der Kardinalitäten lassen sich am besten über ein Beispiel erklären (Abbildung \ref{img:ambler_table}).
-	Eine Entität aus \texttt{TABELLE 1} ist mit mindestens einer und beliebig vielen Entitäten aus \texttt{TABELLE 2}
-	in einer Beziehung, jede Entität aus \texttt{TABELLE 2} ist mit genau einer Entität aus \texttt{TABELLE 1} in Beziehung.
-	Beziehungen können zusätzlich mit einem Bezeichner versehen werden. 
-
+	
 	Auf die Angabe der Stereotypen für die Tabellen und Beziehungen wird verzichtet.
 	
 	\begin{figure}[H]
@@ -210,7 +209,7 @@ folgenden Kategorien erzeugt:
 		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
 		Tabellen.
 
-	\item \textbf{Table}: Eine \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
+	\item \textbf{Table}: Die \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
 	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
 	  der Tabelle und dem Suffix "`Table"' zusammen. Die Klasse stellt Methoden zur Modellierung und für den Zugriff
 		auf die Tabellendaten bereit.

@@ -1,8 +1,6 @@
 \chapter{Realisierung der Sprache}
 \label{chap:realiserungdsl}
 
-\todo{Realisierung der Sprache - Einleitung umschreiben auf STU}
-
 Im Folgenden wird die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
 gezeigt, wie die DSL praktisch genutzt werden kann. 
 Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
@@ -11,23 +9,19 @@ Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem A
 erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
 Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
 
-\textit{STU} stellt eine sinnvolle Grundlage für Erweiterungen und Verbesserung dar. Es verfolgt ein ähnliches
-Ziel und versucht ebenfalls, die Modellierung von Test-Daten zu vereinfachen und bietet bereits einige Verbesserungen
-gegenüber DbUnit. Außerdem stellt dies eine gewisse Kompatibilität sicher, so dass bestehende Tests zumindest nach
-geringfügigen Anpassungen mit den Erweiterungen funktionieren sollten. Aus einem domänenspezifischen
-Datenbank-Modell erzeugt \textit{S} ein individuelles API zur Modellierung von DataSets. Um die Modellierung
-zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade ergänzt werden.
-Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
+\textit{STU} stellt die Basis für Erweiterungen und Verbesserung dar. Es verfolgt bereits das Ziel, Tests von
+Datenbank-basierten Anwendungen zu erleichtern und vereinfacht die Modellierung von DbUnit-DataSets. Auf Abwärtskompatibilität
+wird wenn notwendig zu Gunsten der Benutzbarkeit und Wartbarkeit verzichtet.
+
+Aus einem domänenspezifischen Datenbank-Modell erzeugt \textit{STU} ein individuelles API zur Modellierung von DataSets.
+Um die Modellierung zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade
+ergänzt werden. Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
 \cite[185]{DESIGN_PATTERNS}. 
 
 Eine Möglichkeit, eine solche Fassade zu realisieren, stellen domänenspezifische Sprachen dar. Eine domänenspezifische
 Sprache zeichnet sich dadurch aus, dass sie für ein spezielles Problemfeld entworfen wurde. Martin Fowler erklärt in
 \cite[xix]{DOMAIN_SPECIFIC_LANGUAGES}, dass die meisten domänenspezifischen Sprachen lediglich eine dünne Fassade über
 einer Bibliothek oder einem Framework sind.
-
-Um Probleme bezüglich Abwärtskompatibilität zu vermeiden, fließen die Anpassungen nicht in \textit{SB Testing DB} ein. 
-Stattdessen wird der Quellcode dieser Bibliothek als Ausgangspunkt für das neue Projekt \textit{STU} (Simple Test Utils,
-\url{https://github.com/Seitenbau/stu}) verwendet. 
 
 Der Code-Generator aus \textit{STU} erzeugt zwei APIs für die Modellierung von DataSets:
 \begin{itemize}
@@ -58,7 +52,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
     neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
       
   \item \textbf{Mehrwert auch für bisheriges API}: Auch wenn auf das neue Table Builder API verzichtet wird,
-    kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen SB-Testing-DB-Implementierung bieten.
+    kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen \textit{STU}-Implementierung bieten.
     Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
     und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
       
@@ -101,8 +95,8 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
   \subsection{Spalten-Eigenschaften}
   \label{sec:modellierung:generatormodell:flags}
   
-  \textit{SB Testing DB} sieht verschiedene Eigenschaften, sogenannte Flags, für Spalten vor, die in einem \textit{Enum}
-  zusammengefasst sind. Alle für eine Spalte gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet}
+  \textit{STU} sieht verschiedene Eigenschaften für Spalten vor, sogenannte Flags. Die Flags sind bislang in einem \textit{Enum}
+	zusammengefasst. Alle für eine Spalte gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet}
   übergeben werden. Bei dem neuen Builder-API werden die Flags über spezielle Methoden gesetzt.
   
   Zu den in \textit{STU} enthaltenen Standard-Spalten-Flags gehören:
@@ -137,7 +131,7 @@ id | matrikelnummer | vorname
       andere Spalte angegeben wird. Die Methode zum setzen des Flags ist \texttt{defaultIdentifier()}, die Flags \texttt{Identifier}
       und \texttt{Immuatable} werden automatisch aktiviert.
       
-    \item \textbf{Add Next Method}: \textit{SB Testing DB} (und damit auch \textit{STU}) bietet die Möglichkeit, Werte-Generatoren 
+    \item \textbf{Add Next Method}: \textit{STU} bietet die Möglichkeit, Werte-Generatoren 
       zu verwenden um einen Spaltenwert manuell oder auch automatisch mit einem generierten Wert zu belegen. Aufgerufen wird der 
       Generator über eine sogenannte Next-Value-Methode auf dem RowBuilder. Ihr Name setzt sich aus dem Präfix \texttt{next} und dem
       Spaltennamen zusammen. Der Generator erzeugt für die jeweilige Spalte allerdings nur dann eine Next-Value-Methode, wenn das
@@ -162,9 +156,10 @@ id | matrikelnummer | vorname
   \subsection{Modellierung von Relationen über Builder-Klassen}
   \label{sec:modellierung:generatormodell:relationen}
   
-  In Bezug auf die Modellierung des Datenbank-Modells für den Generator stellt das neue API zur Modellierung der 
-  Relationen die größte Verändernug in \textit{STU} gegenüber \textit{SB Testing DB} dar. Über \texttt{reference}
-  kann der Builder zur Beschreibung der Relation aufgerufen werden. Die Beschreibung findet auf zwei Ebenen statt:
+  Das API zur Modellierung des Datenbankschemas als Grundlage für den Generator stellt eine der größten Veränderungen
+	in der Implementierung dar. Die größten Änderungen betreffen  die Definition von Beziehungen zwischen Tabellen.
+	Über \texttt{reference} kann der Builder zur Beschreibung der Relation aufgerufen werden. Die Beschreibung findet
+	auf zwei Ebenen statt:
   
   \begin{itemize}
     \item \textbf{local}: Der als \texttt{local} bezeichnete Teil beschreibt die Beziehung aus Sicht der Tabelle,
@@ -193,12 +188,12 @@ id | matrikelnummer | vorname
   Die Vorteile der Umstellung auf das Builder-Pattern sollen die beiden folgenden Listings zeigen. Sie zeigen
   die Modellierung der Datenbank für den Generator. Der Übersicht halber wurde der Code auf die Anweisungen
   im Konstruktor der Modell-Klasse und die Definition von zwei Tabellen reduziert. Listing 
-  \ref{listing:model:builder:old} zeigt die Modellierung in \textit{SB Testing DB}, während Listing
-  \ref{listing:model:builder:new} die in \textit{STU} eingeführten Builder veranschaulicht.
+  \ref{listing:model:builder:old} zeigt die Modellierung im ursprünglichen \textit{STU}, während Listing
+  \ref{listing:model:builder:new} die neuen Builder veranschaulicht.
   
-  \begin{lstlisting}[caption=Beispiel SB-Testing-DB-Builder, label=listing:model:builder:old]
+  \begin{lstlisting}[caption=Beispiel alte \textit{STU}-Builder, label=listing:model:builder:old]
 database("Hochschule");
-packageName("com.seitenbau.sbtesting.dbunit.hochschule");
+packageName("com.seitenbau.testing.dbunit.hochschule");
 
 Table professoren = addTable("professor")
     .addColumn("id", DataType.BIGINT, Flags.AutoInvokeNextIdMethod) 
@@ -224,9 +219,9 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
   dazu, dass die selben Modelle in \textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke
   macht diesen Nachteil allerdings mehr als wett.
   
-  \begin{lstlisting}[caption=Beispiel \textit{STU}-Builder, label=listing:model:builder:new]
+  \begin{lstlisting}[caption=Beispiel neue \textit{STU}-Builder, label=listing:model:builder:new]
 database("Hochschule");
-packageName("com.seitenbau.stu.dbunit.hochschule");
+packageName("com.seitenbau.testing.dbunit.hochschule");
 
 Table professoren = table("professor")
     .description("Die Tabelle mit den Professoren der Hochschule")
@@ -760,8 +755,8 @@ dataSet.professorTable.foreach(ACTION);
   warum diese Funktion nicht in \textit{STU} implementiert ist.
 
     \subsection{Zusammengesetzte Schlüssel}
-    Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen -- wie auch in 
-    \textit{SB Testing DB} -- komplett manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
+    Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen nach wie vor komplett
+		manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
     Spalte im Datenbank-Modell angelegt werden. So lange zum Zugriff auf Tabellenzeilen die Referenz-Typen
     verwendet werden, stellt dies kein spürbarer Nachteil dar. Sollte die Zeile in Abhängigkeit ihres
     Schlüssels dynamisch gesucht werden, kann auf die neue \texttt{find}-Methode zurückgegriffen werden.
