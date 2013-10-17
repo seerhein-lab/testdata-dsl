@@ -1,6 +1,8 @@
 \chapter{Realisierung der Sprache}
 \label{chap:realiserungdsl}
 
+\todo{Realisierung der Sprache - Einleitung umschreiben auf STU}
+
 Im Folgenden wird die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
 gezeigt, wie die DSL praktisch genutzt werden kann. 
 Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
@@ -813,6 +815,8 @@ associativeTable("parents")
 			Reflexive Beziehungen stellen eine besondere Form von zirkulären Beziehungen dar. Die Probleme sind
 			relativ ähnlich. 
 
+			  \todo{Zirkuläre Beziehungen ergänzen}
+
         \begin{lstlisting}[caption=Zirkuläre Beziehungen manuell, label=listing:zirkulaer:manuell]
 Table event = table("event")
     .column("id", DataType.BIGINT)
@@ -857,6 +861,9 @@ associativeTable("parcipations")
         \end{lstlisting} 
       
       \item \textbf{Ternäre Beziehungen}
+			
+			  \todo{Ternäre Beziehungen ergänzen}
+			
     \end{itemize}
   
     \subsection{Komfortfunktionen}

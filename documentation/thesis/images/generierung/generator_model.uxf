@@ -1,93 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="12.1">
-  <zoom_level>10</zoom_level>
+<diagram program="umlet" version="12.0">
+  <zoom_level>20</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>210</x>
-      <y>280</y>
-      <w>160</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>Tabelle
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>500</x>
-      <y>280</y>
-      <w>160</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>Kante
---
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>210</x>
-      <y>400</y>
-      <w>160</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>Assoziative Tabelle
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>340</x>
-      <y>240</y>
-      <w>180</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1..1
-m2=0..*
-Start</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>340</x>
-      <y>280</y>
-      <w>180</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1..1
-m2=0..*
-Ziel</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>260</x>
-      <y>320</y>
-      <w>50</w>
-      <h>100</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-
-</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>210</x>
-      <y>150</y>
-      <w>160</w>
-      <h>70</h>
+      <x>0</x>
+      <y>0</y>
+      <w>320</w>
+      <h>140</h>
     </coordinates>
     <panel_attributes>Tabellenliste
 --
@@ -99,11 +19,91 @@ Ziel</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>260</x>
-      <y>190</y>
-      <w>50</w>
-      <h>110</h>
+      <y>260</y>
+      <w>340</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;&gt;&gt;-
+m1=1..1
+m2=0..*
+Ziel</panel_attributes>
+    <additional_attributes>60;100;300;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>100</x>
+      <y>80</y>
+      <w>100</w>
+      <h>220</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>30;30;30;90;30;90</additional_attributes>
+    <additional_attributes>60;60;60;180;60;180</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>500</y>
+      <w>320</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Assoziative Tabelle
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>100</x>
+      <y>340</y>
+      <w>100</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>60;60;60;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>260</x>
+      <y>180</y>
+      <w>340</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;&gt;&gt;-
+m1=1..1
+m2=0..* 
+Start</panel_attributes>
+    <additional_attributes>60;100;300;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>560</x>
+      <y>260</y>
+      <w>320</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Kante
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>260</y>
+      <w>320</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Tabelle
+--
+</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>
