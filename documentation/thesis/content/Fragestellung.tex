@@ -588,31 +588,43 @@ table_Lehrveranstaltung
 		.setEcts(3);
 	\end{lstlisting}
 
-	Die Modellierung von Beziehungen stellt sich als ähnlich problematisch wie bei den bisherigen Java-DataSets dar
-	(\refsec{sec:fragestellung:modellierung:java}). Nach wie vor wächst das DataSet vertikal in der Datei. 
+  Für \textit{STU} ergibt sich folgende Bewertung:
 	
+	\begin{itemize}
+
+		\item \textbf{Zeilen}: Auch in \textit{STU} dient es der Übersicht, für jeden Spaltenwert eine Zeile zu 
+		  verwenden. Da die Meta-Informationen in den Builder-Klassen enthalten sind, kommt das Beispiel-DataSet
+			auf 88 Zeilen.
+		
+		\item \textbf{Zeichen pro Zeile}: Mit maximal 67 Zeichen pro Zeile für das Beispiel-DataSet gibt es bei
+		  der Bildschirm-Darstellung keine Probleme.
+		
+		\item \textbf{Typsicherheit}: Die Modellierung mit \textit{STU} ist typsicher, da statische Typ-Prüfungen
+		  durchgeführt werden. Diese werden von gängigen IDEs bereits während der Eingabe des Codes durchgeführt.
+		
+		\item \textbf{Redundanz}: Da konkrete Werte durch benannte Konstanten ersetzt werden können, stellt
+		  Redundanz für \textit{STU} kein Problem dar.
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		  Der Code ist verständlich, aber nicht unbedingt übersichtlich. Die Nutzung gestaltet sich einfach,
+			da die Builder-Klassen für jede Tabelle angepasste Methoden bieten und damit auch die Auto-Vervollständigung
+			von IDEs zur Verfügung steht.
+			
+			In Bezug auf die Modellierung von Beziehungen gelten die Nachteile des Default-DataSets
+			(\refsec{sec:fragestellung:modellierung:java}).
+	
+		\item \textbf{Modifizierbarkeit}: 
+		  Durch Refactoring-Mechanismen von IDEs lassen sich viele Änderungen Werkzeug-unterstützt durchführen.
+			Die statische Code-Analyse hilft beim Auffinden übrig gebliebener Daten nach dem Entfernen von Spalten
+			aus dem Datenbank-Schema. Das Hinzufügen von Spalten erfordert mehr Handarbeit, ist aber nicht
+			aufwändiger als in den bisher bewerteten Varianten.
+	
+	\end{itemize}
+
 	Eine Erweiterung des Datenbank-Modells und des Generators kann die Modellierung von Beziehungen bereits etwas
 	verbessern. Diese Erweiterung erlaubt es, anstelle eines Fremdschlüssels eine vorher eingefügte Zeile 
 	anzugeben (\reflst{listing:sbtestingdataset}, Zeilen 20 und 27). Hier können referenzierte Primärschlüssel auch
 	automatisch vergeben werden.
-
-  \todo{Sprache gemäß Kriterien bewerten}	
-	\begin{itemize}
-
-		\item \textbf{Zeilen}: 88
-		
-		\item \textbf{Zeichen pro Zeile}: 67
-		
-		\item \textbf{Typsicherheit}: 
-		
-		\item \textbf{Redundanz}: 
-
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
-	
-		\item \textbf{Modifizierbarkeit}: 
-
-	
-	\end{itemize}
 
 	\lstSetJava
 	\begin{lstlisting}[caption=STU DataSet (2), label=listing:sbtestingdataset]
