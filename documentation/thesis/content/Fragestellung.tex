@@ -501,32 +501,41 @@ lehrveranstaltung.addRow(new Object[] {
 dataSet.addTable(lehrveranstaltung);
   \end{lstlisting}
 	
-	Diese Variante löst allerdings nicht alle Probleme: So müssen immer noch Meta-Informationen zu den Tabellen
-	modelliert werden (Zeilen 3-9 und 29-36). Obwohl diese sogar Typinformationen beinhalten, werden Typ-Fehler erst
-	zur Laufzeit beim Einspielen in die Datenbank erkannt. Der Einsatz von symbolischen 
-	Konstanten erleichtert zwar die Pflege des DataSets, dennoch lassen sich Konstanten doppelt belegen oder auch
-	Primärschlüssel einer falschen Datenbank als Fremdschlüssel angegeben werden.
+	Diese Variante löst allerdings nicht alle Probleme. So müssen immer noch Meta-Informationen zu den Tabellen
+	modelliert werden. Die Bewertung stellt sich wie folgt dar:
 	
-	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
-	und umfangreiche Datensets werden daher unübersichtlich. Insgesamt bietet die Nutzung dieser Java-DataSets 
-	wenig Vorteile gegenüber den XML-DataSets.
-	
-  \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}:
+		\item \textbf{Zeilen}: Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung 
+		  viele Zeilen notwendig und umfangreiche Datensets werden daher unübersichtlich. Für die Modellierung der Beispiel-Daten
+		  werden 152 Zeilen benötigt, wovon ein beträchtlicher Teil nur für die Meta-Informationen zu den Tabellen
+			beansprucht wird (siehe Zeilen 3-9 und 29-36).
 		
-		\item \textbf{Zeichen pro Zeile}: 
+		\item \textbf{Zeichen pro Zeile}: Mit maximal 74 Zeichen pro Zeile gibt es keine Probleme mit der Bildschirmdarstellung
+		  für die Beispieldaten.
 		
-		\item \textbf{Typsicherheit}: 
+		\item \textbf{Typsicherheit}: Obwohl die Meta-Informationen zu den Tabellen sogar Typinformationen beinhalten, werden
+		  Typ-Fehler erst zur Laufzeit beim Einspielen in die Datenbank erkannt.
 		
-		\item \textbf{Redundanz}: 
+		\item \textbf{Redundanz}: Redundante Werte können durch den Einsatz symbolischer Konstanten vermieden werden.
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
-	
-		\item \textbf{Modifizierbarkeit}: 
+		  Der Code ist zwar nicht unbedingt intuitiv, aber überschaubar und für einen Java-Programmierer auch leicht erlernbar.
+			Die Verständlichkeit leidet unter den selben Problemen wie die \texttt{XmlDataSets}: Daten werden einfach in Form
+			geordneter Listen übergeben, ohne dass direkt in der Umgebung ersichtlich ist, welcher Wert sich auf welche Spalte
+			bezieht. Der Einsatz von Konstanten kann hier helfen. Davon kann auch die Modellierung von Beziehungen profitieren.
+			
+			Allerdings können solche Konstanten auch falsch verwendet werden: Eine doppelte Belegung ist genauso möglich wie
+			das Zuweisen eines Fremdschlüssels auf den Primärschlüssels einer falschen Tabelle.
+					
+		\item \textbf{Modifizierbarkeit}:
+		  Das Anpassen des DataSets an neue Datenbank-Schemen kann relativ umständlich werden, wenn Spalten hinzukommen oder
+			wegfallen. Das Umbenennen von Spalten ist relativ leicht möglich. Einige Änderungen können durch
+			IDE-Rafactoring-Unterstützung einfach durchgeführt werden, z.B. das Ändern von Bezeichnern für Konstanten.
 
 	\end{itemize}
+  
+	Insgesamt bietet die Nutzung dieser Java-DataSets wenig Vorteile gegenüber den XML-DataSets.
 
 	\subsection{STU-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
@@ -590,9 +599,9 @@ table_Lehrveranstaltung
   \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}:
+		\item \textbf{Zeilen}: 88
 		
-		\item \textbf{Zeichen pro Zeile}: 
+		\item \textbf{Zeichen pro Zeile}: 67
 		
 		\item \textbf{Typsicherheit}: 
 		
