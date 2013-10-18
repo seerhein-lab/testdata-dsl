@@ -179,12 +179,13 @@ Modellierungsvarianten.
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
-	Das entsprechende relationale Datenbank-Diagramm wird in Abbildung \ref{img:example_relational} dargestellt. 
+	Das entsprechende relationale Datenbank-Schema wird in Abbildung \ref{img:example_relational} dargestellt. 
+	Assoziative Tabellen realisieren die n:m-Beziehungen.
 	
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[width=0.95\textwidth]{images/fragestellung/example_hochschule_relational.pdf}
-		\caption{Relationales Datenbank-Diagramm des fortlaufenden Beispiels}\label{img:example_relational}
+		\caption{Relationales Datenbank-Schema des fortlaufenden Beispiels}\label{img:example_relational}
 	\end{figure}
 
 	Das Attribut "`fakultaet"' in der Tabelle Professor soll als Aufzählungstyp (enumeration) realisiert werden.
@@ -259,7 +260,7 @@ Modellierungsvarianten.
 	Eine Möglichkeit, ein DataSet für DbUnit zu modellieren, stellt XML dar. DbUnit selbst bietet zwei Varianten an, DataSets
 	über XML zu modellieren.
 	
-	Die erste Variante stellt das \textit{XmlDataSet} dar. Diese Klasse liest eine XML-Datei nach einem von DbUnit
+	Die erste Variante stellt das \texttt{XmlDataSet} dar. Diese Klasse liest eine XML-Datei nach einem von DbUnit
 	vorgegebenen Dokumententyp ein. Das Listing \ref{listing:xmldataset} zeigt einen Ausschnitt einer solchen XML-Datei,
 	in dem die beiden Tabellen \textit{Professor} und \textit{Lehrveranstaltung} definiert werden.
 	
@@ -313,18 +314,50 @@ Modellierungsvarianten.
 </dataset>
 	\end{lstlisting}
 	
-	Die positiven Eigenschaften bei der Modellierung mit XML sind unter anderem, dass für XML ein breites Angebot an
-	Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
+	Die Bewertung anhand der Kriterien stellt sich für das \texttt{XmlDataSet} wie folgt dar:
+	\begin{itemize}
 
-  Zur Modellierung müssen Meta-Informationen zu den Daten hinterlegt werden. Diese beschränken sich allerdings auf
-	die Bezeichnungen der Spalten (Zeilen 4-8 und 25-29). Da weitere Meta-Informationen fehlen, können fehlerhafte
-	Datentypen oder Verstöße gegen Datenbank-Constraints erst zur Laufzeit beim Einspielen des DataSets erkannt werden.
+		\item \textbf{Zeilen}: Die XML-Datei mit den Beispiel-Daten umfasst 127 Zeilen. Für jede Entität
+		  werden jeweils eine Zeile pro Attribut und weitere zwei Zeilen für die umschließenden XML-Tags.
+		
+			DbUnit-konforme XML-Dateien wachsen schnell in vertikaler Richtung und enthalten unter Umständen
+			auch viel syntaktischen Overhead. Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen
+			wirkliche Daten bzw. drücken Beziehungen aus (Zeilen 21 und 26).
+
+		\item \textbf{Zeichen pro Zeile}: Mit maximal 47 Zeichen pro Zeile ist diese Modellierungsvariante
+		  in Bezug auf die Breite gut für die Bildschirmdarstellung geeignet.
+		
+		\item \textbf{Typsicherheit}: 
+			Zur Modellierung müssen Meta-Informationen zu den Daten hinterlegt werden. Diese beschränken sich allerdings auf
+			die Bezeichnungen der Spalten (Zeilen 4-8 und 25-29). Da weitere Meta-Informationen fehlen, können fehlerhafte
+			Datentypen oder Verstöße gegen Datenbank-Constraints erst zur Laufzeit beim Einspielen des DataSets erkannt werden.
+		
+		\item \textbf{Redundanz}: 
+		  Das Modellieren von Beziehungen führt zu Werte-Redundanz. Die konkreten Werte von Primärschlüsseln müssen an anderer
+			Stelle als Fremdschlüssel verwendet werden.
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+			Die positiven Eigenschaften bei der Modellierung mit XML sind unter anderem, dass für XML ein breites Angebot an
+			Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
+			Der Umgang mit XML-Dateien kann als bekannt angenommen werden für die Zielgruppe.
+			
+			Die manuelle Pflege von Primär- und Fremdschlüsseln ist unübersichtlich und damit fehleranfällig. Die Value-Tags
+			selbst lassen keinen Rückschluss auf die Spalte zu, die sie repräsentieren. Das erschwert die Lesbarkeit.
+			
+			In Bezug auf Verständlichkeit zeigt die XML-Datei Schwächen: Ohne zusätzliche Kommentare ist eine solche XML-Datei 
+			weder leicht zu lesen noch leicht zu pflegen. Auch Beziehungen sollten über Kommentare verdeutlicht werden.
+		
+			DbUnit unterstützt BLOBs in XML in Form Base64-codierter Daten. Bei größeren Datenmengen leidet die Übersicht unter dem
+			Einbetten von BLOBs, nicht nur wegen der dem zusätzlichen Platzbedarf aufgrund der Codierung. Spezielle Mechanismen,
+			BLOBs aus anderen Dateien einzulesen, bringt DbUnit nicht mit. Solche Funktionen müssen manuell implementiert werden.
+			
+		\item \textbf{Modifizierbarkeit}: Daten lassen sich relativ leicht ändern -- sofern man die richtige Stelle gefunden
+		  hat, was ohne Kommentare nicht immer so leicht ist. Eine solche XML-Datei an ein neues Datenbank-Schema anzupassen
+		  kann einfach aber auch mühsam sein. Das Umbenennen von Spalten ist sehr einfach, das Entfernen oder Hinzufügen 
+			von Spalten bei umfangreichen Daten ohne den geschickten Umgang mit Text-Editoren sehr umständlich.
+		  
+	\end{itemize}
 	
-	Beziehungen zwischen Datensätzen werden über numerische Konstanten realisiert. Die referenzierten Schlüssel 
-	müssen in der entsprechenden Fremdschlüssel-Spalte verwendet werden. Die manuelle Pfege der Schlüssel kann
-	unübersichtlich und damit fehleranfällig werdem. In umfangreicheren DataSets sind 
-	unkommentierte Beziehungen für Betrachter nur schwer nach zu vollziehen, da ein Schlüsselwert üblicherweise keinen
-	unmittelbaren Rückschluss auf den referenzierten Datensatz erlaubt.
 	
 	Ein großer Nachteil bei der Nutzung von \texttt{XmlDataSet} ist, dass der erwartete Datenbankzustand selbst wieder den 
 	kompletten Datenbankbestand umfassen muss. DbUnit erlaubt zwar mehrere DataSets zu einem zusammenzufassen, das Entfernen 
@@ -333,9 +366,6 @@ Modellierungsvarianten.
 	auf Modellierungsebene vor, d.h. es geht aus einer solchen XML-Datei nicht hervor, dass sie auf anderen DataSets
 	aufbaut und diese erweitert.
 	
-  DbUnit-konforme XML-Dateien wachsen schnell in vertikaler Richtung und enthalten unter Umständen auch viel
-	syntaktischen Overhead. Von den rund 30 gezeigten Zeilen enthalten nur zehn Zeilen wirkliche Daten bzw. drücken
-	Beziehungen aus (Zeilen 21 und 26).
 	
 	% Modellieren Assoziativer Tabellen ansprechen?
 
@@ -372,13 +402,37 @@ Modellierungsvarianten.
 ...
 </dataset>
 	\end{lstlisting}
+
+	Das \texttt{FlatXmlDataSet} hat große Ähnlichkeit zum \texttt{XmlDataSet}, das zeigt sich auch in
+	der Bewertung. Einige vorher genannte Punkte gelten hier weiterhin.
 	
-	Wie auch beim \texttt{XmlDataSet} sollte der Übersicht wegen für jeden Wert eine Zeile verwendet werden. Durch die fehlende
-	Hierarchie wirkt das \texttt{FlatXmlDataSet} etwas unübersichtlich.
+	\begin{itemize}
+
+		\item \textbf{Zeilen}: Die selben Beispieldaten lassen sich hier mit 63 Zeilen ausdrücken. Die Datei
+		  kommt mit weniger Meta-Informationen und etwas weniger syntaktischen Overhead aus. Allerdings
+		  sollte auch hier jedes Attribut in eine Zeile geschrieben werden.
+		
+		\item \textbf{Zeichen pro Zeile}: Mit maximal 40 Zeichen pro Zeile für die gewählten Testdaten ist
+		  das \texttt{FlatXmlDataSet} für die Bildschirmdarstellung gut geeignet.
+		
+		\item \textbf{Typsicherheit}: Wie auch beim \texttt{XmlDataSet} können die Typen erst beim
+		  Einspielen in die Datenbank überprüft werden.
+		  
+		\item \textbf{Redundanz}: Das Beschreiben von Beziehungen erfordert die selbe Daten-Redundanz wie
+		  beim \texttt{XmlDataSet}.
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		  Durch die fehlende Hierarchie wirkt das \texttt{FlatXmlDataSet} etwas unübersichtlich. Die
+			Spalten-Bezeichner stellen eine Art Sprachelement dar, d.h. sie werden als XML-Attribut-Bezeichner
+			bei der Datenzuweisung verwendet. Das ist übersichtlich und verständlich. Außerdem müssen
+			die Attribute nicht zwingend in der selben Reihenfolge angegeben werden.
+			
+		\item \textbf{Modifizierbarkeit}:
+		  Das Ändern der Daten wird dadurch erleichtert, dass Spaltennamen und Wert direkt beieinander stehen.
+			Ansonsten gelten die bereits für das \texttt{XmlDataSet} genannten Punkte.
 	
-  DbUnit unterstützt BLOBs in XML in Form Base64-codierter Daten. Bei größeren Datenmengen leidet die Übersicht unter dem
-	Einbetten von BLOBs, nicht nur wegen der dem zusätzlichen Platzbedarf aufgrund der Codierung. Spezielle Mechanismen,
-	BLOBs aus anderen Dateien einzulesen, bringt DbUnit nicht mit. Solche Funktionen müssen manuell implementiert werden.
+	\end{itemize}
+	
 
 
 	\subsection{Default-DataSet}
@@ -456,6 +510,23 @@ dataSet.addTable(lehrveranstaltung);
 	Ähnlich wie für die Modellierung über XML-Dateien sind für eine übersichtliche Formatierung  viele Zeilen notwendig
 	und umfangreiche Datensets werden daher unübersichtlich. Insgesamt bietet die Nutzung dieser Java-DataSets 
 	wenig Vorteile gegenüber den XML-DataSets.
+	
+  \todo{Sprache gemäß Kriterien bewerten}	
+	\begin{itemize}
+
+		\item \textbf{Zeilen}:
+		
+		\item \textbf{Zeichen pro Zeile}: 
+		
+		\item \textbf{Typsicherheit}: 
+		
+		\item \textbf{Redundanz}: 
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+	
+		\item \textbf{Modifizierbarkeit}: 
+
+	\end{itemize}
 
 	\subsection{STU-DataSet}
 	\label{sec:fragestellung:modellierung:sbtesting}
@@ -515,7 +586,25 @@ table_Lehrveranstaltung
 	verbessern. Diese Erweiterung erlaubt es, anstelle eines Fremdschlüssels eine vorher eingefügte Zeile 
 	anzugeben (\reflst{listing:sbtestingdataset}, Zeilen 20 und 27). Hier können referenzierte Primärschlüssel auch
 	automatisch vergeben werden.
+
+  \todo{Sprache gemäß Kriterien bewerten}	
+	\begin{itemize}
+
+		\item \textbf{Zeilen}:
+		
+		\item \textbf{Zeichen pro Zeile}: 
+		
+		\item \textbf{Typsicherheit}: 
+		
+		\item \textbf{Redundanz}: 
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
 	
+		\item \textbf{Modifizierbarkeit}: 
+
+	
+	\end{itemize}
+
 	\lstSetJava
 	\begin{lstlisting}[caption=STU DataSet (2), label=listing:sbtestingdataset]
 RowBuilder_Professor haase = 
@@ -549,4 +638,5 @@ RowBuilder_Lehrveranstaltung design_patterns =
 			.setEcts(3);
 	\end{lstlisting}
 	
-\todo{Sprachen gemäß Kriterien bewerten}	
+
+	
