@@ -30,8 +30,9 @@ Als Grundlage für die Defintion der Modellierungsprache sollen verschiedene Beis
 das fortlaufende Beispiel aus Kapitel \ref{chap:anforderungen} mit unterschiedlichen Entwürfen modelliert und
 die Vor- und Nachteile analysiert.
 
-Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert.
-
+Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert. Bei den Bewertungskriterien wird auf den
+implementierungsabhängige Aspekte verzichtet. Auf den Punkte Typsicherheit wird verzichtet und beim Punkt
+Modifizierbarkeit wird keine Aussage zu IDE-unterstützte Refaktorisierungsmöglichkeiten gemacht.
 
   \subsection{Beispiel-Entwurf 1}
   \label{sec:implementierung:entwurf:1}
@@ -83,11 +84,9 @@ WAESCH beaufsichtigt P_VSYS
   \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}:
+		\item \textbf{Zeilen}: 63
 		
-		\item \textbf{Zeichen pro Zeile}: 
-		
-		\item \textbf{Typsicherheit}: 
+		\item \textbf{Zeichen pro Zeile}: 50
 		
 		\item \textbf{Redundanz}: 
 
@@ -142,11 +141,9 @@ DPATTERNS = lehrveranstaltung {
   \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}:
+		\item \textbf{Zeilen}: 62
 		
-		\item \textbf{Zeichen pro Zeile}: 
-		
-		\item \textbf{Typsicherheit}: 
+		\item \textbf{Zeichen pro Zeile}: 50
 		
 		\item \textbf{Redundanz}: 
 
@@ -190,21 +187,6 @@ DPATTERNS || "Design Patterns"   | 4   | 3
   der Professor-Tabelle. Erstere drückt die 1:n-Beziehung zu einer Lehrveranstaltung aus, letztere die
   m:n-Beziehung zu Prüfungen.
   
-  Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
-  variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
-  die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter  Umständen verzichtet werden, da sie von
-  verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten wächst diese Darstellung
-  horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung unübersichtlich
-  werden.
-  
-  Einige Entwicklungsumgebungen wie Eclipse bieten spezielle Block-Bearbeitungsfunktionen an, die beim Arbeiten an
-  einer Tabellen-DSL hilfreich sein kann. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
-  Leerzeichen eingefügt oder entfernt werden.
-  
-  Bei umfangreichen Tabellen, die möglicherweise nicht mehr auf eine Bildschirmseite passen, kann es sinnvoll sein,
-  den Tabellenkopf zu wiederholen. Dies sollte von der Implementierung genauso unterstützt werden wie die Definition
-  neuer Tabellenköpfe mit unterschiedlichen Spalten.
-  
 	
   \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
@@ -212,13 +194,24 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 		\item \textbf{Zeilen}:
 		
 		\item \textbf{Zeichen pro Zeile}: 
-		
-		\item \textbf{Typsicherheit}: 
+			Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
+			variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
+			die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter  Umständen verzichtet werden, da sie von
+			verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten wächst diese Darstellung
+			horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung unübersichtlich
+			werden.
 		
 		\item \textbf{Redundanz}: 
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
-	
+			Einige Entwicklungsumgebungen wie Eclipse bieten spezielle Block-Bearbeitungsfunktionen an, die beim Arbeiten an
+			einer Tabellen-DSL hilfreich sein kann. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
+			Leerzeichen eingefügt oder entfernt werden.
+
+			Bei umfangreichen Tabellen, die möglicherweise nicht mehr auf eine Bildschirmseite passen, kann es sinnvoll sein,
+			den Tabellenkopf zu wiederholen. Dies sollte von der Implementierung genauso unterstützt werden wie die Definition
+			neuer Tabellenköpfe mit unterschiedlichen Spalten.
+
 		\item \textbf{Modifizierbarkeit}: 
 
 	\end{itemize}
@@ -257,8 +250,8 @@ werden. Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie ein
 aussehen lässt.
 
 Listing \ref{listing:groovyexamples} zeigt die selben Anweisungen einmal in typischer Java-Syntax (Zeile 1)
-und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2). Diese Zeile liest sich wie ein natürlich
-sprachiger, englischer Satz:
+und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2). Das Beispiel stammt aus \cite[65]{GROOVY_SLIDES}.
+Die zweite Zeile liest sich wie ein natürlichsprachiger, englischer Satz:
 
   \begin{lstlisting}[caption=Vereinfachung von Ausdrücken in Groovy, label=listing:groovyexamples]
 take(coffee).with(sugar, milk).and(liquor);
