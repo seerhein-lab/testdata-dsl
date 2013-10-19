@@ -31,8 +31,8 @@ das fortlaufende Beispiel aus Kapitel \ref{chap:anforderungen} mit unterschiedli
 die Vor- und Nachteile analysiert.
 
 Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert. Bei den Bewertungskriterien wird auf den
-implementierungsabhängige Aspekte verzichtet. Auf den Punkte Typsicherheit wird verzichtet und beim Punkt
-Modifizierbarkeit wird keine Aussage zu IDE-unterstützte Refaktorisierungsmöglichkeiten gemacht.
+implementierungsabhängige Aspekte verzichtet. So wird der Punkt Typsicherheit nicht betrachtet und
+bei der Modifizierbarkeit keine Aussage zu IDE-unterstützten Refaktorisierungsmöglichkeiten gemacht.
 
   \subsection{Beispiel-Entwurf 1}
   \label{sec:implementierung:entwurf:1}
@@ -77,20 +77,26 @@ WAESCH beaufsichtigt P_VSYS
   \end{lstlisting}
   
   Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
-  Variablennamen für die Modellierung von Beziehungen. Da für jeden Wert eine eigene Zeile verwendet wird, werden
-  umfangreiche Daten schnell unübersichtlich. Die Beschreibung der Beziehungen abseits der Definition der Daten
-  erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+  Variablennamen für die Modellierung von Beziehungen. Für diesen Entwurf sieht die Bewertung folgendermaßen aus:
 
   \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: 63
+		\item \textbf{Zeilen}: Für die Modellierung der Beispieldaten werden 63 Zeilen benötigt. Für jeden Spaltenwert und
+		  jede Beziehung wird jeweils eine eigene Zeile benötigt. Umfangreiche Daten können folglich schnell
+			unübersichtlich werden.
 		
-		\item \textbf{Zeichen pro Zeile}: 50
+		\item \textbf{Zeichen pro Zeile}: Der Entwurf ist für die Bildschirmdarstellung gut geeignet, die Beispieldaten
+		  erreichten höchstens 50 Zeichen pro Zeile.
 		
-		\item \textbf{Redundanz}: 
+		\item \textbf{Redundanz}: Die Datenredundanz wird durch das Verwenden von Bezeichnern für Entitäten
+		  (Zeilen 1, 8, 15 und 21) vermieden, die für die Beschreibung von Beziehungen verwendet werden. 
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+		  
+		
+			Die Beschreibung der Beziehungen abseits der Definition der Daten
+			erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
 	
 		\item \textbf{Modifizierbarkeit}: 
 
@@ -566,6 +572,22 @@ class HochschuleDataSet extends HochschuleBuilder
 
 }
 \end{lstlisting}
+
+
+ \todo{Sprache gemäß Kriterien bewerten}	
+	\begin{itemize}
+
+		\item \textbf{Zeilen}: 
+		
+		\item \textbf{Zeichen pro Zeile}: 
+		
+		\item \textbf{Redundanz}: 
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+	
+		\item \textbf{Modifizierbarkeit}: 
+
+	\end{itemize}
 
 
 
