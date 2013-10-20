@@ -79,10 +79,9 @@ WAESCH beaufsichtigt P_VSYS
   Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
   Variablennamen für die Modellierung von Beziehungen. Für diesen Entwurf sieht die Bewertung folgendermaßen aus:
 
-  \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: Für die Modellierung der Beispieldaten werden 63 Zeilen benötigt. Für jeden Spaltenwert und
+		\item \textbf{Zeilen}: Für die Modellierung der Beispieldaten werden 64 Zeilen benötigt. Für jeden Spaltenwert und
 		  jede Beziehung wird jeweils eine eigene Zeile benötigt. Umfangreiche Daten können folglich schnell
 			unübersichtlich werden.
 		
@@ -92,13 +91,15 @@ WAESCH beaufsichtigt P_VSYS
 		\item \textbf{Redundanz}: Die Datenredundanz wird durch das Verwenden von Bezeichnern für Entitäten
 		  (Zeilen 1, 8, 15 und 21) vermieden, die für die Beschreibung von Beziehungen verwendet werden. 
 
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
-		  
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		  Der Entwurf ist verständlich und leicht zu erlernen, da sich die meisten Sprachelemente auf das Datenbank-Schema
+			beziehen.
 		
-			Die Beschreibung der Beziehungen abseits der Definition der Daten
-			erschwert den Umgang mit den Daten und die Übersicht ebenfalls.
+			Die Beschreibung der Beziehungen abseits der Definition der Daten kann den
+			Umgang mit den Daten erschweren und die Übersicht einschränken.
 	
-		\item \textbf{Modifizierbarkeit}: 
+		\item \textbf{Modifizierbarkeit}: Auch ohne Refaktorisierungsmöglichkeiten sollte sich ein DataSet leicht an neue
+		  Datenbank-Schemata anpassen lassen, z.B. über Suchen/Ersetzen oder Makro-Funktionen in Text-Editoren.
 
 	\end{itemize}
 
@@ -144,26 +145,31 @@ DPATTERNS = lehrveranstaltung {
 ...
   \end{lstlisting}
   
-  \todo{Sprache gemäß Kriterien bewerten}	
+  Die Änderungen im Vergleich zum ersten Entwurf sind überschaubar. Dies spiegelt sich auch in der
+	Bewertung wider:
+	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: 62
+		\item \textbf{Zeilen}: Die Möglichkeit, mehrere Beziehungen zusammenzufassen (Zeile 6), kann 
+		  einige Zeilen einsparen. Das Beispiel-DataSet kommt hier allerdings noch auf 62 Zeilen, ein
+			Wert benötigt nach wie vor eine Zeile.
 		
-		\item \textbf{Zeichen pro Zeile}: 50
+		\item \textbf{Zeichen pro Zeile}: Hier hat sich nichts geändert, der Entwurf ist ebenfalls für
+		  die Bildschirmdarstellung geeignet.
 		
-		\item \textbf{Redundanz}: 
+		\item \textbf{Redundanz}: Wie beim ersten Entwurf keine erkennbare Werte-Redundanz.
 
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: Die Möglichkeit, Beziehungen
+		  einer Entität direkt bei ihrer Definition beschreiben zu können, kann die Verständlichkeit
+			verbessern. Ansonsten gelten die für Entwurf 1 genannten Punkte.
 	
-		\item \textbf{Modifizierbarkeit}: 
+		\item \textbf{Modifizierbarkeit}: Im Vergleich zum ersten Entwurf keine Änderungen.
 
 	\end{itemize}
 
   \subsection{Beispiel-Entwurf 3}
   \label{sec:implementierung:entwurf:3}
 	
-	\todo{Beispiel-Entwürfe benennen ?}
-    
 	Der dritte Entwurf ist inspiriert von dem Test-Framework \textit{Spock}, das es erlaubt, Test-Daten in Unit-Tests tabellarisch
 	zu definieren \cite{SPOCK}. Der Entwurf ist in Listing \ref{listing:dslentwurf3} dargestellt. Es wird versucht die Daten durch
 	eine tabellarische Struktur übersichtlich zu gestalten. Die Syntax der Sprache ist sehr schlicht und ausdrucksstark. Ein Label
@@ -194,12 +200,15 @@ DPATTERNS || "Design Patterns"   | 4   | 3
   m:n-Beziehung zu Prüfungen.
   
 	
-  \todo{Sprache gemäß Kriterien bewerten}	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}:
+		\item \textbf{Zeilen}: Der größte Vorteil dieser Darstellung ist, dass nicht jeder Wert, sondern dass
+		  nur jede Entität zu einer Zeile führt. Die Beispieldaten kommen mit dieser Sprache auf gerade mal 19 Zeilen.
 		
 		\item \textbf{Zeichen pro Zeile}: 
+		  Die Beispieldaten erreichen eine maximale Breite von bis zu 144 Zeichen bei einer Tabelle mit 10 Spalten.
+			Für die Bildschirmdarstellung kann dies problematisch sein und horizontales Scrollen notwendig machen.
+		
 			Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
 			variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
 			die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter  Umständen verzichtet werden, da sie von
@@ -207,9 +216,11 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 			horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung unübersichtlich
 			werden.
 		
-		\item \textbf{Redundanz}: 
+		\item \textbf{Redundanz}: Wie die beiden bisherigen Entwürfe tritt hier keine erkennbare Daten-Redundanz auf.
+		  Dieser Entwurf vermeidet außerdem die Redundanz der Spaltenbezeichner.
 
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		  Die tabellarische Darstellung von Daten ist verständlich und auch nicht schwer zu erlernen.
 			Einige Entwicklungsumgebungen wie Eclipse bieten spezielle Block-Bearbeitungsfunktionen an, die beim Arbeiten an
 			einer Tabellen-DSL hilfreich sein kann. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
 			Leerzeichen eingefügt oder entfernt werden.
@@ -219,6 +230,8 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 			neuer Tabellenköpfe mit unterschiedlichen Spalten.
 
 		\item \textbf{Modifizierbarkeit}: 
+		  Mit Hilfe geeigneter Editoren ist ein DataSet leicht an neue Datenbank-Schemata anzupassen. Die Daten selbst lassen
+			sich auch relativ einfach ändern.
 
 	\end{itemize}
   
