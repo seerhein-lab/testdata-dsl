@@ -205,9 +205,9 @@ folgenden Kategorien erzeugt:
 	  Datenbankmodells. 
   	Es wird eine abstrakte DataSet-Klasse generiert. Der Zugriff auf die Tabellen erfolgt über öffentliche
 	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
-		erzeugen. Dabei werden Template-Methoden \todo{REF GOF} definiert, die genutzt werden können, um in den Erzeugungsprozess von DataSets
-		einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die entsprechende
-		Tabellen.
+		erzeugen. Dabei werden Template-Methoden \cite[325]{DESIGN_PATTERNS} definiert, die genutzt werden können, um in den
+		Erzeugungsprozess von DataSets einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die
+		entsprechende Tabellen.
 
 	\item \textbf{Table}: Die \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
 	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen

@@ -414,7 +414,7 @@ WAESCH.beaufsichtigt(P_VSYS)
   
   Wie das Beispiel-DataSet aus Listing \ref{listing:hochschuledataset:table} in einem JUnit-Test verwendet werden kann,
   zeigt Listing \ref{listing:junittest}. Das System Under Test (siehe Abschnitt \ref{sec:grundlagen:konzepte:tests})
-  ist ein Spring-Service, der von der Variable \texttt{sut} (Zeile 20) repräsentiert wird. \todo{Quelle Spring Service}
+  ist ein Spring-Service, der von der Variable \texttt{sut} (Zeile 20) repräsentiert wird.
   
   Das in einem Test verwendete DataSet kann als Klasse über die Annotation \texttt{DatabaseSetup} konfiguriert werden
   (Zeile 26). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
@@ -788,7 +788,6 @@ Table knoten = table("knoten")
         leider nicht immer möglich. Die Refaktorisierung sieht eine assoziative Tabelle für die Modellierung
         der Beziehung vor (siehe Listing \ref{listing:reflexiv:assoc}).
         
-        
         \begin{lstlisting}[caption=Reflexive Beziehungen mit Hilfe assoziativer Tabelle, label=listing:reflexiv:assoc]
 Table knoten = table("knoten")
     .column("id", DataType.BIGINT)
@@ -807,17 +806,18 @@ associativeTable("parents")
         \end{lstlisting} 
 
       \item \textbf{Zirkuläre Beziehungen}
-			Reflexive Beziehungen stellen eine besondere Form von zirkulären Beziehungen dar. Die Probleme sind
-			relativ ähnlich. 
-
-			  \todo{Zirkuläre Beziehungen ergänzen}
+				Reflexive Beziehungen stellen eine besondere Form von zirkulären Beziehungen dar. Die Probleme sind
+				relativ ähnlich. Als kleines Modell dient eine Veranstaltungsplanung, bei der es Organisatoren
+				und Teilnehmer geben kann. Eine Veranstaltung wird von einer Person organisiert, eine Person
+				kann an einer Veranstaltung teilnehmen. Listing \ref{listing:zirkulaer:manuell} zeigt eine
+				Realisierung dieses Modells.
 
         \begin{lstlisting}[caption=Zirkuläre Beziehungen manuell, label=listing:zirkulaer:manuell]
 Table event = table("event")
     .column("id", DataType.BIGINT)
       .defaultIdentifier()
     .column("name", DataType.VARCHAR)
-    .column("organizer", DataType.BIGINT)
+    .column("organizer", DataType.BIGINT)  // a person
   .build();
 
 Table person = table("person")
@@ -830,6 +830,10 @@ Table person = table("person")
   .build();
         \end{lstlisting} 
       
+			  Das selbe Modell lässt sich -- aus Sicht von \textit{STU} -- etwas typsicherer umsetzen.
+				Für die Teilnahme wird eine assoziative Tabelle verwendet. Darüber hinaus kann hier auch
+				eine Person an mehreren Veranstaltungen teilnehmen. Listing \ref{listing:zirkulaer:assoc}
+				zeigt die Realisierung einer zirkulären Beziehung mit Hilfe einer assoziativen Tabelle.
       
         \begin{lstlisting}[caption=Zirkuläre Beziehungen mit assoziativer Tabelle, label=listing:zirkulaer:assoc]
 Table person = table("person")
@@ -855,9 +859,43 @@ associativeTable("parcipations")
   .build();
         \end{lstlisting} 
       
-      \item \textbf{Ternäre Beziehungen}
-			
-			  \todo{Ternäre Beziehungen ergänzen}
+      \item \textbf{Ternäre und andere höhergradigen Beziehungen}
+			  \textit{STU} sieht keine spezielle Unterstützung für ternäre oder andere höhergradigen Beziehungen vor.
+				Es bietet sich an, solche Beziehungen über eine zusätzliche Tabelle zu realisieren (siehe Listing
+				\ref{listing:hoehergradig}, vergleichbar mit assoziativen Beziehungen für die Modellierung von
+				n:m-Beziehungen.
+
+        \begin{lstlisting}[caption=Höhergradige Beziehungen mit zusätzlicer Tabelle, label=listing:hoehergradig]
+Table student = table("student")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+  .build();
+
+Table professor = table("professor")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+  .build();
+
+Table pruefung = table("pruefung")
+    .column("id", DataType.BIGINT)
+      .defaultIdentifier()
+    .column("name", DataType.VARCHAR)
+  .build();
+
+table("relation")
+    .column("student_id", DataType.BIGINT)
+      .reference
+        .foreign(student)
+    .column("professor_id", DataType.BIGINT)
+      .reference
+        .foreign(professor)
+    .column("pruefung_id", DataType.BIGINT)
+      .reference
+        .foreign(pruefung)
+  .build();
+        \end{lstlisting} 
 			
     \end{itemize}
   
