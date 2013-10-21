@@ -219,8 +219,8 @@ Modellierungsvarianten.
 	
 	In \textit{DbUnit} werden die Datenbankzustände durch DataSets repräsentiert. Für einen Test werden gewöhnlich zwei
 	DataSets benötigt: das erste für den Anfangszustand, das zweite für den erwarteten Zustand. Allerdings bieten
-	DbUnit-DataSets nur begrenzte Möglichkeiten, das DataSet mit dem erwarteten Zustand aus dem DataSet mit dem
-	Anfangszustand zu erzeugen.
+	DbUnit-DataSets nur begrenzte Möglichkeiten (z.B. kein Löschen von Zeilen aus einem DataSet möglich), das DataSet
+	mit dem erwarteten Zustand aus dem DataSet mit dem Anfangszustand zu erzeugen.
 
 	Im Folgenden werden verschiedene Modellierungsarten für DbUnit-DataSets diskutiert. Diese soll anhand der im
 	nächsten Abschnitt beschriebenen Kriterien erfolgen. Die Ergebnisse stellen die Grundlage
@@ -348,7 +348,7 @@ Modellierungsvarianten.
 			weder leicht zu lesen noch leicht zu pflegen. Auch Beziehungen sollten über Kommentare verdeutlicht werden.
 		
 			DbUnit unterstützt BLOBs in XML in Form Base64-codierter Daten. Bei größeren Datenmengen leidet die Übersicht unter dem
-			Einbetten von BLOBs, nicht nur wegen der dem zusätzlichen Platzbedarf aufgrund der Codierung. Spezielle Mechanismen,
+			Einbetten von BLOBs, nicht nur wegen dem zusätzlichen Platzbedarf aufgrund der Codierung. Spezielle Mechanismen,
 			BLOBs aus anderen Dateien einzulesen, bringt DbUnit nicht mit. Solche Funktionen müssen manuell implementiert werden.
 			
 		\item \textbf{Modifizierbarkeit}: Daten lassen sich relativ leicht ändern -- sofern man die richtige Stelle gefunden
@@ -444,7 +444,7 @@ Modellierungsvarianten.
 	
 	So können Beziehungen mit Hilfe symbolischer Konstanten ausdrucksstärker modelliert werden. Auch wenn die Beziehungen
 	immer noch etwas umständlich modelliert werden müssen, können symbolische Konstanten dabei helfen, Redundanz zu vermeiden
-	und damit das Risiko für Fehler zu senken.
+	und damit das Risiko für Fehler zu senken, die bei der Änderung solcher Werte auftreten können.
 
 	\lstSetJava
 	\begin{lstlisting}[caption=Default-DataSet, label=listing:javadataset]
@@ -545,12 +545,15 @@ dataSet.addTable(lehrveranstaltung);
 	\ref{sec:grundlagen:stu}). 
 	
 	\textit{STU} führt eine eigene DataSet-Klasse ein,
-	über die die Daten modelliert werden. Diese DataSet-Klasse kann bei Bedarf von den aktuellen Daten ein
-	DbUnit-DataSet erzeugen. Auf diese Weise können DataSets aus \textit{STU} einfacher und umfangreicher
-	als DbUnit-DataSets modifiziert werden, wie z.B. das Löschen von Zeilen.
+	über die die Daten modelliert werden. Diese DataSet-Klasse kann bei Bedarf von den aktuell in den
+	\textit{STU}-Klassen gehaltenen Daten ein neues und unabhängiges DbUnit-DataSet erzeugen. Auf diese
+	Weise können DataSets aus \textit{STU} einfacher und umfangreicher
+	als DbUnit-DataSets modifiziert werden. So unterstützt \textit{STU} auch das Löschen von Zeilen
+	aus einem DataSet.
 	
-	Auf diese Weise können mit \textit{STU} verhältnismäßig einfach Varianten eines DbUnit-DataSets
-	erzeugt werden, z.B. ein DataSet mit dem Ausgangszustand und ein DataSet mit dem erwarten Zustand am Ende des Tests.
+	Eine Stärke von \textit{STU} ist es, dass verhältnismäßig einfach Varianten eines DbUnit-DataSets
+	erzeugt werden können, z.B. ein DataSet mit dem Ausgangszustand und ein DataSet mit dem erwarten
+	Zustand am Ende des Tests.
 	
 	Die Java-DSL sorgt für statische Typsicherheit, so dass Java-IDEs fehlerhafte Typen bereits während der
 	Entwicklung kenntlich machen. Verglichen mit den DbUnit-Xml-DataSets und dem Default-DataSet

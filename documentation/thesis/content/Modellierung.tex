@@ -19,8 +19,8 @@ Sprache nutzt, wird als \textit{interne DSL} bezeichnet \cite[68]{DOMAIN_SPECIFI
 
 In diesem Abschnitt soll eine Modellierungssprache für Test-Daten entwickelt werden. Die Vor- und Nachteile
 der in Kapitel \ref{chap:anforderungen} diskutierten Modellierungsvarianten sollen in die Sprache einfließen.
-Die Syntax dieser Sprache darf unabhängig von Java sein, so dass sie auch als \textit{externe DSL} realisiert
-werden kann. Der Vorteil von externen gegenüber internen DSLs besteht in der größeren Freiheit in Bezug auf
+Die Sprache muss nicht zwingend auf Java basieren, sie kann auch als \textit{externe DSL} realisiert
+werden. Der Vorteil von externen gegenüber internen DSLs besteht in der größeren Freiheit in Bezug auf
 die Syntax \cite[89]{DOMAIN_SPECIFIC_LANGUAGES}. 
 
 \section{Entwurf der DSL}
@@ -82,8 +82,8 @@ WAESCH beaufsichtigt P_VSYS
 	\begin{itemize}
 
 		\item \textbf{Zeilen}: Für die Modellierung der Beispieldaten werden 64 Zeilen benötigt. Für jeden Spaltenwert und
-		  jede Beziehung wird jeweils eine eigene Zeile benötigt. Umfangreiche Daten können folglich schnell
-			unübersichtlich werden.
+		  jede Beziehung wird jeweils eine eigene Zeile benötigt. Umfangreiche Daten können in Bezug auf den Umfang deshalb 
+			schnell unübersichtlich werden.
 		
 		\item \textbf{Zeichen pro Zeile}: Der Entwurf ist für die Bildschirmdarstellung gut geeignet, die Beispieldaten
 		  erreichten höchstens 50 Zeichen pro Zeile.
@@ -222,7 +222,7 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
 		  Die tabellarische Darstellung von Daten ist verständlich und auch nicht schwer zu erlernen.
 			Einige Entwicklungsumgebungen wie Eclipse bieten spezielle Block-Bearbeitungsfunktionen an, die beim Arbeiten an
-			einer Tabellen-DSL hilfreich sein kann. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
+			einer Tabellen-DSL hilfreich sein können. So können beispielsweise in einer Spalte über mehrere Zeilen hinweg 
 			Leerzeichen eingefügt oder entfernt werden.
 
 			Bei umfangreichen Tabellen, die möglicherweise nicht mehr auf eine Bildschirmseite passen, kann es sinnvoll sein,
@@ -303,9 +303,8 @@ den Zugriff von nicht definierten Klassenelementen zu reagieren.
     Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
     Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \texttt{TableParser},
     enthält dafür die Methode \texttt{parseTableClosure}. Die Methode soll als Ergebnis eine Liste
-    von Tabellenzeilen zurückliefern. Da an dieser Stelle noch keinerlei Interpretation der Tabellenwerte
-    durchgeführt wird, stellt eine Tabellenzeile selbst ebenfalls eine Liste dar -- aus den Objekten
-    der Spalten.
+    von Tabellenzeilen zurückliefern. Eine Tabellenzeile selbst stellt zu diesem Zeitpunkt eine Liste
+		von Spaltenwerten dar. Die Analyse und Interpretation der Daten findet erst später statt.
     
     Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator implementiert
     werden, ist die übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende
@@ -396,10 +395,11 @@ class TableParser {
 }
     \end{lstlisting}
     
-    Die statischen Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. Ihre Ergebnisse
-    können sie demnach auch nur in statische Elementen aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das
-    Erlauben von gleichzeitigem Parsen von Tabellen aus verschiedenen Threads heraus, wird für die Ergebnisse eine 
-    threadlokale Liste verwendet. \cite[45]{JAVA_CONCURRENCY_IN_PRACTICE}
+    Die statischen \texttt{or}-Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. 
+		Ihre Zwischenergebnisse, also die geparsten Spaltenwerte, können sie demnach auch nur in statische Elementen
+		aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das Erlauben von gleichzeitigem Parsen von Tabellen
+		aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale Liste verwendet.
+		\cite[45]{JAVA_CONCURRENCY_IN_PRACTICE}
 
     Die Laufzeit-Meta-Programmierung kann die Syntax der Sprache nicht beliebig erweitern. Groovy kennt keinen
     Double-Pipe-Operator. Deshalb kann dieser weder überladen noch über Laufzeit-Meta-Programmierung eingeführt
@@ -448,7 +448,7 @@ def dataset = [
     Import-Anweisungen. Auf die einzelnen Klassen kann erneut über das Visitor-Pattern auf die einzelnen Methoden
     zugegriffen werden. Diese lassen sich dann Statement für Statement untersuchen.
     
-    Für das Parsen interessante Statements sind von den Typ \texttt{ExpressionStatement}. Es kann abgefragt werden,
+    Für das Parsen relevant sind Statements vom Typ \texttt{ExpressionStatement}. Es kann abgefragt werden,
     ob ein Label Teil des Statements ist. Über ein solches Label können die Daten den einzelnen Tabellen zugeordnet
     werden. Das eigentliche \texttt{ExpressionStatement} kann danach analysiert werden. Die folgenden drei Arten von
     Ausdrücken sind relevant für das Parsen:
@@ -491,7 +491,7 @@ richten. Auf diesen Variablen kann zum Definieren von Tabellendaten die Methode 
 Die Daten werden in Form eines Closures übergeben. 
 
 Zur Übersicht sollen einzelne DataSets als eigene Klassen definiert werden, die auf einer Datenbank-Modell-spezifischen
-abstrakten Klasse basiert. Für die Definition der Tabellen-Daten ist die Methode \texttt{tables} vorgesehen, über die
+abstrakten Klasse basieren. Für die Definition der Tabellen-Daten ist die Methode \texttt{tables} vorgesehen, über die
 DSL ausgedrückte Beziehungen sollen innerhalb der Methode \texttt{relations} modelliert werden.
 
 Die Syntax für die Definition der Daten einer Tabelle wird mit Hilfe der Erweiterten Backus-Naur-Form in
@@ -535,7 +535,7 @@ In Kapitel \ref{chap:anforderungen} wurden Beispiel-Daten in unterschiedlichen V
 wurden dort nur jeweils zwei Tabellen dargestellt. Listing \ref{listing:hochschuledataset:table} zeigt, wie sich die selben
 Daten mit der neuen DSL modellieren lassen -- diesmal allerdings in vollem Umfang.
   
-\begin{lstlisting}[caption=DataSet modelliert mit Table Builder API, label=listing:hochschuledataset:table]
+\begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, label=listing:hochschuledataset:table]
 class HochschuleDataSet extends HochschuleBuilder
 {
 
@@ -586,35 +586,43 @@ class HochschuleDataSet extends HochschuleBuilder
 }
 \end{lstlisting}
 
-
- \todo{Sprache gemäß Kriterien bewerten}	
-	\begin{itemize}
-
-		\item \textbf{Zeilen}: 
-		
-		\item \textbf{Zeichen pro Zeile}: 
-		
-		\item \textbf{Redundanz}: 
-
-		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
-	
-		\item \textbf{Modifizierbarkeit}: 
-
-	\end{itemize}
-
-
-
-Insgesamt ist die Darstellung sehr übersichtlich. Der Code wurde aufgrund der eingeschränkten Seitenbreite leicht
-angepasst und die Tabelle mit den Studenten in zwei Blöcke aufgeteilt (Zeilen 24 bis 32). In diesem Beispiel ist
-diese Darstellung eher unüblich, aber der Parser unterstützt auch die Definition von Teiltabellen mit
-unterschiedlichen Spalten innerhalb eines Closures.
-
+Insgesamt ist die Darstellung sehr übersichtlich. 
 Innerhalb der Methode \texttt{tables} werden die Daten der einzelnen Tabellen auf Datenbank-Ebene modelliert.
 Die Methode \texttt{relations} erlaubt die Modellierung von Beziehungen auf der höheren ER-Ebene. Sogar Beziehungen,
 die über assoziative Tabellen realisiert werden, können so modelliert werden.
+Entsprechend der Kriterien stellt sich die Bewertung für die Sprache wie folgt dar:
 
-Alternativ könnten Beziehungen auch auf der Datenbank-Ebene modelliert werden. Listing 
-\ref{listing:hochschuledataset:tablerelations} veranschaulicht diese Variante.
+	\begin{itemize}
+
+		\item \textbf{Zeilen}: Die komplette Klasse, die das DataSet repräsentiert, erreicht 48 Zeilen. Normalerweise
+		  benötigt jede Entität eine Zeile, Ausnahmen sind aber möglich.
+		
+		\item \textbf{Zeichen pro Zeile}: Die Anzahl der Zeichen pro Zeile kann zu groß für eine Bildschirmdarstellung 
+		  werden. Dies kann auf Kosten zusätzlicher Zeilen allerdings vermieden werden (siehe Zeilen 25 bis 31). Dort
+			wurde der Code aufgrund der eingeschränkten Seitenbreite angepasst und die Tabellendefinition in zwei
+			Teiltabellen aufgeteilt.
+		
+		\item \textbf{Redundanz}: Wie bei den Entwürfen zuvor ist keine Daten-Redundanz zu erkennen.
+
+		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
+		  Die Sprache ist sehr schlicht und die Sprachelemente werden überwiegend vom Datenbank-Modell vorgegeben.
+			Dadurch ist sie verständlich und auch leicht erlernbar. 
+			
+			Die Sprache kann flexibel genutzt werden:
+			Es ist möglich, in einem Tabellen-Block verschiedene Teiltabellen zu definieren. Auf diese Weise kann
+			die Zeilenbreite verringert werden, der Tabellenkopf für die Übersicht wiederholt oder auch Spalten
+			mit optionalen Werten in eine Teiltabelle verschoben werden.
+		  
+			Implementierungsspezifische Maßnahmen, die die Benutzbarkeit verbessern sollen, werden in
+			Kapitel~\ref{chap:realiserungdsl} beschrieben.
+	
+		\item \textbf{Modifizierbarkeit}: Die Daten lassen sich relativ leicht an neue Datenbank-Schemata anpassen
+		  und die Daten selbst sich leicht ändern. 
+
+	\end{itemize}
+
+Die Flexibilität der Sprache zeigt sich auch darin, dass Beziehungen auch auf der Datenbank-Ebene modelliert werden
+können. Listing  \ref{listing:hochschuledataset:tablerelations} veranschaulicht diese Variante.
 
 \begin{lstlisting}[caption=Beziehungen innerhalb von Tabellen, label=listing:hochschuledataset:tablerelations]
 class HochschuleDataSet extends HochschuleBuilder
