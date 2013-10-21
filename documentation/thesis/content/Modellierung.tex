@@ -239,7 +239,7 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 
   Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
   Die Darstellung wirkt übersichtlich, da sie wenig syntaktischen Ballast hat. Es können schnell viele Daten
-  überblickt werden. Die tabellarische Schreibweise sollte für die Zielgruppe vertraut wirken und intuitiver
+  überblickt werden. Die tabellarische Schreibweise wird für die Zielgruppe vertraut wirken und intuitiver
   sein als die anderen Darstellungsformen.
   
   Darüber hinaus soll es möglich sein, Beziehungen auch außerhalb der Tabellen zu beschreiben. Dafür wäre eine Syntax
@@ -355,8 +355,9 @@ class TableParser {
     Im zu parsenden Closure sollen Variablen genutzt werden, die nicht im Closure selbst sondern in einer anderen Klasse
     definiert werden. Zu diesen Variablen gehören die Bezeichner der Spalten und die der Zeilen. Groovy erlaubt es Closures im
     Kontext eines Delegaten auszuführen. In diesem Beispiel wird die aktuelle Instanz der Klasse \texttt{TableParser} verwendet 
-    (Zeile 22). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichern verwendet. In Zeile 23 wird 
-    festgelegt, dass bei der Auflösung zuerst im Delegaten gesucht wird.
+    (Zeile 22). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichern verwendet, d.h. es können
+		innerhalb des Closures alle Elemente des Delegaten genau so verwendet werden, als wären sie im Closure selbst definiert.
+		In Zeile 23 wird festgelegt, dass bei der Auflösung zuerst im Delegaten gesucht wird.
     
     In diesem Prototyp sind keine Variablen für Spalten oder Zeilen definiert. Folglich schlägt das Auflösen fehl.
     Groovy ruft Groovy dann die Methode \texttt{propertyMissing} in der jeweiligen Klasse auf. Eine Property ist 
@@ -444,7 +445,7 @@ def dataset = [
     
     Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
     Ein AST-Transformationsklasse, erhält über das Visitor-Pattern Zugriff auf die abstrakten Syntaxbäume einzelner
-    Module (\cite[331ff]{DESIGN_PATTERNS}). Groovy Module beinhalten Klassen, aber auch die modulspezifischen
+    Module \cite[331ff]{DESIGN_PATTERNS}. Groovy Module beinhalten Klassen, aber auch die modulspezifischen
     Import-Anweisungen. Auf die einzelnen Klassen kann erneut über das Visitor-Pattern auf die einzelnen Methoden
     zugegriffen werden. Diese lassen sich dann Statement für Statement untersuchen.
     

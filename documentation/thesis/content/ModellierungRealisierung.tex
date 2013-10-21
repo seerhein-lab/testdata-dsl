@@ -7,7 +7,7 @@ Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit d
 dass Bezeichner wie Tabellen- und Spaltennamen nicht nur erkannt werden, sondern auch automatisch vervollständigt werden können.
 Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem Anspruch nicht genügen. Falsche Tabellennamen können
 erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
-Tabelle abhängig. Der IDE-Support wird über die neuen DataSet-Builder-Klassen realisiert.
+Tabelle abhängig ist. Wie der IDE-Support über die neuen DataSet-Builder-Klassen realisiert wird, wird im folgenden beschrieben.
 
 \textit{STU} stellt die Basis für Erweiterungen und Verbesserung dar. Es verfolgt bereits das Ziel, Tests von
 Datenbank-basierten Anwendungen zu erleichtern und vereinfacht die Modellierung von DbUnit-DataSets. Auf Abwärtskompatibilität
@@ -52,13 +52,13 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
     neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
       
   \item \textbf{Mehrwert auch für bisheriges API}: Auch wenn auf das neue Table Builder API verzichtet wird,
-    kann das bietet das Builder API so einen Mehrwert gegenüber der bisherigen \textit{STU}-Implementierung bieten.
+    kann das Builder API so einen Mehrwert gegenüber der bisherigen \textit{STU}-Implementierung bieten.
     Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
     und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
       
-  \item \textbf{Einheitlicher Funktionsumfang}: Funktionen, die in das Fluent Builder API integriert werden, können in
-    beiden APIs genutzt werden. Die Folge ist, dass der Funktionsumfang nicht bzw. weniger stark von der genutzten API
-    abhängt. 
+  \item \textbf{Einheitlicher Funktionsumfang}: Das Table Builder API und das Fluent Builder API sollen -- so weit
+	  möglich und sinnvoll -- den selben Funktionsumfang bieten. Erweiterungen für das Fluent Builder API stehen
+		automatisch auch im Table Builder API zur Verfügung.
 
 \end{itemize}
 
@@ -171,7 +171,7 @@ id | matrikelnummer | vorname
   \end{itemize}
   
   Beide Ebenen erlauben die Angabe eines Bezeichners, der die Beziehung in die jeweilige Richtung beschreibt,
-  der Ausgangspunkt wird durch die Ebene bestimmt. Dieser Bezeichner werden für die Methoden zur Modellierung
+  der Ausgangspunkt wird durch die Ebene bestimmt. Diese Bezeichner werden für die Methoden zur Modellierung
   der Beziehungen verwendet. Daneben können auch noch Beschreibungstexte angegeben werden, die für die JavaDoc
   genutzt werden.
   
