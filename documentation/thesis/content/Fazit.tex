@@ -1,8 +1,55 @@
 \chapter{Zusammenfassung und Ausblick}
 \label{chap:zusammenfassung}
 
-\todo{Zusammenfassung und Fazit schreiben}
+Das wesentliche Ziel dieser Arbeit war es, eine einfachere Sprache zur Modellierung
+von Testdaten für Datenbank-basierte Anwendungen zu entwickeln. Neben einer leichten
+Erlernbarkeit sollte sie sich durch eine einfache und übersichtliche Modellierung
+von Beziehungen in Datensätzen auszeichnen. Dies wurde mit der entwickelte
+Modellierungssprache mehr als erreicht.
 
-- Kurze Zusammenfassung: Was wurde erreicht
+Die Benutzbarkeit der Sprache und der Implementierung war ein Kernmerkmal, das nie
+außer Acht gelassen wurde. Die Sprache wurde als DSL in Groovy realisiert und lässt
+sich somit im Java-Umfeld nutzen. Vor allem kann sie auch in Unit-Tests verwendet
+werden. Dadurch sind die Tests und die Testdaten nicht voneinander getrennt, wie es
+bei extern definierten Testdaten der Fall wäre. 
 
-- Offene Punkte / Weiterführende Arbeiten
+Die Sprache wird passend für ein Datenbank-Modell generiert. Das Datenbank-Modell
+beschreibt die Tabellen, deren Spalten und die Beziehungen. Anhand dieses Modells
+erzeugt ein Generator die DSL.
+
+Um den Testern die Arbeit mit der DSL zu erleichtern, wurden einige Features
+implementiert. So können unterschiedliche DataSets definiert werden, die die selben
+Bezeichner für Entitäten verwenden. Diese Bezeichner repräsentieren je nach
+aktivem DataSet eine andere Entität und damit möglicherweise auch unterschiedliche
+Daten. Es ist möglich, DataSets aus anderen DataSets zusammenzusetzen bzw. bestehnde
+zu erweitern. Bei Fehlern in DataSet-Definitionen erhält der Tester sinnvolle 
+Exceptions und kann so schnell die Ursache im Quellcode finden.
+Die generierte JavaDoc zu der DSL rundet die Features ab. Sie erleichtert
+den Umgang über Code-Beispiele und Informationen zum Datenbank-Modell.
+
+Ein weiteres wichtige Ziel der Arbeit stellt die Generierung von Testdaten dar. Es wurde
+gezeigt, dass die Generierung zwar kein neues Thema ist, die meisten Werkzeuge aber
+auf die Erzeugung von Massen-Daten ausgelegt sind. Es gibt Ansätze, die sich mit der
+Generierung überschaubarer Daten befassen, doch diese sind meistens Abfrage-orientiert.
+Es wurde ein Algorithmus entwickelt, der die Testdaten anhand der definierten
+Beziehungstypen im Datenbank-Modell generiert. Die Anzahl der zu generierenden
+Entitäten leitet sich aus den Beziehungen ab, an denen der Entitätstyp beteiligt ist.
+
+Der Algorithmus wurde implementiert und die erzeugten Daten in praktischen Anwendungen
+getestet. Die Daten sind fachlich korrekt, auch wenn auf einen Beweis dafür verzichtet
+wurde.
+
+% Ausblick
+Die Lösung unterstützt einige besondere Beziehungstypen nicht direkt. So fehlt der
+Tool-Support bei reflexiven Beziehungen und teilweise auch bei zirkuläre Beziehungen.
+Die Ursache dafür liegt in den Klassen zum Beschreiben des Datenbank-Modells.
+Um die neue Modellierungssprache zu nutzen, wird momentan noch der Groovy-Compiler
+benötigt. Um diese Abhängigkeit für die Tests zu vermeiden, könnte dieser der
+Implementierung hinzugefügt werden.
+
+Vor allem das Thema Generierung bietet noch Potential für weiterführende Arbeiten. So
+betrachtet der Algorithmus keine Abhängigkeiten zwischen unterschiedlichen Beziehungen,
+mit Ausnahme von assoziativen Tabellen. Außerdem arbeiten die Datengeneratoren für
+die Spaltenwerte noch komplett unabhängig voneinander bzw. von der Entität. Es wäre
+sinnvoll, den Generator dahingehen zu erweitern, dass er Abhängigkeiten von Beziehungen
+und auch von Daten berücksichtigt.
