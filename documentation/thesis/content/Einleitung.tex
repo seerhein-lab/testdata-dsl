@@ -1,36 +1,52 @@
 \chapter{Einleitung}
 
-Softwaretests sind ein Grundpfeiler für die Qualitätssicherung von Anwendungen. 
-Um Datenbank-basierte Anwendungen zu testen, müssen Test-Daten spezifiziert werden. Man
-spricht hier auch von der Modellierung von Test-Daten.
+Softwaretests sind ein Grundpfeiler für die Qualitätssicherung von Anwendungen. Für die
+Tests werden Testdaten spezifiziert, anhand derer das Verhalten der Software geprüft
+wird. Vor allem bei Datenbank-basierten Anwendungen können solche Testdaten sehr
+umfangreich und komplex werden. In diesem Umfeld spricht man auch von der
+Modellierung von Testdaten.
 
-Eine Herausforderung bei der Modellierung stellt nicht nur das Spezifizieren der Daten,
-sondern auch das Ausdrücken von Beziehungen von Datensätzen dar. Besonders bei Systemen mit 
+Der Grund für diese Komplexität liegt darin, dass nicht nur Daten beschrieben,
+sondern auch Beziehungen von Datensätzen ausgedrückt werden müssen. Besonders bei Systemen mit 
 komplexen Tabellen-Schemata kann die Modellierung unübersichtlich werden.
 
 Für den Tester ist eine unübersichtliche Modellierung aus verschiedenen Gründen ein Problem.
 Einerseits macht sie die Modellierung fehleranfälliger. Andererseits ist es schwerer,
 die modellierten Daten zu erfassen und zu verstehen. Oftmals werden deshalb für verschiedene
-Tests dieselben Daten verwendet.
+Tests dieselben Daten verwendet, damit der Tester nur einen Satz von Testdaten verstehen
+muss.
 
- 
-- Generierung von Daten mit Fokus auf Beziehungen
-
-
-
-\todo{Einleitung schreiben}
-- Motivation / allgemeine Problemstellung
-
-- Aufgabenstelung / Zielsetzung
+\todo{JW fragen: STU kurz einleiten?}
 
 
 \section{Zielsetzung}
 
+Die Modellierung von Testdaten soll vereinfacht werden. Dazu soll eine Modellierungssprache
+entwickelt werden, die sowohl leicht verständlich als auch leicht zu erlernen ist. Besonderer
+Fokus liegt auf der Modellierung von Beziehungen. Die Lösung soll einfach zu benutzen sein
+und sich in Entwicklungsumgebungen wie Eclipse integrieren lassen.
+
+Darüber hinaus sollen sich Testdaten automatisch generieren lassen. Auch hier soll besondere
+Aufmerksamkeit auf die Generierung von Beziehungen zwischen Datensätzen gelegt werden. 
+
 \section{Aufbau der Arbeit}
 
+% 2 Grundlegende Konzepte
+Zunächst werden in \ref{chap:grundlagen} einige grundlegende Konzepte bzw. Technologien und
+in der Arbeit verwendete Konventionen beschrieben, die für das weitere Verständnis notwendig
+sind.
+
+- \ref{chap:anforderungen} Anforderungsanalyse / Fragestellung
+
+- \ref{chap:modellierung} Entwurf einer Modellierungssprache für Testdaten
+
+- \ref{chap:realiserungdsl} Realisierung der Sprache
+
+- \ref{chap:generieren} Generieren von Testdaten
+
+- \ref{chap:zusammenfassung} Zusammenfassung und Ausblick
 
 \todo{Weitere Quellen und Zitate einbauen}
-
 \section*{Ungenutzte Quellen}
 \begin{enumerate}
 	\item \cite[20ff]{DER_INTEGRATIONSTEST}
