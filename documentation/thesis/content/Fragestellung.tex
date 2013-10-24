@@ -80,7 +80,7 @@ Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen z
 	
 Je nach Beziehungsart gibt es unterschiedliche Ansätze, wie diese in einem ER-Diagramm umgesetzt werden können.
 Dabei können neben den Entitäten auch die Beziehungen selbst Attribute haben.
-Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
+Die folgenden drei grundsätzlichen binären Beziehungsarten (also zwischen zwei Entitätstypen) werden dabei unterschieden:
 
 	\subsection{1:1-Beziehungen}
 	\label{sec:fragestellung:onetoone}
@@ -110,7 +110,7 @@ Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 	Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität des einen Typs mit mehreren Entitäten
 	des anderen Typs in Beziehung stehen kann -- und umgekehrt. Es ist möglich, untere und obere Grenzwerte für
 	die Anzahl der Beziehungen auf beiden Seiten festzulegen. Solche als assoziativ bezeichneten Beziehungen
-	werden über eine Hilfstabelle modelliert, die entsprechend assoziative Tabelle genannt wird. Diese besteht
+	werden über eine Hilfstabelle modelliert, die assoziative Tabelle genannt wird. Diese besteht
 	aus den beiden Fremdschlüsseln auf die beteiligten Tabellen und den beziehungsbeschreibenden Attributen.
 	
 	Grundsätzlich können assoziative Tabellen für alle binären Beziehungen verwendet werden. Vor allem wenn 
@@ -121,7 +121,7 @@ Die folgenden drei grundsätzlichen Beziehungsarten werden dabei unterschieden:
 	\label{sec:fragestellung:anderebeziehungen}
 	
 	In der aktuellen \textit{STU}-Implementierung müssen andere Beziehungen manuell umgesetzt werden. Dies gilt
-	auch für zirkuläre und reflexive, sowie alle nicht-binären Beziehungen.
+	für zirkuläre, für reflexive und für alle nicht-binären Beziehungen.
 
 
 

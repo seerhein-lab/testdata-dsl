@@ -6,7 +6,8 @@ Bibliothek zur Unterstützung von Unit-Tests datenbankbasierter Anwendungen. Welc
 in Bezug auf die Modellierung haben, wurde bereits in Abschnitt \ref{sec:fragestellung:modellierung}
 thematisiert. 
 
-Ein üblicher Weg, bestehende Schnittstellen zu vereinfachen, stellen Fassaden dar.
+Ein üblicher Weg, bestehende Schnittstellen zu vereinfachen, stellen Fassaden dar. Eine Fassade stellt
+eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden \cite[185]{DESIGN_PATTERNS}. 
 Eine solche Fassade kann auf unterschiedliche Arten realisiert werden.
 
 Eine Möglichkeit stellt die Definition einer speziellen Sprache dar. Eine solche, für einen Anwendungszeck
@@ -28,9 +29,10 @@ die Syntax \cite[89]{DOMAIN_SPECIFIC_LANGUAGES}.
 
 Als Grundlage für die Defintion der Modellierungsprache sollen verschiedene Beispiel-Entwürfe dienen. Dabei wird
 das fortlaufende Beispiel aus Kapitel \ref{chap:anforderungen} mit unterschiedlichen Entwürfen modelliert und
-die Vor- und Nachteile analysiert.
+die Vor- und Nachteile analysiert. Bei den Entwürfen wird versucht, die Nachteile der bisher bewerteten
+Modellierungssprachen auszugleichen.
 
-Mit Hilfe dieser Analyse wird die finale Modellierungssprache definiert. Bei den Bewertungskriterien wird auf den
+Mit Hilfe dieser Analyse wird die finale Modellierungssprache (DSL) definiert. Bei den Bewertungskriterien wird auf den
 implementierungsabhängige Aspekte verzichtet. So wird der Punkt Typsicherheit nicht betrachtet und
 bei der Modifizierbarkeit keine Aussage zu IDE-unterstützten Refaktorisierungsmöglichkeiten gemacht.
 
@@ -39,7 +41,7 @@ bei der Modifizierbarkeit keine Aussage zu IDE-unterstützten Refaktorisierungsmö
   
   Eine DSL, die sich stark an \textit{STU} orientiert, könnte wie folgt aussehen:
   
-  \begin{lstlisting}[caption=Mögliche DSL (1), label=listing:dslentwurf1]
+  \begin{lstlisting}[caption=Beispiel zum Entwurf 1, label=listing:dslentwurf1]
 HAASE = professor {
   name      "Haase"
   vorname   "Oliver"
@@ -76,8 +78,9 @@ WAESCH beaufsichtigt P_VSYS
 
   \end{lstlisting}
   
-  Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene ID-Nummern aus und verwendet
-  Variablennamen für die Modellierung von Beziehungen. Für diesen Entwurf sieht die Bewertung folgendermaßen aus:
+  Die in Listing \ref{listing:dslentwurf1} gezeigte DSL kommt ohne manuell vergebene Schlüsselwerte (Primary-Keys)
+	aus und verwendet Variablennamen für die Modellierung von Beziehungen. Für diesen Entwurf sieht die Bewertung
+	folgendermaßen aus:
 
 	\begin{itemize}
 
@@ -95,7 +98,7 @@ WAESCH beaufsichtigt P_VSYS
 		  Der Entwurf ist verständlich und leicht zu erlernen, da sich die meisten Sprachelemente auf das Datenbank-Schema
 			beziehen.
 		
-			Die Beschreibung der Beziehungen abseits der Definition der Daten kann den
+			Die Beschreibung der Beziehungen entfernt von der Definition der Daten kann den
 			Umgang mit den Daten erschweren und die Übersicht einschränken.
 	
 		\item \textbf{Modifizierbarkeit}: Auch ohne Refaktorisierungsmöglichkeiten sollte sich ein DataSet leicht an neue
@@ -109,10 +112,10 @@ WAESCH beaufsichtigt P_VSYS
   
   Ein leicht abgewandelter Entwurf (siehe Listing \ref{listing:dslentwurf2}) zeigt, wie sich die Beziehungen näher an
   den eigentlichen Daten beschreiben lassen könnten.
-  An dem Problem, dass die Daten relativ schnell in vertikaler Richtung wachsen, ändert das jedoch nichts.
+  Das Problem, dass die Daten relativ viele Zeilen benötigen, besteht weiterhin.
     
 
-  \begin{lstlisting}[caption=Mögliche DSL (2), label=listing:dslentwurf2]
+  \begin{lstlisting}[caption=Beispiel zum Entwurf 2, label=listing:dslentwurf2]
 HAASE = professor {
   name      "Haase"
   vorname   "Oliver"
@@ -178,7 +181,7 @@ DPATTERNS = lehrveranstaltung {
   erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
 
   \lstSetTiny
-  \begin{lstlisting}[caption=Mögliche DSL (3), label=listing:dslentwurf3]
+  \begin{lstlisting}[caption=Beispiel zum Entwurf 3, label=listing:dslentwurf3]
 professor:
 REF    || name    | vorname  | titel            | fakultaet    | leitet          | beaufsichtigt
 HAASE  || "Haase" | "Oliver" | "Prof. Dr."      | "Informatik" | VSYS, DPATTERNS | P_DPATTERNS   
@@ -211,10 +214,9 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 		
 			Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
 			variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
-			die übersichtliche Darstellung einzuhalten. Auf Tabulatoren sollte unter  Umständen verzichtet werden, da sie von
-			verschiedenen Editoren unterschiedlich dargestellt werden können. Bei vielen Spalten wächst diese Darstellung
-			horizontal. Bei optionalen Spalten bzw. kaum genutzte Spalten kann die tabellarische Darstellung unübersichtlich
-			werden.
+			die übersichtliche Darstellung einzuhalten. Bei vielen Spalten wächst diese Darstellung
+			horizontal. Optionale bzw. kaum genutzte Spalten erhalten bei dieser Darstellung unter Umständen viel 
+			Platz. 
 		
 		\item \textbf{Redundanz}: Wie die beiden bisherigen Entwürfe tritt hier keine erkennbare Daten-Redundanz auf.
 		  Dieser Entwurf vermeidet außerdem die Redundanz der Spaltenbezeichner.
@@ -227,7 +229,8 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 
 			Bei umfangreichen Tabellen, die möglicherweise nicht mehr auf eine Bildschirmseite passen, kann es sinnvoll sein,
 			den Tabellenkopf zu wiederholen. Dies sollte von der Implementierung genauso unterstützt werden wie die Definition
-			neuer Tabellenköpfe mit unterschiedlichen Spalten.
+			neuer Tabellenköpfe mit unterschiedlichen Spalten. Dies erlaubt auch, für Spalten mit optionalen Werten kleinere
+			Teiltabellen zu definieren.
 
 		\item \textbf{Modifizierbarkeit}: 
 		  Mit Hilfe geeigneter Editoren ist ein DataSet leicht an neue Datenbank-Schemata anzupassen. Die Daten selbst lassen
@@ -237,10 +240,10 @@ DPATTERNS || "Design Patterns"   | 4   | 3
   
 	\subsection{Finaler DSL-Entwurf}
 
-  Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten ausmerzt.
+  Der dritte Entwurf zeigt, dass eine tabellarische Schreibweise viele Schwächen der anderen Varianten vermeidet.
   Die Darstellung wirkt übersichtlich, da sie wenig syntaktischen Ballast hat. Es können schnell viele Daten
-  überblickt werden. Die tabellarische Schreibweise wird für die Zielgruppe vertraut wirken und intuitiver
-  sein als die anderen Darstellungsformen.
+  überblickt werden. Die tabellarische Schreibweise wird für die Zielgruppe vertraut wirken und intuitiv
+  sein.
   
   Darüber hinaus soll es möglich sein, Beziehungen auch außerhalb der Tabellen zu beschreiben. Dafür wäre eine Syntax
   denkbar, die sich an die Modellierung der Beziehungen aus Entwurf 1 orientiert (siehe Listing \ref{listing:dslentwurf1}).
@@ -258,11 +261,11 @@ empfiehlt Ghosh die Programmiersprache Groovy als Host für DSLs in Verbindung mi
 
 Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
 typisierten Sprachen finden bei dynamisch typisierten Typ-Überprüfungen überwiegend zur Laufzeit statt.}, die
-direkt in Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine (JVM) ausgeführt wird.
-Dies ermöglicht die Nutzung von Groovy-Klassen und Groovy-Objekten in Java und umgekehrt.
+direkt in vollständig komplatbilen Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine
+(JVM) ausgeführt wird. Dies ermöglicht die Nutzung von Groovy-Klassen und Groovy-Objekten in Java und umgekehrt.
 
 Java-Code ist bis auf wenige Ausnahmen gültiger Groovy-Code. Allerdings bietet Groovy Möglichkeiten, Code
-von sogenanntem syntaktischem Ballast zu befreien. Beispielsweise können Semikolons am Ende einer Anweisung
+von syntaktischem Ballast zu befreien. Beispielsweise können Semikolons am Ende einer Anweisung
 meistens weggelassen werden. Der Punkt zwischen einer Variable und der Methode ist unter gewissen Bedingungen
 ebenfalls optional. Häufig kann auch auf die Klammerung von Methodenparametern verzichtet werden.
 werden. Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie eine natürlichen Sprache 
@@ -284,7 +287,7 @@ Instanz einer (möglicherweise anonymen) Klasse dar, die nur eine Methode impleme
 \cite[40]{GROOVY_IM_EINSATZ} \cite[34]{SMALLTALK_BEST_PRACTICE_PATTERNS} 
 
 Die Unterstützung zur Meta-Programmierung stellt sich beim Implementieren einer DSL ebenfalls als nützlich
-heraus. Dadurch ist es z.B. möglich, abgeschlossene Klassen innerhalb von Groovy um Methoden zu erweitern oder auf
+heraus. Dadurch ist es möglich, zur Laufzeit Klassen innerhalb von Groovy um Methoden zu erweitern oder auf
 den Zugriff von nicht definierten Klassenelementen zu reagieren.
 
 
@@ -292,42 +295,40 @@ den Zugriff von nicht definierten Klassenelementen zu reagieren.
   \label{sec:modellierung:implementierung:varianten}
   
   Eine DSL kann auf unterschiedliche Arten implementiert werden. Groovy bietet dafür zwei Möglichkeiten der
-  Meta-Programmierung an: Laufzeit-Meta-Programmierung und Compiler-Zeit-Meta-Programmierung, letzteres in Form von
-  AST-Transformationen. Beide Ansätze bieten individuelle Vorteile, die im folgenden diskutiert werden.  
+  Meta-Programmierung an: Laufzeit-Meta-Programmierung und Compiler-Zeit-Meta-Programmierung. Für die
+	Compilier-Zeit-Meta-Programmierung bietet Groovy AST-Transformationen. an.
+	Beide Ansätze bieten individuelle Vorteile, die im Folgenden betrachtet werden.  
   \nomenclature{AST}{Abstract Syntax Tree}
 
 
     \subsubsection{Laufzeit-Meta-Programmierung}
     \label{sec:modellierung:implementierung:varianten:laufzeit}
     
-    Eine Möglichkeit, die DSL mit Hilfe von Laufzeit-Meta-Programmierung zu implementieren sieht eine 
-    Klasse zum Parsen von Closures vor, die eine Tabelle beinhalten. Diese Klasse, \texttt{TableParser},
+		Eine Möglichkeit zur Realisierung der DSL stellt eine Klasse zum Parsen von Closures dar. Die Closures
+		enthalten die Daten. Diese Klasse, \texttt{TableParser},
     enthält dafür die Methode \texttt{parseTableClosure}. Die Methode soll als Ergebnis eine Liste
     von Tabellenzeilen zurückliefern. Eine Tabellenzeile selbst stellt zu diesem Zeitpunkt eine Liste
 		von Spaltenwerten dar. Die Analyse und Interpretation der Daten findet erst später statt.
     
-    Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Soll ein binärer Operator implementiert
-    werden, ist die übliche Vorgehensweise in Groovy, die Klasse des linken Operanden um eine entsprechende
-    Methode für den Operator zu erweitern. Diese Methode trägt einen vorgegebenen Namen und erwartet als
-    binärer Operator  den rechten Operanden als Parameter (eine Übersicht findet sich beispielsweise in 
-    \cite[58]{GROOVY_IM_EINSATZ}).
+    Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Der Operator \texttt{or} ist ein binärer
+		Operator. Üblicherweise ruft Groovy einen binären Operator auf der vom Operator linksseitigen Instanz 
+		mit dem rechtsseitigen Operand als Parameter. \cite[58]{GROOVY_IM_EINSATZ}).
     
     Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
-    ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert um eine Tabelle zu parsen. Dieser wenig
+    ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert, um eine Tabelle zu parsen. Dieser wenig
     generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen -- kommen neue Datentypen
-    hinzu, müsste der Code erweitert werden. Schlimmer wiegt jedoch, dass diese Anpassungen global
+    hinzu, müsste der Code erweitert werden. Gravierender ist jedoch, dass diese Anpassungen global
     für die entsprechenden Klassen gelten. Das könnte ungewollte Seiteneffekte nach sich ziehen, wenn 
     Oder-Operatoren auch an anderer Stelle verwendet werden, wie z.B. zum Berechnen eines Spalten-Wertes.
     
-    Groovy bietet allerdings auch eine zweite Möglichkeit für das Operator-Überladen an. Anstatt den Operator
-    als Methode dem linken Operand (bzw. der Klasse) hinzuzufügen, wird er als statische Methode (in einer
-    beliebigen Klasse) realisiert. Da eine statische Methode ohne Kontext ausgeführt wird, benötigt sie alle
-    beteiligten Operanden als Parameter. Eine solche Methode wird als Kategoriemethode bezeichnet. 
+    Groovy bietet eine zweite Möglichkeit für das Operator-Überladen an. Anstatt den Operator
+    als Methode dem linken Operand (bzw. der Klasse) hinzuzufügen, wird der Operator als statische Methode realisiert. 
+		Die statische Methode kann in einer beliebigen Klasse definiert sein. Da eine statische Methode ohne Kontext
+		ausgeführt wird, benötigt sie alle beteiligten Operanden als Parameter. Eine solche Methode wird als
+		Kategoriemethode bezeichnet. 
     Über das Schlüsselwort \texttt{use}\footnote{\texttt{use} wird in der Literatur meistens als Schlüsselwort
     bezeichnet, tatsächlich handelt es sich jedoch um eine Groovy-Methode in \texttt{java.lang.Object}}
-    können die Kategoriemethoden in einem Closure verwendet werden. \cite[192]{GROOVY_IM_EINSATZ} 
-    
-    Listing \ref{listing:opoverloading.tableparser.base} zeigt das Grundgerüst des Tabellenparsers:
+    können Kategoriemethoden in einem Closure verwendet werden. \cite[192]{GROOVY_IM_EINSATZ} 
     
     \begin{lstlisting}[caption=Tabellen-Parser Grundgerüst mit Operator-Überladen, label=listing:opoverloading.tableparser.base]
 class TableParser {
@@ -345,15 +346,18 @@ class TableParser {
 }
     \end{lstlisting}
     
+    Listing \ref{listing:opoverloading.tableparser.base} zeigt das Grundgerüst des Tabellenparsers.
     Die Methode \texttt{or} erwartet zwei Parameter vom Typ \texttt{Object}. Obwohl in Groovy alle Typen von
     \texttt{Object} abgeleitet sind, gibt es Oder-Ausdrücke, bei denen diese Methode nicht aufgerufen wird.
-    Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt,
-    z.B. bei zwei \texttt{Integer}-Werten. Doch auch solche Operationen lassen sich überschreiben, wenn für
-    die Datentypen passende Kategoriemethoden definiert werden. Diese und weitere Anpassungen sind in Listing 
-    \ref{listing:opoverloading.tableparser.extended} dargestellt.
+    Ein in der Klasse definierter Operator mit passenden Datentypen wird dieser allgemeinen Methode bevorzugt.
+		Die Klasse Integer definiert einen \texttt{or}-Operator für ein Oder für zwei Integer-Werte, die von Groovy
+		vorrangig aufgerufen wird. Doch auch in solchen Fällen können die Operatoren überschreiben werden, wenn für
+    die Datentypen passende Kategoriemethoden definiert werden. Diese sind in Listing 
+    \ref{listing:opoverloading.tableparser.extended} für die Typen Integer und Boolean dargestellt.
     
-    Im zu parsenden Closure sollen Variablen genutzt werden, die nicht im Closure selbst sondern in einer anderen Klasse
-    definiert werden. Zu diesen Variablen gehören die Bezeichner der Spalten und die der Zeilen. Groovy erlaubt es Closures im
+		Für die Definition der Daten sollen Bezeichner für die Entitäten genutzt werden können. Diese Bezeichner werden
+		nicht im Closure selbst, sondern in einer anderen Klasse definiert. Zu diesen Variablen gehören die Bezeichner 
+		der Spalten und die der Zeilen. Groovy erlaubt es Closures im
     Kontext eines Delegaten auszuführen. In diesem Beispiel wird die aktuelle Instanz der Klasse \texttt{TableParser} verwendet 
     (Zeile 22). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichern verwendet, d.h. es können
 		innerhalb des Closures alle Elemente des Delegaten genau so verwendet werden, als wären sie im Closure selbst definiert.
@@ -397,9 +401,9 @@ class TableParser {
     \end{lstlisting}
     
     Die statischen \texttt{or}-Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. 
-		Ihre Zwischenergebnisse, also die geparsten Spaltenwerte, können sie demnach auch nur in statische Elementen
-		aufbewahren. Um die Klasse Thread-sicher zu machen, d.h. das Erlauben von gleichzeitigem Parsen von Tabellen
-		aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale Liste verwendet.
+		Ihre Zwischenergebnisse, also die geparsten Spaltenwerte, können nur in statische Elementen abgelegt werden.
+		Um die Klasse Thread-sicher zu machen, d.h. das Erlauben von gleichzeitigem Parsen von Tabellen
+		aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale Variable verwendet.
 		\cite[45]{JAVA_CONCURRENCY_IN_PRACTICE}
 
     Die Laufzeit-Meta-Programmierung kann die Syntax der Sprache nicht beliebig erweitern. Groovy kennt keinen
@@ -409,8 +413,7 @@ class TableParser {
     (\reflst{listing:dslentwurf3laufzeit}). Das DataSet wird als Map definiert, mit den Tabellennamen als
     Schlüsseln und Closures als Werte. Ein Platzhalter (Unterstrich) verhindert Syntax-Fehler, wenn in
     einer Spalte kein Wert vorkommt (siehe Zeile 4, Spalte "`leitet"'). Der Platzhalter könnte auch verwendet
-    werden, um einem Datensatz keinen Bezeichner für Referenzen zu zu weisen. Aus Sicht des Parsers stellt
-    der Unterstrich eine Variable dar.
+    werden, um einem Datensatz keinen Bezeichner für Referenzen zu zu weisen. 
     
     \lstSetTiny
     \begin{lstlisting}[caption=DSL-Entwurf 3 für Laufzeit-Meta-Programmierung angepasst, label=listing:dslentwurf3laufzeit]
@@ -438,6 +441,7 @@ def dataset = [
     
     Die AST-Transformationen stellen ein mächtiges Werkzeug zur Erweiterung der Syntax der Sprache dar. Mit Hilfe
     der Transformationen ist es möglich, Änderungen am AST durchzuführen, bevor er in Java-Bytecode übersetzt wird.
+		Das Test-Framework Spock nutzt AST-Transformationen zum Parsen.
     
     Dass AST-Transformationen mehr syntaktische Möglichkeiten bieten, zeigt sich auch daran, dass hier der 
     Double-Pipe-Operator verwendet werden kann. Außerdem können Labels erkannt werden und Daten einer Tabelle
@@ -456,19 +460,21 @@ def dataset = [
     
     \begin{itemize}
       \item \textbf{\texttt{BinaryExpression}}: Ein binärer Ausdruck besteht aus zwei Operanden und einem Operator.
-        Wenn es sich beim Operator um einen Pipe oder Double-Pipe-Operator handelt, werden die linken und rechten
-        Operanden, die selbst vom Typ \texttt{ExpressionStatement} sind, rekursiv behandelt.
+        Wenn es sich beim Operator um einen Pipe oder Double-Pipe-Operator handelt, werden die beiden Operanden
+				behandelt. Dies führt zu einer rekursiven Auswertung, da die Operanden vom Typ \texttt{ExpressionStatement}
+				sind.
         
       \item \textbf{\texttt{ConstantExpression}}: Konstante Ausdrücke sind Literale, die als Spaltenwert verwendet werden.
-      
       
       \item \textbf{\texttt{VariableExpression}}: Ein Bezeichner einer Variablen. Dazu gehören die 
         Spalten-Bezeichner und die Bezeichner für die einzelnen Zeilen.
     \end{itemize}
     
-    Insgesamt muss viel Aufwand betrieben werden, um den AST zu analysieren. Möglicherweise kann durch die Nutzung
-    von sogenannten DSL Descriptoren für die Groovy-Plugins gängiger IDEs auch eine IDE-Unterstützung für Labels
-    und Spalten erreicht werden. Dieser Frage wird allerdings im weiteren Verlauf nicht nachgegangen.
+    Ein einfacher Prototyp zum Parsen von Tabellen zeigt, dass viel Aufwand betrieben werden, um den AST zu analysieren.
+		Aus diesem Grund wird die weitere Implementierung eines Tabellen-Parsers mit Hilfe der AST-Transformationen nicht
+		betrachtet. Möglicherweise kann durch die Nutzung
+    von sogenannten DSL-Descriptoren für die Groovy-Plugins gängiger IDEs auch eine IDE-Unterstützung für Labels
+    und Spalten erreicht werden. 
     
     
   \subsection{Implementierungsentscheidung}
@@ -479,16 +485,16 @@ def dataset = [
   Varianten erfüllen die Anforderungen.
   
   Die Entscheidung fällt auf die Laufzeit-Meta-Programmierung. Der Grund dafür ist, dass sie einfacher zu verwenden ist. 
-  AST-Transformationen würden bezogen auf die Anforderungen keinen Mehrwert bieten. Darüber hinaus dürfte der Code zur
-  AST-Transformation komplexer und wartungsunfreundlicher ausfallen.
+	Der Code für AST-Transformationen stellt sich als komplexer und wartungsunfreundlicher dar. Es ist fraglich, ob
+	AST-Transformationen einen Mehrwert in Bezug auf die Anforderungen zeigen würden.
 
-\section{Definition der Sprache}
+\section{Ergebnis: Definition der DSL für Testdaten}
 \label{sec:implementierung:sprachdefinition}
 
-Die Entscheidung zugunsten der Laufzeit-Meta-Programmierung führt zu einigen Änderungen an der Sprache aus dem dritten
+Die Entscheidung für die Laufzeit-Meta-Programmierung führt zu einigen Änderungen an der Sprache aus dem dritten
 Entwurf (siehe Abschnitt \ref{sec:implementierung:entwurf:3}). Wie beschrieben, wird auf den Double-Pipe-Operator
-verzichtet. Anstelle der Labels treten vordefinierte Variablen, deren Namen sich nach jeweiligen Tabellenbezeichnungen 
-richten. Auf diesen Variablen kann zum Definieren von Tabellendaten die Methode \texttt{rows} aufgerufen werden.
+verzichtet. Anstelle der Labels bietet die DataSet-Klasse für jede Tabelle eine vordefinierte Variable, deren Bezeichnung sich aus
+dem Tabellennamen ergibt. Auf diesen Variablen kann zum Definieren von Tabellendaten die Methode \texttt{rows} aufgerufen werden.
 Die Daten werden in Form eines Closures übergeben. 
 
 Zur Übersicht sollen einzelne DataSets als eigene Klassen definiert werden, die auf einer Datenbank-Modell-spezifischen
@@ -548,8 +554,8 @@ NewLine     = "\n";
 \label{sec:modellierung:beispieldataset}
 
 In Kapitel \ref{chap:anforderungen} wurden Beispiel-Daten in unterschiedlichen Verfahren modelliert. Aufgrund der Übersicht
-wurden dort nur jeweils zwei Tabellen dargestellt. Listing \ref{listing:hochschuledataset:table} zeigt, wie sich die selben
-Daten mit der neuen DSL modellieren lassen -- diesmal allerdings in vollem Umfang.
+wurden dort nur jeweils zwei Tabellen dargestellt. Listing \ref{listing:hochschuledataset:table} zeigt, wie sich dieselben
+Daten mit der neuen DSL modellieren lassen -- diesmal allerdings in größerem Umfang.
   
 \begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, label=listing:hochschuledataset:table]
 class HochschuleDataSet extends HochschuleBuilder

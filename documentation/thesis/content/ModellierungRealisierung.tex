@@ -1,22 +1,14 @@
 \chapter{Realisierung der Sprache}
 \label{chap:realiserungdsl}
 
-Im Folgenden wird die Realisierung der DSL beschrieben. Dabei werden einige Implementierungsdetails beschrieben und auch
-gezeigt, wie die DSL praktisch genutzt werden kann. 
-Die DSL sollte möglichst guten Support durch die IDE bieten, um die Arbeit mit den Tabellen zu vereinfachen. Dazu gehört, 
-dass Bezeichner wie Tabellen- und Spaltennamen nicht nur erkannt werden, sondern auch automatisch vervollständigt werden können.
-Die in Listing \ref{listing:dslentwurf3laufzeit} gezeigte Variante kann diesem Anspruch nicht genügen. Falsche Tabellennamen können
-erst zur Laufzeit festgestellt werden und auch für die Spaltenbezeichner kann es so keinen IDE-Support geben, da sie von der
-Tabelle abhängig ist. Wie der IDE-Support über die neuen DataSet-Builder-Klassen realisiert wird, wird im folgenden beschrieben.
-
+Das folgende Kapitel beschreibt die Implementierung der in Kapitel \ref{chap:modellierung} entwickelten Sprache.
 \textit{STU} stellt die Basis für Erweiterungen und Verbesserung dar. Es verfolgt bereits das Ziel, Tests von
 Datenbank-basierten Anwendungen zu erleichtern und vereinfacht die Modellierung von DbUnit-DataSets. Auf Abwärtskompatibilität
 wird wenn notwendig zu Gunsten der Benutzbarkeit und Wartbarkeit verzichtet.
 
 Aus einem domänenspezifischen Datenbank-Modell erzeugt \textit{STU} ein individuelles API zur Modellierung von DataSets.
 Um die Modellierung zu vereinfachen, vor allem in Bezug auf die Beziehungen, sollen die generierten Klassen um eine Fassade
-ergänzt werden. Eine Fassade stellt eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden
-\cite[185]{DESIGN_PATTERNS}. 
+ergänzt werden. 
 
 Eine Möglichkeit, eine solche Fassade zu realisieren, stellen domänenspezifische Sprachen dar. Eine domänenspezifische
 Sprache zeichnet sich dadurch aus, dass sie für ein spezielles Problemfeld entworfen wurde. Martin Fowler erklärt in
@@ -49,12 +41,12 @@ jedoch nicht zwangsläufig im Table Builder API hinzugefügt werden, unter Umständ
 direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem:
 \begin{itemize}
   \item \textbf{Code-Qualität}: Die neuen Funktionen können direkt in bestehende Klassen integriert werden, anstatt
-    neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet.
+    neue Typen einzuführen. Auf Adapterklassen und Delegation kann auf diese Weise verzichtet. Das erleichtert
+		die Pflege der Implementierung und vermeidet redundanten Code.
       
   \item \textbf{Mehrwert auch für bisheriges API}: Auch wenn auf das neue Table Builder API verzichtet wird,
     kann das Builder API so einen Mehrwert gegenüber der bisherigen \textit{STU}-Implementierung bieten.
-    Z.B. können verbesserte Möglichkeiten zur Modellierung von Beziehungen im Fluent Builder API integriert werden
-    und diese Funktionen auch in reinen Java-basierten Tests nutzbar machen.
+		Verbesserungen im Fluent Builder API sind auch in reinen Java-basierten Tests nutzbar.
       
   \item \textbf{Einheitlicher Funktionsumfang}: Das Table Builder API und das Fluent Builder API sollen -- so weit
 	  möglich und sinnvoll -- den selben Funktionsumfang bieten. Erweiterungen für das Fluent Builder API stehen
@@ -93,7 +85,8 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
   \subsection{Spalten-Eigenschaften}
   \label{sec:modellierung:generatormodell:flags}
   
-  \textit{STU} sieht verschiedene Eigenschaften für Spalten vor, sogenannte Flags. Die Flags sind bislang in einem \textit{Enum}
+	Meta-Informationen von Spalten beinhalten neben dem Namen der Spalte und dem Typ weitere Eigenschaften. Diese Eigenschaften
+	werden in \textit{STU} mit Hilfe sogenannter Flags beschrieben. Die Flags sind bislang in einem \textit{Enum}
 	zusammengefasst. Alle für eine Spalte gesetzten Flags müssen beim Hinzufügen einer Spalte über ein \textit{EnumSet}
   übergeben werden. Bei dem neuen Builder-API werden die Flags über spezielle Methoden gesetzt.
   
@@ -101,7 +94,7 @@ direkt in das Fluent Builder API zu integrieren. Gründe dafür sind unter anderem
   \begin{itemize}
     \item \textbf{Identifier}: Dieses Flag gibt an, dass die Werte einer Spalte die Zeile eindeutig identifizieren. 
       Sollen Werte in einer Zeile abgefragt oder verändert werden, kann die Zeile mit Hilfe einer solchen Spalte 
-      bestimmt werden.
+      identifiziert werden.
        
       Da die Werte zur Identifikation verwendet werden, ist ein nachträgliches Ändern nicht erlaubt. Dies soll anhand eines
       kurzen Beispiels begründet werden (siehe Listing \ref{listing:beispielimmutable}). Es zeigt einen Ausschnitt einer
@@ -157,7 +150,7 @@ id | matrikelnummer | vorname
   Das API zur Modellierung des Datenbankschemas als Grundlage für den Generator stellt eine der größten Veränderungen
 	in der Implementierung dar. Die größten Änderungen betreffen  die Definition von Beziehungen zwischen Tabellen.
 	Über \texttt{reference} kann der Builder zur Beschreibung der Relation aufgerufen werden. Die Beschreibung findet
-	auf zwei Ebenen statt:
+	in zwei Bereichen statt:
   
   \begin{itemize}
     \item \textbf{local}: Der als \texttt{local} bezeichnete Teil beschreibt die Beziehung aus Sicht der Tabelle,
@@ -168,10 +161,10 @@ id | matrikelnummer | vorname
     
   \end{itemize}
   
-  Beide Ebenen erlauben die Angabe eines Bezeichners, der die Beziehung in die jeweilige Richtung beschreibt,
-  der Ausgangspunkt wird durch die Ebene bestimmt. Diese Bezeichner werden für die Methoden zur Modellierung
-  der Beziehungen verwendet. Daneben können auch noch Beschreibungstexte angegeben werden, die für die JavaDoc
-  genutzt werden.
+  In beiden Bereichen kann ein Bezeichner angegeben werden. Dieser Bezeichner drückt die Beziehung in die
+	jeweilige Richtung aus, in \textit{local} wird die Beziehung in Richtung \textit{foreign} bezeichnet. 
+	Diese Bezeichner werden für die Methoden zur Modellierung der Beziehungen verwendet. Daneben können
+	auch noch Beschreibungstexte angegeben werden, die für die JavaDoc genutzt werden.
   
   In Abschnitt \ref{sec:modellierung:generatormodell:buildervergleich} befindet sich ein Beispiel für die 
   Modellierung von Relationen.
@@ -214,8 +207,8 @@ Table lehrveranstaltungen = addTable("lehrveranstaltung")
   Die Codes zur Modellierung mit der alten und der neuen API ähnelt sich, die Unterschiede liegen abgesehen
   von den Flags und Relationen eher im Detail. Listing \ref{listing:model:builder:new} zeigt die Modellierung
   der selben Tabellen mit dem neuen API. Die kürzeren Parameterlisten und die zusätzlichen Funktionen führen
-  dazu, dass die selben Modelle in \textit{STU} einige Zeilen länger werden. Die gewonnene Ausdrucksstärke
-  macht diesen Nachteil allerdings mehr als wett.
+  dazu, dass die selben Modelle in \textit{STU} einige Zeilen länger werden. Dieser Nachteil wird durch
+	die gewonnene Ausdrucksstäke mehr als ausgeglichen.
   
   \begin{lstlisting}[caption=Beispiel neue \textit{STU}-Builder, label=listing:model:builder:new]
 database("Hochschule");
