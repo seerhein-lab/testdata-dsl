@@ -1,16 +1,19 @@
-\chapter{Anforderungsanalyse / Fragestellung}
+\chapter{Anforderungsanalyse}
 \label{chap:anforderungen}
 
-\todo{Anforderungen Einleiten: Zwei Fragestellungen, DSL und Generierung}
+In diesem Kapitel werden die Anforderungen an die zu entwickelnde Lösung konkretisiert. Es
+beinhaltet Bewertungen von bestehenden Modellierungssprachen. Für diesen Vergleich 
+werden Kriterien für die Bewertung der Sprache definiert und ein Datenbank-Modell vorgestellt,
+das als fortlaufendes Beispiel dient und auch in den folgenden Kapiteln verwendet wird.
 
 \section{Allgemeine Anforderungen}
 \label{sec:anforderungen:allgemeineanforderungen}
 
 Die Hauptziele dieser Arbeit stellen sich wie folgt dar:
 \begin{enumerate}
-	\item Vereinfachen der Modellierung von Beziehungen
-	\item Modellierung von Test-Daten übersichtlicher machen
-	\item Automatisches Generieren von Test-Daten
+	\item Vereinfachen der Beschreibung von Beziehungen
+	\item Modellierte Testdaten übersichtlicher machen
+	\item Automatisches Generieren von Testdaten
 \end{enumerate}
 
 
@@ -29,7 +32,7 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 	\item \textbf{Gültigkeitsbereiche}:
 	  \todo{Gültigkeitsbereiche erklären}
 
-	\item \textbf{Veränderbarkeit von DataSets}: DataSets sollen sich bei der Modellierung beliebig verändern lassen.
+	\item \textbf{Veränderbarkeit von DataSets}: DataSets sollen sich während der Modellierung beliebig verändern lassen.
 	
 	\item \textbf{Komposition}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
 	
@@ -50,6 +53,11 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 
 Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen zusammenfassen:
 \begin{itemize}
+
+  \item \textbf{Gültige Daten}: Die erzeugten Daten müssen gültig sein und zum Datenbank-Schema passen.
+	
+	\item \textbf{Mehrfach verwendbare Daten}: Die generierten Daten sollen für verschiedene Tests verwendet werden können,
+	  also ein Standard-Fixture darstellen. Die Daten müssen deshalb viele Test-Fälle abdecken können.
   
 	\item \textbf{Fokus auf Beziehungen}: Das Generieren von sinnvollen Beziehungen stellt eines der zentralen Ziele für
 	  den Daten-Generator dar.
@@ -175,7 +183,7 @@ Modellierungsvarianten.
 	
 	\begin{figure}[H]
 		\centering
-		 \includegraphics[width=0.65\textwidth]{images/fragestellung/example_hochschule_er.pdf}
+		 \includegraphics[width=0.60\textwidth]{images/fragestellung/example_hochschule_er.pdf}
 		\caption{ER-Diagramm des fortlaufenden Beispiels}\label{img:example_er}
 	\end{figure}
 
@@ -184,7 +192,7 @@ Modellierungsvarianten.
 	
 	\begin{figure}[H]
 		\centering
-		 \includegraphics[width=0.95\textwidth]{images/fragestellung/example_hochschule_relational.pdf}
+		 \includegraphics[width=0.90\textwidth]{images/fragestellung/example_hochschule_relational.pdf}
 		\caption{Relationales Datenbank-Schema des fortlaufenden Beispiels}\label{img:example_relational}
 	\end{figure}
 
@@ -193,25 +201,8 @@ Modellierungsvarianten.
 	Das Foto des Professors wird als BLOB dargestellt.
 	\nomenclature{BLOB}{Binary Large Object)}
 	
-
-	\subsection{Beispiel-Use-Cases}
-	\label{sec:fragestellung:beispiel:usecases}
-	
-	\todo{Use-Cases integrieren?}
-
-	Um den einen Kompromiss für die Komplexität der Testdaten zu finden, werden vier Fragestellungen definiert. Diese
-	Fragen sollen dabei helfen, den Umfang der Testdaten bestimmen zu können. Die Fragen stellen sich wie folgt dar:
-
-	\begin{enumerate}
-		\item Welcher Professor unterrichtet die meisten Studenten?
-		\item Welcher Student nimmt an den meisten Prüfungen teil?
-		\item Welcher Student ist Tutor und nimmt gleichzeitig an der Prüfung teil?
-		\item Welcher Professor macht die wenigste Aufsicht in Fremdveranstaltungen (Lehrveranstaltungen eines anderen
-			Professors)?
-	\end{enumerate}
-
-
-\todo{Überleitung von Use-Cases auf Modellierungsvarianten}
+	Im folgenden Abschnitt werden verschiedene Modellierungsvarianten für DbUnit auf Grundlage dieses Beispiels betrachtet 
+	und bewertet.
 
 
 \section{Modellierungsvarianten der Testdaten für DbUnit}

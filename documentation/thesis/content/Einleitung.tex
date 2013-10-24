@@ -1,32 +1,32 @@
 \chapter{Einleitung}
 
-Softwaretests sind ein Grundpfeiler für die Qualitätssicherung von Anwendungen. Für die
-Tests werden Testdaten spezifiziert, anhand derer das Verhalten der Software geprüft
-wird. Vor allem bei Datenbank-basierten Anwendungen können solche Testdaten sehr
-umfangreich und komplex werden. In diesem Umfeld spricht man auch von der
-Modellierung von Testdaten.
+Softwaretests sind ein wichtiger Baustein für die Qualitätssicherung von modernen Softwareprojekten.
+Für Tests werden Testdaten spezifiziert. Auf deren Basis wird das Verhalten der Software geprüft.
+Bei Datenbank-basierten Anwendungen werden Testdaten in der Regel sehr umfangreich und komplex. 
+In diesem Kontext spricht man auch von der Modellierung von Testdaten.
 
-Der Grund für diese Komplexität liegt darin, dass nicht nur Daten beschrieben,
-sondern auch Beziehungen von Datensätzen ausgedrückt werden müssen. Besonders bei Systemen mit 
-komplexen Tabellen-Schemata kann die Modellierung unübersichtlich werden.
+Die Komplexität ergibt sich aus der Beschreibung von Beziehungen zwischen den einzelnen
+Datensätzen. Besonders bei Systemen mit komplexen Datenbank-Schemata kann ein
+Testdaten-Modell schnell unübersichtlich werden.
 
-Für den Tester ist eine unübersichtliche Modellierung aus verschiedenen Gründen ein Problem.
-Einerseits macht sie die Modellierung fehleranfälliger. Andererseits ist es schwerer,
-die modellierten Daten zu erfassen und zu verstehen. Tester wünschen sich deshalb 
-häufig Daten, die für mehrere Tests nutzbar sind. Dadurch reicht es aus, nur ein oder zumindest
-wenige Daten-Modelle zu verstehen.
+Für den Tester sind unübersichtliche Testdaten aus verschiedenen Gründen ein Problem.
+Einerseits machen sie die Pflege fehleranfällig. Andererseits ist es schwer,
+die modellierten Daten zu erfassen und zu verstehen. Tester wünschen deshalb häufig Daten,
+die für mehrere Tests nutzbar sind. Dadurch reicht es aus, nur ein oder zumindest
+wenige Daten-Modelle zu verstehen und zu pflegen.
 
 
-\section{Zielsetzung}
+\section{Zielsetzung der Arbeit}
 
-Die Modellierung von Testdaten soll vereinfacht werden. Dazu soll eine Modellierungssprache
-entwickelt werden, die sowohl leicht verständlich als auch leicht zu erlernen ist. Besonderer
-Fokus soll auf der Modellierung von Beziehungen liegen. Die Lösung soll einfach zu benutzen sein
-und sich in Entwicklungsumgebungen wie Eclipse integrieren lassen.
+Die Beschreibung von Testdaten soll vereinfacht werden. Dazu soll eine Modellierungssprache
+entwickelt werden, die leicht zu verstehen und zu erlernen ist. Besonderer
+Fokus liegt auf der Modellierung von Beziehungen. Die Lösung soll einfach zu benutzen sein
+und sich in Entwicklungsumgebungen (wie Eclipse) integrieren lassen.
 
-Darüber hinaus sollen sich Testdaten automatisch generieren lassen. Auch hier soll besondere
-Aufmerksamkeit auf die Generierung von Beziehungen zwischen Datensätzen gelegt werden. Wichtig
-ist vor allem, dass die erzeugten Daten fachlich korrekt sind und dem Datenbank-Schema entsprechen.
+Darüber hinaus sollen Testdaten automatisch generiert werden können. Hier wird besondere
+Aufmerksamkeit auf die Generierung von Daten für Beziehungen zwischen Datensätzen gelegt.
+Wichtig ist vor allem, dass die erzeugten Daten zum Datenbank-Schema passen, d.h. dass
+gültige Beziehungen erzeugt werden.
 
 
 \section{Aufbau der Arbeit}
@@ -39,16 +39,7 @@ Definition der Sprache wird in Kapitel~\ref{chap:modellierung} beschrieben.
 Kapitel~\ref{chap:realiserungdsl} beschreibt die Implementierung und schließt damit das Thema
 Modellierungssprache ab.
 Mit der Generierung von Testdaten befasst sich Kapitel~\ref{chap:generieren}.
-Abschließend wird in Kapitel~\ref{chap:zusammenfassung} eine Zusammenfassung gegeben und ein
+Abschließend wird in Kapitel~\ref{chap:zusammenfassung} eine Zusammenfassung und ein
 Ausblick auf mögliche Folgearbeiten gegeben.
 
 
-
-\todo{JW fragen: STU kurz einleiten?}
-\todo{Weitere Quellen und Zitate einbauen}
-\section*{Ungenutzte Quellen}
-\begin{enumerate}
-	\item \cite[20ff]{DER_INTEGRATIONSTEST}
-	\item \cite{MODELLGETRIEBENE_SOFTWAREENTWICKLUNG}
-	\item \cite{DOMAIN_DRIVEN_DESIGN}
-\end{enumerate}

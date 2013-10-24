@@ -1,13 +1,17 @@
 \chapter{Grundlegende Konzepte}
 \label{chap:grundlagen}
 
-noch zu erklären:
-- benutzte Terminologie
-- Modellgetriebene Software-Entwicklung
-- Tests, Testdatengenerierung
-- Literatur nutzen
+% nicht genutzte Quellen :-(
+% \cite{DER_INTEGRATIONSTEST}
+% \cite{MODELLGETRIEBENE_SOFTWAREENTWICKLUNG}
+% \cite{DOMAIN_DRIVEN_DESIGN}
 
 
+Dieses Kapitel geht auf einige grundlegende Themen ein, die für das Verständnis dieser Arbeit notwendig
+sind. Dabei werden einige Begriffe aus der modellgetriebenen Software-Entwicklung erklärt und
+Software-Tests im Rahmen von Datenbank-Anwendungen beschrieben. Abschließend werden die in der
+Arbeit verwendeten Konventionen für Diagramme erläuert und ein kurzer Überblick über die
+Bibliothek \textit{STU} gegeben.
 
 \section{Modellgetriebene Software-Entwicklung}
 
@@ -146,20 +150,18 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 \section{STU (Simple Test Utils)}
 \label{sec:grundlagen:stu}
 
-\textit{STU} ist eine Bibliothek zur Vereinfachung von Unit-Tests für Java-basierte Anwendungen. \textit{STU} steht unter der 
-\textit{Apache License 2.0} \cite{APACHE_LICENSE_2} und wird maßgeblich von der Firma SEITENBAU entwickelt. Diese Arbeit
-thematisiert nur den Teil von \textit{STU}, der Tests von Datenbank-Anwendungen vereinfachen soll.
-\todo{Apache License 2 kurz beschreiben}
+\textit{STU} ist eine Bibliothek zur Vereinfachung von Unit-Tests für Java-basierte Anwendungen. Es steht unter der 
+\textit{Apache License 2.0} \cite{APACHE_LICENSE_2}. Das heißt, es ist Open-Source und kann in kommerziellen Softwareprojekten
+genutzt werden. \textit{STU} wird maßgeblich von der Firma SEITENBAU entwickelt. Diese Arbeit thematisiert nur den Teil von \textit{STU},
+der Tests von Datenbank-Anwendungen vereinfachen soll. 
 
 Für Unit-Tests von Datenbank-Anwendungen nutzt \textit{STU} die Bibliothek \textit{DbUnit}. \textit{DbUnit} stellt eine
 Erweiterung für JUnit dar und stellt Funktionen speziell für den Test von Datenbank-Anwendung zur Verfügung
  \cite[748]{XUNIT_TEST_PATTERNS}.
 Mit Hilfe von \textit{DbUnit} kann eine Datenbank zu Beginn eines Tests in einen definierten Zustand gebracht werden. Dazu kann 
-\textit{DbUnit} DataSets in die Datenbank einspielen. \todo{Kurz erklären, was ein DataSet ist} Außerdem kann DbUnit den Inhalt 
+\textit{DbUnit} DataSets in die Datenbank einspielen. Ein DataSet fasst eine Menge an Daten zu einer Einheit zusammen. Außerdem kann DbUnit den Inhalt 
 einer Datenbank mit einem DataSet vergleichen. So kann nach dem Test überprüft werden, ob das SUT die richtigen Modifikationen 
 an den Daten vorgenommen hat.
-
-\todo{Nachteile von DbUnit-DataSets - vorwegnehmen ?}
 
 Ein Ziel von \textit{STU} ist, Datenbank-Tests weiter zu vereinfachen und bietet die Möglichkeit, DataSets über ein eigenes API
 zu modellieren. \textit{STU} enthält einen Generator, der mit Hilfe eines Datenbank-Modells individuelles API erzeugen kann.

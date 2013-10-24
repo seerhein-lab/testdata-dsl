@@ -499,10 +499,10 @@ Die Syntax für die Definition der Daten einer Tabelle wird mit Hilfe der Erweite
 Listing \ref{listing:ebnf:table} definiert.
   
 \lstSetEBNF
-\begin{lstlisting}[caption=EBNF der Tabellen, label=listing:ebnf:table]
+\begin{lstlisting}[caption=EBNF für Tabellen, label=listing:ebnf:table]
 Table       = TableName, "Table.rows ", TableData;
 TableName   = ? Name einer Tabelle im Modell ?;
-TableData   = {", NewLine, { HeadRow, { DataRow } }, NewLine, "}";
+TableData   = "{", NewLine, { HeadRow, { DataRow } }, NewLine, "}";
 HeadRow     = ColumnName, { Separator, ColumnName }, NewLine;
 DataRow     = ColumnData, { Separator, ColumnData }, NewLine;
 ColumnName  = ? vorgegeben durch Tabelle ?;
@@ -513,8 +513,19 @@ NewLine     = "\n";
 \end{lstlisting}
 \lstSetJava
 
+Abbildung \ref{img:ebnf:table} stellt die EBNF für Tabellen grafisch dar.
+
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=1.0\textwidth]{images/modellierung/ebnf_table.png}
+	\caption{Grafische Darstellung der EBNF für Tabellen}\label{img:ebnf:table}
+\end{figure}
+
+Die Syntax für die Definition von Beziehungen veranschaulichen Listing \ref{listing:ebnf:relations}
+und die Abbildung \ref{img:ebnf:relations}.
+	
 \lstSetEBNF
-\begin{lstlisting}[caption=EBNF der Relationen, label=listing:ebnf:relations]
+\begin{lstlisting}[caption=EBNF für Beziehungen, label=listing:ebnf:relations]
 Relations   = { Relation, NewLine };
 Relation    = Ref, ".", RelationName, "(", RefList, ")", [ Attributes ];
 RefList     = Ref, [ { ", ", Ref } ];
@@ -527,7 +538,11 @@ NewLine     = "\n";
 \end{lstlisting}
 \lstSetJava
 
-\todo{EBNF prüfen und evtl grafisch machen}
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=1.0\textwidth]{images/modellierung/ebnf_relations.png}
+	\caption{Grafische Darstellung der EBNF für Beziehungen}\label{img:ebnf:relations}
+\end{figure}
 
 \section{Beispiel-DataSet in Groovy}
 \label{sec:modellierung:beispieldataset}

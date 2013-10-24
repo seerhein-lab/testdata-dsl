@@ -637,7 +637,7 @@ END FOR;
     \subsubsection{Erweitere Generierte Daten zu konsistenten Daten}
     
     Es kann passieren, dass am Ende der Traversierung des Graphs ungültige Entitäten vorhanden sind.
-    Ungültig bedeutet, dass sie bei eine oder mehrere Kanten nicht in ausreichend vielen Beziehungen steht.
+    Ungültig bedeutet, dass sie bei einer oder mehrere Kanten nicht in ausreichend vielen Beziehungen steht.
     Dies kann passieren, wenn für eine bereits besuchte Tabelle zusätzliche Entitäten erzeugt werden
     müssen -- beispielsweise wenn das Datenbank-Modell zirkuläre Abhängigkeiten enthält.
     
@@ -648,11 +648,11 @@ END FOR;
     jeweilige Entität gültig generiert wurde auf Hinblick der aus- und eingehenden Kanten. Sollte dies für
     eine Entität nicht der Fall sein, wird eine entsprechende Beziehung hergestellt und die Validierung
     erneut von Anfang an durchgeführt.
-    
-    Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten} zeigt den Pseudo-Code dieser Funktion.
-    
-    Es kann passieren, dass diese Funktion niemals beendet wird. Dieses Problem wird in
-    Abschnitt~\ref{sec:generieren:offenepunkte:unerfuellbar} thematisiert.
+		
+    Unter Umständen würde dieser Algorithmus nie terminieren, weshalb eine Abbruch-Bedingung sinnvoll ist.
+		Diese wird nicht im Pseudo-Code (Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten}) dargestellt.
+		Die Implementierung bricht nach Erreichen eines Grenzwertes für die nachträgliche Generierung von Entitäten
+		ab. Das Problem wird in Abschnitt~\ref{sec:generieren:offenepunkte:unerfuellbar} thematisiert.
     
 \begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistentenDaten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
 Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
@@ -664,17 +664,19 @@ DO
     FOR EACH (Kante K aus ausgehenden Kanten der Tabelle T)
     DO
       IF (e erfüllt Constraints für Kante K nicht)
-      THEN Berechne Entität f in Zieltabelle der Kante K, die in keiner Beziehung zur Tabelle T stehen darf;
+      THEN Berechne Entität f in Zieltabelle der Kante K, f darf keiner Beziehung zur Tabelle T stehen;
            Stelle Beziehung zwischen Entität e und Entität f her;
-           Funktion Erweitere_Generierte_Daten_Zu_Konsistenten_Daten neu starten;
+           CALL Erweitere_Generierte_Daten_Zu_Konsistenten_Daten;
+					 RETURN;
       END IF;
     END FOR;
     FOR EACH (Kante K aus eingehenden Kanten der Tabelle T)
     DO
       IF (e erfüllt Constraints für Kante K nicht)
-      THEN Berechne Entität f in Starttabelle der Kante K, die in keiner Beziehung zur Tabelle T stehen darf;
+      THEN Berechne Entität f in Starttabelle der Kante K, f darf in keiner Beziehung zur Tabelle T stehen;
            Stelle Beziehung zwischen Entität e und Entität f her;
-           Funktion Erweitere_Generierte_Daten_Zu_Konsistenten_Daten neu starten;
+           CALL Erweitere_Generierte_Daten_Zu_Konsistenten_Daten;
+					 RETURN;
       END IF;
     END FOR;
   END FOR;
@@ -859,7 +861,7 @@ END FOR;
     und PRUEFUNG. Jedes Paar führt zu einer Entität in der Tabelle BEAUFSICHTIGT.
 
     Eine Entität aus PROFESSOR steht in keiner Beziehung mit Entitäten aus PRUEFUNG. Jeweils drei 
-    und fünf Entitäten PROFESSOR stehen mit genau einer Entität aus PROFESSOR in Beziehung (1. und 2. Fall).
+    und fünf Entitäten aus PROFESSOR stehen mit genau einer Entität aus PRUEFUNG in Beziehung (1. und 2. Fall).
     Fünf Entitäten aus PROFESSOR stehen mit drei Entitäten aus PRUEFUNG (3. Fall) und weitere fünf
     Entitäten aus PROFESSOR schließlich mit fünf Entitäten aus PRUEFUNG (4. Fall) in Beziehung.
     
