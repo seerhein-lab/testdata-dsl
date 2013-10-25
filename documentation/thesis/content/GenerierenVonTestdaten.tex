@@ -359,7 +359,7 @@ Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der D
   
   \begin{figure}[htbp]
     \centering
-     \includegraphics[width=0.7\textwidth]{images/generierung/generator_model.pdf}
+     \includegraphics[width=0.75\textwidth]{images/generierung/generator_model.pdf}
     \caption{Diagramm der Generator-Modell-Klassen}\label{img:generierung:generatormodel}
   \end{figure}
   
@@ -578,7 +578,7 @@ END IF;
     
     \begin{figure}[htbp]
       \centering
-       \includegraphics[width=0.55\textwidth]{images/generierung/tausch-at.png}
+       \includegraphics[width=0.5\textwidth]{images/generierung/tausch-at.png}
       \caption{Parameter für Daten-Generierung bei assoziativer Tabelle}\label{img:generierung:tauschat}
     \end{figure}
     
@@ -647,8 +647,9 @@ END FOR;
     
     Die Funktion zur Validierung iteriert über die Entitäten aller Tabellen. Es wird überprüft, ob die
     jeweilige Entität gültig generiert wurde auf Hinblick der aus- und eingehenden Kanten. Sollte dies für
-    eine Entität nicht der Fall sein, wird eine entsprechende Beziehung hergestellt und die Validierung
-    erneut von Anfang an durchgeführt.
+    eine Entität nicht der Fall sein, wird eine entsprechende Beziehung hergestellt. Dies kann sich 
+		auf bereits überprüfte Tabellen auswirken. Deshalb wird die Validierung erneut von Anfang an
+		durchgeführt, wenn eine Entität nachgeneriert werden musste.
 		
     Unter Umständen würde dieser Algorithmus nie terminieren, weshalb eine Abbruch-Bedingung sinnvoll ist.
 		Diese wird nicht im Pseudocode (Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten}) dargestellt.

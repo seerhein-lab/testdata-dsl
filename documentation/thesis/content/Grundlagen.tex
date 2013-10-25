@@ -181,8 +181,8 @@ so aussehen: \texttt{student.name("Moll").vorname("Nikolaus")}.
 
 Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Schema das Fluent API erzeugt wird.
 Ausgangspunkt ist ein relationales Datenbankmodell. Dieses Modell muss in ein für den Generator interpretierbares
-Modell, das STU-Modell, transformiert werden. Dies kann automatisch (z.B. wenn das Schema in Form eines
-\textit{Apache-Torque}-Modells vorliegt) oder manuell geschehen. Das STU-Modell enthält Informationen zu Tabellennamen
+Modell, das \textit{STU}-Modell, transformiert werden. Dies kann automatisch (z.B. wenn das Schema in Form eines
+\textit{Apache-Torque}-Modells vorliegt) oder manuell geschehen. Das \textit{STU}-Modell enthält Informationen zu Tabellennamen
 und Angaben zu den Spalten, z.B. Namen und Datentypen. 
 
 \begin{figure}[H]
@@ -191,7 +191,7 @@ und Angaben zu den Spalten, z.B. Namen und Datentypen.
 	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
 \end{figure}
 
-Das STU-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentlichen Vorteile bringen. Das API
+Das \textit{STU}-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentlichen Vorteile bringen. Das API
 bzw. die erzeugten DataSets sind ausschließlich für den Einsatz im Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
 die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Fehlermeldung
 wird ausgelöst.
@@ -245,7 +245,7 @@ den tatsächlichen Bezeichnern.
 \begin{figure}[H]
   \centering
 	 \includegraphics[width=0.4\textwidth]{images/grundlagen/sb_testing_classes.pdf}
-	\caption{Logisches Klassendiagramm der STU-DataSet-Klassen}\label{img:sb_testing_classes}
+	\caption{Logisches Klassendiagramm der \textit{STU}-DataSet-Klassen}\label{img:sb_testing_classes}
 \end{figure}
 
 
