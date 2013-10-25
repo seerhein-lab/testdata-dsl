@@ -16,7 +16,8 @@ Bibliothek \textit{STU} gegeben.
 \section{Modellgetriebene Software-Entwicklung}
 
 In der modellgetriebenen Software-Entwicklung hat sich eine Vier-Schichten-Meta-Architektur etabliert.
-Die vier Schichten werden als M0 bis M3 bezeichnet \cite{MOF_141}:
+Dabei drückt die Schicht die Abstraktionsebene aus. Je niedriger die Schicht, desto konkreter,
+je höher die Schicht, desto abstrakter. Die vier Schichten werden als M0 bis M3 bezeichnet \cite{MOF_141}:
 \begin{itemize}
 	\item \textbf{M0}: Konkrete Information
 	\item \textbf{M1}: Meta-Daten zum Beschreiben der Information. Auch als \textit{Modell} bezeichnet.
@@ -24,8 +25,17 @@ Die vier Schichten werden als M0 bis M3 bezeichnet \cite{MOF_141}:
 	\item \textbf{M3}: Meta-Metamodell, das das Meta-Modell und sich selbst beschreibt.
 \end{itemize}
 
-\todo{Modellgetriebene Software-Entwicklung ergänzen: Beispiele, DSL, intern vs extern}
+Zum Beschreiben der konkreten Information oder der Modelle werden speziell für die Aufgabe zugeschnittene Sprachen
+verwendet. Eine solche Sprache wird \textit{Domain-Specific Language} (DSL) genannt. Es wird zwischen
+internen und externen DSLs unterschieden. Interne DSLs nutzen eine Wirtssprache und passen diese an
+die eigenen Anforderungen an. Demgegenüber werden externe DSLs komplett unabhängig von anderen Sprachen
+definiert.
 
+Interne DSLs sind zwar Einschränkungen der Wirtssprache unterworfen, können aber meist leichter realisiert werden
+und können von bestehender Werkzeugunterstützung der Wirts\-sprache profitieren. Die Wirtssprache wird auch als Host
+bezeichnet.
+
+Bekannte Beispiele für DSLs sind HTML, reguläre Ausdrücke und SQL-Anweisungen.
 
 
 \section{Software-Tests}
@@ -60,14 +70,7 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Die Idee
 hinter diesem Muster ist es, auf die Datenbank direkt zuzugreifen am zu testenden System vorbei -- quasi in Form
 einer Hintertür. Auf diese Weise wirken sich Fehler im zu testenden System nicht auf den Zugriff der Datenbank aus.
-Das Muster besteht aus vier Schritten. 
-Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff in den 
-Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
-Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
-als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
-ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch 
-optionale Aufräumarbeiten durchführen.
-Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
+Das Muster besteht aus vier Schritten. Abbildung \ref{img:backdoormanipulation} stellt sie grafisch dar.
 \cite[327ff]{XUNIT_TEST_PATTERNS}
 
 \begin{figure}[H]
@@ -75,6 +78,15 @@ Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch 
 	 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
 	\caption{Back Door Manipulation}\label{img:backdoormanipulation}
 \end{figure}
+
+Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff in den 
+Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
+Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
+als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
+ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch 
+optionale Aufräumarbeiten durchführen.
+
+
 
 Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
 semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Ein semantischer Fehler stellt z.B. der
