@@ -12,12 +12,36 @@
 		 & \\
 		\textbf{Abgabedatum:} & \abgabedatum \\
 		 & \\
+		\textbf{Schlagworte:} & Modellierung von Testdaten, Beziehungen in Testdaten, Generieren von Testdaten, DSL für Testdaten, Datenbanktest \\
+		 & \\
 	\end{tabular}
 \end{center}
 
-% Hier kommt das Abstract hin
-Das Abstract befindet sich in \texttt{formal/abstract.tex}. 
+Softwaretests haben sich als Teil der Qualitätssicherung von Softwareprojekten etabliert.
+Für Tester ist die Modellierung von Testdaten für Datenbank-basierte Anwendungen allerdings
+nicht immer einfach. Die Daten können aufgrund von Beziehungen von Datensätzen schnell
+unübersichtlich und komplex werden. Wegen der Komplexität versuchen Tester, mehrere Tests
+mit denselben Daten durchzuführen.
+
+In dieser Masterarbeit werden eine neue Modellierungssprache für Testdaten für
+Datenbank-basierte Anwendungen und ein Algorithmus zur Generierung von Testdaten 
+vorgestellt. Die Sprache erlaubt eine übersichtliche Beschreibung von Daten und
+von Beziehungen zwischen Datensätzen. Der Algorithmus zur Generierung erzeugt
+Daten anhand der Beziehungstypen im Datenbank-Modell. Der Algorithmus versucht
+viele Grenzfälle zu erzeugen, so dass die Daten in möglichst vielen Tests verwendet
+werden können.
+
+Die Sprache und der Algorithmus wurden implementiert und in praktischen Anwendungen
+auf ihre Nutzbarkeit überprüft. Die Implementierung steht unter der Open-Source-Lizenz
+\textit{Apache License 2.0}.
+
+
+
+
+
 
 \todo{Abstract schreiben}
 
+\todo{Grafik SB Testing DB tauschen}
 
+\todo{auf externe Daten eingehen}
