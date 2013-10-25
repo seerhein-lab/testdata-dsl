@@ -5,7 +5,7 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
 \begin{enumerate}
   \item \textbf{Modell-basierte, Abfrage-unabhängige Generierung}:
     Anhand eines Datenbank-Modells werden Entitäten mit Zufallswerten für die Attribute (Spalten) erzeugt. Es gibt
-    einige kommerzielle Werkzeuge aber auch frei nutzbare Internet-Seiten für die Generierung. 
+    einige kommerzielle Werkzeuge, aber auch frei nutzbare Internet-Seiten für die Generierung. 
   
   \item \textbf{Modell-basierte, Abfrage-basierte Generierung}:
     Ausgehend von konkreten Abfragen (z.B. in SQL) werden für die Abfrage passende Daten erzeugt. Binnig beschreibt in
@@ -22,8 +22,8 @@ Es gibt verschiedene Ansätze zur Generierung von Testdaten für Datenbank-basiert
 Für die Generierung eines Standard Fixtures scheint nur die erste Variante sinnvoll zu sein: Es liegt bereits
 ein Modell vor und die generierten Daten sollen idealerweise für alle Tests verwendet werden können.
 Konkrete Anfragen als Grundlage für die Generierung sind nicht sinnvoll. Einerseits können sie
-vom SUT verborgen werden können, andererseits eigenen sie eher für Fixtures, die für einen einzelnen Unit-Test
-geeignet sind. Die Anonymisierung realer Daten stellt keine Daten-Generierung im eigentlichen Sinn dar und
+vom SUT verborgen werden, andererseits eigenen sie sich eher für Fixtures, die für einen einzelnen Unit-Test
+verwendbar sind. Die Anonymisierung realer Daten stellt keine Daten-Generierung im eigentlichen Sinn dar und
 setzt bestehende Daten voraus.
 
 Eine Auswahl existierender Modell-basierter, Abfrage-unabhängiger Datengeneratoren wird im folgenden Abschnitt
@@ -33,8 +33,8 @@ auf die Anwendbarkeit hin untersucht.
 \section{Betrachtung existierender Werkzeuge}
 \label{sec:generieren:analyse}
 
-Es gibt bereits eine Reihe von Werkzeugen zur Generierung von Zufallsdaten für Datenbanken. In wie weit sich diese
-für die Aufgabenstellung nutzen lassen, soll im folgenden kurz analysiert werden.
+Es gibt bereits eine Reihe von Werkzeugen zur Generierung von Zufallsdaten für Datenbanken. Inwieweit sich diese
+für die Aufgabenstellung nutzen lassen, soll im Folgenden kurz analysiert werden.
 
   \subsection{Kommerzielle Werkzeuge}
   \label{sec:generieren:analyse:kommerziellewerkzeuge}
@@ -52,19 +52,19 @@ für die Aufgabenstellung nutzen lassen, soll im folgenden kurz analysiert werden
   \end{itemize}
 
   Insgesamt sind die Möglichkeiten der Anwendungen relativ ähnlich. Die größten Unterschiede aus Nutzer-Sicht liegen in der
-  Bedienung. Die Werkzeuge arbeiten zufallsbasiert aber deterministisch, d.h. sie erzeugen bei gleichem Modell die gleichen
+  Bedienung. Die Werkzeuge arbeiten zufallsbasiert, aber deterministisch, d.h. sie erzeugen bei gleichem Modell die gleichen
   Daten. Das sogenannte \textit{Seed}, mit dem der Zufallszahlengenerator für eine einzelne Spalte initialisiert wird, lässt
   sich z.B. beim Red Gate SQL Data Generator komfortabel festlegen.
 
   Die Werkzeuge sind vor allem für die Generierung von großen Datenmengen (Massen-Daten) vorgesehen. Dies zeigt sich auch darin,
   dass sie Beziehungen auch nur zufällig modellieren. Über eine entsprechend große Menge an Testdaten soll dann auch jeder
-  notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede einzeln Tabelle konfigurieren.
+  notwendige Fall abgedeckt sein. Die Menge der zu erzeugenden Testdaten lässt sich für jede Tabelle individuell konfigurieren.
   Eigene Vorschläge, wie viele Daten generiert werden sollten, machen die Werkzeuge nicht.
 
   \subsection{Andere Ansätze}
   \label{sec:generieren:analyse:andereansaetze}
   
-  In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Test-Daten vorgestellt, der
+  In \cite{Houkjaer:2006:SRD:1182635.1164254} wird ein Algorithmus zur Generierung von Testdaten vorgestellt, der
   das Datenbank-Modell als Graphen betrachtet. Tabellen stellen Knoten und ihre Beziehungen stellen gerichtete
   Kanten dar. Die Anzahl der generierten Entitäten wird über Verhältnisse vom Tester konfiguriert. Auch dieser Algorithmus
   ist eher für die Erzeugung von Massen-Daten geeignet.
@@ -80,11 +80,11 @@ für die Aufgabenstellung nutzen lassen, soll im folgenden kurz analysiert werden
   
   Aus diesem Grund soll ein Algorithmus entwickelt werden, der Beziehungen nicht nur zufällig generiert, sondern möglichst
   alle Grenzfälle erzeugt.  Äquivalenzklassenbildung und Grenzwertanalyse sind ein bewährtes Vorgehen, um die Menge von
-  Test-Daten zu reduzieren. Eine Äquivalenzklasse fasst Eingangsdaten zusammen, für die das Verhalten des SUT das selbe
+  Testdaten zu reduzieren. Eine Äquivalenzklasse fasst Eingangsdaten zusammen, für die das Verhalten des SUT dasselbe
 	ist. Tests werden statt mit vielen Werten aus einer Klasse nur mit wenigen oder einem Wert durchgeführt 
 	\cite[114]{BASISWISSEN_SOFTWAETEST}. Die Grenzwertanalyse stellt eine Ergänzung dar: Fehler treten häufig an Grenzfällen
-	auf \cite[125]{BASISWISSEN_SOFTWAETEST}. Im Falle zu generierender Beziehungen sollten die Grenzfälle die minimale und
-	die maximale Beziehungsmöglichkeiten abdecken.
+	auf \cite[125]{BASISWISSEN_SOFTWAETEST}. In Hinblick auf zu generierende Beziehungen ist es eine Möglichkeit, mit den
+	Grenzfällen die minimalen und die maximalen Beziehungsmöglichkeiten abzudecken.
 
 
 \section{Generierung von Beziehungen}
@@ -97,10 +97,10 @@ Unterschiedliche Beziehungstypen stellen unterschiedliche Anforderungen an den D
 lassen sich in die drei Hauptkategorien 1:1, 1:n und n:m einordnen. Die folgenden Abbildungen stellen die zu generierenden
 Entitäten der beiden Entitätstypen A und B dar. Eine Entität wird von einem kleinen Kreis repräsentiert, ihr 
 Entitätstyp über die Spalte festgelegt. Eine Beziehung zwischen zwei Entitäten wird über eine Verbindungsgerade
-beschrieben. Grundsätzlich können die beiden Typen A und B auch den selben Typen darstellen.
+beschrieben. Grundsätzlich können die beiden Typen A und B auch denselben Typen darstellen.
 
 Ganz allgemein lassen sich alle binären Beziehungen als n..N:m..M-Beziehung ansehen. n und m stellen jeweils
-untere Grenzen darf, N und M die oberen. Die grundlegende Generierungsstrategie sieht die Generierung der folgenden
+untere Grenzen dar, N und M die oberen. Die grundlegende Generierungsstrategie sieht die Generierung der folgenden
 vier Kombinationen vor:
 \begin{itemize}
   \item n:m
@@ -135,7 +135,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
     \subsubsection{0..1:1..1}
     \label{sec:generieren:categories:01to11}
     
-    Im Gegensatz zu demr vorherigen Beziehungstyp muss bei dieser eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
+    Im Gegensatz zum vorherigen Beziehungstyp muss bei diesem eine Entität nicht zwingend in Beziehung mit einer anderen stehen.
     Abbildung \ref{img:generierung:01to11} zeigt die zu generierenden Entitäten der Typen A und B, wobei jede Entität von A
     mit einer Entität von B in Beziehung stehen muss, eine Entität von B jedoch nicht zwingend mit einer Entität von A.
     Daraus folgt, dass es von B mindestens eine Entität mehr geben muss als von A.
@@ -156,7 +156,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
     \label{sec:generieren:categories:01to01}
     
     Wenn für beide Entitätstypen die Beziehung optional ist, muss der Generator jeweils mindestens 2 Entitäten erzeugen. Jeweils
-    eine Entität ohne Beziehung und jeweils eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
+    eine Entität ohne und eine Entität mit einer Beziehung (siehe Abbildung \ref{img:generierung:01to01}).
 
     \begin{figure}[htbp]
       \centering
@@ -225,12 +225,12 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
   \subsection{Kategorie der n:m-Beziehungen}
   \label{sec:generieren:beziehungen:nm}
     
-  Die allgemeinste Form einer Beziehung zwischen zwei Eintitätstypen stellt eine n..N:m..M-Beziehung dar. Dabei handelt es
+  Die allgemeinste Form einer Beziehung zwischen zwei Entitätstypen stellt eine n..N:m..M-Beziehung dar. Dabei handelt es
   sich bei n und m jeweils um untere und bei N und M jeweils um obere Schranken. Untere und obere Schranken können
   identisch sein.
   
   Jede der in diesem Abschnitt beschriebenen Beziehungsformen stellen Spezialfälle von n:m-Beziehungen dar, bei denen
-  eine oder beide oberen Grenzen 1 sind. Sind beide obere Grenzen größer als 1, dann wird eine solche Beziehung
+  eine oder beide oberen Grenzen 1 sind. Sind beide oberen Grenzen größer als 1, dann wird eine solche Beziehung
   üblicherweise über assoziative Tabellen realisiert.
   
   Sollte eine der unteren Grenzen 0 sein, wird sie als 0..1 interpretiert. D.h es wird eine entsprechende Entität ohne
@@ -290,7 +290,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
     \subsubsection{Gesamte Generierung (n..N:m..M): 1..3:0..4}
     
     Für eine Beziehung nach dem Schema 1..3:0..4 würde der Algorithmus die in Abbildung \ref{img:generierung:13to04}
-    dargestellte Entitäten und Beziehungen vorsehen.
+    dargestellten Entitäten und Beziehungen vorsehen.
     
     \begin{figure}[htbp]
       \centering
@@ -302,7 +302,7 @@ die von den Grenzen der Multiplizitäten bestimmten Äquivalenzklassen abzudecken.
 \label{sec:generieren:komplexitaet}
 
 Im vorausgegangenen Abschnitt wurden nur Beziehungen zwischen zwei Entitätstypen betrachtet. In realen Anwendungen können
-Entitätstypen mit mehr als nur einem anderen Entitätstyp in Beziehung stehen und auch mit dem selben Entitätstyp mehr als
+Entitätstypen mit mehr als nur einem anderen Entitätstyp in Beziehung stehen und auch mit demselben Entitätstyp mehr als
 nur ein Mal.
 
 Bezüglich der Datengenerierung lassen sich hierbei zwei generelle Vorgehensweisen unterscheiden:
@@ -372,10 +372,10 @@ Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der D
   entlang der Kanten zu traversieren. Der Einstiegspunkt stellt die Funktion \texttt{Generiere\_Test\_Daten} dar, die im
   folgenden Abschnitt beschrieben wird.
   
-    \subsubsection{Generiere Test-Daten}
+    \subsubsection{Generiere Testdaten}
     
-    Die Funktion \texttt{Generiere\_Test\_Daten} (siehe Listing \ref{listing:GeneriereTestDaten}) ist der Einstiegspunkt
-    für den Algorithmus zur Generierung von Test-Daten.
+    Die Funktion \texttt{Generiere\_Testdaten} (siehe Listing \ref{listing:GeneriereTestdaten}) ist der Einstiegspunkt
+    für den Algorithmus zur Generierung von Testdaten.
     Im ersten Schritt wird die Reihenfolge der Tabellen festgelegt, die als Startpunkte in Frage kommen. Die Liste
     stellt sicher, dass auch Datenbank-Modelle, die aus mehreren unabhängigen Graphen bestehen, vollständig
     generiert werden. In einem Datenbank-Modell, in dem alle Tabellen direkt oder indirekt in Beziehung stehen,
@@ -390,10 +390,10 @@ Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der D
     Hilfskonstrukt darstellen, das selbst eine Beziehung auf ER-Ebene darstellt.
     
     Am Ende stellt der Algorithmus sicher, dass jede Entität gültig generiert wurde, also dass die Beziehungen
-    die Constraints erfüllen. Gegebenenfalls werden hier Entitäten nach generiert.
+    die Constraints erfüllen. Gegebenenfalls werden hier Entitäten nachgeneriert.
   
-\begin{lstlisting}[caption=Generiere Test-Daten, label=listing:GeneriereTestDaten]
-GeneriereTestDaten
+\begin{lstlisting}[caption=Generiere Testdaten, label=listing:GeneriereTestdaten]
+GeneriereTestdaten
 ------------------
 L := Tabellenliste, nach Anzahl eingehender Kanten aufsteigend geordnet
 FOR EACH (noch nicht besuchte Tabelle T IN der geordneten Tabellenliste L)
@@ -423,7 +423,7 @@ CALL Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
     entwickelten Algorithmus übernommen, auch wenn sich der Aufwand für ein- und ausgehende Kanten nicht
     unterscheidet.
 
-\begin{lstlisting}[caption=GeneriereDatenFuerNichtassoziativeTabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
+\begin{lstlisting}[caption=Generiere Daten für nichtassoziative Tabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
 Generiere_Daten_Fuer_Nichtassoziative_Tabelle(Tabelle T)
 --------------------------------------------------------
 FOR EACH (ausgehende Kante K, die noch nicht besucht wurde)
@@ -454,12 +454,12 @@ END FOR;
 
     \subsubsection{Generiere Daten für Kante}
     
-    Die Funktion zum Generieren von Daten für eine Kante setzt die 
-    \ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um (siehe Listing \ref{listing:GeneriereDatenFuerKante}). 
+    Die Funktion zum Generieren von Daten für eine Kante setzt die in 
+		Abschnitt~\ref{sec:generieren:beziehungen:nm} beschriebenen Schritte um (siehe Listing \ref{listing:GeneriereDatenFuerKante}). 
     Es werden alle vier Kombinationen aus Minimum und Maximum behandelt (Zeilen 6-9). Die eigentliche Generierung 
     ist in eine Hilfsfunktion ausgelagert, die mit allen Min-Max-Kombinationen aufgerufen wird.
 
-\begin{lstlisting}[caption=Generiere Daten Fuer Kante, label=listing:GeneriereDatenFuerKante]
+\begin{lstlisting}[caption=Generiere Daten für Kante, label=listing:GeneriereDatenFuerKante]
 Generiere_Daten_Fuer_Kante(Kante K)   
 -----------------------------------
 S := Starttabelle von Kante K;
@@ -598,7 +598,7 @@ END IF;
     und die Beziehungen hergestellt (Zeilen 25 bis 33).
     
 
-\begin{lstlisting}[caption=Generiere Assoziative Entitaeten Und Beziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
+\begin{lstlisting}[caption=Generiere assoziative Entitäten und Beziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
 Generiere_Assoziative_Entitaeten_Und_Beziehungen(AT, l, r)
 ----------------------------------------------------------
 LK := linke Kante der assoziativen Tabelle AT;
@@ -637,7 +637,8 @@ END FOR;
     \subsubsection{Erweitere Generierte Daten zu konsistenten Daten}
     
     Es kann passieren, dass am Ende der Traversierung des Graphs ungültige Entitäten vorhanden sind.
-    Ungültig bedeutet, dass sie bei einer oder mehrere Kanten nicht in ausreichend vielen Beziehungen steht.
+    Ungültig bedeutet, dass sie in Bezug auf einer oder mehreren Kanten nicht in ausreichend vielen
+		Beziehungen steht.
     Dies kann passieren, wenn für eine bereits besuchte Tabelle zusätzliche Entitäten erzeugt werden
     müssen -- beispielsweise wenn das Datenbank-Modell zirkuläre Abhängigkeiten enthält.
     
@@ -650,12 +651,12 @@ END FOR;
     erneut von Anfang an durchgeführt.
 		
     Unter Umständen würde dieser Algorithmus nie terminieren, weshalb eine Abbruch-Bedingung sinnvoll ist.
-		Diese wird nicht im Pseudo-Code (Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten}) dargestellt.
+		Diese wird nicht im Pseudocode (Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten}) dargestellt.
 		
 		Die Implementierung bricht nach Erreichen eines Grenzwertes für die nachträgliche Generierung von Entitäten
 		ab. Das Problem wird in Abschnitt~\ref{sec:generieren:offenepunkte:unerfuellbar} thematisiert.
     
-\begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistentenDaten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
+\begin{lstlisting}[caption=Erweitere generierte Daten zu konsistenten Daten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
 Erweitere_Generierte_Daten_Zu_Konsistenten_Daten
 ------------------------------------------------
 FOR EACH (Tabelle T in Tabellenliste)
@@ -697,7 +698,7 @@ END FOR;
   
   Das Modell lässt sich auf ER-Ebene folgendermaßen beschreiben:
   Ein Raum kann beliebig vielen Professoren zugeordnet sein. Umgekehrt kann ein Professor genau einem oder keinem
-  Raum zugeordnet sein.  Eine Professor kann beliebig viele Prüfungen beaufsichtigen. Eine Prüfung benötigt
+  Raum zugeordnet sein.  Ein Professor kann beliebig viele Prüfungen beaufsichtigen. Eine Prüfung benötigt
   mindestens drei und höchstens fünf Professoren zur Aufsicht.
   
 
@@ -724,7 +725,7 @@ END FOR;
       \caption{Kanten des einfachen Beispiel-Modells}\label{img:generierung:examplemodeledges}
     \end{figure}
       
-    Da zwei Knoten die selbe Anzahl eingehender Kanten haben, wird als Sekundärkriterium die Reihenfolge
+    Da zwei Knoten dieselbe Anzahl eingehender Kanten haben, wird als Sekundärkriterium die Reihenfolge
     der Tabellendefinition verwendet. RAUM wurde vor der assoziativen Tabelle BEAUFSICHTIGT definiert und ist
     deshalb in der Ordnung weiter oben.
     
@@ -798,8 +799,8 @@ END FOR;
     \end{figure}
     
     
-    Der Algorithmus iteriert über die Kanten von PROFESSOR. Dabei würden zuerst ausgehende Kanten betrachtet,
-		dann die eingehenden. Die Tabelle hat Tabelle hat nur zwei eingehende, von denen eine bereits besucht wurde. Die
+    Der Algorithmus iteriert über die Kanten von PROFESSOR. Dabei werden zuerst ausgehende Kanten betrachtet,
+		dann die eingehenden. Die Tabelle hat hat nur zwei eingehende, von denen eine bereits besucht wurde. Die
     Traversierung des Graphs wird mit der Kante zu Tabelle BEAUFSICHTIGT fortgesetzt. Bei BEAUFSICHTIGT handelt es sich
 		um eine assoziative Tabelle, weshalb der nächste Schritt die Generierung von Daten für BEAUFSICHTIGT darstellt.
     
@@ -888,13 +889,13 @@ END FOR;
     
     Es gibt keine unbesuchten Kanten in PRUEFUNG. Der Algorithmus kehrt zu PROFESSOR und
     von dort zu RAUM zurück, wo ebenfalls keine unbesuchten Kanten mehr sind. In der Liste
-    der Tabellen befindet sich auch keine unbesuchten Tabellen mehr, so dass nun der letzte
+    der Tabellen befinden sich auch keine unbesuchten Tabellen mehr, so dass nun der letzte
     Schritt folgt: Die Erweiterung der Daten sofern notwendig.
 
     \subsubsection{7. Schritt: Erweitern der Daten sofern notwendig}
     
     In diesem Beispiel wurden einige Entitäten für PROFESSOR in Schritt 5 nachgeneriert. Da
-    diese Entitäten nur eine optionale Beziehung zu einer Entität aus RAUM hat, sind die
+    diese Entitäten nur eine optionale Beziehung zu einer Entität aus RAUM haben, sind die
     nachgenerierten Entitäten gültig. Eine Erweiterung der Daten ist somit nicht notwendig
     und die Generierung abgeschlossen.
 
@@ -924,11 +925,11 @@ beschrieben.
   \subsection{Einfluss der Tabellenreihenfolge}
   \label{sec:generieren:evaluation:tabellenreihenfolge}
 
-  Die Art und Weise, wie Beziehungen generiert werden, hängen von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
+  Die Art und Weise, wie Beziehungen generiert werden, hängt von der Reihenfolge ab, in der die Tabellen und Kanten behandelt
   werden. Die gewählte Reihenfolge basiert auf den Kriterien aus \cite{Houkjaer:2006:SRD:1182635.1164254}. Die Sortierung
   wird nicht aus Qualitätsgründen, sondern für ein deterministisches Verhalten des Algorithmus beibehalten. Da verschiedene
-  Tabellen gleich viele eingehende Kanten haben können, muss das deterministische Verhalten durch weitere Sortierkritieren
-  sichergestellt werden. Dies kann z.B. der Tabellen-Name sein, oder auch die Reihenfolge, in der die Tabellen definiert
+  Tabellen gleich viele eingehende Kanten haben können, muss das deterministische Verhalten durch weitere Sortierkriterien
+  sichergestellt werden. Dies kann z.B. der Tabellenname sein, oder auch die Reihenfolge, in der die Tabellen definiert
   worden sind.
   
   Empirische Versuche führten zu der Vermutung, dass die Reihenfolge keinen Einfluss auf die Anzahl der generierten Entitäten hat.
@@ -943,18 +944,18 @@ Listing~\ref{listing:modell:ausschnittfuergenerierung} zeigt den Ausschnitt der 
 ergänzt um Daten-generierungsspezifische Anweisungen. Ein vollständiges Modell ist in Anhang~\ref{chap:anhang:modell} aufgelistet.
 Im Listing wird lediglich für eine Spalte ein individueller Werte-Generator festgelegt (Zeile 17).
 
-Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds initialisiert. Damit der selbe Werte-Generator für verschiedene
-Spalten standardmäßig unterschiedliche Werte erzeugt, wird der Standard-Spalten-Seed mit Hilfe des Tabellen- und des Spaltennamen
+Die Zufallszahlengeneratoren der Werte-Generatoren werden über Seeds initialisiert. Damit derselbe Werte-Generator für verschiedene
+Spalten standardmäßig unterschiedliche Werte erzeugt, wird das Standard-Spalten-Seed mit Hilfe des Tabellen- und des Spaltennamen
 berechnet. Es ist außerdem möglich, tabellenspezifische Seeds und ein modellspezifisches Seed festzulegen, die jeweils den Standardwert
 0 haben. Das tatsächliche Seed, mit dem die Zufallsgeneratoren initialisiert werden, stellt die Summe aus dem Spalten-Seed,
 dem Tabellen-Seed und dem Modell-Seed dar.
 
 Auf diese Weise kann über Seeds verhältnismäßig einfach gesteuert werden, dass nur eine Spalte mit neuen Zufallswerten generiert wird
 (Zeile 19), alle Spalten einer Tabelle (Zeile 11) oder alle Spalten aller Tabellen (Zeile 6). Es ist darüber hinaus auch möglich,
-zwei Spalten mit selben Zufallswerten zu erzwingen.
+zwei Spalten mit identischen Zufallswerten zu erzwingen.
 
 Da der Daten-Generator die Anzahl zu erzeugender Entitäten über die Beziehungen bestimmt, würde eine Tabelle ohne eine Beziehung zu anderen
-Tabellen leer bleiben. Das Modell wird deshalb für jede Tabelle um einen Wert erweitert, der Mindestanzahl der zu generierenden Entitäten
+Tabellen leer bleiben. Das Modell wird deshalb für jede Tabelle um einen Wert erweitert, der die Mindestanzahl der zu generierenden Entitäten
 enthält (Zeile 12). Der Standardwert dafür ist 1.
 
 Außerdem lässt sich für das Modell festlegen, welcher konkrete Wert anstelle der offenen Grenze \texttt{*} verwendet werden soll (Zeile 7).
@@ -1007,7 +1008,7 @@ Ein paar Probleme und Herausforderungen werden im Folgenden aufgezeigt.
     \item \textbf{Vorname} und \textbf{Geschlecht}
     \item \textbf{PLZ} und \textbf{Ort}
     \item \textbf{Start-} und \textbf{Endwerte}, z.B. bei Datumsbereichen, Zeitspannen, Grenzwerten, ...
-    \item Werte, die sich aus Werten anderen Spalten \textbf{zusammensetzen}
+    \item Werte, die sich aus Werten anderer Spalten \textbf{zusammensetzen}
   \end{itemize}
   
   Außerdem können Spaltenwerte sich auch auf Beziehungen zu anderen Entitäten auswirken:
@@ -1025,7 +1026,7 @@ Ein paar Probleme und Herausforderungen werden im Folgenden aufgezeigt.
   
   Nicht für jedes formal gültige Datenbankschema lassen sich alle Beziehungsfälle generieren. 
   Abbildung~\ref{img:generierung:offen:infinite} zeigt ein zyklisches Datenbankschema mit den drei
-  Tabellen A, B und C. Jedes Entität aus A steht genau mit einer Entität aus B und einer Entität
+  Tabellen A, B und C. Jede Entität aus A steht genau mit einer Entität aus B und einer Entität
   aus C in Beziehung. Jede Entität aus B steht mit genau einer Entität aus A und einer Entität
   aus C in Beziehung. Jede Entität aus C steht mit genau einer Entität aus A in Beziehung und
   mit einer oder keiner Entität aus B.
@@ -1039,7 +1040,7 @@ Ein paar Probleme und Herausforderungen werden im Folgenden aufgezeigt.
   Aus der Beschreibung geht schon hervor, dass es kein C geben kann, das nicht in Beziehung mit
   einer Entität aus B steht. Denn eine Entität in C muss mit einer Entität in A in Beziehung
   stehen, und eine Entität in A schließlich mit einer Entität in B. Und diese Entität in B
-  benötigt eine Entität C für eine Beziehung. Es kommt entweder die Entität aus C in Frage,
+  benötigt eine Entität in C für eine Beziehung. Es kommt entweder die Entität aus C in Frage,
   die nicht mit einer Entität aus B in Beziehung steht, oder es muss eine neue Entität in C
   generiert werden -- dann beginnt der Zyklus allerdings von vorne.
   

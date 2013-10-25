@@ -286,7 +286,7 @@ associativeTable("besucht")
   (siehe Abschnitt \ref{sec:ralisierungdsl:parser}). 
 
   Für jede Tabelle gibt es in der Builder-Klasse eine öffentliche Instanz der Adapter-Klasse. Auf diese Weise wird der
-  IDE-Support bzgl. der Tabellennamen sichergestellt. Das Klassendiagramm ist Abbildung \ref{img:builderarchitecture} dargestellt.
+  IDE-Support bzgl. der Tabellennamen sichergestellt. Das Klassendiagramm ist in Abbildung \ref{img:builderarchitecture} dargestellt.
 
   \begin{figure}[htbp]
     \centering
@@ -308,7 +308,7 @@ associativeTable("besucht")
   \label{sec:ralisierungdsl:parser}
   
   Für den Parser wird der Code aus dem Prototyp genutzt (siehe Abschnitt \ref{sec:modellierung:implementierung:varianten:laufzeit}).
-  Die Logik an sich ist relativ generisch, je nach konkreter Tabelle muss allerdings mit unterschiedliche Datentypen
+  Die Logik an sich ist relativ generisch, je nach konkreter Tabelle muss allerdings mit unterschiedlichen Datentypen
   gearbeitet werden. 
   
   Folgende zwei Möglichkeiten bieten sich an, den Parser zu realisieren:
@@ -332,14 +332,14 @@ associativeTable("besucht")
   die benötigten Methoden zum Erstellen und Suchen von Tabellen-Zeilen.
 
   Das Setzen der Werte auf den RowBuildern ist deshalb ein Problem, weil die Bezeichner der Set-Methoden die Spaltennamen enthalten.
-  Eine Lösung sind die bereits im letzten Abschnitt angesprochenen \texttt{ColumnBinding}-Klasse. Sie definiert die abstrakte
+  Eine Lösung ist die bereits im letzten Abschnitt angesprochene \texttt{ColumnBinding}-Klasse. Sie definiert die abstrakte
   generische Methode \texttt{set(R row, Object value)}, wobei \texttt{R} der Typ-Parameter für den RowBuilder ist.
   In die Implementierungen der \texttt{set}-Methoden kann der korrekte Bezeichner für den jeweiligen Setter auf dem RowBuilder
   generiert werden.
   
 	Mit automatischen Typumwandlungen bietet \texttt{STU} eine Komfortfunktion, die die Lesbarkeit weiter verbessert.
 	Vom Parser eingelesene Werte werden nach Möglichkeit automatisch in den vom Modell erwarteten Datentyp konvertiert.
-	Diese Konvertierung ist notwendig, da alle eingelesenen Werte als Objekte und nie als primitive Datentype vorliegen.
+	Diese Konvertierung ist notwendig, da alle eingelesenen Werte als Objekte und nie als primitive Datentypen vorliegen.
 	Beispielsweise konvertiert der Parser ein \texttt{Integer}-Wert in einer Spalte für \texttt{Double}-Werte in den
 	passenden Typ. 
   
@@ -354,7 +354,7 @@ associativeTable("besucht")
   Referenzen müssen an ihre Datensätze gebunden werden. Im Table Builder API ist dafür die Spalte \texttt{REF} vorgesehen,
   die in jeder Tabelle genutzt werden kann, das Fluent Builder API bietet auf den RowBuilder-Klassen die Methode \texttt{bind()}.
   Die Listings \ref{listing:ref:bindingtable} und \ref{listing:ref:bindingfluent} zeigen die Modellierung derselben Zeile 
-  einmal mit dem neuen Table Builder API und einmal mit dem erweiterteren Fluent Builder API.
+  einmal mit dem neuen Table Builder API und einmal mit dem erweiterten Fluent Builder API.
   
   \begin{lstlisting}[caption=Binden von Referenzen (Table Builder API), label=listing:ref:bindingtable]
 professorTable.rows {
@@ -385,7 +385,7 @@ WAESCH.name         // Groovy style
   Darüber hinaus können über Referenzen Beziehungen modelliert werden. Sie enthalten Methoden zum Ausdrücken von Beziehungen.
   Die Methodennamen entsprechen den im Generator-Modell angegebenen Relationsnamen. Listing \ref{listing:ref:relations} zeigt
 	anhand eines Beispiels, wie Beziehungen über Referenzen definiert werden.
-	wie die Modellierung von Beziehungen über die Referenzen 
+	
   \begin{lstlisting}[caption=Definition von Beziehungen über Referenzen, label=listing:ref:relations]
 WAESCH.beaufsichtigt(P_VSYS)
   \end{lstlisting}
@@ -399,7 +399,7 @@ WAESCH.beaufsichtigt(P_VSYS)
   
   Damit dieselben Referenzen in unterschiedlichen DataSets genutzt werden können, werden die RowBuilder immer im Kontext des
   gerade aktiven DataSets gebunden. Das aktive DataSet wird über die \texttt{DataSetRegistry} festgelegt (und abgefragt). Pro
-  Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, dass wenn verschiedene Datenbank-Modelle genutzt werden,
+  Datenbank-Modell ist immer ein (oder kein) DataSet aktiv. Das heißt, wenn verschiedene Datenbank-Modelle genutzt werden,
   aus jedem Modell jeweils ein DataSet gleichzeitig aktiv sein kann.
   
   \section{Integration von DataSets in Unit-Tests}
@@ -411,7 +411,7 @@ WAESCH.beaufsichtigt(P_VSYS)
   
   Das in einem Test verwendete DataSet kann als Klasse über die Annotation \texttt{DatabaseSetup} konfiguriert werden
   (Zeile 26). Sie sorgt dafür, dass die angegebene DataSet-Klasse instantiiert und der Variable zugewiesen wird, die 
-  mit der Annotation \texttt{InjectDataSet} markiert wurrde (Zeilen 22 und 23). Außerdem wird dieses DataSet auch bei
+  mit der Annotation \texttt{InjectDataSet} markiert wurde (Zeilen 22 und 23). Außerdem wird dieses DataSet auch bei
   der \texttt{DataSetRegistry} als aktives DataSet registriert und die Daten in die Datenbank eingespielt. Dadurch
   kommen die Test-Methoden ohne Verwaltungsaufgaben aus. Der Test \texttt{removeStudent} testet, ob das System die
   richtigen Änderungen in der Datenbank vornimmt, wenn der Student \texttt{MUSTERMANN} entfernt wird. Da dem Service
@@ -420,7 +420,7 @@ WAESCH.beaufsichtigt(P_VSYS)
   
   Der Test verwendet eine \texttt{DatabaseTesterRule} (Zeile 9), die unter anderem für die Vergleiche der Datenbank
   mit den DataSets verantwortlich ist. Dazu muss ihr die Datenbank bekannt sein, die in Form einer \texttt{DataSource}
-  vorliegt (Zeile 6). Da dieses Feld durch \textit{Depenency Injection} (\cite[4]{PRO_SPRING}) erst
+  vorliegt (Zeile 6). Da dieses Feld durch \textit{Dependency Injection} (\cite[4]{PRO_SPRING}) erst
   nach der Instantiierung der Klasse belegt wird, kann bei der Erzeugung von \texttt{dbTester} der Wert noch nicht
   verwendet werden. Dies wird durch die Verwendung eines Future-Objekts gelöst, das die \texttt{DataSource} erst dann
   zurückliefert, wenn sie gebraucht wird (Zeilen 10 bis 15). 
@@ -516,7 +516,7 @@ public class HochschuleDataSetDatabaseTest {
   \section{Komposition von DataSets}
   \label{sec:ralisierungdsl:kompositiondatasets}
   
-  DataSets lassen sich für Tests auch aus anderen zusammensetzen. Dieses Feature setzt nicht auf Konzepte
+  DataSets lassen sich aus anderen zusammensetzen. Dieses Feature setzt nicht auf Konzepte
   der Objektorientierung wie Vererbung. Einerseits erlaubt Java keine Mehrfach-Vererbung, andererseits
 	müssten die in der abgeleiteten Klasse überschriebenen Methoden 
   \texttt{tables} und \texttt{relations} explizit die Methoden aus der Super-Klasse aufrufen. 
@@ -561,7 +561,7 @@ class ExtendedHochschuleDataSet extends HochschuleBuilder {
   die Annotation \texttt{DatabaseSetup} entsprechend anzupassen (siehe Listing 
   \ref{listing:junittest:extendeddataset}).
   
-  \begin{lstlisting}[caption=Test auf erweiterem DataSet, label=listing:junittest:extendeddataset]
+  \begin{lstlisting}[caption=Test auf erweitertem DataSet, label=listing:junittest:extendeddataset]
   @Test
   @DatabaseSetup(prepare = ExtendedHochschuleDataSet)
   public void assignedLehrveranstaltungen() throws Exception {
@@ -607,7 +607,7 @@ class ExtendedHochschuleDataSet extends HochschuleBuilder {
       die Lehrveranstaltungstabelle um eine Spalte erweitert wurde. Diese Spalte soll die Anzahl der Tutoren aufnehmen, die
       die Lehrveranstaltung betreuen.
     
-      \begin{lstlisting}[caption=Beispiel Lazy Valunes, label=listing:futurevalues]
+      \begin{lstlisting}[caption=Beispiel für Future Values, label=listing:futurevalues]
 class HochschuleDataSet extends HochschuleBuilder
 {
 
@@ -635,7 +635,7 @@ class HochschuleDataSet extends HochschuleBuilder
       \end{lstlisting}
       
       Durch die Nutzung von Future Values enthält die Tabelle immer die korrekte Anzahl, ohne dass beim Modellieren
-      der Tutoren-Beziehungen Anpassungen notwendig wurden. Um die Syntax übersichtlich zu halten,
+      der Tutoren-Beziehungen Anpassungen notwendig sind. Um die Syntax übersichtlich zu halten,
 			werden Closures automatisch als Future Values interpretiert. Die Methode \texttt{tutors()}
       liefert ein solches Closure zurück.
 
@@ -644,7 +644,7 @@ class HochschuleDataSet extends HochschuleBuilder
 		  Die Erweiterung erlaubt es, dass Referenzen statt konkreter Werte verwendet werden können. Werden beispielsweise 
       in der Professor-Tabelle alle Professoren mit einem bestimmten Vornamen gesucht und als Such-Wert eine 
       Professor-Referenz übergeben, werden alle Professoren mit diesem Vornamen gesucht. Listing
-      \ref{listing:apierweiterung:findexample} zeigt zwei Such-Anfragen, die beide auf den Beispieldaten das selbe Ergebnis
+      \ref{listing:apierweiterung:findexample} zeigt zwei Such-Anfragen, die in den Beispieldaten dasselbe Ergebnis
       liefern.
   
       \begin{lstlisting}[caption=Such-Beispiele, label=listing:apierweiterung:findexample]
@@ -708,8 +708,9 @@ dataSet.professorTable.foreach(ACTION);
   \label{sec:ralisierungdsl:javadoc}
   
   Ein wichtiges Merkmal des IDE-Supports ist, dass der Tester beim Erstellen der Tests durch aussagekräftige
-  JavaDoc unterstützt wird. Der Generator erzeugt für das DataSet, für die Tabellen und für die Referenz-Typen
-  JavaDoc, das neben einer reinen Beschreibung auch Beispiel-Quellcodes für die Nutzung enthält.
+  JavaDoc unterstützt wird. Der Generator erzeugt eine JavaDoc für das DataSet, für die Tabellen und für die
+	Referenz-Typen. Die JavaDoc beinhaltet neben der Beschreibung der Schnittstellen auch zum Datenbank-Schema
+	passende Beispiel-Quellcodes, die als Vorlage dienen können.
   
   Die in der JavaDoc enthaltenen Beispiel-Daten werden auf sehr einfache Art generiert, für jeden Java-Datentyp
   gibt es einen Beispielwert. Sie sollen mit Hilfe der Erkenntnisse bezüglich der Generierung von Testdaten 
@@ -742,7 +743,7 @@ dataSet.professorTable.foreach(ACTION);
   Die Arbeitsweise Tabellen-Parsers macht dies notwendig: Der Parser arbeitet zeilenweise,
   d.h. er liest immer eine Zeile vollständig ein und interpretiert die Daten erst im Anschluss - wenn die
   Ausführung der Zeile abgeschlossen ist. Kommt es zu einem Fehler, befindet sich das Programm aber nicht mehr
-  in der Fehler-verursachenden Zeile. Deshalb wird beim Parsen bei jedem Tabellen-Element der Stack-Trace
+  in der Zeile, die für den Fehler verantwortlich ist. Deshalb wird beim Parsen bei jedem Tabellen-Element der Stack-Trace
   analysiert und das Stack-Trace-Element bestimmt, das zu der Tabellenzeile gehört. Sollte es beim Setzen
   der Werte einen Fehler geben, wird dieses Element als erstes Element des Stack-Traces hinzugefügt.
 	Der Vorteil der Stack-Trace-Manipulation ist, dass im Falle eines Fehlers der Tester schnell über den Stack-Trace
@@ -753,12 +754,12 @@ dataSet.professorTable.foreach(ACTION);
   \label{sec:ralisierungdsl:nichtumgesetzt}
   
   Der folgende Abschnitt soll einen kurzen Überblick über nicht umgesetzte Funktionen geben. Außerdem wird begründet,
-  warum diese Funktion nicht in \textit{STU} implementiert ist.
+  warum diese Funktionen nicht in \textit{STU} implementiert ist.
 
     \subsection{Zusammengesetzte Schlüssel}
     Zusammengesetzte Schlüssel werden in \textit{STU} nicht direkt unterstützt und müssen nach wie vor komplett
 		manuell realisiert werden. Dazu muss für jeden Teilschlüssel eine
-    Spalte im Datenbank-Modell angelegt werden. So lange zum Zugriff auf Tabellenzeilen die Referenz-Typen
+    Spalte im Datenbank-Modell angelegt werden. Sofern zum Zugriff auf Tabellenzeilen die Referenz-Typen
     verwendet werden, stellt das kein großes Problem dar. Sollte die Zeile in Abhängigkeit ihres
     Schlüssels dynamisch gesucht werden, kann auf die neue \texttt{find}-Methode zurückgegriffen werden.
 
@@ -768,7 +769,7 @@ dataSet.professorTable.foreach(ACTION);
     \begin{itemize}
       \item \textbf{Reflexive Beziehungen}
         Eine reflexive Beziehung kann in \textit{STU} nur manuell ausgedrückt werden. Die Definition einer
-        einfachen Tabelle für einen Baum, der aus einzelnen Konten besteht, könnte wie folgt aussehen
+        einfachen Tabelle für einen Baum, der aus einzelnen Knoten besteht, könnte wie folgt aussehen
         (siehe Listing \ref{listing:reflexiv:manuell}). Ein Knoten-Element kennt den zugehörigen Eltern-Knoten
         (Zeile 5). Eine Referenz auf die Tabelle ist an dieser Stelle nicht möglich, die Relation muss
         manuell ohne besondere Tool-Unterstützung durch \textit{STU} realisiert werden.
@@ -831,7 +832,7 @@ Table person = table("person")
   .build();
         \end{lstlisting} 
       
-			  Das selbe Modell lässt sich -- aus Sicht von \textit{STU} -- etwas typsicherer umsetzen.
+			  Dasselbe Modell lässt sich -- aus Sicht von \textit{STU} -- etwas typsicherer umsetzen.
 				Für die Teilnahme wird eine assoziative Tabelle verwendet. Darüber hinaus kann hier auch
 				eine Person an mehreren Veranstaltungen teilnehmen. Listing \ref{listing:zirkulaer:assoc}
 				zeigt die Realisierung einer zirkulären Beziehung mit Hilfe einer assoziativen Tabelle.
@@ -860,13 +861,13 @@ associativeTable("parcipations")
   .build();
         \end{lstlisting} 
       
-      \item \textbf{Ternäre und andere höhergradigen Beziehungen}
-			  \textit{STU} sieht keine spezielle Unterstützung für ternäre oder andere höhergradigen Beziehungen vor.
+      \item \textbf{Ternäre und andere höhergradige Beziehungen}
+			  \textit{STU} sieht keine spezielle Unterstützung für ternäre oder andere höhergradige Beziehungen vor.
 				Es bietet sich an, solche Beziehungen über eine zusätzliche Tabelle zu realisieren (siehe Listing
 				\ref{listing:hoehergradig}, vergleichbar mit assoziativen Beziehungen für die Modellierung von
 				n:m-Beziehungen.
 
-        \begin{lstlisting}[caption=Höhergradige Beziehungen mit zusätzlicer Tabelle, label=listing:hoehergradig]
+        \begin{lstlisting}[caption=Höhergradige Beziehungen mit zusätzlicher Tabelle, label=listing:hoehergradig]
 Table student = table("student")
     .column("id", DataType.BIGINT)
       .defaultIdentifier()
