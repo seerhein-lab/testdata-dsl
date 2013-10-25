@@ -10,7 +10,7 @@ Ein üblicher Weg, bestehende Schnittstellen zu vereinfachen, stellen Fassaden da
 eine Schnittstelle auf höherer Abstraktionsebene dar, um das System einfach zu verwenden \cite[185]{DESIGN_PATTERNS}. 
 Eine solche Fassade kann auf unterschiedliche Arten realisiert werden.
 
-Eine Möglichkeit stellt die Definition einer speziellen Sprache dar. Eine solche, für einen Anwendungszeck
+Eine Möglichkeit stellt die Definition einer speziellen Sprache dar. Eine solche, für einen Anwendungszweck
 definierte Sprache wird als \textit{Domänenspezifische Sprache} (engl. Domain-Specific Language, abgekürzt DSL)
 bezeichnet.
 
@@ -27,12 +27,12 @@ die Syntax \cite[89]{DOMAIN_SPECIFIC_LANGUAGES}.
 \section{Entwurf der DSL}
 \label{sec:implementierung:entwurf}
 
-Als Grundlage für die Defintion der Modellierungsprache sollen verschiedene Beispiel-Entwürfe dienen. Dabei wird
+Als Grundlage für die Definition der Modellierungssprache sollen verschiedene Beispiel-Entwürfe dienen. Dabei wird
 das fortlaufende Beispiel aus Kapitel \ref{chap:anforderungen} mit unterschiedlichen Entwürfen modelliert und
 die Vor- und Nachteile analysiert. Bei den Entwürfen wird versucht, die Nachteile der bisher bewerteten
 Modellierungssprachen auszugleichen.
 
-Mit Hilfe dieser Analyse wird die finale Modellierungssprache (DSL) definiert. Bei den Bewertungskriterien wird auf den
+Mit Hilfe dieser Analyse wird die finale Modellierungssprache (DSL) definiert. Bei den Bewertungskriterien wird auf
 implementierungsabhängige Aspekte verzichtet. So wird der Punkt Typsicherheit nicht betrachtet und
 bei der Modifizierbarkeit keine Aussage zu IDE-unterstützten Refaktorisierungsmöglichkeiten gemacht.
 
@@ -89,7 +89,7 @@ WAESCH beaufsichtigt P_VSYS
 			schnell unübersichtlich werden.
 		
 		\item \textbf{Zeichen pro Zeile}: Der Entwurf ist für die Bildschirmdarstellung gut geeignet, die Beispieldaten
-		  erreichten höchstens 50 Zeichen pro Zeile.
+		  erreichen höchstens 50 Zeichen pro Zeile.
 		
 		\item \textbf{Redundanz}: Die Datenredundanz wird durch das Verwenden von Bezeichnern für Entitäten
 		  (Zeilen 1, 8, 15 und 21) vermieden, die für die Beschreibung von Beziehungen verwendet werden. 
@@ -178,7 +178,7 @@ DPATTERNS = lehrveranstaltung {
 	eine tabellarische Struktur übersichtlich zu gestalten. Die Syntax der Sprache ist sehr schlicht und ausdrucksstark. Ein Label
   vor einer Tabelle drückt aus, welche Daten folgen (Zeilen 1 und 6). Die Tabelle selbst beginnt mit einer Kopfzeile,
   die die Spaltenreihenfolge beschreibt (Zeilen 2 und 7). Einzelne Spalten werden vom Oder-Operator (|) getrennt. Die
-  erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgrenzt.
+  erste Spalte nimmt Zeilen-Identifikatoren auf und ist von den Daten mit Hilfe des Double-Pipe-Operators (||) abgegrenzt.
 
   \lstSetTiny
   \begin{lstlisting}[caption=Beispiel zum Entwurf 3, label=listing:dslentwurf3]
@@ -205,7 +205,7 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: Der größte Vorteil dieser Darstellung ist, dass nicht jeder Wert, sondern dass
+		\item \textbf{Zeilen}: Der größte Vorteil dieser Darstellung ist, dass nicht jeder Wert, sondern 
 		  nur jede Entität zu einer Zeile führt. Die Beispieldaten kommen mit dieser Sprache auf gerade mal 19 Zeilen.
 		
 		\item \textbf{Zeichen pro Zeile}: 
@@ -215,10 +215,10 @@ DPATTERNS || "Design Patterns"   | 4   | 3
 			Probleme bzw. Nachteile in der Darstellung können auftreten, wenn die Länge der Werte in einer Spalte stark
 			variiert. Die Spaltenbreite wird vom längsten Element bestimmt. Der Entwickler ist selbst dafür verantwortlich,
 			die übersichtliche Darstellung einzuhalten. Bei vielen Spalten wächst diese Darstellung
-			horizontal. Optionale bzw. kaum genutzte Spalten erhalten bei dieser Darstellung unter Umständen viel 
+			horizontal. Optionale bzw. kaum genutzten Spalten erhalten bei dieser Darstellung unter Umständen viel 
 			Platz. 
 		
-		\item \textbf{Redundanz}: Wie die beiden bisherigen Entwürfe tritt hier keine erkennbare Daten-Redundanz auf.
+		\item \textbf{Redundanz}: Wie bei den beiden bisherigen Entwürfen tritt hier keine erkennbare Daten-Redundanz auf.
 		  Dieser Entwurf vermeidet außerdem die Redundanz der Spaltenbezeichner.
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
@@ -261,17 +261,17 @@ empfiehlt Ghosh die Programmiersprache Groovy als Host für DSLs in Verbindung mi
 
 Groovy ist eine dynamisch typisierte Sprache\footnote{Im Gegensatz zu statisch 
 typisierten Sprachen finden bei dynamisch typisierten Typ-Überprüfungen überwiegend zur Laufzeit statt.}, die
-direkt in vollständig komplatbilen Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine
+direkt in vollständig kompatiblen Java-Bytecode übersetzt wird und damit auch in einer Java Virtual Machine
 (JVM) ausgeführt wird. Dies ermöglicht die Nutzung von Groovy-Klassen und Groovy-Objekten in Java und umgekehrt.
 
 Java-Code ist bis auf wenige Ausnahmen gültiger Groovy-Code. Allerdings bietet Groovy Möglichkeiten, Code
 von syntaktischem Ballast zu befreien. Beispielsweise können Semikolons am Ende einer Anweisung
 meistens weggelassen werden. Der Punkt zwischen einer Variable und der Methode ist unter gewissen Bedingungen
 ebenfalls optional. Häufig kann auch auf die Klammerung von Methodenparametern verzichtet werden.
-werden. Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie eine natürlichen Sprache 
+Auf diese Weise ermöglicht Groovy eine Syntax, die den Code mehr wie eine natürliche Sprache 
 aussehen lässt.
 
-Listing \ref{listing:groovyexamples} zeigt die selben Anweisungen einmal in typischer Java-Syntax (Zeile 1)
+Listing \ref{listing:groovyexamples} zeigt dieselben Anweisungen einmal in typischer Java-Syntax (Zeile 1)
 und einmal mit den Syntax-Vereinfachungen von Groovy (Zeile 2). Das Beispiel stammt aus \cite[65]{GROOVY_SLIDES}.
 Die zweite Zeile liest sich wie ein natürlichsprachiger, englischer Satz:
 
@@ -310,13 +310,13 @@ den Zugriff von nicht definierten Klassenelementen zu reagieren.
     von Tabellenzeilen zurückliefern. Eine Tabellenzeile selbst stellt zu diesem Zeitpunkt eine Liste
 		von Spaltenwerten dar. Die Analyse und Interpretation der Daten findet erst später statt.
     
-    Der Ansatz ist, Operator-Überladen für das Parsen zu verwenden. Der Operator \texttt{or} ist ein binärer
+    Bei diesem Ansatz wird Operator-Überladen für das Parsen verwendet. Der Operator \texttt{or} ist ein binärer
 		Operator. Üblicherweise ruft Groovy einen binären Operator auf der vom Operator linksseitigen Instanz 
 		mit dem rechtsseitigen Operand als Parameter. \cite[58]{GROOVY_IM_EINSATZ}).
     
     Auch wenn sich dank der Möglichkeiten der Meta-Programmierung Klassen in Groovy zur Laufzeit um Methoden
     ergänzen lassen, ist dieses Vorgehen nicht empfehlenswert, um eine Tabelle zu parsen. Dieser wenig
-    generische Ansatz müsste jeden in den Tabellen mögliche Datentyp berücksichtigen -- kommen neue Datentypen
+    generische Ansatz müsste jeden in den Tabellen möglichen Datentyp berücksichtigen -- kommen neue Datentypen
     hinzu, müsste der Code erweitert werden. Gravierender ist jedoch, dass diese Anpassungen global
     für die entsprechenden Klassen gelten. Das könnte ungewollte Seiteneffekte nach sich ziehen, wenn 
     Oder-Operatoren auch an anderer Stelle verwendet werden, wie z.B. zum Berechnen eines Spalten-Wertes.
@@ -359,12 +359,12 @@ class TableParser {
 		nicht im Closure selbst, sondern in einer anderen Klasse definiert. Zu diesen Variablen gehören die Bezeichner 
 		der Spalten und die der Zeilen. Groovy erlaubt es Closures im
     Kontext eines Delegaten auszuführen. In diesem Beispiel wird die aktuelle Instanz der Klasse \texttt{TableParser} verwendet 
-    (Zeile 22). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichern verwendet, d.h. es können
+    (Zeile 23). Dieser Delegat wird bei der Auflösung von Variablen- und Methoden-Bezeichnern verwendet, d.h. es können
 		innerhalb des Closures alle Elemente des Delegaten genau so verwendet werden, als wären sie im Closure selbst definiert.
-		In Zeile 23 wird festgelegt, dass bei der Auflösung zuerst im Delegaten gesucht wird.
+		In Zeile 24 wird festgelegt, dass bei der Auflösung zuerst im Delegaten gesucht wird.
     
     In diesem Prototyp sind keine Variablen für Spalten oder Zeilen definiert. Folglich schlägt das Auflösen fehl.
-    Groovy ruft Groovy dann die Methode \texttt{propertyMissing} in der jeweiligen Klasse auf. Eine Property ist 
+    Groovy ruft dann die Methode \texttt{propertyMissing} in der jeweiligen Klasse auf. Eine Property ist 
     eine Variable oder eine parameterlose Get-Methode. Eine solche Get-Methode
     kann in Groovy wie eine Variable genutzt werden, wenn auf das Präfix \texttt{get} und die Klammern verzichtet wird.
     Durch Überschreiben dieser Methode kann auf nicht auflösbare Bezeichner reagiert werden.
@@ -391,7 +391,8 @@ class TableParser {
 
   def parseTableClosure(Closure tableData){
     use(TableParser) {
-      tableData.delegate = this    // Change closure's context
+		  // Change closure's context
+      tableData.delegate = this
       tableData.resolveStrategy = Closure.DELEGATE_FIRST
       tableData()
     }
@@ -401,7 +402,7 @@ class TableParser {
     \end{lstlisting}
     
     Die statischen \texttt{or}-Methoden haben keinen Zugriff auf Instanz-Variablen der Klasse \texttt{TableParser}. 
-		Ihre Zwischenergebnisse, also die geparsten Spaltenwerte, können nur in statische Elementen abgelegt werden.
+		Ihre Zwischenergebnisse, also die geparsten Spaltenwerte, können nur in statischen Elementen abgelegt werden.
 		Um die Klasse Thread-sicher zu machen, d.h. das Erlauben von gleichzeitigem Parsen von Tabellen
 		aus verschiedenen Threads heraus, wird für die Ergebnisse eine threadlokale Variable verwendet.
 		\cite[45]{JAVA_CONCURRENCY_IN_PRACTICE}
@@ -413,11 +414,12 @@ class TableParser {
     (\reflst{listing:dslentwurf3laufzeit}). Das DataSet wird als Map definiert, mit den Tabellennamen als
     Schlüsseln und Closures als Werte. Ein Platzhalter (Unterstrich) verhindert Syntax-Fehler, wenn in
     einer Spalte kein Wert vorkommt (siehe Zeile 4, Spalte "`leitet"'). Der Platzhalter könnte auch verwendet
-    werden, um einem Datensatz keinen Bezeichner für Referenzen zu zu weisen. 
+    werden, um einem Datensatz keinen Bezeichner für Referenzen zuzuweisen. 
     
     \lstSetTiny
     \begin{lstlisting}[caption=DSL-Entwurf 3 für Laufzeit-Meta-Programmierung angepasst, label=listing:dslentwurf3laufzeit]
 def dataset = [
+
   professor: {
     REF    | name    | vorname  | titel            | fakultaet    | leitet           | beaufsichtigt
     WAESCH | "Wäsch" | "Jürgen" | "Prof. Dr.-Ing." | "Informatik" | _                | P_VSYS
@@ -431,6 +433,7 @@ def dataset = [
   },
     
   ...
+	
 ]    
     \end{lstlisting}
     \lstSetNormal
@@ -448,7 +451,7 @@ def dataset = [
     müssen nicht zwangsläufig in einem eigenen Block definiert werden.
     
     Allerdings muss zum Auswerten einer Tabelle bei AST-Transformationen ein relativ großer Aufwand betrieben werden.
-    Ein AST-Transformationsklasse, erhält über das Visitor-Pattern Zugriff auf die abstrakten Syntaxbäume einzelner
+    Eine AST-Transformationsklasse erhält über das Visitor-Pattern Zugriff auf die abstrakten Syntaxbäume einzelner
     Module \cite[331ff]{DESIGN_PATTERNS}. Groovy Module beinhalten Klassen, aber auch die modulspezifischen
     Import-Anweisungen. Auf die einzelnen Klassen kann erneut über das Visitor-Pattern auf die einzelnen Methoden
     zugegriffen werden. Diese lassen sich dann Statement für Statement untersuchen.
@@ -460,7 +463,7 @@ def dataset = [
     
     \begin{itemize}
       \item \textbf{\texttt{BinaryExpression}}: Ein binärer Ausdruck besteht aus zwei Operanden und einem Operator.
-        Wenn es sich beim Operator um einen Pipe oder Double-Pipe-Operator handelt, werden die beiden Operanden
+        Wenn es sich beim Operator um einen Pipe- oder Double-Pipe-Operator handelt, werden die beiden Operanden
 				behandelt. Dies führt zu einer rekursiven Auswertung, da die Operanden vom Typ \texttt{ExpressionStatement}
 				sind.
         
@@ -639,7 +642,7 @@ Entsprechend der Kriterien stellt sich die Bewertung für die Sprache wie folgt d
 			Kapitel~\ref{chap:realiserungdsl} beschrieben.
 	
 		\item \textbf{Modifizierbarkeit}: Die Daten lassen sich relativ leicht an neue Datenbank-Schemata anpassen
-		  und die Daten selbst sich leicht ändern. 
+		  und können leicht verändert werden. 
 
 	\end{itemize}
 

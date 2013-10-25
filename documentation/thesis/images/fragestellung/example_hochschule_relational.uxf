@@ -120,7 +120,7 @@ name : varchar
 vorname : varchar
 studiengang : varchar
 semester : int
-immatrukuliert_seit : date</panel_attributes>
+immatrikuliert_seit : date</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

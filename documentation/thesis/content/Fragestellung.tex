@@ -27,18 +27,14 @@ Für die Modellierung gelten diese allgemeinen Anforderungen:
 	  komfortabel modelliert werden können. Die Integration in Entwicklungsumgebungen wie Eclipse oder IntelliJ IDEA muss
 		gegeben sein. 
 	
-	\item \textbf{Beziehungen}: Beziehungen sollen einfach modellieren werden können. 
-
-	\item \textbf{Gültigkeitsbereiche}:
-	  \todo{Gültigkeitsbereiche erklären}
+	\item \textbf{Beziehungen}: Beziehungen sollen einfach modelliert werden können. 
 
 	\item \textbf{Veränderbarkeit von DataSets}: DataSets sollen sich während der Modellierung beliebig verändern lassen.
 	
 	\item \textbf{Komposition}: DataSets sollen sich aus anderen DataSets zusammensetzen lassen.
 	
-	
 	\item \textbf{Typ-Sicherheit}: Die Beschreibung der Daten sollte typsicher erfolgen. Idealerweise sollten falsche
-	  Typen schon während des Compilierns erkannt werden.
+	  Typen schon während des Kompilierens erkannt werden.
 		
 	\item \textbf{Funktionen als Werte}: Es soll möglich sein, Hilfsfunktionen zur Berechnung von Werten zu verwenden,
 	  z.B. zum Einlesen von Binary Large Objects (BLOBs) aus Dateien.
@@ -62,11 +58,11 @@ Für die Generierung der Testdaten lassen sich die Anforderungen folgendermaßen z
 	\item \textbf{Fokus auf Beziehungen}: Das Generieren von sinnvollen Beziehungen stellt eines der zentralen Ziele für
 	  den Daten-Generator dar.
 	
-	\item \textbf{Datenmenge selbst bestimmen}: Der Generator soll ohne Konfigurationsaufwand eine geeignete Menge an Test-Daten
+	\item \textbf{Datenmenge selbst bestimmen}: Der Generator soll ohne Konfigurationsaufwand eine geeignete Menge an Testdaten
 	  erzeugen.
 
-	\item \textbf{Deterministische Generierung}: Auch wenn die Test-Daten aus Zufallsdaten bestehen, sollen sie deterministisch
-	  generiert werden können. Das heißt, dass die Generierung des Modells mit den selben Einstellungen auch zum selben Ergebnis
+	\item \textbf{Deterministische Generierung}: Auch wenn die Testdaten aus Zufallsdaten bestehen, sollen sie deterministisch
+	  generiert werden können. Das heißt, dass die Generierung des Modells mit denselben Einstellungen auch zum selben Ergebnis
 		führt.
 		
 	\item \textbf{Kompatibilität}: Die Generierung der Testdaten soll in unterschiedliche Ausgabe-Formen erfolgen können,
@@ -87,7 +83,7 @@ Die folgenden drei grundsätzlichen binären Beziehungsarten (also zwischen zwei E
 	
 	Eine binäre Beziehung zwischen zwei Entitätstypen, wobei jede Entität innerhalb dieser Beziehung maximal einer
 	anderen Entität zugeordnet sein kann. Eine solche Beziehung kann realisiert werden, indem eine Tabelle um einen
-	Fremdschlüssel auf die andere erweitert wird. Dabei sollte der Fremdschlüssel und auch die beziehungsbeschreibenden
+	Fremdschlüssel auf die andere erweitert wird. Dabei sollten der Fremdschlüssel und auch die beziehungsbeschreibenden
 	Attribute immer der Tabelle hinzugefügt werden, deren Entitäten eine Beziehung voraussetzt.
 	
 	Wenn viele Beziehungsattribute vorhanden sind oder die Beziehung auf beiden Seiten optional ist,
@@ -100,7 +96,7 @@ Die folgenden drei grundsätzlichen binären Beziehungsarten (also zwischen zwei E
 	Entitäten des anderen Typs stehen kann. Diese Entitäten können auch nur mit maximal einer Entität in Beziehung
 	stehen. Es ist möglich festzulegen, wie viele Beziehungen eine Entität mindestens und höchstens haben darf.
 	
-	Die Tabelle der Entitäten, die maximal einer andere Entität zugeordnet sind, wird um einen Fremdschlüssel
+	Die Tabelle der Entitäten, die maximal einer anderen Entität zugeordnet sind, wird um einen Fremdschlüssel
 	und um für jede Beziehung individueller Attribute erweitert. Die Beziehungsattribute, die für alle Beziehungen
 	der beteiligten Entität gelten, werden ihrer Tabelle hinzugefügt.
 	
@@ -147,7 +143,7 @@ Modellierungsvarianten.
 	\label{sec:fragestellung:beispiel:gewaehlte_problemstellung}
 	Das gewählte Beispiel stellt eine starke Vereinfachung des Prüfungswesens an Hochschulen dar. Auf eine praxisnahe
 	Umsetzung wird zugunsten der Komplexität verzichtet. Personenbezogene Begriffe werden in der maskulinen Form verwendet,
-	ohne dabei Aussagen über das Geschlecht der repräsentierter Personen zu machen. Es beinhaltet die folgenden vier 
+	ohne dabei Aussagen über das Geschlecht der repräsentierten Personen zu machen. Es beinhaltet die folgenden fünf 
 	Entitätstypen:
 
 	\begin{itemize}
@@ -169,7 +165,7 @@ Modellierungsvarianten.
 		  haben (z.B. Nachschreibprüfung).
 		\item \textbf{beaufsichtigt}: Eine Prüfung muss mindestens von einem Professor beaufsichtigt werden, ein Professor kann in 
 		  beliebig vielen Prüfungen Aufsicht haben. 
-		\item \textbf{besucht}: Jeder Student kann beliebig vielen Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch 
+		\item \textbf{besucht}: Jeder Student kann beliebig viele Lehrveranstaltungen besuchen. Lehrveranstaltungen benötigen jedoch 
 		  mindestens drei Besucher um stattzufinden und sind aus Kapazitätsgründen auf 100 Teilnehmer begrenzt.
 		\item \textbf{ist Tutor}: Jeder Student kann bei beliebig vielen Lehrveranstaltungen Tutor sein und jede Lehrveranstaltung
 			kann beliebig viele Tutoren haben. 
@@ -220,7 +216,7 @@ Modellierungsvarianten.
 	\subsection{Kriterien für Bewertung}
 	\label{sec:fragestellung:modellierung:sprachkriterien}
 	
-	Für die Bewertung von Modellierungssprachen werden die folgenden Kriterieren verwendet. Einige Punkte
+	Für die Bewertung von Modellierungssprachen werden die folgenden Kriterien verwendet. Einige Punkte
 	sind messbar, andere wiederum relativ subjektiv. Als Vorbild für die beiden letzten Punkte dient die
 	Norm ISO IEC 9126. 
 
@@ -239,7 +235,7 @@ Modellierungsvarianten.
 			ist die Sprache zu lernen?
 		
 		\item \textbf{Modifizierbarkeit}: Wie leicht lassen sich Daten ändern? Wie leicht können
-		  können bestehende Daten an ein neues Datenbankschema angepasst werden?
+		  bestehende Daten an ein neues Datenbankschema angepasst werden?
 
 	
 	\end{itemize}
@@ -308,8 +304,8 @@ Modellierungsvarianten.
 	Die Bewertung anhand der Kriterien stellt sich für das \texttt{XmlDataSet} wie folgt dar:
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: Die XML-Datei mit den Beispiel-Daten umfasst 127 Zeilen. Für jede Entität
-		  werden jeweils eine Zeile pro Attribut und weitere zwei Zeilen für die umschließenden XML-Tags.
+		\item \textbf{Zeilen}: Die XML-Datei mit den Beispiel-Daten umfasst 127 Zeilen. Jede Entität
+		  benötigt jeweils eine Zeile pro Attribut und weitere zwei Zeilen für die umschließenden XML-Tags.
 		
 			DbUnit-konforme XML-Dateien wachsen schnell in vertikaler Richtung und enthalten unter Umständen
 			auch viel syntaktischen Overhead. Von den etwas über 40 gezeigten Zeilen enthalten nur 20 Zeilen
@@ -330,7 +326,7 @@ Modellierungsvarianten.
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
 			Die positiven Eigenschaften bei der Modellierung mit XML sind unter anderem, dass für XML ein breites Angebot an
 			Werkzeugen zur Verfügung steht. Diese können über den Dokumententyp prüfen, ob die Datei den Regeln entspricht.
-			Der Umgang mit XML-Dateien kann als bekannt angenommen werden für die Zielgruppe.
+			Der Umgang mit XML-Dateien kann für die Zielgruppe als bekannt angenommen werden.
 			
 			Die manuelle Pflege von Primär- und Fremdschlüsseln ist unübersichtlich und damit fehleranfällig. Die Value-Tags
 			selbst lassen keinen Rückschluss auf die Spalte zu, die sie repräsentieren. Das erschwert die Lesbarkeit.
@@ -344,7 +340,7 @@ Modellierungsvarianten.
 			
 		\item \textbf{Modifizierbarkeit}: Daten lassen sich relativ leicht ändern -- sofern man die richtige Stelle gefunden
 		  hat, was ohne Kommentare nicht immer so leicht ist. Eine solche XML-Datei an ein neues Datenbank-Schema anzupassen
-		  kann einfach aber auch mühsam sein. Das Umbenennen von Spalten ist sehr einfach, das Entfernen oder Hinzufügen 
+		  kann einfach, aber auch mühsam sein. Das Umbenennen von Spalten ist sehr einfach, das Entfernen oder Hinzufügen 
 			von Spalten bei umfangreichen Daten ohne den geschickten Umgang mit Text-Editoren sehr umständlich.
 		  
 	\end{itemize}
@@ -399,8 +395,8 @@ Modellierungsvarianten.
 	
 	\begin{itemize}
 
-		\item \textbf{Zeilen}: Die selben Beispieldaten lassen sich hier mit 63 Zeilen ausdrücken. Die Datei
-		  kommt mit weniger Meta-Informationen und etwas weniger syntaktischen Overhead aus. Allerdings
+		\item \textbf{Zeilen}: Dieselben Beispieldaten lassen sich hier mit 63 Zeilen ausdrücken. Die Datei
+		  kommt mit weniger Meta-Informationen und etwas weniger syntaktischem Ballast aus. Allerdings
 		  sollte auch hier jedes Attribut in eine Zeile geschrieben werden.
 		
 		\item \textbf{Zeichen pro Zeile}: Mit maximal 40 Zeichen pro Zeile für die gewählten Testdaten ist
@@ -409,14 +405,13 @@ Modellierungsvarianten.
 		\item \textbf{Typsicherheit}: Wie auch beim \texttt{XmlDataSet} können die Typen erst beim
 		  Einspielen in die Datenbank überprüft werden.
 		  
-		\item \textbf{Redundanz}: Das Beschreiben von Beziehungen erfordert die selbe Daten-Redundanz wie
-		  beim \texttt{XmlDataSet}.
+		\item \textbf{Redundanz}: Es tritt dieselbe Daten-Redundanz wie beim \texttt{XmlDataSet} auf.
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}:
 		  Durch die fehlende Hierarchie wirkt das \texttt{FlatXmlDataSet} etwas unübersichtlich. Die
 			Spalten-Bezeichner stellen eine Art Sprachelement dar, d.h. sie werden als XML-Attribut-Bezeichner
 			bei der Datenzuweisung verwendet. Das ist übersichtlich und verständlich. Außerdem müssen
-			die Attribute nicht zwingend in der selben Reihenfolge angegeben werden.
+			die Attribute nicht zwingend in derselben Reihenfolge angegeben werden.
 			
 		\item \textbf{Modifizierbarkeit}:
 		  Das Ändern der Daten wird dadurch erleichtert, dass Spaltennamen und Wert direkt beieinander stehen.
@@ -512,17 +507,17 @@ dataSet.addTable(lehrveranstaltung);
 
 		\item \textbf{Benutzbarkeit (Verständlichkeit und Erlernbarkeit)}: 
 		  Der Code ist zwar nicht unbedingt intuitiv, aber überschaubar und für einen Java-Programmierer auch leicht erlernbar.
-			Die Verständlichkeit leidet unter den selben Problemen wie die \texttt{XmlDataSets}: Daten werden einfach in Form
+			Die Verständlichkeit leidet unter denselben Problemen wie die \texttt{XmlDataSets}: Daten werden einfach in Form
 			geordneter Listen übergeben, ohne dass direkt in der Umgebung ersichtlich ist, welcher Wert sich auf welche Spalte
 			bezieht. Der Einsatz von Konstanten kann hier helfen. Davon kann auch die Modellierung von Beziehungen profitieren.
 			
 			Allerdings können solche Konstanten auch falsch verwendet werden: Eine doppelte Belegung ist genauso möglich wie
-			das Zuweisen eines Fremdschlüssels auf den Primärschlüssels einer falschen Tabelle.
+			das Zuweisen eines Fremdschlüssels auf den Primärschlüssel einer falschen Tabelle.
 					
 		\item \textbf{Modifizierbarkeit}:
 		  Das Anpassen des DataSets an neue Datenbank-Schemen kann relativ umständlich werden, wenn Spalten hinzukommen oder
 			wegfallen. Das Umbenennen von Spalten ist relativ leicht möglich. Einige Änderungen können durch
-			IDE-Rafactoring-Unterstützung einfach durchgeführt werden, z.B. das Ändern von Bezeichnern für Konstanten.
+			IDE-Refactoring-Unterstützung einfach durchgeführt werden, z.B. das Ändern von Bezeichnern für Konstanten.
 
 	\end{itemize}
   
@@ -543,13 +538,13 @@ dataSet.addTable(lehrveranstaltung);
 	aus einem DataSet.
 	
 	Eine Stärke von \textit{STU} ist es, dass verhältnismäßig einfach Varianten eines DbUnit-DataSets
-	erzeugt werden können, z.B. ein DataSet mit dem Ausgangszustand und ein DataSet mit dem erwarten
+	erzeugt werden können, z.B. ein DataSet mit dem Ausgangszustand und ein DataSet mit dem erwarteten
 	Zustand am Ende des Tests.
 	
 	Die Java-DSL sorgt für statische Typsicherheit, so dass Java-IDEs fehlerhafte Typen bereits während der
 	Entwicklung kenntlich machen. Verglichen mit den DbUnit-Xml-DataSets und dem Default-DataSet
-	ist die Syntax ist etwas kompakter und ausdrucksstärker. Spaltennamen und Werte stehen beieinander und nicht 
-	über die Datei verteilt.
+	ist die Syntax etwas kompakter und ausdrucksstärker. Spaltennamen und Werte stehen beieinander und
+	sind nicht über die Datei verteilt.
 
 	\lstSetJava
 	\begin{lstlisting}[caption=STU DataSet (1), label=listing:sbtestingdataset_old]

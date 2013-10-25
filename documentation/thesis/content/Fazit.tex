@@ -25,7 +25,7 @@ aktivem DataSet eine andere Entität und damit möglicherweise auch unterschiedlic
 Daten. Die Lösung unterstützt die Komposition und das Erweitern von DataSets.
 Bei Fehlern in DataSet-Definitionen erhält der Tester sinnvolle Fehlermeldungen
 und kann schnell die Ursache finden. Die generierte JavaDoc zu der DSL erleichtert
-den Umgang mit Hilfe von Code-Beispiele und Informationen zum Datenbank-Modell.
+den Umgang mit Hilfe von Code-Beispielen und Informationen zum Datenbank-Modell.
 
 Ein wichtiges Ziel der Arbeit stellte die Generierung von Testdaten dar. Es wurde
 gezeigt, dass die Generierung zwar kein neues Thema ist, die meisten Werkzeuge aber
@@ -49,8 +49,15 @@ Das Thema Generierung bietet Potential für weiterführende Arbeiten. So
 betrachtet der Algorithmus keine Abhängigkeiten zwischen unterschiedlichen Beziehungen,
 mit Ausnahme von assoziativen Tabellen. Außerdem arbeiten die Datengeneratoren für
 die Spaltenwerte noch komplett unabhängig voneinander bzw. von der Entität. Es wäre
-sinnvoll, den Generator dahingehen zu erweitern, dass er Abhängigkeiten von Beziehungen
+sinnvoll, den Generator dahingehend zu erweitern, dass er Abhängigkeiten von Beziehungen
 und auch von Daten berücksichtigt.
 
 % Nutzen für Seitenbau
-\todo{Praktischer Nutzen für Seitenbau}
+Der praktische Nutzen für die Firma SEITENBAU ist, dass sich die Implementierung in
+die bisherige Werkzeugkette integrieren lässt und die bisherigen Test-Bibliotheken
+erweitert. Testdaten lassen sich in der neuen DSL und mit dem bisherigen API
+beschreiben. Die DataSets können mit wenig Aufwand in Tests genutzt und erweitert
+werden. Die Testdaten und die Tests gewinnen mit der DSL an Ausdrucksstärke.
+Mit Hilfe des Generators für Testdaten können für Projekte nutzbare
+Testdaten erzeugt werden, die viele Fälle abdecken können, aber nicht zu
+unübersichtlich werden. 

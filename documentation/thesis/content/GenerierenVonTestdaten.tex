@@ -359,7 +359,7 @@ Begriffe beschrieben und das Klassen-Diagramm des Modells vorgestellt, das der D
   
   \begin{figure}[htbp]
     \centering
-     \includegraphics[width=0.75\textwidth]{images/generierung/generator_model.pdf}
+     \includegraphics[width=0.7\textwidth]{images/generierung/generator_model.pdf}
     \caption{Diagramm der Generator-Modell-Klassen}\label{img:generierung:generatormodel}
   \end{figure}
   
@@ -425,7 +425,7 @@ CALL Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
 
 \begin{lstlisting}[caption=GeneriereDatenFuerNichtassoziativeTabelle, label=listing:GeneriereDatenFuerNichtassoziativeTabelle]
 Generiere_Daten_Fuer_Nichtassoziative_Tabelle(Tabelle T)
----------------------------------------------------
+--------------------------------------------------------
 FOR EACH (ausgehende Kante K, die noch nicht besucht wurde)
 DO
   IF (Zieltabelle Z von Kante K ist keine assoziative Tabelle)
@@ -461,7 +461,7 @@ END FOR;
 
 \begin{lstlisting}[caption=Generiere Daten Fuer Kante, label=listing:GeneriereDatenFuerKante]
 Generiere_Daten_Fuer_Kante(Kante K)   
-------------------------------
+-----------------------------------
 S := Starttabelle von Kante K;
 Z := Zieltabelle von Kante K;
 // Generierung der Daten entsprechend Abschnitt 6.2.3
@@ -494,7 +494,7 @@ CALL Generiere_Entitaeten_Und_Beziehungen(K, max(S), max(Z));
     
 \begin{lstlisting}[caption=Generiere Entitäten Und Beziehungen, label=listing:GeneriereEntitaetenUndBeziehungen]
 Generiere_Entitaeten_Und_Beziehungen(K, s, z)
------------------------------------------
+---------------------------------------------
 // Sicherstellen, dass nicht mehr Entitäten als notwendig erzeugt werden
 IF (Für die Kombination (K, s, z) wurden bereits Entitäten erzeugt) 
 THEN RETURN;
@@ -527,7 +527,7 @@ END IF;
 
 \begin{lstlisting}[caption=Generiere Daten für assoziative Tabelle, label=listing:GeneriereDatenFuerAssoziativeTabelle]
 Generiere_Daten_Fuer_Assoziative_Tabelle(Tabelle T)
------------------------------------------------
+---------------------------------------------------
 LK := linke Kante der assoziativen Tabelle T;
 RK := rechte Kante der assoziativen Tabelle T;
 markiere Kanten LK und RK als besucht;
@@ -600,7 +600,7 @@ END IF;
 
 \begin{lstlisting}[caption=Generiere Assoziative Entitaeten Und Beziehungen, label=listing:GeneriereAssoziativeEntitaetenUndBeziehungen]
 Generiere_Assoziative_Entitaeten_Und_Beziehungen(AT, l, r)
-----------------------------------------------------
+----------------------------------------------------------
 LK := linke Kante der assoziativen Tabelle AT;
 RK := rechte Kante der assoziativen Tabelle AT;
 // Grenzen "tauschen" und Mindestanzahl auf 1
@@ -651,12 +651,13 @@ END FOR;
 		
     Unter Umständen würde dieser Algorithmus nie terminieren, weshalb eine Abbruch-Bedingung sinnvoll ist.
 		Diese wird nicht im Pseudo-Code (Listing \ref{listing:ErweitereGenerierteDatenZuKonsistentenDaten}) dargestellt.
+		
 		Die Implementierung bricht nach Erreichen eines Grenzwertes für die nachträgliche Generierung von Entitäten
 		ab. Das Problem wird in Abschnitt~\ref{sec:generieren:offenepunkte:unerfuellbar} thematisiert.
     
 \begin{lstlisting}[caption=ErweitereGenerierteDatenZuKonsistentenDaten, label=listing:ErweitereGenerierteDatenZuKonsistentenDaten]
-Erweitere_Generierte_Daten_Zu_Konsistenten_Daten()
--------------------------------------------------
+Erweitere_Generierte_Daten_Zu_Konsistenten_Daten
+------------------------------------------------
 FOR EACH (Tabelle T in Tabellenliste)
 DO
   FOR EACH (Entität e aus generierten Entitäten der Tabelle T)
@@ -881,7 +882,7 @@ END FOR;
 
     \begin{figure}[htbp]
       \centering
-       \includegraphics[width=0.55\textwidth]{images/generierung/example_step_pruefung.pdf}
+       \includegraphics[width=0.5\textwidth]{images/generierung/example_step_pruefung.pdf}
       \caption{Schritt: PRUEFUNG}\label{img:generierung:example:step_pruefung}
     \end{figure}
     
@@ -898,9 +899,27 @@ END FOR;
     und die Generierung abgeschlossen.
 
 
-\section{Praktischer Einsatz / Evaluation}
+\section{Praktischer Einsatz und Evaluation}
 
-\todo{Praktischer Einsatz / Evaluation ergänzen}
+Der praktische Nutzen des Algorithmus wird neben dem fortlaufenden Beispiel an einem praktischen
+Projekt überprüft. Außerdem wird die Bedeutung der Starttabelle bei der Traversierung des Graphen 
+beschrieben.
+
+  \subsection{Praktisches Projekt}
+	
+	Der praktische Einsatz des Datengenerators soll auch an einem realen Projekt evaluiert werden.
+	Es handelt sich dabei um ein kleines Projekt für die öffentliche Verwaltung. Das Datenbank-Modell
+	umfasst zehn Tabellen mit im Mittel etwa acht Spalten.
+	
+	Die generierten Daten lassen sich in die Datenbank einspielen. Dafür sind allerdings für
+	einige Spalten Projekt-spezifische Werte-Generatoren notwendig. Die Daten lassen sich für einfache
+	Tests nutzen und können in der Anwendung selbst betrachtet werden.
+	
+	Es bietet sich an, die Bezeichner für die Referenzen nach der Generierung mit Hilfe von
+	Refaktorisierungswerkzeugen anzupassen und den Referenzen sinnvolle Namen zu geben.
+	
+	Insgesamt stellen die generierten Daten einen guten Ausgangspunkt für Testdaten dar. Sie sind
+	für diese Anwendung mit geringem Aufwand generierbar und für Tests nutzbar.
 
   \subsection{Einfluss der Tabellenreihenfolge}
   \label{sec:generieren:evaluation:tabellenreihenfolge}

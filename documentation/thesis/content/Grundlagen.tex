@@ -44,7 +44,7 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 	\item \textbf{Standard Fixture}: Ein Test Fixture wird als Standard Fixture bezeichnet, wenn es für alle bzw. fast alle 
 	  Tests verwendet werden kann. Ein Standard Fixture reduziert nicht nur den Aufwand zum Entwerfen von Testdaten für die
 		einzelnen Tests, sondern verhindert darüber hinaus, dass der Tester sich bei verschiedenen Tests immer wieder
-		in unterschiedliche Test-Daten hineinversetzen muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene 
+		in unterschiedliche Testdaten hineinversetzen muss. Nur in Ausnahmefällen sollten Tests modifizierte oder eigene 
 		Testdaten verwenden. \cite[305]{XUNIT_TEST_PATTERNS}
 	
 	\item \textbf{Minimal Fixture}: Ein Fixture, das speziell für einen Test erstellt wurde und dessen Umfang auf
@@ -55,44 +55,40 @@ Arten von Test Fixtures. Folgende zwei Test Fixtures sind für diese Arbeit relev
 \end{itemize}
 
 
-	\subsection{Datenbank-Tests}
+\section{Datenbank-Tests}
 
-	Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Die Idee
-	hinter diesem Muster ist es, auf die Datenbank direkt zu zu greifen am zu testenden System vorbei -- quasi in Form
-	einer Hintertür. Auf diese Weise wirken sich Fehler im zu testenden System nicht auf den Zugriff der Datenbank aus.
-	Das Muster besteht aus vier Schritten. 
-	Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff in den 
-	Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
-	Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
-	als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
-	ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch 
-	optionale Aufräumarbeiten durchführen.
-	Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
-	\cite[327ff]{XUNIT_TEST_PATTERNS}
+Ein übliches Muster, Systeme in Verbindung mit Datenbanken zu testen, ist \textit{Back Door Manipulation}. Die Idee
+hinter diesem Muster ist es, auf die Datenbank direkt zuzugreifen am zu testenden System vorbei -- quasi in Form
+einer Hintertür. Auf diese Weise wirken sich Fehler im zu testenden System nicht auf den Zugriff der Datenbank aus.
+Das Muster besteht aus vier Schritten. 
+Im ersten Schritt, dem \textit{Setup}, wird die Datenbank über direkten Zugriff in den 
+Anfangszustand gebracht. Anschließend können im \textit{Exercise}-Schritt die zu testenden
+Operationen am System durchgeführt werden. Die Überprüfung, ob sich das System richtig verhalten hat, findet im 
+als \textit{Verify} bezeichneten Schritt statt. Dabei wird der Zustand der Datenbank mit dem erwarteten Zustand verglichen,
+ebenfalls am zu testenden System vorbei. Abschließend kann der vierte Schritt, \textit{Teardown}, noch 
+optionale Aufräumarbeiten durchführen.
+Abbildung \ref{img:backdoormanipulation} stellt Back Door Manipulation grafisch dar.
+\cite[327ff]{XUNIT_TEST_PATTERNS}
 
-	\begin{figure}[H]
-		\centering
-		 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
-		\caption{Back Door Manipulation}\label{img:backdoormanipulation}
-	\end{figure}
+\begin{figure}[H]
+	\centering
+	 \includegraphics[width=0.95\textwidth]{images/grundlagen/back_door_manipulation.png}
+	\caption{Back Door Manipulation}\label{img:backdoormanipulation}
+\end{figure}
 
-	Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
-	semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Ein semantischer Fehler stellt z.B. der
-	Zugriff auf die falsche Spalte dar: Das SUT könnte die Zugriffe auf die Spalten Vor- und Nachname konsequent vertauschen. Das
-	System würde normal funktionieren, die Datenbank würde sich allerdings in einem falschen Zustand befinden. 
-	
-	Andererseits kann der Zustand mitunter
-	schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
-	in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
-	nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
-	verwendeten Datenbank-System. Wird die Datenbank von SQL auf NoSQL umgestellt, müssen die Tests angepasst werden. 
-	Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
-	zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
-	Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
+Es gibt mehrere Vorteile, die Datenbank nicht über das zu testende System in den Anfangszustand zu bringen. Einerseits können
+semantische Fehler im zu testenden System unter Umständen nur so gefunden werden. Ein semantischer Fehler stellt z.B. der
+Zugriff auf die falsche Spalte dar: Das SUT könnte die Zugriffe auf die Spalten Vor- und Nachname konsequent vertauschen. Das
+System würde normal funktionieren, die Datenbank würde sich allerdings in einem falschen Zustand befinden. 
 
-	\todo{Datenbank-Tests: Layer Test erklären}
-
-
+Andererseits kann der Zustand mitunter
+schneller in die Datenbank geschrieben werden, wenn nicht der Weg über das zu testende System gemacht wird. Außerdem bietet es
+in Bezug auf die Zustände eine höhere Flexibilität: Die Datenbank kann auch in Zustände	gebracht werden, die über das System
+nicht erreicht werden können. Dafür leidet die Flexibilität an einer anderen Stelle: Die Tests sind abhängig vom konkret
+verwendeten Datenbank-System. Wird die Datenbank von SQL auf NoSQL umgestellt, müssen die Tests angepasst werden. 
+Außerdem setzt der direkte Zugriff auf die Datenbank voraus, dass die Semantik der
+zu testenden Anwendung berücksichtigt wird. Aus Sicht der Anwendung dürfen sich von der Anwendung eingespielte Daten in ihrer
+Form nicht von den manuell in die Datenbank geschriebenen Daten unterscheiden.
 
 
 \section{Konventionen für Diagramme}
@@ -104,7 +100,7 @@ von der Art des Diagramms.
 Als Grundlage für die Beispiel-Diagramme dient ein Modell aus zwei Entitätstypen (Tabellen) mit jeweils einem Attribut.
 Die beiden Entitätstypen heißen \textit{Tabelle 1} und \textit{Tabelle 2}. \textit{Tabelle 1} enthält das Attribut
 \textit{feld}, während \textit{Tabelle 2} das Feld \textit{anderes\_feld} enthält. Eine Entität aus \textit{Tabelle 1}
-kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} in Beziehung stehen. Eine Entität aus
+kann mit beliebig vielen, muss aber mindestens einer Entität aus \textit{Tabelle 2} in Beziehung stehen. Eine Entität aus
 \textit{Tabelle 2} muss mit genau einer Entität aus \textit{Tabelle 1} in Beziehung stehen.
 
   \subsection{ER-Diagramme}
@@ -114,7 +110,7 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 	Box repräsentiert, der Name des Typs und seine Attribute sind durch eine horizontale Linie voneinander getrennt.
 	Eine Beziehung zwischen Entitätstypen wird durch eine Verbindungslinie dargestellt. Diese kann bezeichnet sein,
 	der Bezeichner ist dann mittig an der Verbindungslinie platziert. Die Kardinalitäten befinden sich an den Enden
-	der Verbindungsline.
+	der Verbindungslinie.
 	
 	Auf die Angabe der Stereotypen für die Entitäten und Beziehungen wird verzichtet.
 	
@@ -127,7 +123,7 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 	\subsection{Relationale Datenbank-Diagramme}
 	\label{sec:grundlagen:konventionen:relationalediagramme}
 	Für relationale Datenbank-Diagramme wird der Modellierungsstil verwendet, der auch von Ambler in \cite{REFACTORING_DATABASES} 
-	genutzt wird wird. Dieser Stil erweitert das dem UML-konform das Klassendiagramm.
+	genutzt wird. Dieser Stil erweitert UML-konform das Klassendiagramm.
 	
 	Tabellen werden durch Boxen repräsentiert. Diese Boxen sind unterteilt in zwei Bereiche: den Tabellenbezeichner (oben)
 	und die Attribute der Tabelle (unten). Attribute werden in der Form \textit{Bezeichner : typ} beschrieben. Es gibt die
@@ -142,7 +138,7 @@ kann mit beliebig vielen, aber mindestens einer Entität aus \textit{Tabelle 2} i
 	\begin{figure}[H]
 		\centering
 		 \includegraphics[scale=0.5]{images/grundlagen/ambler_table.pdf}
-		\caption{Stil relatianaler Datenbank-Diagramme nach Ambler}\label{img:ambler_table}
+		\caption{Stil relationaler Datenbank-Diagramme nach Ambler}\label{img:ambler_table}
 	\end{figure}
 	
 	
@@ -156,14 +152,14 @@ genutzt werden. \textit{STU} wird maßgeblich von der Firma SEITENBAU entwickelt.
 der Tests von Datenbank-Anwendungen vereinfachen soll. 
 
 Für Unit-Tests von Datenbank-Anwendungen nutzt \textit{STU} die Bibliothek \textit{DbUnit}. \textit{DbUnit} stellt eine
-Erweiterung für JUnit dar und stellt Funktionen speziell für den Test von Datenbank-Anwendung zur Verfügung
+Erweiterung für JUnit dar und stellt Funktionen speziell für den Test von Datenbank-Anwendungen zur Verfügung
  \cite[748]{XUNIT_TEST_PATTERNS}.
 Mit Hilfe von \textit{DbUnit} kann eine Datenbank zu Beginn eines Tests in einen definierten Zustand gebracht werden. Dazu kann 
 \textit{DbUnit} DataSets in die Datenbank einspielen. Ein DataSet fasst eine Menge an Daten zu einer Einheit zusammen. Außerdem kann DbUnit den Inhalt 
 einer Datenbank mit einem DataSet vergleichen. So kann nach dem Test überprüft werden, ob das SUT die richtigen Modifikationen 
 an den Daten vorgenommen hat.
 
-Ein Ziel von \textit{STU} ist, Datenbank-Tests weiter zu vereinfachen und bietet die Möglichkeit, DataSets über ein eigenes API
+Ein Ziel von \textit{STU} ist, Datenbank-Tests weiter zu vereinfachen. Es bietet die Möglichkeit, DataSets über ein eigenes API
 zu modellieren. \textit{STU} enthält einen Generator, der mit Hilfe eines Datenbank-Modells individuelles API erzeugen kann.
 Die generierten Klassen setzen das Builder-Pattern \cite[11ff]{EFFECTIVEJAVA2ND} mit einem Fluent API
 \cite[68ff]{DOMAIN_SPECIFIC_LANGUAGES} um. In Java werden Fluent APIs mit Hilfe von Method Chaining verwirklicht. Dabei
@@ -171,10 +167,10 @@ liefern Methoden zum Konfigurieren des Objekts das Objekt selbst zurück. Auf die
 an einem Objekt mit nur einem Ausdruck durchgeführt werden \cite[373f]{DOMAIN_SPECIFIC_LANGUAGES}. Die Nutzung könnte
 so aussehen: \texttt{student.name("Moll").vorname("Nikolaus")}.
 
-Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Modell das Fluent API erzeugt wird.
+Abbildung \ref{img:sbtestingmodel} stellt grafisch dar, wie aus einem Datenbank-Schema das Fluent API erzeugt wird.
 Ausgangspunkt ist ein relationales Datenbankmodell. Dieses Modell muss in ein für den Generator interpretierbares
-Modell, das STU-Modell, transformiert werden. Dies kann automatisch (z.B. wenn das Modell in Form eines
-\textit{Apache-Torque}-Modell vorliegt) oder manuell geschehen. Das STU-Modell enthält Informationen zu Tabellennamen
+Modell, das STU-Modell, transformiert werden. Dies kann automatisch (z.B. wenn das Schema in Form eines
+\textit{Apache-Torque}-Modells vorliegt) oder manuell geschehen. Das STU-Modell enthält Informationen zu Tabellennamen
 und Angaben zu den Spalten, z.B. Namen und Datentypen. 
 
 \begin{figure}[H]
@@ -183,12 +179,12 @@ und Angaben zu den Spalten, z.B. Namen und Datentypen.
 	\caption{Modell-Beschreibung}\label{img:sbtestingmodel}
 \end{figure}
 
-Das STU-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentliche Vorteile bringen. Das API
+Das STU-Modell enthält keine Datenbank-Constraints. Eine Abbildung dieser würde keine wesentlichen Vorteile bringen. Das API
 bzw. die erzeugten DataSets sind ausschließlich für den Einsatz im Test-Umfeld gedacht. Sollte ein DataSet Daten enthalten, die gegen 
 die in der Datenbank definierten Constraints verstoßen, scheitert das Einspielen des DataSets in die Datenbank und eine Fehlermeldung
 wird ausgelöst.
 Aus Sicht des Testers ist dieses Verhalten ausreichend, da die Exception zum Scheitern der Unit-Tests führen wird. Der Mehrwert,
-dass ungültige DataSets schon vor dem Einspielen als solches zu erkennen, ist gering im Vergleich zu dem Aufwand, 
+ungültige DataSets schon vor dem Einspielen als solche zu erkennen, ist gering im Vergleich zu dem Aufwand, 
 Constraint-Mechanismen verschiedener Datenbanksysteme nachzubauen.
 
 Der Generator nutzt für die Code-Generierung \textit{Apache Velocity}. Velocity ist eine Template-Engine, die Dokumente mit Hilfe von
@@ -210,7 +206,7 @@ folgenden Kategorien erzeugt:
 	  Felder. Die Klasse enthält die Methode \texttt{createDBUnitDataSet}, um die für die Unit-Tests benötigten DbUnit-DataSets zu
 		erzeugen. Dabei werden Template-Methoden \cite[325]{DESIGN_PATTERNS} definiert, die genutzt werden können, um in den
 		Erzeugungsprozess von DataSets einzugreifen. Die Klasse enthält darüber hinaus Methoden zum Hinzufügen von Zeilen in die
-		entsprechende Tabellen.
+		entsprechenden Tabellen.
 
 	\item \textbf{Table}: Die \texttt{Table}-Klasse fasst alle Testdaten in Form von Zeilen einer Tabelle zusammen.
 	  Für jede Tabelle wird eine individuelle Klasse generiert. Der Klassenname setzt sich aus dem Namen
