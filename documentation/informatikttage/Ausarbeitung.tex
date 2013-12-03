@@ -1,0 +1,98 @@
+\documentclass{lni}
+
+\IfFileExists{latin1.sty}{\usepackage{latin1}}{\usepackage{isolatin1}}
+
+\usepackage{graphicx}
+
+\author{Nikolaus Moll\\\\abc@def.de}
+\title{Modellierung und Generierung von Test-Daten für Datenbank-basierte Anwendungen}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Softwaretests haben sich als Teil der Qualitätssicherung von Softwareprojekten etabliert.
+Für Tester ist die Modellierung von Testdaten für Datenbank-basierte Anwendungen allerdings
+nicht immer einfach. Die Daten können aufgrund von Beziehungen von Datensätzen schnell
+unübersichtlich und komplex werden. Wegen der Komplexität versuchen Tester, mehrere Tests
+mit denselben Daten durchzuführen.
+
+In dieser Masterarbeit werden eine neue Modellierungssprache für Testdaten für
+Datenbank-basierte Anwendungen und ein Algorithmus zur Generierung von Testdaten 
+vorgestellt. Die Sprache erlaubt eine übersichtliche Beschreibung von Daten und
+von Beziehungen zwischen Datensätzen. Der Algorithmus zur Generierung erzeugt
+Daten anhand der Beziehungstypen im Datenbank-Modell. Der Algorithmus versucht
+viele Grenzfälle zu erzeugen, so dass die Daten in möglichst vielen Tests verwendet
+werden können.
+
+Die Sprache und der Algorithmus wurden implementiert und in praktischen Anwendungen
+auf ihre Nutzbarkeit überprüft. Die Implementierung steht unter der Open-Source-Lizenz
+\textit{Apache License 2.0}.
+
+\end{abstract}
+
+
+\section{Einleitung und Motivation}
+
+Softwaretests sind ein wichtiger Baustein für die Qualitätssicherung von modernen Softwareprojekten.
+Für Tests werden Testdaten spezifiziert. Auf deren Basis wird das Verhalten der Software geprüft.
+Bei Datenbank-basierten Anwendungen werden Testdaten in der Regel sehr umfangreich und komplex.
+
+Die Komplexität ergibt sich aus der Beschreibung von Beziehungen zwischen den einzelnen
+Datensätzen. Besonders bei Systemen mit komplexen Datenbank-Schemata kann ein
+Testdaten-Modell schnell unübersichtlich werden.
+
+Für den Tester sind unübersichtliche Testdaten aus verschiedenen Gründen ein Problem.
+Einerseits machen sie die Pflege fehleranfällig. Andererseits ist es schwer,
+die modellierten Daten zu erfassen und zu verstehen. Tester wünschen deshalb häufig Daten,
+die für mehrere Tests nutzbar sind. Dadurch reicht es aus, nur ein oder zumindest
+wenige Daten-Modelle zu verstehen und zu pflegen.
+
+Die im Rahmen einer Master Thesis [Quelle] entwickelte Modellierungssprache für Testdaten erlaubt
+eine übersichtliche Modellierung von Testdaten. Sie ist einfach zu nutzen und integriert sich
+in gängige Entwicklungsumgebungen.
+
+Darüber hinaus wurde ein Algorithmus für die Generierung von Testdaten konzipiert. Das Ziel des
+Generators ist es, mit wenigen Datensätzen viele Grenzfälle bei Beziehungen abzudecken.
+
+
+\section{Die Modellierungssprache}
+
+	\subsection{Sprach-Definition}
+
+	\subsection{Anwendung der Sprache}
+	
+	- Definieren eines Datenbank-Modells
+	
+	- Generieren der DSL
+	
+	- Unit-Test-Beispiel
+	
+
+	\subsection{Implementierung und Evaluation}
+	
+	- Implementiert auf Java-Basis mit Groovy
+	
+	- Apache 2 Lizenz
+	
+	- http://github.com/seitenbau/stu
+	
+	- Implementierungsdetails in Thesis
+	
+	- Einsatz in Beispielen und realen Projekten geprüft
+
+
+\section{Der Test-Daten-Generator}
+Idee hinter dem Algorithmus
+
+	\subsection{Beschreibung des Algorithmus}
+
+	\subsection{Implementierung und Evaluation}
+
+\section{Fazit}
+
+\bibliography{bibliography}
+
+\end{document}
+
+
+
