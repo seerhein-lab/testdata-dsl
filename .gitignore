@@ -19,6 +19,12 @@ out/
 
 # Latex and Maven
 target/
+*.bak
+*.aux
+*.bbl
+*.log
+*.synctex.gz
+*.blg
 
 # Gradle
 build
