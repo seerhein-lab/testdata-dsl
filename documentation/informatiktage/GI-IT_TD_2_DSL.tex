@@ -1,5 +1,27 @@
 \section{Die Modellierungssprache}
 
+
+\textbf{Aus FORUM Artikel}
+
+Die Spezifikation der Testdaten soll mit Hilfe einer Domänenspezifische Sprache (DSL) und des Java-API erfolgen. Eine DSL ist eine formale Sprache, die speziell für ein bestimmtes Problemfeld, die sogenannte Domäne, entworfen und implementiert wird. Der Entwurf einer DSL soll einen hohen Grad an Problemspezifität erreichen, d.h. die Sprache soll alle Probleme der Domäne darstellen können und nichts darüber hinaus. Dadurch ist die Sprache durch Domänenspezialisten, in unserem Fall z.B. die Software-Tester, ohne besonderes Zusatzwissen leicht nutzbar.
+
+Im Projektkontext bedeutet domänenspezifisch, dass die DSL die grundlegenden Konzepte der Datenbank-Strukturierung (in unserem Fall das relationale Datenmodell) unterstützen muss, aber auch vom fachlichen Datenbankschema abhängig ist, das dem SUT zugrundeliegt.  D.h. für jede zu testende Anwendung wird aus einer erweiterten Spezifikation des zugrundeliegenden Datenbankschemas eine spezielle DSL erzeugt, in der die Testdaten dann durch die Software-Tester bzw. die Domänenexperten beschrieben werden können (siehe Abb. 3).
+
+Im Projekt wurden verschiedene Ansätze zur Entwicklung einer DSL für Testdaten untersucht. Der Fokus lag u.a. auf der Fachlichkeit der Datenstruktur, der typsicheren Beschreibung der Testdaten und der einfachen Spezifikation von Beziehungen zwischen Entitäten. Untersucht wurden verschiedene XML-basierte Darstellungen, wie z.B. in DbUnit benutzt, programmatische Spezifikationen und verschiedene tabellarischen Beschreibungsformen für die Testdaten. 
+
+Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die über das STU Test-Framework genutzt werden kann. Diese Art der Testdatenmodellierung ist übersichtlich, syntaktisch einfach und kann von einer IDE wie Eclipse unterstützt werden. Die grundlegende Idee für die tabellarische Darstellung stammt vom Testframework Spock [3].
+
+Listing 1 zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung einer Hochschule.
+
+
+In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
+
+Die Implementierung der Testdaten-DSL basiert dabei auf Groovy [4], einer dynamisch typisierten Programmiersprache für die Java Virtual Machine. Die DSL kann eingebettet zusammen mit Java in den Tests, z.B. mit JUnit, genutzt werden.
+
+
+\textbf{Outline}
+
+
 	\subsection{Sprach-Definition}
 
 	\subsection{Anwendung der Sprache}
@@ -21,5 +43,5 @@
 	
 	- Implementierungsdetails in Thesis
 	
-	- Einsatz in Beispielen und realen Projekten gepr�ft
+	- Einsatz in Beispielen und realen Projekten geprüft
 	

@@ -1,24 +1,43 @@
 \section{Einleitung und Motivation}
 
-Softwaretests sind ein wichtiger Baustein für die Qualitätssicherung von modernen Softwareprojekten.
-Für Tests werden Testdaten spezifiziert. Auf deren Basis wird das Verhalten der Software geprüft.
-Bei Datenbank-basierten Anwendungen werden Testdaten in der Regel sehr umfangreich und komplex.
+%Softwaretests sind ein wichtiger Baustein fï¿½r die Qualitï¿½tssicherung von modernen Softwareprojekten.
+%Fï¿½r Tests werden Testdaten spezifiziert. Auf deren Basis wird das Verhalten der Software geprï¿½ft.
+%Bei Datenbank-basierten Anwendungen werden Testdaten in der Regel sehr umfangreich und komplex.
+%
+%Die Komplexitï¿½t ergibt sich aus der Beschreibung von Beziehungen zwischen den einzelnen
+%Datensï¿½tzen. Besonders bei Systemen mit komplexen Datenbank-Schemata kann ein
+%Testdaten-Modell schnell unï¿½bersichtlich werden.
+%
+%Fï¿½r den Tester sind unï¿½bersichtliche Testdaten aus verschiedenen Grï¿½nden ein Problem.
+%Einerseits machen sie die Pflege fehleranfï¿½llig. Andererseits ist es schwer,
+%die modellierten Daten zu erfassen und zu verstehen. Tester wï¿½nschen deshalb hï¿½ufig Daten,
+%die fï¿½r mehrere Tests nutzbar sind. Dadurch reicht es aus, nur ein oder zumindest
+%wenige Daten-Modelle zu verstehen und zu pflegen.
+%
+%Die im Rahmen einer Master Thesis [Quelle] entwickelte Modellierungssprache fï¿½r Testdaten erlaubt
+%eine ï¿½bersichtliche Modellierung von Testdaten. Sie ist einfach zu nutzen und integriert sich
+%in gï¿½ngige Entwicklungsumgebungen.
+%
+%Darï¿½ber hinaus wurde ein Algorithmus fï¿½r die Generierung von Testdaten konzipiert. Das Ziel des
+%Generators ist es, mit wenigen Datensï¿½tzen viele Grenzfï¿½lle bei Beziehungen abzudecken.
 
-Die Komplexität ergibt sich aus der Beschreibung von Beziehungen zwischen den einzelnen
-Datensätzen. Besonders bei Systemen mit komplexen Datenbank-Schemata kann ein
-Testdaten-Modell schnell unübersichtlich werden.
 
-Für den Tester sind unübersichtliche Testdaten aus verschiedenen Gründen ein Problem.
-Einerseits machen sie die Pflege fehleranfällig. Andererseits ist es schwer,
-die modellierten Daten zu erfassen und zu verstehen. Tester wünschen deshalb häufig Daten,
-die für mehrere Tests nutzbar sind. Dadurch reicht es aus, nur ein oder zumindest
-wenige Daten-Modelle zu verstehen und zu pflegen.
 
-Die im Rahmen einer Master Thesis [Quelle] entwickelte Modellierungssprache für Testdaten erlaubt
-eine übersichtliche Modellierung von Testdaten. Sie ist einfach zu nutzen und integriert sich
-in gängige Entwicklungsumgebungen.
 
-Darüber hinaus wurde ein Algorithmus für die Generierung von Testdaten konzipiert. Das Ziel des
-Generators ist es, mit wenigen Datensätzen viele Grenzfälle bei Beziehungen abzudecken.
+\textbf{Aus FORUM Artikel}
+
+Zum Testen von Software-Anwendung, die Daten persistent in einem Datenbanksystem verwalten, werden Testdaten fÃ¼r die Datenbank benÃ¶tigt. FÃ¼r Anwendungen mit einem komplexen Datenbankschema ist die Spezifikation dieser Testdaten meist nicht trivial, da neben den EntitÃ¤ten auch deren Beziehungen betrachtet werden mÃ¼ssen. Diese Beziehungen unterliegen in der Regel einer Menge komplexer fachlicher Regeln, die sich aus dem DomÃ¤nen-Modell der Anwendung ergeben. 
+
+In dieser Arbeit wird untersucht, wie die zum Test von Datenbank-basierten Anwendungen notwendigen Testdaten auf einfache Weise beschrieben und automatisch erzeugt werden kÃ¶nnen.
+
+%---
+
+Eine zu prÃ¼fende Anwendung wird im Kontext von Software-Tests als System under Test (SUT) bezeichnet. Alle Voraussetzungen fÃ¼r einen Test werden dabei als sog. Test Fixture bezeichnet. Idealerweise soll die in einem Test Fixture beinhaltete Datenmenge fÃ¼r einen funktionalen Test eine hohe Testabdeckung bieten, dabei aber so klein und Ã¼bersichtlich wie mÃ¶glich sein. Somit sind die Testdaten einfacher zu verstehen und fÃ¼r eine groÃŸe Anzahl von funktionalen Tests zu verwenden.
+
+Ein Ã¼blicher Ansatz, ein SUT in Verbindung mit einer Datenbank zu testen, ist das Testmuster Back Door Manipulation [1] (siehe Abb. 2). Idee hierbei ist, dass das Einspielen des Test Fixture in die Datenbank direkt durch den Test am SUT vorbei, d.h. sozusagen durch eine HintertÃ¼r, geschieht. Im ersten Schritt, dem Setup, wird die Datenbank Ã¼ber direkten Zugriff an dem SUT vorbei in den Anfangszustand des Test Fixture gebracht. AnschlieÃŸend kÃ¶nnen im Exercise-Schritt die zu testenden Operationen am SUT durchgefÃ¼hrt werden. Die ÃœberprÃ¼fung, ob sich das SUT richtig verhalten hat, findet im Verify-Schritt statt. Dabei kann der Zustand der Datenbank mit dem erwarteten Zustand des SUT verglichen, ebenfalls Ã¼ber die Test-eigene Datenbankverbindung. AbschlieÃŸend kÃ¶nnen im vierten optionalen Schritt, Teardown, noch AufrÃ¤umarbeiten in der Datenbank implementiert sein.
+
+Basis fÃ¼r die nachfolgend beschriebenen Projektarbeiten ist die Java-Bibliothek Simple Test Utils for JUnit \& Co. (STU) zur Vereinfachung von Unit-Tests fÃ¼r Java-Anwendungen. STU steht unter der Apache License 2.0 und wird von der Firma Seitenbau entwickelt. FÃ¼r Tests von Datenbank-basierten Anwendungen setzt STU auf der Bibliothek DbUnit [2] auf. DbUnit ist ein Framework zum Testen von Datenbank-basierten Java-Anwendungen. 
+
+Ziel des Projekts ist es u.a., funktionale Tests durch die Spezifikation eines Java-API und einer speziellen Testdatenbeschreibungssprache so zu vereinfachen, dass eine Datenbank einfach zu Beginn des Tests â€“ Ã¼ber den Test selbst â€“ in den wohldefinierten Anfangszustand das Test Fixture versetzt werden kann. Des Weiteren soll der erwartete Datenbank-Zustand am Testende einfach auf Basis des Test Fixture beschrieben werden kÃ¶nnen. Nach AusfÃ¼hrung des Tests soll automatisch der Ã¼ber das SUT erzeugte Datenbank-Zustand mit dem erwarteten Datenbank-Zustand verglichen und somit die Korrektheit der Anwendung geprÃ¼ft werden kÃ¶nnen.
 
 
