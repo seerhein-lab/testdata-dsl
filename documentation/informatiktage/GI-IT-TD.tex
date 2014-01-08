@@ -13,11 +13,109 @@
 %\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 
+\usepackage{listings}                       %% Codelistungs formatieren
+
+
+%-------------------------------------------------------------------------
+%���Listings
+%-------------------------------------------------------------------------
+
+% Einstellungen f�r Listings mit Eclipse Code Style.
+\usepackage{color}
+\usepackage{courier}
+\definecolor{sh_comment}{rgb}{0.12, 0.38, 0.18 }     % adjusted, in Eclipse: {0.25, 0.42, 0.30 } = #3F6A4D
+\definecolor{sh_keyword}{rgb}{0.37, 0.08, 0.25}      % #5F1441
+\definecolor{sh_string}{rgb}{0.06, 0.10, 0.98}       % #101AF9% Farbe f�r Kommentare
+\def\lstsmallmath{\leavevmode\ifmmode \scriptstyle \else� \fi}
+\def\lstsmallmathend{\leavevmode\ifmmode� \else� \fi}
+
+\newcommand{\lstJava}[1]{\lstinline[language=Java,breaklines=true,basicstyle= \listingsfontinline]$#1$}
+\newcommand{\lstXML}[1]{\lstinline[language=XML,breaklines=true,basicstyle= \listingsfontinline]$#1$}
+
+\newcommand{\lstSetTiny}{\lstset{basicstyle= \tiny\ttfamily}}
+\newcommand{\lstSetNormal}{\lstset{basicstyle= \scriptsize\ttfamily}}
+\newcommand{\lstSetBig}{\lstset{basicstyle= \ttfamily\mdseries}}
+
+\newcommand{\lstSetJava}{\lstset{
+  language=java,
+  frame=single, %shadowbox,
+  rulesepcolor=\color{black},
+  showspaces=false,
+	showtabs=false,
+	tabsize=2,
+  numberstyle=\tiny\ttfamily,
+	numbers=left,
+  basicstyle=\scriptsize\ttfamily,
+  stringstyle=\color{sh_string},
+  keywordstyle=\color{sh_keyword}\bfseries,
+  commentstyle=\color{sh_comment}\itshape,
+  captionpos=b,
+  xleftmargin=0.7cm,
+	xrightmargin=0.5cm,
+  lineskip=-0.1em,
+	breaklines=true,
+  escapebegin={\lstsmallmath},
+	escapeend={\lstsmallmathend},
+	morekeywords={def, use}
+}}
+\newcommand{\lstSetXML}{\lstset{
+  language=XML,
+  frame=single, %shadowbox,
+  rulesepcolor=\color{black},
+  showspaces=false,
+	showtabs=false,
+	tabsize=2,
+  numberstyle=\tiny\ttfamily,
+	numbers=left,
+  basicstyle=\scriptsize\ttfamily,
+  stringstyle=\color{sh_string},
+  keywordstyle=\color{sh_keyword}\bfseries,
+  commentstyle=\color{sh_comment}\itshape,
+  captionpos=b,
+  xleftmargin=0.7cm,
+	xrightmargin=0.5cm,
+  lineskip=-0.1em,
+	breaklines=true,
+  escapebegin={\lstsmallmath},
+	escapeend={\lstsmallmathend},
+	morekeywords={encoding,xs:schema,xs:element,xs:complexType,xs:sequence,xs:attribute}
+}}
+\lstdefinelanguage{EBNF}{
+  keywords={procedure,end,return,integer,real,foreach,for,each,
+  do,if,then,else,while,until,true,false,algorithm}, 
+  comment=[l]{//}
+}
+\newcommand{\lstSetEBNF}{\lstset{
+  language=EBNF,
+  frame=single, %shadowbox,
+  rulesepcolor=\color{black},
+  showspaces=false,
+	showtabs=false,
+	tabsize=2,
+  numberstyle=\tiny\ttfamily,
+	numbers=left,
+  basicstyle=\scriptsize\ttfamily,
+  stringstyle=\color{sh_string},
+  keywordstyle=\color{sh_keyword}\bfseries,
+  commentstyle=\color{sh_comment}\itshape,
+  captionpos=b,
+  xleftmargin=0.7cm,
+	xrightmargin=0.5cm,
+  lineskip=-0.1em,
+	breaklines=true,
+}}
+
+\lstSetJava
+
+%\usepackage{fontspec}                        %% Codelistungs formatieren
+%\newfontfamily\listingsfontinline[Scale=0.8]{Courier New} 
+%\newfontfamily\listingsfont[Scale=0.7]{Courier}
+
 
 
 
 \author{
-	Nikolaus Moll\footnote{Bis 31.12.2012 Student im Master-Studiengang Informatik / akademischer Mitarbeiter der HTWG Konstanz; seit 01.02.2014 tätig bei der Pentasys AG in München.}
+	Nikolaus Moll\footnote{Bis 31.12.2012 Student im Master-Studiengang Informatik / akademischer Mitarbeiter der HTWG Konstanz; seit 15.01.2014 tätig bei der Pentasys AG in München.}
 \\ Jürgen Wäsch, Christian Baranowski \\ 
 	%Fakult\"at Informatik,
 	HTWG Konstanz / SEITENBAU GmbH\\ 
@@ -58,12 +156,19 @@
 
 \end{abstract}
 
+\clearpage
 
 \input{GI-IT_TD_1_Einleitung}
 
+\clearpage
+
 \input{GI-IT_TD_2_DSL}
 
+\clearpage
+
 \input{GI-IT_TD_3_Gen}
+
+\clearpage
 
 \input{GI-IT_TD_4_Fazit}
 

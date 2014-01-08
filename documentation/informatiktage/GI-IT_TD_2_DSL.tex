@@ -1,47 +1,94 @@
 \section{Die Modellierungssprache}
 
 
-\textbf{Aus FORUM Artikel}
+%\textbf{Aus FORUM Artikel}
+%
+%Die Spezifikation der Testdaten soll mit Hilfe einer Domänenspezifische Sprache (DSL) und des Java-API erfolgen. Eine DSL ist eine formale Sprache, die speziell für ein bestimmtes Problemfeld, die sogenannte Domäne, entworfen und implementiert wird. Der Entwurf einer DSL soll einen hohen Grad an Problemspezifität erreichen, d.h. die Sprache soll alle Probleme der Domäne darstellen können und nichts darüber hinaus. Dadurch ist die Sprache durch Domänenspezialisten, in unserem Fall z.B. die Software-Tester, ohne besonderes Zusatzwissen leicht nutzbar.
+%
+%Im Projektkontext bedeutet domänenspezifisch, dass die DSL die grundlegenden Konzepte der Datenbank-Strukturierung (in unserem Fall das relationale Datenmodell) unterstützen muss, aber auch vom fachlichen Datenbankschema abhängig ist, das dem SUT zugrundeliegt.  D.h. für jede zu testende Anwendung wird aus einer erweiterten Spezifikation des zugrundeliegenden Datenbankschemas eine spezielle DSL erzeugt, in der die Testdaten dann durch die Software-Tester bzw. die Domänenexperten beschrieben werden können (siehe Abb. 3).
 
-Die Spezifikation der Testdaten soll mit Hilfe einer Domänenspezifische Sprache (DSL) und des Java-API erfolgen. Eine DSL ist eine formale Sprache, die speziell für ein bestimmtes Problemfeld, die sogenannte Domäne, entworfen und implementiert wird. Der Entwurf einer DSL soll einen hohen Grad an Problemspezifität erreichen, d.h. die Sprache soll alle Probleme der Domäne darstellen können und nichts darüber hinaus. Dadurch ist die Sprache durch Domänenspezialisten, in unserem Fall z.B. die Software-Tester, ohne besonderes Zusatzwissen leicht nutzbar.
-
-Im Projektkontext bedeutet domänenspezifisch, dass die DSL die grundlegenden Konzepte der Datenbank-Strukturierung (in unserem Fall das relationale Datenmodell) unterstützen muss, aber auch vom fachlichen Datenbankschema abhängig ist, das dem SUT zugrundeliegt.  D.h. für jede zu testende Anwendung wird aus einer erweiterten Spezifikation des zugrundeliegenden Datenbankschemas eine spezielle DSL erzeugt, in der die Testdaten dann durch die Software-Tester bzw. die Domänenexperten beschrieben werden können (siehe Abb. 3).
-
-Im Projekt wurden verschiedene Ansätze zur Entwicklung einer DSL für Testdaten untersucht. Der Fokus lag u.a. auf der Fachlichkeit der Datenstruktur, der typsicheren Beschreibung der Testdaten und der einfachen Spezifikation von Beziehungen zwischen Entitäten. Untersucht wurden verschiedene XML-basierte Darstellungen, wie z.B. in DbUnit benutzt, programmatische Spezifikationen und verschiedene tabellarischen Beschreibungsformen für die Testdaten. 
-
-Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die über das STU Test-Framework genutzt werden kann. Diese Art der Testdatenmodellierung ist übersichtlich, syntaktisch einfach und kann von einer IDE wie Eclipse unterstützt werden. Die grundlegende Idee für die tabellarische Darstellung stammt vom Testframework Spock [3].
-
-Listing 1 zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung einer Hochschule.
+Es wurden verschiedene Ansätze zur Entwicklung einer DSL für Testdaten untersucht. Der Fokus lag u.a. auf der Fachlichkeit der Datenstruktur, der typsicheren Beschreibung der Testdaten und der einfachen Spezifikation von Beziehungen zwischen Entitäten. Untersucht wurden verschiedene XML-basierte Darstellungen, wie z.B. in DbUnit benutzt, programmatische Spezifikationen und verschiedene tabellarischen Beschreibungsformen für die Testdaten. 
+%
+Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die über das STU Test-Framework genutzt werden kann. Diese Art der Testdatenmodellierung ist übersichtlich, syntaktisch einfach und kann von einer IDE wie Eclipse unterstützt werden. Die grundlegende Idee für die tabellarische Darstellung stammt vom Testframework Spock \cite{Spock}.
+%
+Die EBNF der DSL ist in \cite{MT:Moll:2013} zu finden.
 
 
-In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
+Listing \ref{listing:hochschuledataset:table} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~...). In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
+
+
+\begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, label=listing:hochschuledataset:table]
+class HochschuleDataSet extends HochschuleBuilder
+{
+  def tables() {
+    professorTable.rows {
+      REF    | name     | vorname   | titel            | fakultaet
+      WAESCH | "Waesch" | "Juergen" | "Prof. Dr.-Ing." | "Informatik"
+      HAASE  | "Haase"  | "Oliver"  | "Prof. Dr."      | "Informatik"
+    }
+    lehrveranstaltungTable.rows {
+      REF       | name                | sws | ects
+      VSYS      | "Verteilte Systeme" | 4   | 5
+      DPATTERNS | "Design Patterns"   | 4   | 3
+    }
+    pruefungTable.rows {
+      REF         | typ   | zeitpunkt
+      P_VSYS      | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
+      P_DPATTERNS | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
+    }
+    studentTable.rows {
+      REF        | matrikelnummer | name         | vorname    | studiengang
+      MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"      
+      MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"      
+    }
+  }
+
+  def relations() {
+    WAESCH.beaufsichtigt(P_VSYS)
+    HAASE.leitet(VSYS, DPATTERNS)
+    HAASE.beaufsichtigt(P_DPATTERNS)
+    P_VSYS.stoffVon(VSYS)
+    DPATTERNS.hatPruefung(P_DPATTERNS)
+    MOLL.schreibt(P_VSYS)
+    MOLL.besucht(VSYS)
+    VSYS.hatTutor(MOLL)
+    MUSTERMANN.besucht(DPATTERNS)
+  }
+
+}
+\end{lstlisting}
+
 
 Die Implementierung der Testdaten-DSL basiert dabei auf Groovy [4], einer dynamisch typisierten Programmiersprache für die Java Virtual Machine. Die DSL kann eingebettet zusammen mit Java in den Tests, z.B. mit JUnit, genutzt werden.
+...
+
+Definition eines Datenbank-Schemas, Generierung der DSL sowie Unit-test Beispiele etc.: siehe Master Thesis.
 
 
-\textbf{Outline}
 
-
-	\subsection{Sprach-Definition}
-
-	\subsection{Anwendung der Sprache}
-	
-	- Definieren eines Datenbank-Modells
-	
-	- Generieren der DSL
-	
-	- Unit-Test-Beispiel
-	
-
-	\subsection{Implementierung und Evaluation}
-	
-	- Implementiert auf Java-Basis mit Groovy
-	
-	- Apache 2 Lizenz
-	
-	- http://github.com/seitenbau/stu
-	
-	- Implementierungsdetails in Thesis
-	
-	- Einsatz in Beispielen und realen Projekten geprüft
+%\textbf{Outline}
+%
+%
+%	\subsection{Sprach-Definition}
+%
+%	\subsection{Anwendung der Sprache}
+%	
+%	- Definieren eines Datenbank-Modells
+%	
+%	- Generieren der DSL
+%	
+%	- Unit-Test-Beispiel
+%	
+%
+%	\subsection{Implementierung und Evaluation}
+%	
+%	- Implementiert auf Java-Basis mit Groovy
+%	
+%	- Apache 2 Lizenz
+%	
+%	- http://github.com/seitenbau/stu
+%	
+%	- Implementierungsdetails in Thesis
+%	
+%	- Einsatz in Beispielen und realen Projekten geprüft
 	
