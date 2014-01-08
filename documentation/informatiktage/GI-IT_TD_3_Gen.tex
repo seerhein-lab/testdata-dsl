@@ -27,10 +27,13 @@ Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerieru
 
 \textbf{Outline}
 
-Idee hinter dem Algorithmus
+% Idee hinter dem Algorithmus
+
+Der Algorithmus betrachtet das Datenbank-Schema als Graph. Die Tabellen stellen die Knoten und die Beziehungen stellen die Kanten dar. Da assoziative Tabellen
+ebenfalls Beziehungen ausdrücken, werden diese vom Algorithmus als besondere Kante behandelt. Der Graph wird ausgehend von eines Knotens traversiert. Alle Kanten des aktuellen Knotens und die damit verbundenen Knoten werden rekursiv besucht. Der Algorithmus erzeugt zu jeder Kante Entitäten der beiden beteiligten Tabellen. Jede Kante und jede Tabelle werden genau genau einmal durchlaufen.
 
 	\subsection{Beschreibung des Algorithmus}
-
+	
 	\begin{figure}[htb]
 		\begin{center}
 			\includegraphics[width=8cm]{images/database.png}
