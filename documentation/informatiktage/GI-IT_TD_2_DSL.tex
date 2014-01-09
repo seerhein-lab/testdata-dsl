@@ -14,47 +14,42 @@ Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die �
 Die EBNF der DSL ist in \cite{MT:Moll:2013} zu finden.
 
 
-Listing \ref{listing:hochschuledataset:table} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~...). In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
+Listing \ref{listing:dsl} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~...). In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
 
 
-\begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, label=listing:hochschuledataset:table]
-class HochschuleDataSet extends HochschuleBuilder
+\begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, style=java, label=listing:dsl]
+class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
 {
-  def tables() {
-    professorTable.rows {
-      REF    | name     | vorname   | titel            | fakultaet
-      WAESCH | "Waesch" | "Juergen" | "Prof. Dr.-Ing." | "Informatik"
-      HAASE  | "Haase"  | "Oliver"  | "Prof. Dr."      | "Informatik"
-    }
-    lehrveranstaltungTable.rows {
-      REF       | name                | sws | ects
-      VSYS      | "Verteilte Systeme" | 4   | 5
-      DPATTERNS | "Design Patterns"   | 4   | 3
-    }
-    pruefungTable.rows {
-      REF         | typ   | zeitpunkt
-      P_VSYS      | "K90" | DateUtil.getDate(2013, 4, 1, 14, 0, 0)
-      P_DPATTERNS | "M30" | DateUtil.getDate(2013, 1, 6, 12, 0, 0)
-    }
-    studentTable.rows {
-      REF        | matrikelnummer | name         | vorname    | studiengang
-      MUSTERMANN | 123456         | "Mustermann" | "Max"      | "BIT"      
-      MOLL       | 287336         | "Moll"       | "Nikolaus" | "MSI"      
-    }
+  <def> tables() {
+    `buchTable`.rows {
+     @REF@            | @name@
+     @CLEANCODE@      | "Clean Code"      
+     @EFFECTIVEJAVA@  | "Effective Java"  
+     @DESIGNPATTERNS@ | "Design Patterns" 
+   }
+   `verlagTable`.rows {
+     @REF@           | @name@
+     @PRENTICE@      | "Prentice Hall International"
+     @ADDISONWESLEY@ | "Addison-Wesley"
+   }
+   `autorTable`.rows {
+     @REF@       | @vorname@     | @nachname@
+     @UNCLEBOB@  | "Robert C." | "Martin"
+     @BLOCH@     | "Joshua"    | "Bloch"
+     @GAMMA@     | "Erich"     | "Gamma"
+     @HELM@      | "Richard"   | "Helm"
+     @JOHNSON@   | "Ralph"     | "Johnson"
+     @VLISSIDES@ | "John"      | "Vlissides"    
+   }
   }
 
-  def relations() {
-    WAESCH.beaufsichtigt(P_VSYS)
-    HAASE.leitet(VSYS, DPATTERNS)
-    HAASE.beaufsichtigt(P_DPATTERNS)
-    P_VSYS.stoffVon(VSYS)
-    DPATTERNS.hatPruefung(P_DPATTERNS)
-    MOLL.schreibt(P_VSYS)
-    MOLL.besucht(VSYS)
-    VSYS.hatTutor(MOLL)
-    MUSTERMANN.besucht(DPATTERNS)
+  <def> relations() {
+    @PRENTICE@.verlegt(@CLEANCODE@)
+    @ADDISONWESLEY@.verlegt(@EFFECTIVEJAVA@, @DESIGNPATTERNS@)
+    @CLEANCODE@.geschriebenVon(@UNCLEBOB@)
+    @EFFECTIVEJAVA@.geschriebenVon(@BLOCH@)
+    @DESIGNPATTERNS@.geschriebenVon(@GAMMA@, @HELM@, @JOHNSON@, @VLISSIDES@)
   }
-
 }
 \end{lstlisting}
 
