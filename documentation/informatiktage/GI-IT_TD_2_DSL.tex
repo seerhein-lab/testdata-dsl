@@ -22,25 +22,25 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
 {
   <def> tables() {
     `buchTable`.rows {
-     @REF@            | @name@
-     @CLEANCODE@      | "Clean Code"      
-     @EFFECTIVEJAVA@  | "Effective Java"  
-     @DESIGNPATTERNS@ | "Design Patterns" 
-   }
-   `verlagTable`.rows {
-     @REF@           | @name@
-     @PRENTICE@      | "Prentice Hall International"
-     @ADDISONWESLEY@ | "Addison-Wesley"
-   }
-   `autorTable`.rows {
-     @REF@       | @vorname@     | @nachname@
-     @UNCLEBOB@  | "Robert C." | "Martin"
-     @BLOCH@     | "Joshua"    | "Bloch"
-     @GAMMA@     | "Erich"     | "Gamma"
-     @HELM@      | "Richard"   | "Helm"
-     @JOHNSON@   | "Ralph"     | "Johnson"
-     @VLISSIDES@ | "John"      | "Vlissides"    
-   }
+      @REF@            | @name@
+      @CLEANCODE@      | "Clean Code"      
+      @EFFECTIVEJAVA@  | "Effective Java"  
+      @DESIGNPATTERNS@ | "Design Patterns" 
+    }
+    `verlagTable`.rows {
+      @REF@           | @name@
+      @PRENTICE@      | "Prentice Hall International"
+      @ADDISONWESLEY@ | "Addison-Wesley"
+    }
+    `autorTable`.rows {
+      @REF@       | @vorname@     | @nachname@
+      @UNCLEBOB@  | "Robert C." | "Martin"
+      @BLOCH@     | "Joshua"    | "Bloch"
+      @GAMMA@     | "Erich"     | "Gamma"
+      @HELM@      | "Richard"   | "Helm"
+      @JOHNSON@   | "Ralph"     | "Johnson"
+      @VLISSIDES@ | "John"      | "Vlissides"    
+    }
   }
 
   <def> relations() {
