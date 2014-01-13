@@ -1,4 +1,4 @@
-\section{Die Modellierungssprache}
+\section{Testdaten-DSL}
 
 
 %\textbf{Aus FORUM Artikel}
@@ -9,15 +9,14 @@
 
 Es wurden verschiedene Ansätze zur Entwicklung einer DSL für Testdaten untersucht. Der Fokus lag u.a. auf der Fachlichkeit der Datenstruktur, der typsicheren Beschreibung der Testdaten und der einfachen Spezifikation von Beziehungen zwischen Entitäten. Untersucht wurden verschiedene XML-basierte Darstellungen, wie z.B. in DbUnit benutzt, programmatische Spezifikationen und verschiedene tabellarischen Beschreibungsformen für die Testdaten. 
 %
-Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die über das STU Test-Framework genutzt werden kann. Diese Art der Testdatenmodellierung ist übersichtlich, syntaktisch einfach und kann von einer IDE wie Eclipse unterstützt werden. Die grundlegende Idee für die tabellarische Darstellung stammt vom Testframework Spock \cite{Spock}.
+Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt, die über das STU-Framework genutzt werden kann. Diese Art der Testdatenmodellierung ist übersichtlich, syntaktisch einfach und kann von einer IDE wie Eclipse unterstützt werden. Die grundlegende Idee für die tabellarische Darstellung stammt vom Testframework Spock \cite{Spock}.
 %
 Die EBNF der DSL ist in \cite{MT:Moll:2013} zu finden.
 
 
-Listing \ref{listing:dsl} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~...). In der tabellarischen Darstellung (tables) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (REF) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (relations) zwischen Datensätzen genutzt werden kann.
 
-
-\begin{lstlisting}[caption=DataSet modelliert mit dem Table Builder API, style=java, label=listing:dsl]
+\begin{figure}[tb]
+\begin{lstlisting}[caption=Mittels DSL beschriebenes Testdaten-Set (Table Builder API)., style=java, label=listing:dsl]
 class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
 {
   <def> tables() {
@@ -52,12 +51,19 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
   }
 }
 \end{lstlisting}
+\end{figure}
 
 
-Die Implementierung der Testdaten-DSL basiert dabei auf Groovy [4], einer dynamisch typisierten Programmiersprache für die Java Virtual Machine. Die DSL kann eingebettet zusammen mit Java in den Tests, z.B. mit JUnit, genutzt werden.
+Listing \ref{listing:dsl} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~\ref{database}). In der tabellarischen Darstellung (\texttt{tables}) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (\texttt{REF}) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (\texttt{relations}) zwischen Datensätzen genutzt werden kann.
+
+
+Die Implementierung der Testdaten-DSL basiert dabei auf Groovy, einer dynamisch typisierten Programmiersprache für die Java Virtual Machine. Die DSL kann eingebettet zusammen mit Java in den Tests, z.B. mit JUnit, genutzt werden.
 ...
+%
 
-Definition eines Datenbank-Schemas, Generierung der DSL sowie Unit-test Beispiele etc.: siehe Master Thesis.
+Details zur Implementierung sind in \cite{MT:Moll:2013} zu finden.
+
+\textbf{ToDo: Evtl. nicht mehr notwendig:} Definition eines Datenbank-Schemas, Details Generierung der DSL sowie Unit-test Beispiele etc. ...
 
 
 
