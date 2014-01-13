@@ -29,20 +29,49 @@ Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerieru
 
 % Idee hinter dem Algorithmus
 
-Der Algorithmus betrachtet das Datenbank-Schema als Graph. Die Tabellen stellen die Knoten und die Beziehungen stellen die Kanten dar. Da assoziative Tabellen
-ebenfalls Beziehungen ausdrücken, werden diese vom Algorithmus als besondere Kante behandelt. Der Graph wird ausgehend von eines Knotens traversiert. Alle Kanten des aktuellen Knotens und die damit verbundenen Knoten werden rekursiv besucht. Der Algorithmus erzeugt zu jeder Kante Entitäten der beiden beteiligten Tabellen. Jede Kante und jede Tabelle werden genau genau einmal durchlaufen.
 
 	\subsection{Beschreibung des Algorithmus}
+	
+	Generieren der Beziehungen
+
+  Der Algorithmus betrachtet das Datenbank-Schema als Graph. Die Tabellen stellen die Knoten und die Beziehungen stellen die Kanten dar.
+  Da assoziative Tabellen ebenfalls Beziehungen ausdrücken, werden diese vom Algorithmus als besondere Kante behandelt. Der Graph wird
+	ausgehend von eines Knotens traversiert. Alle Kanten des aktuellen Knotens und die damit verbundenen Knoten werden rekursiv besucht.
+	Der Algorithmus erzeugt zu jeder Kante Entitäten der beiden beteiligten Tabellen. % hier evtl die Grenzfälle erläutern...
+	Jede Kante und jede Tabelle werden genau genau einmal durchlaufen.
+	
+  Der Algorithmus soll an dem in Abb.~\ref{database} dargestellten Datenbank-Schema einer Bücherverwaltung veranschaulicht werden. Ein
+	Buch gehört genau zu einem Verlag und wird von beliebig vielen (mindestens einer) Autoren geschrieben. Ein Verlag kann selbst beliebig
+	viele und sogar keine Bücher veröffentlichen und ein Autor kann an keinem oder beliebig Büchern beteiligt sein.
 	
 	\begin{figure}[htb]
 		\begin{center}
 			\includegraphics[width=8cm]{images/database.png}
-			\caption{\label{database}Datenbank-Diagramm}
+			\caption{\label{database}Datenbank-Schema der Bücherverwaltung}
 		\end{center}
 	\end{figure}
 	
-
+	Als Ausgangspunkt für die Traversierung wird der Knoten Buch verwendet. Von diesem Knoten aus werden alle Kanten besucht, angefangen mit
+	der Kante zum Knoten Verlag. Dieser repräsentiert eine 1:0..*-Beziehung. Um möglichst alle Grenzfälle abzudecken, wird eine Entität
+	von Verlag erzeugt, die keine Bücher verlegt. Außerdem wird ein Verlag generiert, der genau ein Buch verlegt, und ein Verlag, der viele
+	Bücher veröffentlicht. Anstelle von * kann ein konfigurierbarer Wert verwendet werden, in dem Beispiel wird dafür $4$ verwendet. Für
+	diese Kante werden also drei Entitäten des Typs Verlag und fünf Entitäten des Typs Buch erzeugt.
+	
+  Der Knoten Verlag hat keine nicht-besuchten Kanten, weshalb die Traversierung in Buch fortgesetzt wird mit der Kante zum Knoten
+	BuchAutor. Die Kante hat eine assoziative Tabelle als Ziel, weshalb hier andere Schritte notwendig sind wie bei der letzten Kante.
+	Die Tabelle BuchAutor drückt eine 0..*:1..*-Beziehung zwischen Buch und Autor aus. Der Algorithmus sieht vor, die vier möglichen
+	min/max-Kombinationen generiert werden. Jede Beziehung zwischen einem Buch und einem Autor führt zu einer Entität in der Tabelle
+	BuchAutor. Es wird ein Autor benötigt, der kein Buch geschrieben hat, und ein Autor, der genau an einem
+	Buch beteiligt ist (min:min). Außerdem wird ein Autor benötigt, der vier Bücher schreibt (max:min), und ein Buch, das vier Autoren
+	hat (min:max). Und schließlich werden vier Bücher benötigt, die jeweils die gleichen vier Autoren haben (max:max). Für die assoziative
+	Tabelle BuchAutor werden folglich zehn Entitäten des Typs Buch und elf Entitäten des Typs Autor benötigt, wobei die bereits erzeugten
+	Entitäten des Typs Buch hier weiterverwendet werden. Die Traversierung endet hier, da jede Kante besucht wurde.
+	
+	Die fünf im vorausgegangenen Schritt erzeugten Entitäten des Typs Buch sind allerdings noch ungültig, da sie noch nicht zu einem Verlag
+	gehören. Solche Entitäten werden im letzten Schritt behandelt. Alle Entitäten werden auf Gültigkeit bzgl. ihrer Beziehungen überprüft,
+	und bei Bedarf werden weitere Beziehungen und falls notwendig weitere Entitäten erzeugt.
 	
 
 	\subsection{Implementierung und Evaluation}
+	
 
