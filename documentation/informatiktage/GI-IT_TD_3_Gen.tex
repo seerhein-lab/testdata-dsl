@@ -1,39 +1,18 @@
 \section{Generierung von Testdaten}
+\shorthandoff{"}
 
-\textbf{Aus FORUM Artikel}
+Um das Testen von Datenbank-basierten Anwendungen zu erleichtern, soll es möglich sein, automatisch Testdaten für funktionale Tests aus dem Datenbankschema generieren zu lassen. Die generierten Testdaten können direkt bzw. als Basis für die Erstellung von Testdatensätzen genutzt werden (vgl. Abb.~\ref{ansatz}). Das Ziel sind kleine Datasets, die für möglichst viele Unit-Tests verwendet werden können. Kleine Datasets lassen sich von Testern einfacher verstehen. Einheitliche Testdaten erleichtern den Umgang mit Unit-Tests, da sich der Tester nicht immer wieder in verschiedene Datasets hineinversetzen muss.
 
-Um das Testen von Datenbank-basierten Anwendungen zu erleichtern, soll es möglich sein, automatisch Testdaten für funktionale Tests aus dem Datenbankschema generieren zu lassen. Die generierten Testdaten können direkt bzw. als Basis für die Erstellung von Testdatensätzen genutzt werden (vgl. Abb. 3). 
+Eine umfassende Literaturanalyse und die Analyse existierender Testdatengeneratoren zeigten, dass bisher keine passende Lösung für diese Anforderungen existiert. 
+In der Wissenschaft beschriebene Ansätze und Algorithmen generieren meist für eine zu testende SQL-Abfrage einen passenden Testdatenbestand. Einer SQL-Abfrage liegt dabei eine formale Spezifikation zu Grunde, die allerdings für ein Anwendungsprogramm normalerweise nicht vorhanden ist. Existierende Software-Werkzeuge fokussieren sich auf die Generierung von Massendaten, die v.a. für Performanz-Tests und nicht für funktionale Tests geeignet sind. Dies zeigt sich auch daran, dass diese Werkzeuge Beziehungen zwischen Entitäten nur zufällig erzeugen und im Allgemeinen wesentlich mehr Daten generieren als für einen Menschen noch einfach verständlich sind. Weiterhin deuten Untersuchungen im Projekt darauf hin, dass die Komplexität der Testdatengenerierung im allgemeinen Fall nicht-polynomial ist.
 
-Bei der Testdatengenerierung sind u.a. folgende Anforderungen zu berücksichtigen:
-
-\begin{itemize}
-
-\item Die Testdaten müssen dem Datenbankschema der Anwendung entsprechen, um diese Daten überhaupt in die Datenbank einspielen zu können.
-\item Die Testdaten sollen einerseits genügend Daten enthalten, um die fachliche Struktur der Anwendungsdaten zu erhalten; andererseits sollen möglichst wenige Daten erzeugt werden, damit die eingespielten Daten übersichtlich und für die Software-Tester verständlich bleiben.
-\item Für die Durchführung und Wartung von Tests ist es von Vorteil, wenn möglichst viele Tests dieselben Testdaten verwenden können, d.h. wenn die generierten Testdaten eine möglichst große Testabdeckung erzielen. Somit sind insgesamt weniger Testdatensätze zu verwalten, was z.B. bei Änderung des zugrundeliegenden Datenbankschemas von Vorteil ist und die Übersichtlichkeit erhöht.
-\item Die Beschreibung des Datenbankschemas, aus dem die Testdaten generiert werden, muss so ausdrucksmächtig sein, dass auch Sachverhalte beschrieben werden können, die über die strukturelle Abbildung, z.B. auf Datenbank-Tabellen, hinausgehen, damit die Testdaten auch den weitergehenden Anforderungen des Systems under Test genügen und realistische Szenarien abbilden. Beispielsweise kann eine Anwendung eine 1<->1..* Beziehung definieren; in einem relationalen Datenbanksystem ist jedoch nur eine 1<->0..* Beziehung durch Fremdschlüssel- und Not-Null-Constraints strukturell abbildbar.
-\item Die generierten Daten sollen in der entwickelten DSL beschrieben werden, damit diese direkt im STU Test-Framework nutzbar sind.
-\end{itemize}
-
-Interessanterweise stellte sich bei einer umfassenden Literaturanalyse und Analyse existierender Testdatengeneratoren heraus, dass bisher keine passende Lösung für die beschriebene Problemstellung existiert. In der Wissenschaft beschriebene Ansätze und Algorithmen generieren meist für eine zu testende SQL-Abfrage einen passenden Testdatenbestand. Einer SQL-Abfrage liegt dabei eine formale Spezifikation zu Grunde, die allerdings für ein Anwendungsprogramm normalerweise nicht vorhanden ist. Existierende Software-Werkzeuge fokussieren sich auf die Generierung von Massendaten, die v.a. für Performanz-Tests und nicht für funktionale Tests geeignet sind. Dies zeigt sich auch daran, dass diese Werkzeuge Beziehungen zwischen Entitäten nur zufällig erzeugen und im Allgemeinen wesentlich mehr Daten generieren als für einen Menschen noch einfach verständlich sind. Weiterhin deuten Untersuchungen im Projekt darauf hin, dass die Komplexität der Testdatengenerierung im allgemeinen Fall nicht-polynomial ist.
-
-Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerierung für die Projektproblemstellung entworfen. Anleihen konnten dabei aus [5] gezogen werden. Der entwickelte Algorithmus berücksichtigt lokal alle Kombinationen der unteren und oberen Grenzwerte von binären Beziehungstypen n..N<->m..M und versucht gleichzeitig die Anzahl der generierten Entitäten und Beziehungen zu minimieren. Globale, d.h. "transitive" Abhängigkeiten über mehrere Beziehungstypen hinweg, die zu einer kombinatorischen Explosion führen können, bleiben dabei (augenblicklich) unberücksichtigt. Weitere Details zu dem im Projekt entwickelten Verfahren zur Testdatengenerierung (u.a. Beschreibung des Algorithmus in Pseudo-Code) sind [6] zu entnehmen.
+Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerierung für die Projektproblemstellung entworfen. Anleihen konnten dabei aus [5] gezogen werden. Der entwickelte Algorithmus berücksichtigt lokal alle Kombinationen der unteren und oberen Grenzwerte von binären Beziehungstypen n..N$\leftrightarrow$m..M und versucht gleichzeitig die Anzahl der generierten Entitäten und Beziehungen zu minimieren. Globale, d.h. "transitive" Abhängigkeiten über mehrere Beziehungstypen hinweg, die zu einer kombinatorischen Explosion führen können, bleiben dabei (augenblicklich) unberücksichtigt. 
 
 %Der entwickelte Testdatengenerator wurde auf ein Datenbankschema eines produktiven Anwendungssystems mit 12 Datenbanktabellen und einigen fachlichen Einschränkungen angewendet. Durch unser Verfahren zur Testdatengenerierung wurde ein konsistenter, übersichtlicher Satz an Testdaten erzeugt, der eine gute Startbasis für Anwendungstest bietet.
 %
 %Der Code des DSL-Interpreters und des Testdatengenerators ist verfügbar unter https://github.com/Seitenbau/stu/.
 
-
-
-\textbf{Outline}
-
-% Idee hinter dem Algorithmus
-
-
-	\subsection{Beschreibung des Algorithmus}
 	
-	Generieren der Beziehungen
-
   Der Algorithmus betrachtet das Datenbank-Schema als Graph. Die Tabellen stellen die Knoten und die Beziehungen stellen die Kanten dar.
   Da assoziative Tabellen ebenfalls Beziehungen ausdrücken, werden diese vom Algorithmus als besondere Kante behandelt. Der Graph wird
 	ausgehend von eines Knotens traversiert. Alle Kanten des aktuellen Knotens und die damit verbundenen Knoten werden rekursiv besucht.
@@ -71,7 +50,10 @@ Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerieru
 	gehören. Solche Entitäten werden im letzten Schritt behandelt. Alle Entitäten werden auf Gültigkeit bzgl. ihrer Beziehungen überprüft,
 	und bei Bedarf werden weitere Beziehungen und falls notwendig weitere Entitäten erzeugt.
 	
-
-	\subsection{Implementierung und Evaluation}
+	Der Algorithmus wurde in Java als Teil von STU implementiert. Details zum Algorithmus und sein Pseudo-Code, zur Implementierung und zur
+	Generierung von Daten für die einzelnen Entitäten sind in \cite{MT:Moll:2013} zu finden. Verschiedene Evaluationen haben gezeigt, dass
+	sich die erzeugten Testdaten in Unit-Tests nutzen lassen und auch in die Datenbank einspielen lassen. Das Ergebnis der Generierung ist
+	bei der aktuellen Implementierung unabhängig von der Reihenfolge der Traversierung.
+	
 	
 
