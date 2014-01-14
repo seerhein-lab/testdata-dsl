@@ -6,7 +6,9 @@ Um das Testen von Datenbank-basierten Anwendungen zu erleichtern, soll es mögli
 Eine umfassende Literaturanalyse und die Analyse existierender Testdatengeneratoren zeigten, dass bisher keine passende Lösung für diese Anforderungen existiert. 
 In der Wissenschaft beschriebene Ansätze und Algorithmen generieren meist für eine zu testende SQL-Abfrage einen passenden Testdatenbestand. Einer SQL-Abfrage liegt dabei eine formale Spezifikation zu Grunde, die allerdings für ein Anwendungsprogramm normalerweise nicht vorhanden ist. Existierende Software-Werkzeuge fokussieren sich auf die Generierung von Massendaten, die v.a. für Performanz-Tests und nicht für funktionale Tests geeignet sind. Dies zeigt sich auch daran, dass diese Werkzeuge Beziehungen zwischen Entitäten nur zufällig erzeugen und im Allgemeinen wesentlich mehr Daten generieren als für einen Menschen noch einfach verständlich sind. Weiterhin deuten Untersuchungen im Projekt darauf hin, dass die Komplexität der Testdatengenerierung im allgemeinen Fall nicht-polynomial ist.
 
-Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerierung für die Projektproblemstellung entworfen. Anleihen konnten dabei aus [5] gezogen werden. Der entwickelte Algorithmus berücksichtigt lokal alle Kombinationen der unteren und oberen Grenzwerte von binären Beziehungstypen n..N$\leftrightarrow$m..M und versucht gleichzeitig die Anzahl der generierten Entitäten und Beziehungen zu minimieren. Globale, d.h. "transitive" Abhängigkeiten über mehrere Beziehungstypen hinweg, die zu einer kombinatorischen Explosion führen können, bleiben dabei (augenblicklich) unberücksichtigt. 
+Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerierung für die Projektproblemstellung entworfen. 
+%Anleihen konnten dabei aus [5] gezogen werden.
+Der entwickelte Algorithmus berücksichtigt lokal alle Kombinationen der unteren und oberen Grenzwerte von binären Beziehungstypen n..N$\leftrightarrow$m..M und versucht gleichzeitig die Anzahl der generierten Entitäten und Beziehungen zu minimieren. Globale, d.h. "transitive" Abhängigkeiten über mehrere Beziehungstypen hinweg, die zu einer kombinatorischen Explosion führen können, bleiben dabei (augenblicklich) unberücksichtigt. 
 
 %Der entwickelte Testdatengenerator wurde auf ein Datenbankschema eines produktiven Anwendungssystems mit 12 Datenbanktabellen und einigen fachlichen Einschränkungen angewendet. Durch unser Verfahren zur Testdatengenerierung wurde ein konsistenter, übersichtlicher Satz an Testdaten erzeugt, der eine gute Startbasis für Anwendungstest bietet.
 %
@@ -48,7 +50,16 @@ Aus diesem Grund wurde ein neuer, effizienter Algorithmus zur Testdatengenerieru
 	
 	Die fünf im vorausgegangenen Schritt erzeugten Entitäten des Typs Buch sind allerdings noch ungültig, da sie noch nicht zu einem Verlag
 	gehören. Solche Entitäten werden im letzten Schritt behandelt. Alle Entitäten werden auf Gültigkeit bzgl. ihrer Beziehungen überprüft,
-	und bei Bedarf werden weitere Beziehungen und falls notwendig weitere Entitäten erzeugt.
+	und bei Bedarf werden weitere Beziehungen und falls notwendig weitere Entitäten erzeugt. Abb.~\ref{generiert} stellt die generierten
+	Entitäten und ihre Beziehungen grafisch dar. Eine Entität wird als Kreis dargestellt, die Verbindungslinien zwischen den Entitäten
+	stellen ihre Beziehungen dar. Dazu gehören auch die genierten Entitäten in der assoziativen Tabelle BuchAutor.
+		
+	\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[width=8cm]{images/generiert.png}
+			\caption{\label{generiert}Generierte Entitäten und Beziehungen}
+		\end{center}
+	\end{figure}
 	
 	Der Algorithmus wurde in Java als Teil von STU implementiert. Details zum Algorithmus und sein Pseudo-Code, zur Implementierung und zur
 	Generierung von Daten für die einzelnen Entitäten sind in \cite{MT:Moll:2013} zu finden. Verschiedene Evaluationen haben gezeigt, dass
