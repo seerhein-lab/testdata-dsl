@@ -57,11 +57,9 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
 Listing \ref{listing:dsl} zeigt beispielhaft einen Auszug aus einer DSL-Beschreibung für Testdaten einer Anwendung zur Verwaltung von Büchern (Datenbank-Schema siehe Abb.~\ref{database}). In der tabellarischen Darstellung (\texttt{tables}) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (\texttt{REF}) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (\texttt{relations}) zwischen Datensätzen genutzt werden kann.
 
 
-Die Implementierung der Testdaten-DSL basiert dabei auf Groovy, einer dynamisch typisierten Programmiersprache für die Java Virtual Machine. Die DSL kann eingebettet zusammen mit Java in den Tests, z.B. mit JUnit, genutzt werden. 
-...
-%
+Die Implementierung der Testdaten-DSL basiert dabei auf Groovy, einer dynamisch typisierten Programmiersprache für die Java Virtual Machine und verwendet Laufzeit-Meta-Programmierung in Verbindung mit Operator-Überladen. Die DSL kann eingebettet zusammen mit Java in den Tests (z.B. mit JUnit) genutzt werden und integriert sich in Entwicklungsumgebungen. Die Spaltennamen sind in der DSL definiert, so dass Autovervollständigung unterstützt wird. Die zur DSL generierte JavaDoc enthält Beispiele und Informationen zu den Tabellen. Über die REF-Namen können Beziehungen modelliert und konkrete Werte abgefragt werden. 
+Details zur Implementierung und zur Generierung der DSL für ein Datenbank-Schema sind in \cite{MT:Moll:2013} zu finden.
 
-Details zur Implementierung sind in \cite{MT:Moll:2013} zu finden.
 
 \textbf{ToDo: Evtl. nicht mehr notwendig:} Definition eines Datenbank-Schemas, Details Generierung der DSL sowie Unit-test Beispiele etc. ...
 
