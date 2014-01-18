@@ -24,18 +24,21 @@ Die EBNF der DSL ist in \cite{MT:Moll:2013} zu finden.
 
 
 \begin{figure}[tb]
-\begin{lstlisting}[caption=Beispiel eines mittels DSL beschriebenes Testdaten-Set (Table Builder API)., style=java, label=listing:dsl]
-class BookDatabaseGroovyDataSet extends BookDatabaseBuilder {
+\begin{lstlisting}[caption=Beispiel: Mittels DSL beschriebenes Testdaten-Set (Table Builder API)., style=java, label=listing:dsl]
+class BookDatabaseGroovyDataSet extends BookDatabaseBuilder
+{
   <def> tables() {
     `buchTable`.rows {
       @REF@            | @name@
       @CLEANCODE@      | "Clean Code"      
       @EFFECTIVEJAVA@  | "Effective Java"  
-      @DESIGNPATTERNS@ | "Design Patterns" }
+      @DESIGNPATTERNS@ | "Design Patterns" 
+    }
     `verlagTable`.rows {
       @REF@           | @name@
       @PRENTICE@      | "Prentice Hall International"
-      @ADDISONWESLEY@ | "Addison-Wesley" }
+      @ADDISONWESLEY@ | "Addison-Wesley"
+    }
     `autorTable`.rows {
       @REF@       | @vorname@     | @nachname@
       @UNCLEBOB@  | "Robert C." | "Martin"
@@ -43,14 +46,16 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder {
       @GAMMA@     | "Erich"     | "Gamma"
       @HELM@      | "Richard"   | "Helm"
       @JOHNSON@   | "Ralph"     | "Johnson"
-      @VLISSIDES@ | "John"      | "Vlissides"  }
+      @VLISSIDES@ | "John"      | "Vlissides"    
+    }
   }
+
   <def> relations() {
     @PRENTICE@.verlegt(@CLEANCODE@)
     @ADDISONWESLEY@.verlegt(@EFFECTIVEJAVA@, @DESIGNPATTERNS@)
     @CLEANCODE@.geschriebenVon(@UNCLEBOB@)
     @EFFECTIVEJAVA@.geschriebenVon(@BLOCH@)
-    @DESIGNPATTERNS@.geschriebenVon(@GAMMA@, @HELM@, @JOHNSON@, @VLISSIDES@) 
+    @DESIGNPATTERNS@.geschriebenVon(@GAMMA@, @HELM@, @JOHNSON@, @VLISSIDES@)
   }
 }
 \end{lstlisting}
@@ -59,11 +64,11 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder {
 
 Listing \ref{listing:dsl} zeigt beispielhaft die Testdaten-DSL für eine Bücherverwaltung (Datenbank-Schema siehe Abb.~\ref{generiert} oben). In der tabellarischen Darstellung (\texttt{tables}) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (\texttt{REF}) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (\texttt{relations}) zwischen Datensätzen genutzt werden kann.
 
-Die Implementierung der Testdaten-DSL basiert auf Groovy und verwendet Laufzeit-Meta-Programmierung in Verbindung mit Operator-Überladen. Die DSL kann eingebettet zusammen mit Java in den Tests (z.B.~mit JUnit) genutzt werden und integriert sich in sehr gut in gängige IDEs wie Eclipse. Die Spaltennamen sind in der DSL definiert, so dass Autovervollständigung unterstützt wird. 
+Die Implementierung der Testdaten-DSL basiert auf Groovy und verwendet Laufzeit-Meta-Programmierung in Verbindung mit Operator-Überladen. Die DSL kann eingebettet zusammen mit Java in den Tests (z.B.~mit JUnit) genutzt werden und integriert sich in sehr gut Entwicklungsumgebungen. Die Spaltennamen sind in der DSL definiert, so dass Autovervollständigung unterstützt wird. 
 %
 %Die zur DSL generierte JavaDoc enthält Beispiele und Informationen zu den Tabellen. 
 %
-Über die REF-Namen können Beziehungen typsicher modelliert und konkrete Werte abgefragt werden. 
+Über die REF-Namen können Beziehungen modelliert und konkrete Werte abgefragt werden. 
 %
 Details zur Implementierung und zur Generierung der DSL für ein Datenbankschema sind in \cite{MT:Moll:2013} zu finden.
 

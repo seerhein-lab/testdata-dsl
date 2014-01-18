@@ -63,52 +63,59 @@ Softwaretests sind ein wichtiger Baustein für die Qualitätssicherung von Softw
 geprüft werden kann.
 %
 %
-Die Spezifikation dieser Testdaten ist leider i.A.~sehr umfangreich und komplex und somit aufwändig und fehleranfällig.
+Die Spezifikation dieser Testdaten ist leider augenblicklich sehr umfangreich und komplex und somit aufwändig und fehleranfällig.
 %
 %Bei datenbank-basierten Anwendungen sind die Testdaten meist sehr umfangreich und komplex.
 %
-Die Komplexität ergibt sich v.a.~aus der Beschreibung der Beziehungen zwischen den einzelnen Datensätzen.
+Die Komplexität ergibt sich v.a.~aus der Beschreibung der Beziehungen zwischen den einzelnen Entitäten.
 %im Test Fixture.
 %
 Diese unterliegen einer Menge komplexer fachlicher Regeln, die sich aus dem Domänen-Modell und der Geschäftslogik der Anwendung ergeben.
 %
-Besonders bei Systemen mit großen oder komplexen Datenbank-Schemata kann ein Testdaten-Set schnell unübersichtlich werden.
+%%%Besonders bei Systemen mit großen oder komplexen Datenbank-Schemata kann ein Testdaten-Set schnell unübersichtlich werden.
 
 
 Übergreifendes Ziel der hier beschriebenen Arbeit \cite{MT:Moll:2013} war es, die Spezifikation von Testdaten für Datenbank-basierte Java-Anwendungen zu vereinfachen.
 %
-Zum einen wurde hierzu eine geeignete Domänen-spezifische Sprache (DSL) für Testdaten entwickelt.
+Hierzu wurde zum einen  eine geeignete Domänen-spezifische Sprache (DSL) für Testdaten entwickelt.
 %
-Die DSL erlaubt eine  übersichtliche Spezifikation von Testdaten, ist einfach zu nutzen und integriert sich in gängige Entwicklungsumgebungen.
+%%%Die DSL erlaubt eine  übersichtliche Spezifikation von Testdaten, ist einfach zu nutzen und integriert sich in gängige Entwicklungsumgebungen.
 %
 Zum anderen wurde ein Generator zur automatischen Erzeugen von Testdaten implementiert. 
 %
-Das Ziel hierbei war es, mit möglichst wenig Datensätzen viele Grenzfälle bei Beziehungen abzudecken.
+%%%Das Ziel hierbei war es, mit möglichst wenig Datensätzen viele Grenzfälle bei Beziehungen abzudecken.
 %
-Basis der Entwicklungsarbeiten war die Java-Bibliothek Simple Test Utils for JUnit \& Co. (STU) zur Vereinfachung von Unit-Tests für Java-Anwendungen. STU steht unter der Apache License 2.0 und wird federführend von der Firma Seitenbau entwickelt. Für Tests von Datenbank-basierten Anwendungen setzt STU auf der Bibliothek DbUnit auf. 
+%
+Basis der Entwicklungsarbeiten war die Java-Bibliothek Simple Test Utils for JUnit \& Co. (STU) zur Vereinfachung von Unit-Tests für Java-Anwendungen.
+%
+STU steht unter der Apache License 2.0 und wird federführend von der  SEITENBAU GmbH entwickelt. 
+%
+%%%Für Tests von Datenbank-basierten Anwendungen setzt STU auf der Bibliothek DbUnit auf.
 
 
 \begin{figure}[tb]
 	\begin{center}
-		\includegraphics[width=12.5cm]{images/ansatz.png}
+		\includegraphics[width=12.75cm]{images/ansatz.png}
 		\caption{\label{ansatz}Überblick über den gewählten Ansatz.}
 	\end{center}
    %\vspace{-0.5cm}  %%% BAD HACK JW
 \end{figure}
 
-Abbildung \ref{ansatz} gibt einen Überblick über den im Projekt gewählten Ansatz.
+Abb.~\ref{ansatz} gibt einen Überblick über den gewählten, modellgetriebenen Ansatz.
 %
-Ausgangspunkt ist eine speziellen Beschreibung des relationalen Datenbankschemas (Details siehe \cite{MT:Moll:2013}).
+Ausgangspunkt ist eine formale Beschreibung des relationalen Datenbankschemas (Details siehe \cite{MT:Moll:2013}).
 %
-Diese kann mittels eines Tools (nicht in der Abb.~dargestellt) manuell erstellt bzw. aus einer existierenden Datenbank extrahiert und ergänzt werden.
+Diese kann mittels eines Tools (nicht dargestellt) manuell erstellt bzw.~aus einer existierenden Datenbank extrahiert und ergänzt werden.
 %
-Aus der Beschreibung des Datenbankschemas wird die schema-abhängige Testdaten-DSL generiert. 
+Aus der Schema-Beschreib\-ung wird die schema-abhängige Testdaten-DSL generiert. 
 %
-Diese DSL kann dann von den Software-Testern genutzt werden, um verschiedene Testdaten-Sets zu beschreiben und diese mittels STU in ihre Unit-Tests einzubinden.
+Diese DSL kann dann von den Testern genutzt werden, um verschiedene Testdaten-Sets zu beschreiben und diese mittels STU in ihre Unit-Tests einzubinden.
 %
-Die mittels der DSL spezifizierten Testdaten werden dabei durch das STU-Frameworks automatisch in die Datenbank eingespielt (Backdoor-Manipulation \cite{XUNIT_TEST_PATTERNS}). 
+Die Testdaten-Sets werden bei den Tests durch das STU-Framework automatisch in die Datenbank eingespielt.
 %
-Ausgehend von der Schema-Beschreibung können in der DSL beschriebene Test\-da\-ten-Sets automatisch generiert werden. Die generierten Testdaten können ggfls.~vor Verwendung noch modifiziert werden.
+%%%(Backdoor-Manipulation \cite{XUNIT_TEST_PATTERNS}). 
+%
+Auf Basis von der Schema-Be\-schrei\-bung können auch in der DSL beschriebene Test\-da\-ten-Sets  generiert werden. Die generierten Testdaten können ggfls.~vor Verwendung noch angepasst werden.
 %
 %
 %

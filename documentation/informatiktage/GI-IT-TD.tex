@@ -90,26 +90,32 @@
 %\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 %\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 %\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\section{0pt}{18pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
-\titlespacing\subsection{0pt}{18pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
-\titlespacing\subsubsection{0pt}{18pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+\titlespacing\section{0pt}{8pt plus 2pt minus 1pt}{2pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
+
+%\parskip0.4ex plus0.2ex minus0.1ex
+\renewcommand{\baselinestretch}{0.95}
 
 
 
 
 \author{
-	Nikolaus Moll\footnote{Bis 31.12.2013 Student im Master-Studiengang Informatik / akademischer Mitarbeiter der HTWG Konstanz; seit 15.01.2014 tätig bei der PENTASYS AG in München.}
-\\ Jürgen Wäsch, Christian Baranowski \\ 
+	Nikolaus Moll\footnote{Bis 31.12.2013 Student im Master-Studiengang Informatik / akademischer Mitarbeiter der Hochschule Konstanz (HTWG); seit 15.01.2014 tätig bei der PENTASYS AG in München.}
+\\ Christian Baranowski, Thomas Fox, Jürgen Wäsch \\ 
 	%Fakult\"at Informatik,
-	HTWG Konstanz / SEITENBAU GmbH\\ 
+Seerhein-Lab, Konstanz\footnote{Das Seerhein-Lab ist eine Kooperation der HTWG Konstanz und der Firma SEITENBAU GmbH.} \texttt{ } (\texttt{www.seerhein-lab.org})\\ 
+%Seerhein-Lab (HTWG Konstanz / SEITENBAU GmbH)\footnote{Diese Arbeit wurde im Seerhein-Lab (\texttt{www.seerhein-lab.org/}) durchgeführt. Das Seerhein-Lab ist eine Kooperation der HTWG Konstanz und der Firma SEITENBAU GmbH.}\\ 
 %	Brauneggerstrasse 55 \\ 
 %	D-78462 Konstanz \\ 
 %	nikol@usmoll.de %
-           \texttt{stu@dev.nikolaus-moll.de}\\ \texttt{juergen.waesch@htwg-konstanz.de}\\ \texttt{ christian.baranowski@seitenbau.com} 
+           \texttt{stu@dev.nikolaus-moll.de}
+%\\ \texttt{juergen.waesch@htwg-konstanz.de}\\ \texttt{ christian.baranowski@seitenbau.com} 
 %	\{tzink, haase, waesch\}@htwg-konstanz.de
 }
 
-\title{Modellierung und Generierung von Test-Daten\\ für Datenbank-basierte Anwendungen\footnote{Diese Arbeit wurde im Seerhein-Lab (\texttt{www.seerhein-lab.org/}) durchgeführt, einer Kooperation der HTWG Konstanz und der Firma SEITENBAU GmbH.}}
+\title{Modellierung und Generierung von Test-Daten\\ für Datenbank-basierte Anwendungen}
 
 
 \begin{document}
@@ -122,11 +128,11 @@
 %
 In dieser Arbeit wird ein Ansatz zur Vereinfachung der Spezifikation von Testdaten für Datenbank-basierte Anwendungen vorgestellt. 
 %
-Dies beinhaltet eine DSL zur einfachen und übersichtliche Beschreibung von Daten und deren Beziehungen sowie ein Generator zur automatischen Erzeugung von Testdaten. 
+Dies beinhaltet eine DSL zur einfachen und übersichtliche Beschreibung von Daten und deren Beziehungen sowie einen Generator zur automatischen Erzeugung von Testdaten. 
 %
 %aus einem gegebenen Datenbankschema. 
 %
-Die in Java entwickelte Software steht unter der Apache License 2.0 zur Verfügung.
+%Die in Java entwickelte Software steht unter der Apache License 2.0 zur Nutzung zur Verfügung.
 
 %Softwaretests haben sich als Teil der Qualit�tssicherung von Softwareprojekten etabliert.
 %F�r Tester ist die Modellierung von Testdaten f�r Datenbank-basierte Anwendungen allerdings
