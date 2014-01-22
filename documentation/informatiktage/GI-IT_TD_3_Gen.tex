@@ -41,11 +41,11 @@ Da assoziative Tabellen ebenfalls Beziehungen ausdrücken, werden diese als beso
 %
 Ausgehend von einem beliebigen Startknoten werden die Kanten und die damit verbundenen Knoten rekursiv traversiert.
 %
-Der Algorithmus erzeugt zu jeder Kante Entitäten der beteiligten Tabellen und mindestens entsprechend den spezifizierten Unter- und Obergrenzen Beziehungen für alle Kombinationen der unteren und oberen Grenzwerte.
+Der Algorithmus erzeugt zu jeder Kante Entitäten der beteiligten Tabellen und mindestens Beziehungen für alle Kombinationen der unteren und oberen Grenzwerte, entsprechend den spezifizierten Unter- und Obergrenzen.
 %
-Gleichzeitig wird versucht die Anzahl der generierten Entitäten und Beziehungen zu minimieren.
+Gleichzeitig wird versucht, die Anzahl der generierten Entitäten und Beziehungen zu minimieren.
 %
-Aus diesem Grund werden auch nich alle --  über mehrere Kanten hinweg -- möglichen Kombinationen berücksichtigt, da dies zu einer kombinatorischen Explosion führt. 
+Aus diesem Grund werden auch nicht alle, über mehrere Kanten hinweg, mögliche Kombinationen berücksichtigt, da dies zu einer kombinatorischen Explosion führen würde.
 % hier evtl die Grenzfälle erläutern...
 %S
 %Jede Kante und jede Tabelle werden genau genau einmal durchlaufen.
@@ -72,7 +72,7 @@ Von hier aus werden alle Kanten besucht, hier angefangen mit der Kante (1..1:0..
 %Dieser repräsentiert eine 1:0..*-Beziehung. 
 %
 Um möglichst alle Grenzfälle bzw. Äquivalenzklassen abzudecken, wird erzeugt: (1) eine Verlags-Entität, die keine Bücher verlegt, (2) ein Verlag, der genau ein Buch verlegt und (3) ein  Verlag, der viele
-Bücher veröffentlicht.\footnote{Für * wird ein konfigurierbarer Wert  verwendet, im Beispiel $4$.}
+Bücher veröffentlicht\footnote{Für * wird ein konfigurierbarer Wert  verwendet, im Beispiel $4$.}.
 %
 %Für * wird ein konfigurierbarer Wert (hier: $4$) verwendet. 
 %
