@@ -5,7 +5,7 @@
 
 	\begin{figure}[tb]
 		\begin{center}
-			\includegraphics[width=11.5cm]{images/generiert.png}
+			\includegraphics[width=12.75cm]{images/generiert.png}
 			\caption{\label{generiert}Beispiel-Datenbankschema und daraus generierte Entitäten und Beziehungen.}
 		\end{center}
 	\end{figure}
@@ -65,30 +65,30 @@ Der Algorithmus soll an dem  Datenbankschema  aus Abb.~\ref{generiert} (UML-Dars
 %		\end{center}
 %	\end{figure}
 %	
-Als Startknoten wird im Beispiel Buch verwendet. 
+Als Startknoten wird im Beispiel \textit{Buch} verwendet. 
 %
-Von hier aus werden alle Kanten besucht, hier angefangen mit der Kante (1..1:0..*) zum Knoten Verlag. 
+Von hier aus werden alle Kanten besucht, hier angefangen mit der Kante (1..1:0..*) zum Knoten \textit{Verlag}. 
 %
 %Dieser repräsentiert eine 1:0..*-Beziehung. 
 %
-Um möglichst alle Grenzfälle bzw. Äquivalenzklassen abzudecken, wird erzeugt: (1) eine Verlags-Entität, die keine Bücher verlegt, (2) ein Verlag, der genau ein Buch verlegt und (3) ein  Verlag, der viele
+Um möglichst alle Grenzfälle bzw.~Äquivalenzklassen abzudecken, wird erzeugt: (1) eine Verlags-Entität, die keine Bücher verlegt, (2) ein Verlag, der genau ein Buch verlegt und (3) ein  Verlag, der viele
 Bücher veröffentlicht\footnote{Für * wird ein konfigurierbarer Wert  verwendet, im Beispiel $4$.}.
 %
 %Für * wird ein konfigurierbarer Wert (hier: $4$) verwendet. 
 %
 %Für diese Kante werden also drei Entitäten des Typs Verlag und fünf Entitäten des Typs Buch erzeugt.
 %	
- Der Knoten Verlag hat keine nicht-besuchten Kanten, weshalb die Traversierung in Buch fortgesetzt wird mit der Kante zum Knoten BuchAutor (assoziative Tabelle, die eine 0..*:1..*-Assoziation zwischen Buch und Autor ausdrückt). 
+Der Knoten \textit{Verlag} hat keine nicht-besuchten Kanten, weshalb die Traversierung in \textit{Buch} fortgesetzt wird mit der Kante zum Knoten \textit{BuchAutor} (assoziative Tabelle, die eine 0..*:1..*-Assoziation zwischen \textit{Buch} und \textit{Autor} ausdrückt). 
 %
 %Die Kante hat eine assoziative Tabelle als Ziel, weshalb hier andere Schritte notwendig sind wie bei der letzten Kante.
 %
 %Die Tabelle BuchAutor drückt eine 0..*:1..*-Beziehung zwischen Buch und Autor aus. 
 %
-Der Algorithmus sieht vor, die vier möglichen min/max-Kombinationen zwischen Buch und Autor zu generieren. 
+Der Algorithmus sieht vor, die vier möglichen min/max-Kombinationen zwischen \textit{Buch} und \textit{Autor} zu generieren. 
 %
-Jede Beziehung zwischen einem Buch und einem Autor resultiert in einer Entität in der Tabelle BuchAutor. 
+Jede Beziehung zwischen einem \textit{Buch} und einem \textit{Autor} resultiert in einer Entität in der Tabelle \textit{BuchAutor}. 
 %
-Existierende Entitäten in Buch und Autor werden für diese generierten Beziehungen soweit möglich wiederverwendet, bei Bedarf werden neue Entitäten in Buch und Autor generiert.
+Existierende Entitäten in \textit{Buch} und \textit{Autor} werden für diese generierten Beziehungen soweit möglich wiederverwendet, bei Bedarf werden neue Entitäten in \textit{Buch} und \textit{Autor} generiert.
 %
 Die Traversierung des Graph endet nun, da jede Kante besucht wurde.
 %
@@ -97,7 +97,7 @@ Die Traversierung des Graph endet nun, da jede Kante besucht wurde.
 %
 %Die Traversierung endet hier, da jede Kante besucht wurde.
 %
-Allerdings sind einige der bis hierhin erzeugten Buch-Entitäten noch ungültig, da sie noch nicht zu einem Verlag gehören.
+Allerdings sind einige der bis hierhin erzeugten \textit{Buch}-Entitäten noch ungültig, da sie noch nicht zu einem \textit{Verlag} gehören.
 %
 Solche Entitäten werden im letzten Schritt des Algorithmus behandelt. Alle Entitäten werden auf Gültigkeit bzgl.~ihrer Beziehungen überprüft und bei Bedarf werden weitere Beziehungen und weitere Entitäten erzeugt.
 %

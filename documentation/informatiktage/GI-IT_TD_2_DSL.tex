@@ -1,12 +1,6 @@
 \section{Testdaten-DSL}
 
 
-%\textbf{Aus FORUM Artikel}
-%
-%Die Spezifikation der Testdaten soll mit Hilfe einer Domänenspezifische Sprache (DSL) und des Java-API erfolgen. Eine DSL ist eine formale Sprache, die speziell für ein bestimmtes Problemfeld, die sogenannte Domäne, entworfen und implementiert wird. Der Entwurf einer DSL soll einen hohen Grad an Problemspezifität erreichen, d.h. die Sprache soll alle Probleme der Domäne darstellen können und nichts darüber hinaus. Dadurch ist die Sprache durch Domänenspezialisten, in unserem Fall z.B. die Software-Tester, ohne besonderes Zusatzwissen leicht nutzbar.
-%
-%Im Projektkontext bedeutet domänenspezifisch, dass die DSL die grundlegenden Konzepte der Datenbank-Strukturierung (in unserem Fall das relationale Datenmodell) unterstützen muss, aber auch vom fachlichen Datenbankschema abhängig ist, das dem SUT zugrundeliegt.  D.h. für jede zu testende Anwendung wird aus einer erweiterten Spezifikation des zugrundeliegenden Datenbankschemas eine spezielle DSL erzeugt, in der die Testdaten dann durch die Software-Tester bzw. die Domänenexperten beschrieben werden können (siehe Abb. 3).
-
 Es wurden verschiedene Ansätze zur Entwicklung einer DSL für Testdaten untersucht. Der Fokus lag u.a.~auf der Fachlichkeit der Datenstruktur, der typsicheren Beschreibung der Testdaten und der einfachen Spezifikation von Beziehungen zwischen Entitäten. Untersucht wurden verschiedene XML-basierte Darstellungen, wie z.B. in DbUnit benutzt, programmatische Spezifikationen und  tabellarische Beschreibungsformen. 
 %
 Nach einer Evaluation wurde eine tabellarische Beschreibungsform gewählt.
@@ -24,7 +18,7 @@ Die EBNF der DSL ist in \cite{MT:Moll:2013} zu finden.
 
 
 \begin{figure}[tb]
-\begin{lstlisting}[caption=Beispiel eines mittels DSL beschriebenes Testdaten-Set (Table Builder API)., style=java, label=listing:dsl]
+\begin{lstlisting}[caption=Beispiel eines mittels DSL beschriebenen Testdaten-Sets., style=java, label=listing:dsl]
 class BookDatabaseGroovyDataSet extends BookDatabaseBuilder {
   <def> tables() {
     `buchTable`.rows {
@@ -59,44 +53,17 @@ class BookDatabaseGroovyDataSet extends BookDatabaseBuilder {
 
 Listing \ref{listing:dsl} zeigt beispielhaft die Testdaten-DSL für eine Bücherverwaltung (Datenbankschema siehe Abb.~\ref{generiert} oben). In der tabellarischen Darstellung (\texttt{tables}) enthält die erste Zeile die Spaltennamen der Tabelle, die anderen Zeilen enthalten die einzufügenden Daten. Die erste Spalte einer Datenzeile enthält jeweils einen symbolischen Namen (\texttt{REF}) für den Tabelleneintrag, der zur Referenzierung und somit Spezifikation von Beziehungen (\texttt{relations}) zwischen Datensätzen genutzt werden kann.
 
-Die Implementierung der Testdaten-DSL basiert auf Groovy und verwendet Laufzeit-Meta-Programmierung in Verbindung mit Operator-Überladen. Die DSL kann eingebettet zusammen mit Java in den Tests (z.B.~mit JUnit) genutzt werden und integriert sich sehr gut in gängige IDEs wie Eclipse. Die Spaltennamen sind in der DSL definiert, so dass Autovervollständigung unterstützt wird. 
+Die Implementierung der Testdaten-DSL basiert auf 
+%
+der dynamischen Programmiersprache Groovy 
+%
+%\footnote{http://groovy.codehaus.org/} 
+und verwendet Laufzeit-Metaprogrammierung in Verbindung mit Operator-Überladen \cite{MT:Moll:2013}. Die DSL kann eingebettet zusammen mit Java in den Tests (z.B.~mit JUnit) genutzt werden und integriert sich sehr gut in gängige IDEs wie Eclipse. Die Spaltennamen sind in der DSL definiert, so dass Autovervollständigung unterstützt wird. 
 %
 %Die zur DSL generierte JavaDoc enthält Beispiele und Informationen zu den Tabellen. 
 %
 Über die REF-Namen können Beziehungen typsicher modelliert und konkrete Werte abgefragt werden. 
 %
-Details zur Implementierung und zur Generierung der DSL für ein Datenbankschema sind in \cite{MT:Moll:2013} zu finden.
+Details zur Implementierung, zur Generierung der DSL für ein Datenbankschema und zur Nutzung der DSL in Softwaretests mit STU sind in \cite{MT:Moll:2013} zu finden.
 
 
-%\textbf{ToDo: Evtl. nicht mehr notwendig:} Definition eines Datenbank-Schemas, Details Generierung der DSL sowie Unit-test Beispiele etc. ...
-
-%---
-
-%Die DSL erlaubt eine  übersichtliche Spezifikation von Testdaten, ist einfach zu nutzen und integriert sich in gängige Entwicklungsumgebungen.
-
-%\textbf{Outline}
-%
-%
-%	\subsection{Sprach-Definition}
-%
-%	\subsection{Anwendung der Sprache}
-%	
-%	- Definieren eines Datenbank-Modells
-%	
-%	- Generieren der DSL
-%	
-%	- Unit-Test-Beispiel
-%	
-%
-%	\subsection{Implementierung und Evaluation}
-%	
-%	- Implementiert auf Java-Basis mit Groovy
-%	
-%	- Apache 2 Lizenz
-%	
-%	- http://github.com/seitenbau/stu
-%	
-%	- Implementierungsdetails in Thesis
-%	
-%	- Einsatz in Beispielen und realen Projekten geprüft
-	
